@@ -1,0 +1,266 @@
+{
+  "finishesProvisional": true,
+  "referenceAssemblies": [],
+  "finishes": [
+    { "id": "matte-black", "name": "Matte Black", "hex": "#1c1c1e", "roughness": 0.65, "metalness": 0.35, "keywords": ["black"] },
+    { "id": "statuary-bronze", "name": "Statuary Bronze", "hex": "#4a3527", "roughness": 0.55, "metalness": 0.45, "keywords": ["bronze", "brown"] },
+    { "id": "forest-green", "name": "Forest Green", "hex": "#14331f", "roughness": 0.55, "metalness": 0.35, "keywords": ["green"] },
+    { "id": "gloss-white", "name": "Gloss White", "hex": "#f2f2f0", "roughness": 0.25, "metalness": 0.15, "keywords": ["white"] },
+    { "id": "silver", "name": "Silver", "hex": "#b4b8bc", "roughness": 0.35, "metalness": 0.85, "keywords": ["silver", "gray", "grey"] }
+  ],
+  "parts": [
+    {
+      "id": "drx-post-top",
+      "slot": "fixture",
+      "name": "DRX Post Top & Area",
+      "family": "DRX",
+      "mount": "tenon-2-3/8",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["drx", "drx post top", "post top", "post-top", "area light"],
+      "model": null,
+      "placeholder": { "kind": "cone", "radiusM": 0.19, "heightM": 0.45, "direction": "up" },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-drx-post-top-area"
+    },
+    {
+      "id": "tex-post-top",
+      "slot": "fixture",
+      "name": "TEX Post Top & Area",
+      "family": "TEX",
+      "mount": "tenon-2-3/8",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["tex", "tex post top"],
+      "model": null,
+      "placeholder": { "kind": "box", "sizeM": [0.3, 0.36, 0.3], "direction": "up" },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-tex-post-top-area"
+    },
+    {
+      "id": "mvx-coach",
+      "slot": "fixture",
+      "name": "MVX Coach",
+      "family": "MVX",
+      "mount": "arm-mount",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["mvx", "coach", "lantern"],
+      "model": null,
+      "placeholder": { "kind": "box", "sizeM": [0.26, 0.42, 0.26], "direction": "up" },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-mvx-coach"
+    },
+    {
+      "id": "gvx-pendant",
+      "slot": "fixture",
+      "name": "GVX Pendant",
+      "family": "GVX",
+      "mount": "pendant",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["gvx", "pendant"],
+      "model": null,
+      "placeholder": { "kind": "cone", "radiusM": 0.17, "heightM": 0.42, "direction": "down" },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-gvx-pendant"
+    },
+    {
+      "id": "sh1-shepherds-hook",
+      "slot": "arm",
+      "name": "SH1 Shepherds Hook",
+      "family": "Decorative Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": { "type": "pendant", "position": [0.8, 0.72, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["shepherds hook", "shepherd's hook", "shepherds-hook", "hook"],
+      "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "points": [[0, 0, 0], [0, 0.7, 0], [0.45, 0.85, 0], [0.8, 0.72, 0]],
+        "radiusM": 0.025
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+    },
+    {
+      "id": "upsweep",
+      "slot": "arm",
+      "name": "Decorative Upsweep",
+      "family": "Decorative Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "top": { "type": "tenon-2-3/8", "position": [0.6, 0.35, 0] },
+        "side": { "type": "arm-mount", "position": [0.6, 0.35, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["upsweep", "upswept"],
+      "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "points": [[0, 0, 0], [0.3, 0.12, 0], [0.6, 0.35, 0]],
+        "radiusM": 0.03
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+    },
+    {
+      "id": "pa1-pendant-arm",
+      "slot": "arm",
+      "name": "PA1 Pendant Arm",
+      "family": "Decorative Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": { "type": "pendant", "position": [0.7, 0.15, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["pa1"],
+      "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "points": [[0, 0, 0], [0, 0.15, 0], [0.7, 0.15, 0]],
+        "radiusM": 0.025
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+    },
+    {
+      "id": "pm1-pendant-arm",
+      "slot": "arm",
+      "name": "PM1 Pendant Arm",
+      "family": "Decorative Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": { "type": "pendant", "position": [0.85, 0.25, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["pm1", "pendant arm"],
+      "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "points": [[0, 0, 0], [0, 0.25, 0], [0.85, 0.25, 0]],
+        "radiusM": 0.025
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+    },
+    {
+      "id": "direct-mount",
+      "slot": "arm",
+      "name": "Direct Pole Mount",
+      "family": "Tenon Adapter",
+      "mount": "tenon-3in",
+      "sockets": {
+        "top": { "type": "tenon-2-3/8", "position": [0, 0.08, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["direct mount", "no arm", "direct"],
+      "model": null,
+      "placeholder": { "kind": "pole", "heightM": 0.08, "radiusTopM": 0.03, "radiusBottomM": 0.04 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+    },
+    {
+      "id": "alum-pole-12",
+      "slot": "pole",
+      "name": "12 ft Decorative Aluminum",
+      "family": "WiLLstudio Decorative Aluminum",
+      "heightFt": 12,
+      "mount": null,
+      "sockets": {
+        "top": { "type": "tenon-3in", "position": [0, 3.66, 0] },
+        "base": { "type": "base-collar", "position": [0, 0, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["12 ft", "12ft"],
+      "model": null,
+      "placeholder": { "kind": "pole", "heightM": 3.66, "radiusTopM": 0.045, "radiusBottomM": 0.07 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+    },
+    {
+      "id": "alum-pole-14",
+      "slot": "pole",
+      "name": "14 ft Decorative Aluminum",
+      "family": "WiLLstudio Decorative Aluminum",
+      "heightFt": 14,
+      "mount": null,
+      "sockets": {
+        "top": { "type": "tenon-3in", "position": [0, 4.27, 0] },
+        "base": { "type": "base-collar", "position": [0, 0, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["14 ft", "14ft"],
+      "model": null,
+      "placeholder": { "kind": "pole", "heightM": 4.27, "radiusTopM": 0.045, "radiusBottomM": 0.075 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+    },
+    {
+      "id": "alum-pole-16",
+      "slot": "pole",
+      "name": "16 ft Decorative Aluminum",
+      "family": "WiLLstudio Decorative Aluminum",
+      "heightFt": 16,
+      "mount": null,
+      "sockets": {
+        "top": { "type": "tenon-3in", "position": [0, 4.88, 0] },
+        "base": { "type": "base-collar", "position": [0, 0, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["16 ft", "16ft"],
+      "model": null,
+      "placeholder": { "kind": "pole", "heightM": 4.88, "radiusTopM": 0.05, "radiusBottomM": 0.08 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+    },
+    {
+      "id": "alum-pole-20",
+      "slot": "pole",
+      "name": "20 ft Decorative Aluminum",
+      "family": "WiLLstudio Decorative Aluminum",
+      "heightFt": 20,
+      "mount": null,
+      "sockets": {
+        "top": { "type": "tenon-3in", "position": [0, 6.1, 0] },
+        "base": { "type": "base-collar", "position": [0, 0, 0] }
+      },
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["20 ft", "20ft"],
+      "model": null,
+      "placeholder": { "kind": "pole", "heightM": 6.1, "radiusTopM": 0.05, "radiusBottomM": 0.09 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+    },
+    {
+      "id": "bc-fluted",
+      "slot": "baseCover",
+      "name": "Fluted Base Cover",
+      "family": "WiLLstudio Decorative Base Covers",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["fluted"],
+      "model": null,
+      "placeholder": { "kind": "baseCover", "heightM": 0.45, "radiusTopM": 0.1, "radiusBottomM": 0.19 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers"
+    },
+    {
+      "id": "bc-round",
+      "slot": "baseCover",
+      "name": "Round Base Cover",
+      "family": "WiLLstudio Decorative Base Covers",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": ["matte-black", "statuary-bronze", "forest-green", "gloss-white", "silver"],
+      "keywords": ["round"],
+      "model": null,
+      "placeholder": { "kind": "baseCover", "heightM": 0.3, "radiusTopM": 0.11, "radiusBottomM": 0.16 },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers"
+    }
+  ]
+}
