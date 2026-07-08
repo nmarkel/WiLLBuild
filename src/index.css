@@ -229,7 +229,8 @@ body {
 .thumb {
   display: grid;
   place-items: center;
-  height: 56px;
+  position: relative;
+  height: 96px;
   border-radius: 6px;
   background: var(--panel-raised);
   color: var(--text-dim);
@@ -239,9 +240,14 @@ body {
 }
 
 .thumb img {
+  /* Pin to the box; height:100% alone resolves to the image's intrinsic size in a grid cell. */
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* Product photos are square on white — show the whole fixture, never crop. */
+  object-fit: contain;
+  background: #fff;
 }
 
 .option-name {
