@@ -12,6 +12,12 @@ export type PlaceholderSpec =
   | { kind: 'tube'; points: [number, number, number][]; radiusM: number }
   | { kind: 'box'; sizeM: [number, number, number]; direction: 'up' | 'down' }
   | { kind: 'cone'; radiusM: number; heightM: number; direction: 'up' | 'down' }
+  /** Revolved silhouette: [radiusM, yM] pairs from the attachment origin — negative y hangs below (pendants). */
+  | { kind: 'lathe'; profile: [number, number][] }
+  /** Faceted cylinder (sides=4 → tapered lantern bodies, pyramid roofs). Stands up from origin like baseCover. */
+  | { kind: 'prism'; radiusTopM: number; radiusBottomM: number; heightM: number; sides: number }
+  /** Compound part assembled from child specs at local offsets. */
+  | { kind: 'group'; children: { spec: PlaceholderSpec; position: [number, number, number] }[] }
 
 export interface CatalogPart {
   id: string

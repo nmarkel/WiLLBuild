@@ -29,6 +29,8 @@ export function Assembly({ catalog, config }: Props) {
         color: finish.hex,
         roughness: finish.roughness,
         metalness: finish.metalness,
+        // Lathe silhouettes (fixture brims, open rims) are visible from both sides.
+        side: THREE.DoubleSide,
       }),
     [finish],
   )
