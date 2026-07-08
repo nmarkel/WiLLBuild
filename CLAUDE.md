@@ -85,7 +85,7 @@ Document in repo as `ASSETS.md`. CAD (STEP/SolidWorks) → Blender → GLB:
 - Right: 3D window; below/side: config summary (part names + product-page links) with the config ID and a status chip from `configStatus()` (Standard/Configurable)
 - **Share** — config serialized into URL query params; loading that URL restores the build
 - **Request a Quote** — link to https://willbrands.com/pages/request-a-quote with config summary prefilled (query param or copyable text block)
-- Style: clean, dark-neutral, matches willbrands.com feel; accent blue `#1434ff`. Mobile: 3D window above panel, still usable.
+- Style: official WiLL brand (Brand-Identity Guidelines 2020), light UI. Palette (CSS variables in `src/index.css`): Gunmetal Gray `#42413D` (chrome/primary text), Yellow Light `#FFCF2E` (selected states + primary CTAs only, always with gunmetal text), Gunmetal Silver `#E6E7E8` (panels/dividers/muted), dark yellow `#7F6717` only alongside yellow; white base with approved silver (`#FFFFFF→#E6E7E8`) and gray (`#58595B→#42413D`) gradients. **Blue (e.g. `#1434ff`) is prohibited — not a WiLL brand color.** Fonts: Roboto 400/500/700 (main), Open Sans 300 (accent text); logo font is never faked. Logo asset: `public/will-logo.png` (reversed white-on-dark lockup — keep it on the gunmetal header bar, min 150px wide, clear space ½ logo height). Mobile: 3D window above panel, still usable.
 
 ## Explicitly out of scope (Phase 1+)
 

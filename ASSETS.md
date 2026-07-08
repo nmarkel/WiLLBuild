@@ -17,6 +17,14 @@ How WiLL CAD parts become web-ready GLBs for the configurator.
 
 In `public/catalog.json`, set the part's `model` to its path (e.g. `models/gvx-pendant.glb`) and add a `thumbnail`. Socket positions in the catalog must match the socket empties in the GLB. Until a real GLB exists, `model` is `null` and the app renders the part's `placeholder` primitive — the app must never block on assets.
 
+## Geometry quality bar (Phase 0.2)
+
+HDRI/image-based lighting is unforgiving — it exposes geometry quality directly in reflections and shading. GLBs must meet this bar:
+
+- **Clean normals** — no flipped or unwelded normals; smooth shading set up correctly.
+- **No faceting on curved pole surfaces** — turned/revolved parts need sufficient radial segments so cylinders and tapers read as smooth under environment lighting.
+- **UVs suitable for AO baking** — non-overlapping, sensibly packed UVs so ambient occlusion can be baked per part.
+
 ## Status
 
 No real GLBs yet — all parts currently render as parametric placeholder primitives defined by each part's `placeholder` spec in the catalog (see M1 milestone: first real GLB through the pipeline).

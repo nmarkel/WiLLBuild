@@ -1,11 +1,13 @@
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
+import { Bloom, EffectComposer, N8AO, SMAA } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { Catalog, PoleConfig } from '../types'
 import { partById } from '../lib/compat'
 import { Assembly } from './Assembly'
+import { SnapshotRig } from './SnapshotRig'
 
 interface Props {
   catalog: Catalog
@@ -13,10 +15,21 @@ interface Props {
   showScale: boolean
 }
 
-/** Keeps the camera framed on the assembly as pole height changes. */
+/** Sun direction shared by the shadow-casting light and the baked soft shadows. */
+const SUN_POSITION: [number, number, number] = [8, 12, 6]
+
+/** How long after the user releases the controls before the idle orbit resumes. */
+const AUTO_ORBIT_RESUME_MS = 6000
+
+/**
+ * Keeps the camera framed on the assembly as pole height changes, and runs a
+ * gentle auto-orbit while the user is idle.
+ */
 function CameraRig({ heightM }: { heightM: number }) {
   const controls = useRef<OrbitControlsImpl>(null)
   const camera = useThree((s) => s.camera)
+  const [autoRotate, setAutoRotate] = useState(true)
+  const resumeTimer = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     const c = controls.current
@@ -31,11 +44,31 @@ function CameraRig({ heightM }: { heightM: number }) {
     c.update()
   }, [heightM, camera])
 
+  // Pause the idle orbit the moment the user grabs the controls; resume a few
+  // seconds after they let go. Clear the pending timer on unmount.
+  useEffect(() => () => window.clearTimeout(resumeTimer.current), [])
+
+  const handleStart = () => {
+    window.clearTimeout(resumeTimer.current)
+    setAutoRotate(false)
+  }
+
+  const handleEnd = () => {
+    window.clearTimeout(resumeTimer.current)
+    resumeTimer.current = window.setTimeout(() => setAutoRotate(true), AUTO_ORBIT_RESUME_MS)
+  }
+
   return (
     <OrbitControls
       ref={controls}
       makeDefault
       enablePan={false}
+      enableDamping
+      dampingFactor={0.08}
+      autoRotate={autoRotate}
+      autoRotateSpeed={0.4}
+      onStart={handleStart}
+      onEnd={handleEnd}
       minDistance={heightM * 0.5}
       maxDistance={heightM * 3.5}
       maxPolarAngle={Math.PI / 2 - 0.03}
@@ -43,17 +76,17 @@ function CameraRig({ heightM }: { heightM: number }) {
   )
 }
 
-/** ~6 ft human silhouette for scale. */
+/** ~6 ft human silhouette for scale, styled for daylight. */
 function HumanSilhouette() {
   return (
     <group position={[1.4, 0, 0.6]}>
-      <mesh position={[0, 0.78, 0]}>
+      <mesh position={[0, 0.78, 0]} castShadow>
         <capsuleGeometry args={[0.2, 1.16, 8, 16]} />
-        <meshStandardMaterial color="#3a3d44" roughness={0.9} transparent opacity={0.75} />
+        <meshStandardMaterial color="#8a8d92" roughness={0.9} transparent opacity={0.85} />
       </mesh>
-      <mesh position={[0, 1.71, 0]}>
+      <mesh position={[0, 1.71, 0]} castShadow>
         <sphereGeometry args={[0.115, 16, 16]} />
-        <meshStandardMaterial color="#3a3d44" roughness={0.9} transparent opacity={0.75} />
+        <meshStandardMaterial color="#8a8d92" roughness={0.9} transparent opacity={0.85} />
       </mesh>
     </group>
   )
@@ -63,43 +96,83 @@ export function Scene({ catalog, config, showScale }: Props) {
   const pole = partById(catalog, config.pole)
   const heightM = pole?.sockets.top?.position[1] ?? 4.3
 
+  // ContactShadows stops refreshing after its frame budget; re-key it so the
+  // ground shadow re-renders whenever the assembly (or scale figure) changes.
+  const shadowKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.finish}-${showScale}`
+
   return (
     <Canvas
       shadows
+      // 1.5 keeps orbit ≥30fps with the post stack; the snapshot rig raises
+      // resolution on demand, so stills stay sharp.
+      dpr={[1, 1.5]}
       camera={{ position: [4.5, 2, 5.5], fov: 42 }}
       // preserveDrawingBuffer lets the output tray snapshot the canvas as a PNG.
-      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, preserveDrawingBuffer: true }}
+      gl={{
+        antialias: true,
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.1,
+        preserveDrawingBuffer: true,
+      }}
     >
-      {/* Lighter than the UI chrome so dark finishes silhouette against it. */}
-      <color attach="background" args={['#22252c']} />
-      <fog attach="fog" args={['#22252c', 20, 45]} />
+      {/* Light fallback while the HDRI streams in; matches the light UI chrome. */}
+      <color attach="background" args={['#e6e7e8']} />
 
-      <ambientLight intensity={0.25} />
+      {/* Single warm sun for crisp shadow definition; the HDRI provides fill + reflections. */}
       <directionalLight
         castShadow
-        position={[6, 10, 4]}
-        intensity={1.4}
+        position={SUN_POSITION}
+        color="#fff5e6"
+        intensity={1.5}
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-6}
-        shadow-camera-right={6}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-2}
+        shadow-camera-left={-8}
+        shadow-camera-right={8}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-4}
+        shadow-camera-far={40}
+        shadow-bias={-0.0001}
       />
-      {/* Own boundary: the HDRI streams from a CDN and must not suspend the scene. */}
+
+      {/* Own boundary: the HDRI streams from /public and must not suspend the scene.
+          Ground projection places the assembly on the street rather than in a void. */}
       <Suspense fallback={null}>
-        <Environment preset="city" />
+        <Environment
+          files={import.meta.env.BASE_URL + 'hdri/urban_street_04_2k.hdr'}
+          background
+          ground={{ height: 5, radius: 40, scale: 70 }}
+        />
       </Suspense>
 
       <Assembly catalog={catalog} config={config} />
       {showScale && <HumanSilhouette />}
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.001, 0]} receiveShadow>
-        <circleGeometry args={[30, 64]} />
-        <meshStandardMaterial color="#292c33" roughness={0.95} metalness={0} />
+      {/* Shadow catcher: invisible plane that receives the sun's cast shadow on
+          the HDRI street (AccumulativeShadows didn't survive the ground-projected
+          env + composer stack). ContactShadows adds the soft base grounding. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
+        <planeGeometry args={[30, 30]} />
+        <shadowMaterial transparent opacity={0.35} />
       </mesh>
-      <ContactShadows opacity={0.55} scale={12} blur={2.2} far={4} resolution={512} />
+      <ContactShadows
+        key={shadowKey}
+        opacity={0.5}
+        scale={10}
+        blur={2.4}
+        far={3.5}
+        resolution={512}
+        frames={60}
+      />
+
+      <EffectComposer multisampling={0}>
+        <SMAA />
+        {/* Subtle contact-scale AO; radius in meters, half-res for perf. */}
+        <N8AO aoRadius={0.35} distanceFalloff={0.8} intensity={1.2} quality="performance" halfRes />
+        {/* Only clips speculars above white — keeps highlights lively, nothing more. */}
+        <Bloom mipmapBlur intensity={0.15} luminanceThreshold={1.1} />
+      </EffectComposer>
 
       <CameraRig heightM={heightM} />
+      <SnapshotRig />
     </Canvas>
   )
 }

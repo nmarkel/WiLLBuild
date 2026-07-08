@@ -5,9 +5,12 @@
     {
       "id": "matte-black",
       "name": "Matte Black",
-      "hex": "#1c1c1e",
-      "roughness": 0.65,
-      "metalness": 0.35,
+      "hex": "#232323",
+      "roughness": 0.55,
+      "metalness": 0.05,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0.5,
+      "envMapIntensity": 0.9,
       "keywords": [
         "black"
       ]
@@ -16,8 +19,11 @@
       "id": "statuary-bronze",
       "name": "Statuary Bronze",
       "hex": "#4a3527",
-      "roughness": 0.55,
-      "metalness": 0.45,
+      "roughness": 0.5,
+      "metalness": 0.15,
+      "clearcoat": 0.15,
+      "clearcoatRoughness": 0.4,
+      "envMapIntensity": 1.0,
       "keywords": [
         "bronze",
         "brown"
@@ -26,9 +32,12 @@
     {
       "id": "forest-green",
       "name": "Forest Green",
-      "hex": "#14331f",
-      "roughness": 0.55,
-      "metalness": 0.35,
+      "hex": "#15351f",
+      "roughness": 0.45,
+      "metalness": 0.05,
+      "clearcoat": 0.3,
+      "clearcoatRoughness": 0.3,
+      "envMapIntensity": 1.0,
       "keywords": [
         "green"
       ]
@@ -37,8 +46,11 @@
       "id": "gloss-white",
       "name": "Gloss White",
       "hex": "#f2f2f0",
-      "roughness": 0.25,
-      "metalness": 0.15,
+      "roughness": 0.3,
+      "metalness": 0.0,
+      "clearcoat": 1.0,
+      "clearcoatRoughness": 0.12,
+      "envMapIntensity": 1.0,
       "keywords": [
         "white"
       ]
@@ -48,7 +60,10 @@
       "name": "Silver",
       "hex": "#b4b8bc",
       "roughness": 0.35,
-      "metalness": 0.85,
+      "metalness": 0.8,
+      "clearcoat": 0.25,
+      "clearcoatRoughness": 0.25,
+      "envMapIntensity": 1.1,
       "keywords": [
         "silver",
         "gray",

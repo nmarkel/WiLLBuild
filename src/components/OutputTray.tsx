@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import { getContact, saveLead, type Contact } from '../lib/leads'
 import { buildSummaryText } from '../lib/summary'
+import { useConfigurator } from '../store'
 
 interface Props {
   catalog: Catalog
@@ -16,18 +17,23 @@ const PLACEHOLDERS = [
   { title: 'Photometric', format: 'IES', audience: 'For your lighting calcs' },
 ]
 
-function downloadSnapshot(configId: string) {
+/** Fallback when no SnapshotRig is registered: raw grab of the visible canvas. */
+function grabRawCanvas(): Promise<Blob | null> {
   const canvas = document.querySelector<HTMLCanvasElement>('.viewport canvas')
-  if (!canvas) return
-  canvas.toBlob((blob) => {
-    if (!blob) return
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `will-config-${configId.slice(0, 8)}.png`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, 'image/png')
+  if (!canvas) return Promise.resolve(null)
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+}
+
+async function downloadSnapshot(configId: string) {
+  const { snapshot } = useConfigurator.getState()
+  const blob = snapshot ? await snapshot() : await grabRawCanvas()
+  if (!blob) return
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `will-config-${configId.slice(0, 8)}.png`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 function ContactGate({ onUnlock, onCancel }: { onUnlock: (c: Contact) => void; onCancel: () => void }) {
@@ -75,7 +81,7 @@ export function OutputTray({ catalog, config }: Props) {
   const [copied, setCopied] = useState(false)
 
   const deliver = (deliverable: string) => {
-    if (deliverable === 'png') downloadSnapshot(config.configId)
+    if (deliverable === 'png') void downloadSnapshot(config.configId)
   }
 
   const requestDownload = (deliverable: string) => {

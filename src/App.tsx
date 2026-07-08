@@ -21,14 +21,13 @@ export default function App() {
     <div className="app">
       <aside className="panel">
         <header className="brand">
-          <span className="brand-mark">WiLL</span>
+          <img className="brand-logo" src="/will-logo.png" alt="WiLL" />
           <span className="brand-sub">3D Pole Configurator</span>
         </header>
         <DescribeBox />
         <Panel catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
         <OutputTray catalog={catalog} config={config} />
-        <p className="brand-note">Brand treatment provisional — pending official WiLL brand guide.</p>
       </aside>
       <main className="viewport">
         <Scene catalog={catalog} config={config} showScale={showScale} />

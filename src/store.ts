@@ -13,6 +13,9 @@ interface ConfiguratorState {
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
+  /** High-res capture registered by SnapshotRig (mounted inside the R3F Canvas); null until mounted. */
+  snapshot: (() => Promise<Blob | null>) | null
+  registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
 }
 
 function syncUrl(config: PoleConfig) {
@@ -55,4 +58,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   },
 
   toggleScale: () => set((s) => ({ showScale: !s.showScale })),
+
+  snapshot: null,
+  registerSnapshot: (fn) => set({ snapshot: fn }),
 }))

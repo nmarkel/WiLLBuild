@@ -45,6 +45,11 @@ export interface FinishDef {
   hex: string
   roughness: number
   metalness: number
+  /** Clearcoat layer strength (0 = matte powder coat, 1 = full gloss lacquer). */
+  clearcoat: number
+  clearcoatRoughness: number
+  /** HDRI environment reflection strength for this finish. */
+  envMapIntensity: number
   keywords: string[]
 }
 

@@ -22,13 +22,18 @@ export function Assembly({ catalog, config }: Props) {
   const finish = catalog.finishes.find((f) => f.id === config.finish) ?? catalog.finishes[0]
 
   // One shared PBR material across all paintable parts so a finish swap is a
-  // single material change, applied instantly to the whole assembly.
+  // single material change, applied instantly to the whole assembly. Each
+  // WiLLcoat finish carries its own measured powder-coat response: clearcoat
+  // separates gloss finishes from matte, envMapIntensity scales HDRI pickup.
   const material = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
+      new THREE.MeshPhysicalMaterial({
         color: finish.hex,
         roughness: finish.roughness,
         metalness: finish.metalness,
+        clearcoat: finish.clearcoat,
+        clearcoatRoughness: finish.clearcoatRoughness,
+        envMapIntensity: finish.envMapIntensity,
         // Lathe silhouettes (fixture brims, open rims) are visible from both sides.
         side: THREE.DoubleSide,
       }),
