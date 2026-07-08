@@ -27,7 +27,7 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 - `src/store.ts` — zustand store; every selection change runs `repairConfig` and re-syncs the URL
 - `src/components/Assembly.tsx` — attaches parts at catalog socket positions (physical assembly still stacks pole-up); one shared PBR material for instant finish swaps
 - `src/components/PlaceholderPart.tsx` — parametric primitives rendered while `model` is null
-- `src/components/Scene.tsx` — R3F canvas, camera framing follows pole height
+- `src/components/Scene.tsx` — R3F canvas: ground-projected street HDRI (day) with dimmed-panorama night preset, sun/moon light, shadow catcher + contact shadows, SMAA/N8AO/Bloom post stack, idle auto-orbit, camera framing follows pole height. Day/night `mode` lives in the store; night adds a lit ground disc (the projected skybox is unlit) and `FixtureLight` in Assembly.tsx — emissive lens + point/spot at the fixture's catalog `lightOffset`. Night is a conceptual preview, not photometric (guardrails).
 - `src/components/DescribeBox.tsx` — "Describe Your Product" input wired to `parse.ts`
 - `src/components/OutputTray.tsx` — downloads gallery: PNG canvas snapshot gated behind a name+email modal (logged via `leads.ts`); disabled placeholders for spec sheet PDF/DWG/STEP/IES with audience labels
 

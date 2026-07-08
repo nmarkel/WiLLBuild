@@ -4,15 +4,20 @@ import { defaultConfig, repairConfig } from './lib/compat'
 import { parseDescription } from './lib/parse'
 import { configToParams, paramsToPartialConfig } from './lib/url'
 
+export type SceneMode = 'day' | 'night'
+
 interface ConfiguratorState {
   catalog: Catalog | null
   config: PoleConfig | null
   showScale: boolean
+  /** Day/night preset. Night is a conceptual preview, not a photometric simulation. */
+  mode: SceneMode
   loadCatalog: () => Promise<void>
   select: (slot: Slot | 'finish', id: string) => void
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
+  toggleMode: () => void
   /** High-res capture registered by SnapshotRig (mounted inside the R3F Canvas); null until mounted. */
   snapshot: (() => Promise<Blob | null>) | null
   registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
@@ -26,6 +31,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   catalog: null,
   config: null,
   showScale: false,
+  mode: 'day',
 
   loadCatalog: async () => {
     const res = await fetch(`${import.meta.env.BASE_URL}catalog.json`)
@@ -58,6 +64,8 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   },
 
   toggleScale: () => set((s) => ({ showScale: !s.showScale })),
+
+  toggleMode: () => set((s) => ({ mode: s.mode === 'day' ? 'night' : 'day' })),
 
   snapshot: null,
   registerSnapshot: (fn) => set({ snapshot: fn }),

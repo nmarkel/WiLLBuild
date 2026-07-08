@@ -28,6 +28,10 @@ npm run preview   # serve the production build
 - The output tray (`src/components/OutputTray.tsx`) offers a PNG snapshot of the 3D canvas, gated behind name + email; spec sheet PDF, DWG, STEP, and IES are shown as coming soon.
 - Until real GLBs arrive, parts render as parametric placeholder primitives (`placeholder` spec in the catalog) behind the same interface.
 
+## Rendering
+
+The viewport places the assembly on a real street (ground-projected HDRI, day preset) with tuned per-finish powder-coat materials and a post-processing stack (SMAA, ambient occlusion, subtle bloom). A **night view** toggle dims the scene to dusk and lights the luminaire itself — a conceptual preview of the product in use, not a photometric simulation. The Product Render download exports ≥1920×1080 through the full pipeline.
+
 ## Status
 
-**0.1 — real catalog (in-house WiLL products), fixture-first flow, output tray, describe-box parser.** Parts still render as placeholder primitives until M1 brings the first real GLB through the asset pipeline.
+**0.2 — real catalog, fixture-first flow, output tray, describe-box parser, HDRI streetscape rendering with day/night presets, official WiLL brand treatment.** Parts still render as parametric silhouettes (shaped from product photos) until M1 brings the first real GLB through the asset pipeline.

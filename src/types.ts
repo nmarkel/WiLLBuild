@@ -32,6 +32,11 @@ export interface CatalogPart {
   finishes: string[]
   /** Phrases the describe-your-product parser matches against (lowercase). */
   keywords: string[]
+  /**
+   * Fixtures only: where the luminaire's light source sits relative to the
+   * fixture origin, in meters — drives the conceptual night-mode light.
+   */
+  lightOffset?: [number, number, number]
   /** GLB path; null while parts are placeholder primitives. */
   model: string | null
   placeholder: PlaceholderSpec

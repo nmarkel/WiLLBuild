@@ -7,7 +7,7 @@ import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
 
 export default function App() {
-  const { catalog, config, showScale, loadCatalog, toggleScale } = useConfigurator()
+  const { catalog, config, showScale, mode, loadCatalog, toggleScale, toggleMode } = useConfigurator()
 
   useEffect(() => {
     loadCatalog()
@@ -30,10 +30,19 @@ export default function App() {
         <OutputTray catalog={catalog} config={config} />
       </aside>
       <main className="viewport">
-        <Scene catalog={catalog} config={config} showScale={showScale} />
-        <button className="scale-toggle" onClick={toggleScale}>
-          {showScale ? 'Hide' : 'Show'} human scale
-        </button>
+        <Scene catalog={catalog} config={config} showScale={showScale} mode={mode} />
+        <div className="viewport-controls">
+          <button
+            className="scale-toggle"
+            onClick={toggleMode}
+            title="Conceptual preview — not a photometric simulation"
+          >
+            {mode === 'day' ? '☾ Night view' : '☀ Day view'}
+          </button>
+          <button className="scale-toggle" onClick={toggleScale}>
+            {showScale ? 'Hide' : 'Show'} human scale
+          </button>
+        </div>
       </main>
     </div>
   )

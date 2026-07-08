@@ -136,7 +136,12 @@
         ]
       },
       "thumbnail": "thumbnails/drx-post-top.jpg",
-      "productUrl": "https://willbrands.com/products/willstudio-drx-post-top-area"
+      "productUrl": "https://willbrands.com/products/willstudio-drx-post-top-area",
+      "lightOffset": [
+        0,
+        0.38,
+        0
+      ]
     },
     {
       "id": "tex-post-top",
@@ -202,7 +207,12 @@
         ]
       },
       "thumbnail": "thumbnails/tex-post-top.jpg",
-      "productUrl": "https://willbrands.com/products/willstudio-tex-post-top-area"
+      "productUrl": "https://willbrands.com/products/willstudio-tex-post-top-area",
+      "lightOffset": [
+        0,
+        0.19,
+        0
+      ]
     },
     {
       "id": "mvx-coach",
@@ -284,7 +294,12 @@
         ]
       },
       "thumbnail": "thumbnails/mvx-coach.jpg",
-      "productUrl": "https://willbrands.com/products/willstudio-mvx-coach"
+      "productUrl": "https://willbrands.com/products/willstudio-mvx-coach",
+      "lightOffset": [
+        0,
+        0.22,
+        0
+      ]
     },
     {
       "id": "gvx-pendant",
@@ -351,7 +366,12 @@
         ]
       },
       "thumbnail": "thumbnails/gvx-pendant.jpg",
-      "productUrl": "https://willbrands.com/products/willstudio-gvx-pendant"
+      "productUrl": "https://willbrands.com/products/willstudio-gvx-pendant",
+      "lightOffset": [
+        0,
+        -0.33,
+        0
+      ]
     },
     {
       "id": "sh1-shepherds-hook",

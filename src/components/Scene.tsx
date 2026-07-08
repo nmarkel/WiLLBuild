@@ -5,6 +5,7 @@ import { Bloom, EffectComposer, N8AO, SMAA } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { Catalog, PoleConfig } from '../types'
+import type { SceneMode } from '../store'
 import { partById } from '../lib/compat'
 import { Assembly } from './Assembly'
 import { SnapshotRig } from './SnapshotRig'
@@ -13,6 +14,7 @@ interface Props {
   catalog: Catalog
   config: PoleConfig
   showScale: boolean
+  mode: SceneMode
 }
 
 /** Sun direction shared by the shadow-casting light and the baked soft shadows. */
@@ -92,13 +94,14 @@ function HumanSilhouette() {
   )
 }
 
-export function Scene({ catalog, config, showScale }: Props) {
+export function Scene({ catalog, config, showScale, mode }: Props) {
   const pole = partById(catalog, config.pole)
   const heightM = pole?.sockets.top?.position[1] ?? 4.3
+  const night = mode === 'night'
 
   // ContactShadows stops refreshing after its frame budget; re-key it so the
   // ground shadow re-renders whenever the assembly (or scale figure) changes.
-  const shadowKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.finish}-${showScale}`
+  const shadowKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.finish}-${showScale}-${mode}`
 
   return (
     <Canvas
@@ -116,14 +119,15 @@ export function Scene({ catalog, config, showScale }: Props) {
       }}
     >
       {/* Light fallback while the HDRI streams in; matches the light UI chrome. */}
-      <color attach="background" args={['#e6e7e8']} />
+      <color attach="background" args={[night ? '#111318' : '#e6e7e8']} />
 
-      {/* Single warm sun for crisp shadow definition; the HDRI provides fill + reflections. */}
+      {/* Day: warm sun for crisp shadows. Night: faint cool moonlight — the
+          luminaire itself becomes the dominant light (see FixtureLight). */}
       <directionalLight
         castShadow
         position={SUN_POSITION}
-        color="#fff5e6"
-        intensity={1.5}
+        color={night ? '#9db4d6' : '#fff5e6'}
+        intensity={night ? 0.15 : 1.5}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-left={-8}
         shadow-camera-right={8}
@@ -134,16 +138,30 @@ export function Scene({ catalog, config, showScale }: Props) {
       />
 
       {/* Own boundary: the HDRI streams from /public and must not suspend the scene.
-          Ground projection places the assembly on the street rather than in a void. */}
+          Ground projection places the assembly on the street rather than in a void.
+          At night the same environment is dimmed to dusk levels. */}
       <Suspense fallback={null}>
+        {/* backgroundIntensity has no effect on the ground-projected skybox
+            mesh, so night drops the projection and dims the plain panorama. */}
         <Environment
           files={import.meta.env.BASE_URL + 'hdri/urban_street_04_2k.hdr'}
           background
-          ground={{ height: 5, radius: 40, scale: 70 }}
+          ground={night ? undefined : { height: 5, radius: 40, scale: 70 }}
+          environmentIntensity={night ? 0.12 : 1}
+          backgroundIntensity={night ? 0.06 : 1}
         />
       </Suspense>
 
-      <Assembly catalog={catalog} config={config} />
+      {/* The projected skybox street is unlit, so night mode needs a real lit
+          surface to catch the luminaire's light pool. */}
+      {night && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} receiveShadow>
+          <circleGeometry args={[24, 64]} />
+          <meshStandardMaterial color="#1b1c20" roughness={0.95} metalness={0} />
+        </mesh>
+      )}
+
+      <Assembly catalog={catalog} config={config} night={night} />
       {showScale && <HumanSilhouette />}
 
       {/* Shadow catcher: invisible plane that receives the sun's cast shadow on

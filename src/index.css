@@ -572,10 +572,15 @@ body {
   position: relative;
 }
 
-.scale-toggle {
+.viewport-controls {
   position: absolute;
   bottom: 16px;
   right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.scale-toggle {
   padding: 8px 14px;
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--border);
