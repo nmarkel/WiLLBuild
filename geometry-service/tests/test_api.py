@@ -55,6 +55,23 @@ class TestGenerateValidation:
         }
         return client.post("/generate", json=payload)
 
+    def test_missing_pole_in_config_returns_422_with_string_detail(self) -> None:
+        """POST /generate with body missing config.pole → 422 with string detail."""
+        resp = self._post(
+            {
+                "configId": "missing-pole-test",
+                "baseCover": "bc-fluted",
+                "arm": "sh1-shepherds-hook",
+                "fixture": "gvx-pendant",
+                "finish": "matte-black",
+                "rev": 1,
+            }
+        )
+        assert resp.status_code == 422
+        body = resp.json()
+        assert "detail" in body
+        assert isinstance(body["detail"], str)
+
     def test_unknown_fixture_id_returns_422(self) -> None:
         resp = self._post(
             {

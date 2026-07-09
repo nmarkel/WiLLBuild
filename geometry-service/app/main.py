@@ -6,8 +6,9 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .catalog import load_catalog, validate_config
 from .models import GenerateRequest, GenerateResponse
@@ -42,6 +43,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ---------------------------------------------------------------------------
+# Exception handlers
+# ---------------------------------------------------------------------------
+
+@app.exception_handler(RequestValidationError)
+async def _validation_shape(request, exc):
+    """Convert RequestValidationError to 422 with string detail field."""
+    msg = "; ".join(
+        f"{'.'.join(str(l) for l in e['loc'])}: {e['msg']}"
+        for e in exc.errors()
+    )
+    return JSONResponse(status_code=422, content={"detail": msg})
 
 
 # ---------------------------------------------------------------------------

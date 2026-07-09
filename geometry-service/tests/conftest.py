@@ -16,70 +16,63 @@ def catalog() -> dict:
 
 
 def valid_combos(catalog: dict) -> list[PoleConfig]:
-    """Return a list of valid PoleConfig combinations for parametric testing.
+    """Dynamically enumerate valid PoleConfig combinations from catalog socket matching.
 
-    Covers the main socket-compat paths:
-      - pendant fixture (gvx-pendant) + pendant arm (sh1-shepherds-hook / pa1 / pm1)
-      - post-top fixture (drx-post-top) + direct-mount adapter arm
-      - coach fixture (mvx-coach) + upsweep arm
-    Each combo uses alum-pole-20 and bc-fluted with matte-black finish.
+    For every fixture, arm that can host it, pole that can host that arm,
+    and baseCover that the pole can host, yield a PoleConfig using the first
+    available finish from the catalog.
     """
-    finish = "matte-black"
-    pole = "alum-pole-20"
-    base = "bc-fluted"
+    def _can_host(host: dict, guest: dict) -> bool:
+        """Return True when host exposes a socket whose type == guest's mount."""
+        guest_mount = guest.get("mount")
+        if guest_mount is None:
+            return True
+        for socket in host.get("sockets", {}).values():
+            if socket.get("type") == guest_mount:
+                return True
+        return False
 
-    combos = [
-        # GVX Pendant + SH1 Shepherds Hook
-        PoleConfig(
-            configId="test-combo-001",
-            pole=pole,
-            baseCover=base,
-            arm="sh1-shepherds-hook",
-            fixture="gvx-pendant",
-            finish=finish,
-            rev=1,
-        ),
-        # GVX Pendant + PA1 Pendant Arm
-        PoleConfig(
-            configId="test-combo-002",
-            pole=pole,
-            baseCover=base,
-            arm="pa1-pendant-arm",
-            fixture="gvx-pendant",
-            finish=finish,
-            rev=1,
-        ),
-        # GVX Pendant + PM1 Pendant Arm
-        PoleConfig(
-            configId="test-combo-003",
-            pole=pole,
-            baseCover=base,
-            arm="pm1-pendant-arm",
-            fixture="gvx-pendant",
-            finish=finish,
-            rev=1,
-        ),
-        # DRX Post Top + Direct Mount
-        PoleConfig(
-            configId="test-combo-004",
-            pole=pole,
-            baseCover=base,
-            arm="direct-mount",
-            fixture="drx-post-top",
-            finish=finish,
-            rev=1,
-        ),
-        # MVX Coach + Upsweep
-        PoleConfig(
-            configId="test-combo-005",
-            pole=pole,
-            baseCover=base,
-            arm="upsweep",
-            fixture="mvx-coach",
-            finish=finish,
-            rev=1,
-        ),
-    ]
+    def part_by_id(part_id: str) -> dict:
+        """Return part by id."""
+        for p in catalog["parts"]:
+            if p["id"] == part_id:
+                return p
+        raise KeyError(f"Unknown part id: {part_id!r}")
+
+    combos: list[PoleConfig] = []
+    default_finish = "matte-black"  # Use first finish from catalog if not found
+    if catalog.get("finishes"):
+        default_finish = catalog["finishes"][0]["id"]
+
+    fixtures = [p for p in catalog["parts"] if p["slot"] == "fixture"]
+    arms = [p for p in catalog["parts"] if p["slot"] == "arm"]
+    poles = [p for p in catalog["parts"] if p["slot"] == "pole"]
+    base_covers = [p for p in catalog["parts"] if p["slot"] == "baseCover"]
+
+    combo_id = 0
+    for fixture in fixtures:
+        for arm in arms:
+            if not _can_host(arm, fixture):
+                continue
+            for pole in poles:
+                if not _can_host(pole, arm):
+                    continue
+                for base_cover in base_covers:
+                    if not _can_host(pole, base_cover):
+                        continue
+                    combo_id += 1
+                    combos.append(
+                        PoleConfig(
+                            configId=f"test-combo-{combo_id:03d}",
+                            pole=pole["id"],
+                            baseCover=base_cover["id"],
+                            arm=arm["id"],
+                            fixture=fixture["id"],
+                            finish=default_finish,
+                            rev=1,
+                        )
+                    )
+
     return combos
 
 
