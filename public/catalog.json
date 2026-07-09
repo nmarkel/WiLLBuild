@@ -452,8 +452,8 @@
         "side": {
           "type": "arm-mount",
           "position": [
-            0.52,
-            0.4,
+            0.50,
+            0.44,
             0
           ]
         }
@@ -472,6 +472,7 @@
       "model": null,
       "placeholder": {
         "kind": "tube",
+        "radiusM": 0.03,
         "points": [
           [
             0,
@@ -479,22 +480,36 @@
             0
           ],
           [
-            0.25,
+            0.14,
+            0.015,
+            0
+          ],
+          [
+            0.28,
             0.06,
             0
           ],
           [
-            0.48,
-            0.26,
+            0.40,
+            0.14,
             0
           ],
           [
-            0.52,
-            0.38,
+            0.47,
+            0.25,
+            0
+          ],
+          [
+            0.50,
+            0.36,
+            0
+          ],
+          [
+            0.50,
+            0.44,
             0
           ]
-        ],
-        "radiusM": 0.03
+        ]
       },
       "thumbnail": "thumbnails/upsweep.jpg",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
