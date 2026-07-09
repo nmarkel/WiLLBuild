@@ -65,9 +65,8 @@ export function isAssemblyPart(
   slot: Slot
   placeholder: PlaceholderSpec
   sockets: Record<string, SocketDef>
-  mount: string | null
 } {
-  return p.slot !== 'standalone'
+  return p.slot !== 'standalone' && p.placeholder !== undefined && p.sockets !== undefined
 }
 
 export interface FinishDef {

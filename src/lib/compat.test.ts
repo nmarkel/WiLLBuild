@@ -142,6 +142,27 @@ describe('standalone product class (two-product-class model)', () => {
     }
   })
 
+  it('isAssemblyPart returns false for a part with slot fixture but no placeholder', () => {
+    const missingPlaceholder: CatalogPart = {
+      id: 'fixture-no-placeholder',
+      slot: 'fixture',
+      name: 'Broken Fixture',
+      family: 'Test',
+      line: 'WiLLstudio',
+      category: 'Fixture',
+      productClass: 'assembly-part',
+      dropShip: false,
+      tier: 2,
+      finishes: [],
+      keywords: [],
+      model: null,
+      sockets: { top: { type: 'pendant', position: [0, 0.5, 0] } },
+      thumbnail: null,
+      productUrl: 'https://willbrands.com',
+    }
+    expect(isAssemblyPart(missingPlaceholder)).toBe(false)
+  })
+
   it('all curated parts have the required new fields', () => {
     for (const part of catalog.parts) {
       expect(part.line).toBe('WiLLstudio')

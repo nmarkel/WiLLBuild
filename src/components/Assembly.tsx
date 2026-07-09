@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { attachSocket, partById } from '../lib/compat'
+import { isAssemblyPart, attachSocket, partById } from '../lib/compat'
 import { PlaceholderPart } from './PlaceholderPart'
 
 interface Props {
@@ -60,10 +60,16 @@ function FixtureLight() {
  * position — positions come from catalog data, never hardcoded offsets.
  */
 export function Assembly({ catalog, config, night = false }: Props) {
-  const pole = partById(catalog, config.pole)
-  const baseCover = partById(catalog, config.baseCover)
-  const arm = partById(catalog, config.arm)
-  const fixture = partById(catalog, config.fixture)
+  const poleRaw = partById(catalog, config.pole)
+  const baseCoverRaw = partById(catalog, config.baseCover)
+  const armRaw = partById(catalog, config.arm)
+  const fixtureRaw = partById(catalog, config.fixture)
+
+  // Guard each part before use; assembly parts must have placeholder & sockets
+  const pole = poleRaw && isAssemblyPart(poleRaw) ? poleRaw : undefined
+  const baseCover = baseCoverRaw && isAssemblyPart(baseCoverRaw) ? baseCoverRaw : undefined
+  const arm = armRaw && isAssemblyPart(armRaw) ? armRaw : undefined
+  const fixture = fixtureRaw && isAssemblyPart(fixtureRaw) ? fixtureRaw : undefined
 
   const finish = catalog.finishes.find((f) => f.id === config.finish) ?? catalog.finishes[0]
 
@@ -87,7 +93,7 @@ export function Assembly({ catalog, config, night = false }: Props) {
   )
   useEffect(() => () => material.dispose(), [material])
 
-  if (!pole || !pole.placeholder) return null
+  if (!pole) return null
 
   const socketOf = (part: CatalogPart | undefined, host: CatalogPart | undefined) =>
     part && host ? attachSocket(part, host) : undefined
@@ -99,15 +105,15 @@ export function Assembly({ catalog, config, night = false }: Props) {
   return (
     <group>
       <PlaceholderPart spec={pole.placeholder} material={material} />
-      {baseCover && baseCover.placeholder && baseSocket && (
+      {baseCover && baseSocket && (
         <group position={baseSocket.position}>
           <PlaceholderPart spec={baseCover.placeholder} material={material} />
         </group>
       )}
-      {arm && arm.placeholder && armSocket && (
+      {arm && armSocket && (
         <group position={armSocket.position}>
           <PlaceholderPart spec={arm.placeholder} material={material} />
-          {fixture && fixture.placeholder && fixtureSocket && (
+          {fixture && fixtureSocket && (
             <group position={fixtureSocket.position}>
               <PlaceholderPart spec={fixture.placeholder} material={material} />
               {night && fixture.lightOffset && (
