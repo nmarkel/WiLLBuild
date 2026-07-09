@@ -128,7 +128,11 @@ describe('standalone product class (two-product-class model)', () => {
   })
 
   it('isAssemblyPart returns true for all curated assembly parts', () => {
-    for (const part of catalog.parts) {
+    // catalog.parts now includes tier-3 inventory entries (standalone, no placeholder).
+    // Filter to only the tier-2 curated wizard parts that should satisfy isAssemblyPart.
+    const curatedParts = catalog.parts.filter((p) => p.tier === 2)
+    expect(curatedParts.length).toBeGreaterThan(0)
+    for (const part of curatedParts) {
       expect(isAssemblyPart(part)).toBe(true)
     }
   })
@@ -164,7 +168,11 @@ describe('standalone product class (two-product-class model)', () => {
   })
 
   it('all curated parts have the required new fields', () => {
-    for (const part of catalog.parts) {
+    // Filter to tier-2 curated wizard parts only; tier-3 inventory entries have
+    // different lines (NAFCO, WiLLsport, etc.) and are correctly NOT WiLLstudio-only.
+    const curatedParts = catalog.parts.filter((p) => p.tier === 2)
+    expect(curatedParts.length).toBeGreaterThan(0)
+    for (const part of curatedParts) {
       expect(part.line).toBe('WiLLstudio')
       expect(part.productClass).toBe('assembly-part')
       expect(part.dropShip).toBe(false)
