@@ -570,6 +570,9 @@ body {
 
 .viewport {
   position: relative;
+  /* Prevent the browser from intercepting pointer/touch events before the
+     Three.js canvas can handle them — ensures wheel zoom always works. */
+  touch-action: none;
 }
 
 .viewport-controls {
