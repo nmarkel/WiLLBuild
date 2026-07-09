@@ -29,6 +29,10 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
 }
 
 export function shareUrl(config: PoleConfig): string {
+  if (typeof window === 'undefined') {
+    // Test or SSR environment — just return relative URL with params
+    return `?${configToParams(config).toString()}`
+  }
   const url = new URL(window.location.href)
   url.search = configToParams(config).toString()
   return url.toString()

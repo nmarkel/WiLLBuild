@@ -1,0 +1,58 @@
+import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import type { Catalog, PoleConfig } from '../types'
+import { buildSummaryText } from './summary'
+import { configToParams } from './url'
+
+const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
+
+function config(overrides: Partial<PoleConfig>): PoleConfig {
+  return {
+    configId: 'test-config-123',
+    pole: 'alum-pole-14',
+    baseCover: 'bc-fluted',
+    arm: 'sh1-shepherds-hook',
+    fixture: 'gvx-pendant',
+    finish: 'matte-black',
+    rev: 1,
+    ...overrides,
+  }
+}
+
+describe('buildSummaryText', () => {
+  it('includes config ID', () => {
+    const summary = buildSummaryText(catalog, config({}))
+    expect(summary).toContain('Config ID: test-config-123')
+  })
+
+  it('includes all parts and finish', () => {
+    const summary = buildSummaryText(catalog, config({}))
+    expect(summary).toContain('Fixture:')
+    expect(summary).toContain('Arm:')
+    expect(summary).toContain('Pole:')
+    expect(summary).toContain('Base Cover:')
+    expect(summary).toContain('Finish:')
+  })
+
+  it('round-trips the share URL with config params', () => {
+    const testConfig = config({})
+    const summary = buildSummaryText(catalog, testConfig)
+    const params = configToParams(testConfig)
+
+    // Extract the URL line from summary
+    const lines = summary.split('\n')
+    const linkLine = lines.find((line) => line.startsWith('Link:'))
+    expect(linkLine).toBeDefined()
+
+    // Verify the link contains all the config params
+    const paramStr = params.toString()
+    expect(linkLine).toContain(paramStr)
+
+    // Verify all keys are present
+    expect(linkLine).toContain('pole=')
+    expect(linkLine).toContain('baseCover=')
+    expect(linkLine).toContain('arm=')
+    expect(linkLine).toContain('fixture=')
+    expect(linkLine).toContain('finish=')
+  })
+})
