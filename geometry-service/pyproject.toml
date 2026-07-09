@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+# Exclude @pytest.mark.slow tests from the default run so `pytest tests/ -q`
+# stays fast.  To run the full matrix: pytest tests/test_matrix.py -q -m slow
+addopts = "-m 'not slow'"
+markers = [
+    "slow: marks tests as slow (deselected by default; run with -m slow)",
+]

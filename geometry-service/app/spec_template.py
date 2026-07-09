@@ -82,6 +82,40 @@ def _mm_to_ft_in(mm: float) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Latin-1 sanitiser — Helvetica core font cannot encode chars > U+00FF
+# ---------------------------------------------------------------------------
+
+# Transliteration table: common non-latin-1 chars → safe ASCII equivalents.
+_LATIN1_MAP: dict[str, str] = {
+    "—": "-",   # em dash        → hyphen
+    "–": "-",   # en dash        → hyphen
+    "‘": "'",   # left single quotation mark
+    "’": "'",   # right single quotation mark
+    "“": '"',   # left double quotation mark
+    "”": '"',   # right double quotation mark
+    "…": "...", # horizontal ellipsis
+    "°": " deg",# degree sign
+    "®": "(R)", # registered trade mark
+    "©": "(C)", # copyright
+}
+
+
+def _latin1(text: str) -> str:
+    """Transliterate known non-latin-1 chars; drop any remaining outliers.
+
+    Helvetica (fpdf2 built-in core font) only supports latin-1 (U+0000–U+00FF).
+    Common Unicode punctuation is mapped to ASCII equivalents; anything else
+    is dropped.  This is the documented approach until a TTF Roboto embed
+    is added (Phase 1 improvement noted in README and spec_template module
+    docstring).
+    """
+    for src, dst in _LATIN1_MAP.items():
+        text = text.replace(src, dst)
+    # Final safety net: encode to latin-1, replacing any remaining outliers
+    return text.encode("latin-1", errors="replace").decode("latin-1")
+
+
+# ---------------------------------------------------------------------------
 # PDF helpers
 # ---------------------------------------------------------------------------
 
@@ -204,9 +238,9 @@ def _draw_components_table(
         slot_label = slot_labels.get(part["slot"], part["slot"].title())
         url = part.get("productUrl", "")
         pdf.set_xy(left, pdf.get_y())
-        pdf.cell(col_w[0], row_h, slot_label, border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[1], row_h, part["name"], border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[2], row_h, url, border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[0], row_h, _latin1(slot_label), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[1], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[2], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
     _set_fill(pdf, _WHITE)
@@ -270,7 +304,7 @@ def _draw_finish_block(
     pdf.cell(width, 6, "Finish", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln()
 
-    finish_name = summary.get("finish", "—")
+    finish_name = _latin1(summary.get("finish", "-"))
     # RAL from summary (pre-populated by the adapter from catalog)
     finish_ral = summary.get("finish_ral", "")
     finishes_provisional = catalog.get("finishesProvisional", False)
@@ -278,7 +312,7 @@ def _draw_finish_block(
     pdf.set_font("Helvetica", "", 8)
     pdf.set_x(left)
     ral_text = f"  ({finish_ral})" if finish_ral else ""
-    pdf.cell(width, 5.5, f"{finish_name}{ral_text}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(width, 5.5, _latin1(f"{finish_name}{ral_text}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln()
     if finishes_provisional:
         pdf.set_x(left)
