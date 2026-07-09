@@ -18,11 +18,20 @@
  * vendor / product_type are uniformly "WiLL-brands" / "" and not useful.
  * Line assignment rules (priority order):
  *   1. Title brand prefix  →  WiLLstudio® / NAFCO® / WiLLsport® / WiLLev™ / WiLLcloud™
- *   2. Collection handle   →  fallback per the map below
+ *   2. Collection handle   →  prefer highest-specificity collection (see SPECIFICITY)
  * ── Drop-ship heuristic ────────────────────────────────────────────────────────
  * WiLL's in-house lines carry the brand name in the title (® or ™ mark).
  * Products in line collections WITHOUT such a brand prefix are third-party
  * accessories or generic products sourced externally → dropShip: true.
+ * Exception: products in `tesla-ntx-order-form` are WiLL-sold EV products
+ * (WiLL resells Tesla EV charging hardware under the WiLLev umbrella) → dropShip: false.
+ * ── Specificity ranking ────────────────────────────────────────────────────────
+ * `nafco-site-area-copy` is a catch-all marketing collection that contains
+ * virtually all products.  Assigning line/category from it first corrupts
+ * classifications for WiLLsport poles, WiLLstudio arms, etc.  Each collection
+ * is given a specificity rank (higher = more specific); when a product appears
+ * in multiple collections, the highest-rank entry wins the fallback assignment.
+ * Title brand-prefix STILL takes priority over all collections.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -38,38 +47,43 @@ const OUT_PATH = resolve(cwd(), 'docs/catalog-inventory.json');
 /**
  * Line collection map:
  *   key   = Shopify collection handle
- *   value = { line, category }
+ *   value = { line, category, specificity }
  *
- * Products may appear in multiple collections; line is resolved via title-prefix
- * first, then this map as fallback.
+ * Products may appear in multiple collections; line/category is resolved via
+ * title-prefix first, then the highest-specificity collection as fallback.
  *
- * Aluminum/steel pole collections contain no branded prefixes in their titles,
- * so they're NAFCO (commercial poles) unless a product also appears in a
- * WiLLstudio context (handled by title-prefix priority in assignLine()).
+ * specificity: higher = more specific; catch-all collections score lowest (1).
+ * Specific product-type collections (e.g. 'aluminum-light-poles') score highest (10).
+ *
+ * Note on tesla-ntx-order-form:
+ *   All products in this collection are WiLL-sold EV products (WiLL resells
+ *   Tesla EV charging hardware under the WiLLev umbrella). Membership here
+ *   overrides the drop-ship heuristic: dropShip = false for these products.
  */
 const LINE_COLLECTION_MAP = {
-  // ── WiLLstudio ──────────────────────────────────────────────────────────────
-  architectural:              { line: 'WiLLstudio', category: 'fixture' },
-  'decorative-light-poles':   { line: 'WiLLstudio', category: 'pole' },
-  'decorative-brackets-arms': { line: 'WiLLstudio', category: 'arm' },
-  'fiberglass-light-poles':   { line: 'WiLLstudio', category: 'pole' }, // generic fiberglass — no brand prefix; keep WiLLstudio context
-  'light-pole-accessories':   { line: 'WiLLstudio', category: 'accessory' },
-  // ── NAFCO ───────────────────────────────────────────────────────────────────
-  'nafco-site-area-copy':     { line: 'NAFCO', category: 'fixture' },
-  'light-poles-arms':         { line: 'NAFCO', category: 'pole' },      // commercial poles & arms
-  'site-area':                { line: 'NAFCO', category: 'fixture' },
-  'brackets-arms':            { line: 'NAFCO', category: 'arm' },
-  'aluminum-light-poles':     { line: 'NAFCO', category: 'pole' },
-  'steel-light-poles':        { line: 'NAFCO', category: 'pole' },
-  // ── WiLLsport ───────────────────────────────────────────────────────────────
-  willsport:                  { line: 'WiLLsport', category: 'fixture' },
-  'light-poles-crossarms':    { line: 'WiLLsport', category: 'pole' },  // Sports Poles & Cross Arms
-  // ── WiLLev ──────────────────────────────────────────────────────────────────
-  willev:                     { line: 'WiLLev', category: 'ev-charging' },
-  'tesla-ntx-order-form':     { line: 'WiLLev', category: 'ev-charging' },
-  // ── WiLLcloud ───────────────────────────────────────────────────────────────
-  'willcloud-lighting-controls': { line: 'WiLLcloud', category: 'controls' },
-  'controls-accessories':     { line: 'WiLLcloud', category: 'controls' },
+  // ── WiLLstudio ──────────────────────────────────────────────────── spec:10 ──
+  architectural:              { line: 'WiLLstudio', category: 'fixture',   specificity: 10 },
+  'decorative-light-poles':   { line: 'WiLLstudio', category: 'pole',      specificity: 10 },
+  'decorative-brackets-arms': { line: 'WiLLstudio', category: 'arm',       specificity: 10 },
+  'fiberglass-light-poles':   { line: 'WiLLstudio', category: 'pole',      specificity: 10 }, // no brand prefix; WiLLstudio context
+  'light-pole-accessories':   { line: 'WiLLstudio', category: 'accessory', specificity: 9  },
+  // ── NAFCO ───────────────────────────────────────────────────────── spec:10 ──
+  'light-poles-arms':         { line: 'NAFCO', category: 'pole',           specificity: 10 }, // poles & arms
+  'site-area':                { line: 'NAFCO', category: 'fixture',        specificity: 10 },
+  'brackets-arms':            { line: 'NAFCO', category: 'arm',            specificity: 10 },
+  'aluminum-light-poles':     { line: 'NAFCO', category: 'pole',           specificity: 10 },
+  'steel-light-poles':        { line: 'NAFCO', category: 'pole',           specificity: 10 },
+  // catch-all — LOWEST specificity so it never wins over any specific collection
+  'nafco-site-area-copy':     { line: 'NAFCO', category: 'fixture',        specificity: 1  },
+  // ── WiLLsport ───────────────────────────────────────────────────── spec:10 ──
+  willsport:                  { line: 'WiLLsport', category: 'fixture',    specificity: 9  },
+  'light-poles-crossarms':    { line: 'WiLLsport', category: 'pole',       specificity: 10 }, // Sports Poles & Cross Arms — more specific than willsport umbrella
+  // ── WiLLev ──────────────────────────────────────────────────────── spec:10 ──
+  willev:                     { line: 'WiLLev', category: 'ev-charging',   specificity: 10 },
+  'tesla-ntx-order-form':     { line: 'WiLLev', category: 'ev-charging',   specificity: 10 },
+  // ── WiLLcloud ───────────────────────────────────────────────────── spec:10 ──
+  'willcloud-lighting-controls': { line: 'WiLLcloud', category: 'controls', specificity: 10 },
+  'controls-accessories':     { line: 'WiLLcloud', category: 'controls',   specificity: 9  },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -104,43 +118,86 @@ function titleBrandPrefix(title) {
 
 /**
  * Assign { line, category } to a product given its seen-in collections.
- * Priority: title-brand > collection.
+ * Priority: title-brand > highest-specificity collection > keyword inference.
+ * The catch-all `nafco-site-area-copy` (specificity=1) is only chosen when no
+ * other mapped collection is present.
+ *
+ * Title-inferred category overrides the collection category when the title
+ * keywords point to a specific product type (base-cover, pole, arm) and the
+ * collection only supplies a generic bucket (e.g. 'accessory' or 'fixture').
+ * This handles cases like "Aluminum Light Pole Base Covers" landing in the
+ * `light-pole-accessories` collection (category='accessory') — the title wins.
  */
 function assignLine(title, collectionHandles) {
   const brand = titleBrandPrefix(title);
+
+  // Title-keyword category always beats a generic collection bucket.
+  // 'fixture' is the generic default — don't let it override a specific
+  // collection category, but do let base-cover / pole / arm / etc. win.
+  const titleCategory = inferCategoryFromTitle(title);
+
   if (brand) {
-    // Find a matching collection entry for category context
-    const col = collectionHandles.find(h => {
-      const entry = LINE_COLLECTION_MAP[h];
-      return entry && entry.line === brand;
-    });
-    const category = col ? LINE_COLLECTION_MAP[col].category : inferCategory(title, collectionHandles);
+    // Find the highest-specificity matching collection entry for category context
+    const matchingCols = collectionHandles
+      .map(h => LINE_COLLECTION_MAP[h])
+      .filter(e => e && e.line === brand)
+      .sort((a, b) => b.specificity - a.specificity);
+    const colCategory = matchingCols.length > 0
+      ? matchingCols[0].category
+      : inferCategory(title, collectionHandles);
+    // Title-keyword wins when it's more specific than the collection's guess
+    const category = titleCategory !== null ? titleCategory : colCategory;
     return { line: brand, category };
   }
-  // Fallback: first collection in priority order that's in our map
-  for (const handle of collectionHandles) {
-    const entry = LINE_COLLECTION_MAP[handle];
-    if (entry) return { ...entry };
+  // Fallback: highest-specificity collection in our map
+  const mappedCols = collectionHandles
+    .map(h => LINE_COLLECTION_MAP[h])
+    .filter(Boolean)
+    .sort((a, b) => b.specificity - a.specificity);
+  if (mappedCols.length > 0) {
+    const colCategory = mappedCols[0].category;
+    const category = titleCategory !== null ? titleCategory : colCategory;
+    return { line: mappedCols[0].line, category };
   }
-  return { line: 'Other', category: 'other' };
+  return { line: 'Other', category: titleCategory ?? 'other' };
+}
+
+/**
+ * Infer category purely from title keywords (no collection context).
+ * Returns null when title provides no clear signal — letting the collection
+ * category stand in the caller.
+ */
+function inferCategoryFromTitle(title) {
+  const t = title.toLowerCase();
+  if (/base cover/.test(t)) return 'base-cover';
+  if (/pole|mast/.test(t) && !/pole\s+(top|mount|slim|area)/.test(t)) return 'pole';
+  if (/\b(arm|bracket|crossarm|bullhorn|upsweep|spoke|hook)\b/.test(t)) return 'arm';
+  if (/base cover|cover/.test(t)) return 'base-cover';
+  if (/\bevse\b|ev\s+charge|charging pedestal/.test(t)) return 'ev-charging';
+  return null; // no strong title signal
 }
 
 /**
  * Infer category from title keywords when line is clear but collection mapping
  * doesn't give enough detail (e.g. a WiLLev product in the WiLLstudio fixture col).
+ * Also used as fallback for products only in the catch-all collection.
  */
 function inferCategory(title, handles) {
   const t = title.toLowerCase();
+  // base-cover check before generic 'cover' to avoid false matches
+  if (/base cover/.test(t)) return 'base-cover';
   if (/pole|mast/.test(t)) return 'pole';
   if (/arm|bracket|crossarm|bullhorn|upsweep|spoke|hook/.test(t)) return 'arm';
-  if (/base cover|cover/.test(t)) return 'base-cover';
+  if (/cover/.test(t)) return 'base-cover';
   if (/charging|evse|pedestal/.test(t)) return 'ev-charging';
   if (/control|wireless/.test(t)) return 'controls';
   if (/accessory|adapter|cap|bolt|anchor/.test(t)) return 'accessory';
-  // Derive from collection
-  for (const h of handles) {
-    if (LINE_COLLECTION_MAP[h]) return LINE_COLLECTION_MAP[h].category;
-  }
+  // Derive from collection (highest-specificity first)
+  const mappedCols = handles
+    .map(h => LINE_COLLECTION_MAP[h])
+    .filter(Boolean)
+    .sort((a, b) => b.specificity - a.specificity);
+  if (mappedCols.length > 0) return mappedCols[0].category;
   return 'fixture';
 }
 
@@ -149,12 +206,32 @@ function inferCategory(title, handles) {
  * 'assembly-part': fixtures, arms, poles, base covers, crossarms that mount on a
  *                  pole system — i.e., the parts of a WiLLstudio pole system.
  * 'standalone': everything else (area lights, EVSEs, controls, sportslighters, etc.)
+ *
+ * WiLLstudio standalone luminaires (bollards, wall mounts, ceiling pendants,
+ * floods/spots) do NOT mount on the pole system → productClass 'standalone'.
+ * Negative keywords: bollard, wall mount, ceiling, flood, spot (when not in
+ * an arm/pole context).
  */
+const STANDALONE_FIXTURE_PATTERN = /bollard|wall\s+mount|ceiling|flood|spot/i;
+
 function classifyProduct(title, line, category) {
   // Only WiLLstudio pole-system parts are assembly-parts.
   if (line !== 'WiLLstudio') return 'standalone';
-  const assemblyCategories = ['fixture', 'arm', 'pole', 'base-cover'];
+
+  // Base covers are always assembly-parts
+  if (category === 'base-cover') return 'assembly-part';
+
+  const assemblyCategories = ['arm', 'pole'];
   if (assemblyCategories.includes(category)) return 'assembly-part';
+
+  if (category === 'fixture') {
+    // WiLLstudio fixtures that are NOT pole-top luminaires go standalone.
+    // Affected: DWX flood/spot, RXB/SXB bollard, WM1/WM2 wall mounts,
+    //           pendant ceiling mounts (non-pole-top).
+    if (STANDALONE_FIXTURE_PATTERN.test(title)) return 'standalone';
+    return 'assembly-part';
+  }
+
   // Also check title keywords for decorative crossarms/arms that might be cat=arm
   const t = title.toLowerCase();
   if (/arm|bracket|crossarm|hook|shepherds|pendant arm|upsweep|suspension/.test(t)) return 'assembly-part';
@@ -165,8 +242,13 @@ function classifyProduct(title, line, category) {
 /**
  * Drop-ship detection: products WITHOUT a WiLL/NAFCO brand prefix in the title
  * are third-party or generic accessories → dropShip: true.
+ * Exception: products in `tesla-ntx-order-form` are WiLL-sold EV hardware
+ * (WiLL resells Tesla EV charging products under the WiLLev brand umbrella)
+ * → dropShip: false regardless of title prefix.
  */
-function isDropShip(title) {
+function isDropShip(title, collectionHandles) {
+  // Tesla collection members are always in-house (WiLLev sold)
+  if (collectionHandles.includes('tesla-ntx-order-form')) return false;
   return titleBrandPrefix(title) === null;
 }
 
@@ -301,7 +383,7 @@ async function main() {
 
       const collectionHandles = [...(handleToCollections[handle] || [colHandle])];
       const { line, category } = assignLine(p.title, collectionHandles);
-      const dropShip = isDropShip(p.title);
+      const dropShip = isDropShip(p.title, collectionHandles);
       const productClass = classifyProduct(p.title, line, category);
 
       const firstImage = (p.images && p.images.length > 0) ? p.images[0].src : null;
@@ -310,9 +392,12 @@ async function main() {
       const bodyText = stripHtml(p.body_html || '');
       const excerpt = bodyText.length > 300 ? bodyText.slice(0, 297) + '...' : bodyText;
 
+      // id: Shopify numeric product id (stringified) from raw data; fall back to handle
+      const id = p.id != null ? String(p.id) : handle;
+
       inventory.push({
         handle,
-        id: handle,
+        id,
         title: p.title,
         line,
         category,
@@ -354,9 +439,9 @@ async function main() {
     generated: new Date().toISOString(),
     source: cacheDir ? `cache:${cacheDir}` : BASE_URL,
     heuristics: {
-      lineAssignment: 'Title brand prefix (WiLLstudio®/NAFCO®/WiLLsport®/WiLLev™/WiLLcloud™) takes priority; collection handle is the fallback.',
-      dropShip: 'Products without a WiLL/NAFCO brand prefix in the title are marked dropShip:true (third-party or generic accessories).',
-      productClass: 'assembly-part = WiLLstudio fixtures/arms/poles/base-covers that mount on a WiLLstudio pole system. All other products are standalone.',
+      lineAssignment: 'Title brand prefix (WiLLstudio®/NAFCO®/WiLLsport®/WiLLev™/WiLLcloud™) takes priority; highest-specificity collection handle is the fallback (nafco-site-area-copy is catch-all, specificity=1).',
+      dropShip: 'Products without a WiLL/NAFCO brand prefix in the title are marked dropShip:true (third-party or generic accessories). Exception: all products in tesla-ntx-order-form are WiLL-sold EV hardware → dropShip:false.',
+      productClass: 'assembly-part = WiLLstudio arms/poles/base-covers + pole-top fixtures that mount on a WiLLstudio pole system. WiLLstudio standalone luminaires (bollard, wall mount, ceiling, flood, spot) are standalone. All other products are standalone.',
     },
     totalProducts: inventory.length,
     perLineCounts: lineCounts,
