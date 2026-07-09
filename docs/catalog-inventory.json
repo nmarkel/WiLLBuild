@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-09T18:34:40.587Z",
+  "generated": "2026-07-09T18:38:29.977Z",
   "source": "cache:/private/tmp/claude-502/-Users-nickmarkel-Documents-WiLLBuild/750e68e2-9acc-4d0e-b7b2-73646d661e8f/scratchpad/willbrands",
   "heuristics": {
     "lineAssignment": "Title brand prefix (WiLLstudio®/NAFCO®/WiLLsport®/WiLLev™/WiLLcloud™) takes priority; highest-specificity collection handle is the fallback (nafco-site-area-copy is catch-all, specificity=1).",
@@ -1282,7 +1282,7 @@
       "title": "WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial",
       "line": "WiLLstudio",
       "category": "fixture",
-      "productClass": "assembly-part",
+      "productClass": "standalone",
       "dropShip": false,
       "productUrl": "https://willbrands.com/products/willstudio-wm2-single-wall-tenon-mount-w-finial",
       "image": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/WM2-45.jpg?v=1752001400",

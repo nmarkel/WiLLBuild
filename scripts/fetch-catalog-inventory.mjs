@@ -212,7 +212,7 @@ function inferCategory(title, handles) {
  * Negative keywords: bollard, wall mount, ceiling, flood, spot (when not in
  * an arm/pole context).
  */
-const STANDALONE_FIXTURE_PATTERN = /bollard|wall\s+mount|ceiling|flood|spot/i;
+const STANDALONE_FIXTURE_PATTERN = /bollard|wall.*mount|wall\s+tenon|ceiling|flood|spot/i;
 
 function classifyProduct(title, line, category) {
   // Only WiLLstudio pole-system parts are assembly-parts.
