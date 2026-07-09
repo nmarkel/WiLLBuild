@@ -23,7 +23,7 @@
       "metalness": 0.15,
       "clearcoat": 0.15,
       "clearcoatRoughness": 0.4,
-      "envMapIntensity": 1.0,
+      "envMapIntensity": 1,
       "keywords": [
         "bronze",
         "brown"
@@ -37,7 +37,7 @@
       "metalness": 0.05,
       "clearcoat": 0.3,
       "clearcoatRoughness": 0.3,
-      "envMapIntensity": 1.0,
+      "envMapIntensity": 1,
       "keywords": [
         "green"
       ]
@@ -47,10 +47,10 @@
       "name": "Gloss White",
       "hex": "#f2f2f0",
       "roughness": 0.3,
-      "metalness": 0.0,
-      "clearcoat": 1.0,
+      "metalness": 0,
+      "clearcoat": 1,
       "clearcoatRoughness": 0.12,
-      "envMapIntensity": 1.0,
+      "envMapIntensity": 1,
       "keywords": [
         "white"
       ]
@@ -449,14 +449,6 @@
       "family": "Decorative Brackets & Arms",
       "mount": "tenon-3in",
       "sockets": {
-        "top": {
-          "type": "tenon-2-3/8",
-          "position": [
-            0.52,
-            0.4,
-            0
-          ]
-        },
         "side": {
           "type": "arm-mount",
           "position": [
@@ -628,7 +620,7 @@
     {
       "id": "direct-mount",
       "slot": "arm",
-      "name": "Direct Pole Mount",
+      "name": "No Arm — Direct Pole Mount",
       "family": "Tenon Adapter",
       "mount": "tenon-3in",
       "sockets": {

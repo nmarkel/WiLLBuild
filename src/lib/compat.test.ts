@@ -28,9 +28,9 @@ describe('compatibleParts (fixture-first)', () => {
     expect(ids).toEqual(['sh1-shepherds-hook', 'pa1-pendant-arm', 'pm1-pendant-arm'])
   })
 
-  it('offers tenon carriers (upsweep + direct pole mount) for post tops', () => {
+  it('offers only direct mount for post tops', () => {
     const ids = compatibleParts(catalog, config({ fixture: 'drx-post-top' }), 'arm').map((p) => p.id)
-    expect(ids).toEqual(['upsweep', 'direct-mount'])
+    expect(ids).toEqual(['direct-mount'])
   })
 
   it('offers only arm-mount carriers for the MVX coach', () => {
@@ -48,7 +48,7 @@ describe('repairConfig', () => {
   it('replaces an arm that cannot carry the new fixture', () => {
     const broken = config({ fixture: 'drx-post-top', arm: 'sh1-shepherds-hook' })
     const repaired = repairConfig(catalog, broken)
-    expect(repaired.arm).toBe('upsweep')
+    expect(repaired.arm).toBe('direct-mount')
     expect(repaired.pole).toBe('alum-pole-14')
   })
 
@@ -84,5 +84,37 @@ describe('defaultConfig', () => {
     const cfg = defaultConfig(catalog)
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
     expect(cfg.pole && cfg.baseCover && cfg.arm && cfg.fixture && cfg.finish).toBeTruthy()
+  })
+})
+
+describe('mount-type rules (H3b)', () => {
+  const base: PoleConfig = {
+    configId: 'test',
+    pole: 'alum-pole-14',
+    baseCover: 'bc-fluted',
+    arm: 'sh1-shepherds-hook',
+    fixture: 'gvx-pendant',
+    finish: 'matte-black',
+    rev: 1,
+  }
+
+  it('post-top fixtures only get the direct mount in the arm step', () => {
+    const cfg = { ...base, fixture: 'drx-post-top' }
+    const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
+    expect(arms).toEqual(['direct-mount'])
+  })
+  it('coach fixtures only get the upsweep', () => {
+    const cfg = { ...base, fixture: 'mvx-coach' }
+    const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
+    expect(arms).toEqual(['upsweep'])
+  })
+  it('pendants only get pendant arms', () => {
+    const cfg = { ...base, fixture: 'gvx-pendant' }
+    const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
+    expect(arms).toEqual(['sh1-shepherds-hook', 'pa1-pendant-arm', 'pm1-pendant-arm'])
+  })
+  it('repairConfig moves a post-top off an arm onto the direct mount', () => {
+    const cfg = { ...base, fixture: 'drx-post-top', arm: 'upsweep' }
+    expect(repairConfig(catalog, cfg).arm).toBe('direct-mount')
   })
 })
