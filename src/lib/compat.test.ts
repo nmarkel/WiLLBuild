@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
-import type { Catalog, PoleConfig } from '../types'
-import { attachSocket, compatibleParts, defaultConfig, partById, repairConfig } from './compat'
+import type { Catalog, CatalogPart, PoleConfig } from '../types'
+import { attachSocket, compatibleParts, defaultConfig, isAssemblyPart, partById, repairConfig } from './compat'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -84,6 +84,72 @@ describe('defaultConfig', () => {
     const cfg = defaultConfig(catalog)
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
     expect(cfg.pole && cfg.baseCover && cfg.arm && cfg.fixture && cfg.finish).toBeTruthy()
+  })
+})
+
+describe('standalone product class (two-product-class model)', () => {
+  const standaloneEntry: CatalogPart = {
+    id: 'standalone-test-bulkhead',
+    slot: 'standalone',
+    name: 'Test Bulkhead Fixture',
+    family: 'Test',
+    line: 'WiLLstudio',
+    category: 'Bulkhead',
+    productClass: 'standalone',
+    dropShip: false,
+    tier: 3,
+    finishes: [],
+    keywords: ['bulkhead'],
+    model: null,
+    thumbnail: null,
+    productUrl: 'https://willbrands.com',
+  }
+
+  const catalogWithStandalone: Catalog = {
+    ...catalog,
+    parts: [...catalog.parts, standaloneEntry],
+  }
+
+  it('partsForSlot never returns a standalone entry for any Slot', () => {
+    const slots = ['fixture', 'arm', 'pole', 'baseCover'] as const
+    for (const slot of slots) {
+      const ids = compatibleParts(catalogWithStandalone, config({}), slot).map((p) => p.id)
+      expect(ids).not.toContain('standalone-test-bulkhead')
+    }
+  })
+
+  it('repairConfig is unaffected by a standalone entry in the catalog', () => {
+    const valid = config({})
+    expect(repairConfig(catalogWithStandalone, valid)).toEqual(valid)
+  })
+
+  it('isAssemblyPart returns false for a standalone entry', () => {
+    expect(isAssemblyPart(standaloneEntry)).toBe(false)
+  })
+
+  it('isAssemblyPart returns true for all curated assembly parts', () => {
+    for (const part of catalog.parts) {
+      expect(isAssemblyPart(part)).toBe(true)
+    }
+  })
+
+  it('isAssemblyPart narrows the type to include placeholder and sockets', () => {
+    const part = catalog.parts[0]
+    if (isAssemblyPart(part)) {
+      // TypeScript narrowing: these fields are guaranteed defined inside this branch
+      expect(part.placeholder).toBeDefined()
+      expect(part.sockets).toBeDefined()
+    }
+  })
+
+  it('all curated parts have the required new fields', () => {
+    for (const part of catalog.parts) {
+      expect(part.line).toBe('WiLLstudio')
+      expect(part.productClass).toBe('assembly-part')
+      expect(part.dropShip).toBe(false)
+      expect(part.tier).toBe(2)
+      expect(typeof part.category).toBe('string')
+    }
   })
 })
 

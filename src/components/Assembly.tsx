@@ -87,7 +87,7 @@ export function Assembly({ catalog, config, night = false }: Props) {
   )
   useEffect(() => () => material.dispose(), [material])
 
-  if (!pole) return null
+  if (!pole || !pole.placeholder) return null
 
   const socketOf = (part: CatalogPart | undefined, host: CatalogPart | undefined) =>
     part && host ? attachSocket(part, host) : undefined
@@ -99,15 +99,15 @@ export function Assembly({ catalog, config, night = false }: Props) {
   return (
     <group>
       <PlaceholderPart spec={pole.placeholder} material={material} />
-      {baseCover && baseSocket && (
+      {baseCover && baseCover.placeholder && baseSocket && (
         <group position={baseSocket.position}>
           <PlaceholderPart spec={baseCover.placeholder} material={material} />
         </group>
       )}
-      {arm && armSocket && (
+      {arm && arm.placeholder && armSocket && (
         <group position={armSocket.position}>
           <PlaceholderPart spec={arm.placeholder} material={material} />
-          {fixture && fixtureSocket && (
+          {fixture && fixture.placeholder && fixtureSocket && (
             <group position={fixtureSocket.position}>
               <PlaceholderPart spec={fixture.placeholder} material={material} />
               {night && fixture.lightOffset && (
