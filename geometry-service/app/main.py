@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -103,6 +104,39 @@ def generate(req: GenerateRequest) -> GenerateResponse:
     finish_map = {f["id"]: f.get("name", f["id"]) for f in catalog.get("finishes", [])}
     summary["finish"] = finish_map.get(req.config.finish, req.config.finish)
 
+    # --- Add parts with names, slot, and productUrl for downstream adapters ---
+    parts_list = []
+    part_map = {p["id"]: p for p in catalog.get("parts", [])}
+    for slot_field, slot_name in [
+        ("fixture", "fixture"),
+        ("arm", "arm"),
+        ("pole", "pole"),
+        ("baseCover", "baseCover"),
+    ]:
+        part_id = getattr(req.config, slot_field)
+        part_obj = part_map.get(part_id)
+        if part_obj:
+            parts_list.append({
+                "slot": slot_name,
+                "id": part_id,
+                "name": part_obj.get("name", part_id),
+                "productUrl": part_obj.get("productUrl", ""),
+            })
+    summary["parts"] = parts_list
+
+    # --- Decode renderPng from base64 (handle data: URI prefix and errors) ---
+    render_png_bytes: bytes | None = None
+    render_png_warning: str | None = None
+    if req.renderPng:
+        try:
+            # Strip data:image/png;base64, prefix if present
+            png_data = req.renderPng
+            if "," in png_data:
+                png_data = png_data.split(",", 1)[1]
+            render_png_bytes = base64.b64decode(png_data)
+        except Exception as exc:
+            render_png_warning = f"renderPng ignored: invalid base64 ({exc})"
+
     # --- Build shared context ---
     ctx = GenContext(
         catalog=catalog,
@@ -110,15 +144,15 @@ def generate(req: GenerateRequest) -> GenerateResponse:
         out_dir=OUT_DIR,
         base_name=base_name(catalog, req.config),
         assembly=assembly,
-        render_png=(
-            bytes(req.renderPng, "ascii") if isinstance(req.renderPng, str) else req.renderPng
-        ),
+        render_png=render_png_bytes,
         summary=summary,
     )
 
     # --- Dispatch ---
     files = []
     warnings: list[str] = []
+    if render_png_warning:
+        warnings.append(render_png_warning)
 
     for fmt in req.formats:
         adapter = REGISTRY[fmt]

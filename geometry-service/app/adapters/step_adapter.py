@@ -94,12 +94,8 @@ def _label_step_header(path: Path, config_id: str, rev: int) -> None:
 
     # FILE_DESCRIPTION line is guaranteed to be a single ASCII line.
     # Replace only the first occurrence (the STEP header always has exactly one).
-    new_text = re.sub(
-        r"^FILE_DESCRIPTION\(.*?\),'2;1'\);",
-        label_line,
-        text,
-        count=1,
-        flags=re.MULTILINE,
-    )
+    # Use the compiled _FD_PATTERN (which includes MULTILINE | DOTALL) to ensure
+    # the DOTALL intent applies for potential multi-line edge cases.
+    new_text = _FD_PATTERN.sub(label_line, text, count=1)
 
     path.write_text(new_text, encoding="ascii")

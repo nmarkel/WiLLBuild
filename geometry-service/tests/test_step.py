@@ -139,7 +139,8 @@ class TestStepFilename:
 
 class TestStepContent:
     @pytest.fixture(scope="class")
-    def step_content(self, tmp_path_factory, cat, default_cfg, built_assembly):
+    @classmethod
+    def step_content(cls, tmp_path_factory, cat, default_cfg, built_assembly):
         from app.adapters.base import GenContext
         out = tmp_path_factory.mktemp("step_content")
         ctx = GenContext(
