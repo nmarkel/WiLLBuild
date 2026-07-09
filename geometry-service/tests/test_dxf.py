@@ -15,6 +15,7 @@ Covered behaviours
 
 from __future__ import annotations
 
+import importlib
 import os
 import uuid
 from pathlib import Path
@@ -270,6 +271,39 @@ class TestDxfRegistry:
         a = DxfProjectionAdapter()
         assert a.available() is True
         assert a.format == "dxf"
+
+    def test_registry_route_swap_via_reload(self, monkeypatch):
+        """REGISTRY["dxf"] class must match DXF_ROUTE after importlib.reload.
+
+        DXF_ROUTE=direct (or unset) → DxfAdapter
+        DXF_ROUTE=projection        → DxfProjectionAdapter
+        Module state is restored after the test via a second reload with no env var.
+        """
+        import app.adapters as adapters_mod
+        from app.adapters.dxf_adapter import DxfAdapter
+        from app.adapters.dxf_projection_adapter import DxfProjectionAdapter
+
+        # --- direct route ---
+        monkeypatch.setenv("DXF_ROUTE", "direct")
+        importlib.reload(adapters_mod)
+        assert "dxf" in adapters_mod.REGISTRY
+        assert isinstance(adapters_mod.REGISTRY["dxf"], DxfAdapter), (
+            f"Expected DxfAdapter for DXF_ROUTE=direct, "
+            f"got {adapters_mod.REGISTRY['dxf'].__class__.__name__}"
+        )
+
+        # --- projection route ---
+        monkeypatch.setenv("DXF_ROUTE", "projection")
+        importlib.reload(adapters_mod)
+        assert "dxf" in adapters_mod.REGISTRY
+        assert isinstance(adapters_mod.REGISTRY["dxf"], DxfProjectionAdapter), (
+            f"Expected DxfProjectionAdapter for DXF_ROUTE=projection, "
+            f"got {adapters_mod.REGISTRY['dxf'].__class__.__name__}"
+        )
+
+        # --- restore module state (unset env, reload) ---
+        monkeypatch.delenv("DXF_ROUTE", raising=False)
+        importlib.reload(adapters_mod)
 
     def test_dwg_adapter_not_available_without_oda(self):
         """DwgAdapter.available() must return False when ODA not installed."""

@@ -115,7 +115,7 @@ def draw(msp, ctx: GenContext) -> None:
         hdr_bot + LINE_PAD,
         "WiLL",
         H_TITLE,
-        YELLOW,
+        GUNMETAL,
     )
 
     # --- Body rows ---
@@ -142,33 +142,18 @@ def draw(msp, ctx: GenContext) -> None:
     _row("Scale", "1:50")
     _row("Drawing type", "Conceptual elevation")
 
-    # --- DISCLAIMER (small, at bottom of title block) ---
+    # --- DISCLAIMER (single visible MTEXT entity at bottom of title block) ---
+    # MTEXT wraps the full string automatically — one entity is both searchable
+    # (contains the complete DISCLAIMER) and visibly rendered.
     disc_y = MARGIN + LINE_PAD * 3
     _text(msp, BLOCK_X + LINE_PAD, disc_y + H_SMALL + LINE_PAD, "NOTE:", H_SMALL, GUNMETAL)
-    # Split DISCLAIMER across two lines if needed
-    words = DISCLAIMER.split()
-    lines: list[str] = []
-    current = ""
-    for w in words:
-        trial = (current + " " + w).strip()
-        # Approximate: ~8 chars per 3.5 mm width in 80mm block
-        if len(trial) * 2.1 > BLOCK_W - LINE_PAD * 2 and current:
-            lines.append(current)
-            current = w
-        else:
-            current = trial
-    if current:
-        lines.append(current)
-
-    for line_text in lines[:3]:  # cap at 3 lines to stay inside block
-        _text(msp, BLOCK_X + LINE_PAD, disc_y, line_text, H_SMALL - 0.3, GUNMETAL)
-        disc_y -= H_SMALL + 0.5
-
-    # --- DISCLAIMER as a single searchable TEXT entity (test requirement) ---
-    # Place it at a small y-offset so ezdxf.readfile can find it by content.
-    disc_entity = msp.add_text(
+    mtext = msp.add_mtext(
         DISCLAIMER,
-        dxfattribs={"height": 0.1},  # nearly invisible but present
+        dxfattribs={
+            "char_height": H_SMALL - 0.3,
+            "width": BLOCK_W - LINE_PAD * 2,
+            "insert": (BLOCK_X + LINE_PAD, disc_y),
+            "attachment_point": 4,  # top-left
+        },
     )
-    disc_entity.set_placement((BLOCK_X + LINE_PAD, MARGIN + 0.5))
-    _true_color(disc_entity, GUNMETAL)
+    _true_color(mtext, GUNMETAL)

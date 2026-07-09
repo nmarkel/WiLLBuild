@@ -166,6 +166,8 @@ def _draw_arm(msp, arm: dict, arm_y_m: float) -> None:
 
     pts = ph["points"]
     r = ph["radiusM"]
+    # NOTE: _arm_tube_silhouette assumes monotonically-advancing X in pts;
+    # arms that double back on themselves will produce a self-intersecting outline.
     top, bot = _arm_tube_silhouette(pts, r, arm_y_m)
     # Draw outline: top polyline + reversed bottom to close
     outline = top + list(reversed(bot))
