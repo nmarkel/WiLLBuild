@@ -1,8 +1,7 @@
-"""FastAPI geometry-service — skeleton with config validation and file serving."""
+"""FastAPI geometry-service — config validation, adapter dispatch, file serving."""
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -10,9 +9,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
+from .adapters import REGISTRY
+from .adapters.base import GenContext
 from .catalog import load_catalog, validate_config
+from .kit.assembly import build_assembly
 from .models import GenerateRequest, GenerateResponse
-from .naming import config_hash
+from .naming import base_name, config_hash
 
 # ---------------------------------------------------------------------------
 # Output directory — created at startup
@@ -21,16 +23,9 @@ OUT_DIR = Path(__file__).parent.parent / "out"
 OUT_DIR.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------
-# Adapter registry (empty for this skeleton — tasks 2+ will populate it)
+# Geometric formats — when any of these are requested, build assembly once
 # ---------------------------------------------------------------------------
-# Maps format string → callable(catalog, cfg, out_dir) -> Path
-_ADAPTERS: dict[str, object] = {}
-
-
-def register_adapter(fmt: str, fn: object) -> None:
-    """Register a geometry adapter for a given format string."""
-    _ADAPTERS[fmt] = fn
-
+_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg"}
 
 # ---------------------------------------------------------------------------
 # App
@@ -68,7 +63,7 @@ def health() -> dict:
     """Return service status and which format adapters are registered."""
     return {
         "status": "ok",
-        "adapters": {fmt: True for fmt in _ADAPTERS},
+        "adapters": {fmt: True for fmt in REGISTRY},
     }
 
 
@@ -83,30 +78,61 @@ def generate(req: GenerateRequest) -> GenerateResponse:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    # --- Dispatch to adapters ---
-    files = []
-    warnings: list[str] = []
-
+    # --- Guard: all requested formats must have a registered adapter ---
     for fmt in req.formats:
-        adapter = _ADAPTERS.get(fmt)
-        if adapter is None:
+        if fmt not in REGISTRY:
             raise HTTPException(
                 status_code=422,
                 detail=f"No adapter registered for format: {fmt!r}",
             )
-        # Adapter callable: fn(catalog, cfg, out_dir, render_png) -> Path
+
+    # --- Build assembly once if any geometric format is requested ---
+    needs_geometry = any(fmt in _GEOMETRIC_FORMATS for fmt in req.formats)
+    assembly = build_assembly(catalog, req.config) if needs_geometry else None
+
+    # --- Build summary (part names from catalog, finish, dims) ---
+    summary: dict = {}
+    if assembly is not None:
+        summary["dims"] = {
+            "overall_height_mm": assembly.dims.overall_height,
+            "pole_height_mm": assembly.dims.pole_height,
+            "mounting_height_mm": assembly.dims.mounting_height,
+            "arm_reach_mm": assembly.dims.arm_reach,
+            "base_diameter_mm": assembly.dims.base_diameter,
+        }
+    finish_map = {f["id"]: f.get("name", f["id"]) for f in catalog.get("finishes", [])}
+    summary["finish"] = finish_map.get(req.config.finish, req.config.finish)
+
+    # --- Build shared context ---
+    ctx = GenContext(
+        catalog=catalog,
+        cfg=req.config,
+        out_dir=OUT_DIR,
+        base_name=base_name(catalog, req.config),
+        assembly=assembly,
+        render_png=(
+            bytes(req.renderPng, "ascii") if isinstance(req.renderPng, str) else req.renderPng
+        ),
+        summary=summary,
+    )
+
+    # --- Dispatch ---
+    files = []
+    warnings: list[str] = []
+
+    for fmt in req.formats:
+        adapter = REGISTRY[fmt]
         try:
-            out_path: Path = adapter(  # type: ignore[operator]
-                catalog, req.config, OUT_DIR, req.renderPng
-            )
-            files.append(
-                {
-                    "format": fmt,
-                    "filename": out_path.name,
-                    "url": f"/files/{out_path.name}",
-                    "sizeBytes": out_path.stat().st_size,
-                }
-            )
+            out_paths = adapter.generate(ctx)
+            for out_path in out_paths:
+                files.append(
+                    {
+                        "format": fmt,
+                        "filename": out_path.name,
+                        "url": f"/files/{out_path.name}",
+                        "sizeBytes": out_path.stat().st_size,
+                    }
+                )
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"{fmt}: {exc}")
 
