@@ -10,7 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
-from .adapters import REGISTRY
+from .adapters import REGISTRY, DWG_WARNING
 from .adapters.base import GenContext
 from .catalog import load_catalog, validate_config
 from .kit.assembly import build_assembly
@@ -80,12 +80,18 @@ def generate(req: GenerateRequest) -> GenerateResponse:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     # --- Guard: all requested formats must have a registered adapter ---
+    # Exception: "dwg" without ODA is demoted to a warning (not a 422 error)
+    # so the caller still gets the DXF output.
+    _dwg_skipped = False
     for fmt in req.formats:
         if fmt not in REGISTRY:
-            raise HTTPException(
-                status_code=422,
-                detail=f"No adapter registered for format: {fmt!r}",
-            )
+            if fmt == "dwg" and DWG_WARNING:
+                _dwg_skipped = True
+            else:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"No adapter registered for format: {fmt!r}",
+                )
 
     # --- Build assembly once if any geometric format is requested ---
     needs_geometry = any(fmt in _GEOMETRIC_FORMATS for fmt in req.formats)
@@ -153,8 +159,13 @@ def generate(req: GenerateRequest) -> GenerateResponse:
     warnings: list[str] = []
     if render_png_warning:
         warnings.append(render_png_warning)
+    if _dwg_skipped and DWG_WARNING:
+        warnings.append(DWG_WARNING)
 
     for fmt in req.formats:
+        if fmt not in REGISTRY:
+            # Already handled above (e.g. dwg without ODA → warning, skip)
+            continue
         adapter = REGISTRY[fmt]
         try:
             out_paths = adapter.generate(ctx)

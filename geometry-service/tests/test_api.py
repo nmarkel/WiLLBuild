@@ -176,7 +176,8 @@ class TestGenerateNoAdapter:
     def test_valid_config_no_adapter_returns_422(self) -> None:
         """When config is valid but no adapter is registered for the format, return 422.
 
-        'dxf' is not registered in this phase — use it as the unregistered format.
+        'ifc' is not yet registered — use it as the unregistered format.
+        (DXF is now implemented in phase 0.3, so 'dxf' is a valid format.)
         """
         resp = client.post(
             "/generate",
@@ -190,13 +191,13 @@ class TestGenerateNoAdapter:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["dxf"],
+                "formats": ["ifc"],
                 "renderPng": None,
             },
         )
         assert resp.status_code == 422
         body = resp.json()
-        assert "no adapter" in body["detail"].lower() or "dxf" in body["detail"].lower()
+        assert "no adapter" in body["detail"].lower() or "ifc" in body["detail"].lower()
 
 
 # ---------------------------------------------------------------------------
