@@ -46,6 +46,9 @@ function FixtureLight() {
         penumbra={0.7}
         distance={25}
         decay={1.5}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0005}
       />
       <object3D ref={target} position={[0, -6, 0]} />
     </group>

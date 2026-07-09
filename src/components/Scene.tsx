@@ -124,7 +124,7 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       {/* Day: warm sun for crisp shadows. Night: faint cool moonlight — the
           luminaire itself becomes the dominant light (see FixtureLight). */}
       <directionalLight
-        castShadow
+        castShadow={!night}
         position={SUN_POSITION}
         color={night ? '#9db4d6' : '#fff5e6'}
         intensity={night ? 0.15 : 1.5}
