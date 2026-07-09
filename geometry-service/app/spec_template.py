@@ -36,6 +36,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from fpdf import FPDF
+from fpdf.enums import XPos, YPos
 
 from app.adapters.base import GenContext
 from app.naming import DISCLAIMER
@@ -112,10 +113,10 @@ def _draw_header(pdf: FPDF, title: str) -> None:
     _set_text(pdf, _WHITE)
     pdf.set_font("Helvetica", "B", 14)
     pdf.set_xy(_MARGIN, 4)
-    pdf.cell(120, 8, "WiLL Lighting Systems", ln=False)
+    pdf.cell(120, 8, "WiLL Lighting Systems", new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.set_font("Helvetica", "", 13)
     pdf.set_xy(_MARGIN + 120, 4)
-    pdf.cell(0, 8, f"| {title}", ln=False)
+    pdf.cell(0, 8, f"| {title}", new_x=XPos.RIGHT, new_y=YPos.TOP)
 
     # Yellow rule below band
     _set_fill(pdf, _YELLOW)
@@ -125,6 +126,25 @@ def _draw_header(pdf: FPDF, title: str) -> None:
     _set_text(pdf, _GUNMETAL)
     _set_fill(pdf, _WHITE)
     _set_draw(pdf, _GUNMETAL)
+
+
+def _draw_placeholder_box(
+    pdf: FPDF,
+    left: float,
+    top: float,
+    width: float,
+    height: float,
+) -> None:
+    """Draw silver placeholder box with 'Render not supplied' text."""
+    _set_fill(pdf, _SILVER)
+    _set_draw(pdf, _GUNMETAL)
+    pdf.rect(left, top, width, height, style="FD")
+    _set_text(pdf, _GUNMETAL)
+    pdf.set_font("Helvetica", "I", 9)
+    pdf.set_xy(left, top + height / 2 - 4)
+    pdf.cell(width, 8, "Render not supplied", align="C")
+    _set_text(pdf, _GUNMETAL)
+    _set_fill(pdf, _WHITE)
 
 
 def _draw_render_column(
@@ -138,19 +158,15 @@ def _draw_render_column(
     """Draw either the embedded render image or a placeholder box."""
     if render_png is not None:
         # Embed image from bytes
-        buf = io.BytesIO(render_png)
-        pdf.image(buf, x=left, y=top, w=width, h=height)
+        try:
+            buf = io.BytesIO(render_png)
+            pdf.image(buf, x=left, y=top, w=width, h=height)
+        except Exception:
+            # On corrupt image, fall back to placeholder
+            _draw_placeholder_box(pdf, left, top, width, height)
     else:
-        # Silver placeholder box
-        _set_fill(pdf, _SILVER)
-        _set_draw(pdf, _GUNMETAL)
-        pdf.rect(left, top, width, height, style="FD")
-        _set_text(pdf, _GUNMETAL)
-        pdf.set_font("Helvetica", "I", 9)
-        pdf.set_xy(left, top + height / 2 - 4)
-        pdf.cell(width, 8, "Render not supplied", align="C")
-        _set_text(pdf, _GUNMETAL)
-        _set_fill(pdf, _WHITE)
+        # No image provided — draw placeholder
+        _draw_placeholder_box(pdf, left, top, width, height)
 
 
 def _draw_components_table(
@@ -170,7 +186,7 @@ def _draw_components_table(
     pdf.set_font("Helvetica", "B", 8)
     pdf.set_xy(left, top)
     for i, label in enumerate(["Slot", "Product", "URL"]):
-        pdf.cell(col_w[i], row_h, label, border=1, fill=True, align="C")
+        pdf.cell(col_w[i], row_h, label, border=1, fill=True, align="C", new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.ln()
 
     # Data rows
@@ -188,9 +204,9 @@ def _draw_components_table(
         slot_label = slot_labels.get(part["slot"], part["slot"].title())
         url = part.get("productUrl", "")
         pdf.set_xy(left, pdf.get_y())
-        pdf.cell(col_w[0], row_h, slot_label, border=1, fill=fill)
-        pdf.cell(col_w[1], row_h, part["name"], border=1, fill=fill)
-        pdf.cell(col_w[2], row_h, url, border=1, fill=fill)
+        pdf.cell(col_w[0], row_h, slot_label, border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[1], row_h, part["name"], border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[2], row_h, url, border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
     _set_fill(pdf, _WHITE)
@@ -208,7 +224,8 @@ def _draw_dims_block(
     pdf.set_xy(left, top)
     pdf.set_font("Helvetica", "B", 9)
     _set_text(pdf, _GUNMETAL)
-    pdf.cell(width, 6, "Dimensions", ln=True)
+    pdf.cell(width, 6, "Dimensions", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln()
 
     dim_rows = [
         ("Overall Height", "overall_height_mm"),
@@ -230,9 +247,9 @@ def _draw_dims_block(
         val_mm_rounded = int(round(val_mm))
         val_ftin = _mm_to_ft_in(val_mm)
         pdf.set_x(left)
-        pdf.cell(col_label, 5.5, label, border="B")
-        pdf.cell(col_mm, 5.5, f"{val_mm_rounded} mm", border="B", align="R")
-        pdf.cell(col_ftin, 5.5, val_ftin, border="B", align="R")
+        pdf.cell(col_label, 5.5, label, border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_mm, 5.5, f"{val_mm_rounded} mm", border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_ftin, 5.5, val_ftin, border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
     return pdf.get_y()
@@ -250,7 +267,8 @@ def _draw_finish_block(
     pdf.set_xy(left, top + 4)
     pdf.set_font("Helvetica", "B", 9)
     _set_text(pdf, _GUNMETAL)
-    pdf.cell(width, 6, "Finish", ln=True)
+    pdf.cell(width, 6, "Finish", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln()
 
     finish_name = summary.get("finish", "—")
     # RAL from summary (pre-populated by the adapter from catalog)
@@ -260,11 +278,13 @@ def _draw_finish_block(
     pdf.set_font("Helvetica", "", 8)
     pdf.set_x(left)
     ral_text = f"  ({finish_ral})" if finish_ral else ""
-    pdf.cell(width, 5.5, f"{finish_name}{ral_text}", ln=True)
+    pdf.cell(width, 5.5, f"{finish_name}{ral_text}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln()
     if finishes_provisional:
         pdf.set_x(left)
         pdf.set_font("Helvetica", "I", 7)
-        pdf.cell(width, 4.5, "Note: provisional palette - WiLLcoat colour unconfirmed", ln=True)
+        pdf.cell(width, 4.5, "Note: provisional palette - WiLLcoat colour unconfirmed", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.ln()
     return pdf.get_y()
 
 

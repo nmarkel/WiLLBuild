@@ -261,14 +261,18 @@ class TestPdfTextContent:
 
     def test_contains_overall_height_ft_in(self, cat, fixed_cfg, tmp_path) -> None:
         """Overall height must appear in ft-in format (e.g. \"20'-0\")."""
-        from app.spec_template import render_spec
+        from app.spec_template import render_spec, _mm_to_ft_in
         ctx = _make_ctx(cat, fixed_cfg, tmp_path)
         pdf = render_spec(ctx)
         text = _extract_text(pdf)
-        # The 20ft pole should produce something like 20'-... in text
-        # We check for a ft-in pattern with an apostrophe
-        assert "'" in text or "ft" in text.lower(), (
-            "No ft-in notation found in PDF text"
+        # Compute the expected ft-in string from the assembly's overall height
+        asm = build_assembly(cat, fixed_cfg)
+        expected_ftin = _mm_to_ft_in(asm.dims.overall_height)
+        # Normalize curly/straight quotes for PDF extraction variance
+        text_normalized = text.replace('"', '"').replace('"', '"').replace(''', "'").replace(''', "'")
+        expected_normalized = expected_ftin.replace('"', '"').replace('"', '"').replace(''', "'").replace(''', "'")
+        assert expected_normalized in text_normalized, (
+            f"Expected ft-in string {expected_ftin!r} not found in PDF text"
         )
 
     def test_contains_quote_url(self, cat, fixed_cfg, tmp_path) -> None:
@@ -299,6 +303,18 @@ class TestPdfImageXObject:
         text = _extract_text(pdf_bytes_no_render)
         assert "Render not supplied" in text or "render not supplied" in text.lower(), (
             "PDF without renderPng must include 'Render not supplied' placeholder text"
+        )
+
+    def test_corrupt_png_fallback_to_placeholder(self, cat, fixed_cfg, tmp_path) -> None:
+        """Corrupt PNG bytes should fall back to placeholder without crashing."""
+        from app.spec_template import render_spec
+        ctx = _make_ctx(cat, fixed_cfg, tmp_path, render_png=b"not a png")
+        pdf = render_spec(ctx)
+        text = _extract_text(pdf)
+        # Should produce valid PDF with placeholder text
+        assert pdf[:4] == b"%PDF", "Output must be valid PDF"
+        assert "Render not supplied" in text or "render not supplied" in text.lower(), (
+            "Corrupt PNG should fall back to 'Render not supplied' placeholder"
         )
 
 
