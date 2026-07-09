@@ -138,26 +138,24 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       />
 
       {/* Own boundary: the HDRI streams from /public and must not suspend the scene.
-          Ground projection places the assembly on the street rather than in a void.
-          At night the same environment is dimmed to dusk levels. */}
+          Ground projection keeps the assembly planted at night; the night HDRI
+          (moonless_golf) is dimmed so the luminaire becomes the dominant light. */}
       <Suspense fallback={null}>
-        {/* backgroundIntensity has no effect on the ground-projected skybox
-            mesh, so night drops the projection and dims the plain panorama. */}
         <Environment
-          files={import.meta.env.BASE_URL + 'hdri/urban_street_04_2k.hdr'}
+          files={import.meta.env.BASE_URL + (night ? 'hdri/moonless_golf_2k.hdr' : 'hdri/abandoned_parking_2k.hdr')}
           background
-          ground={night ? undefined : { height: 5, radius: 40, scale: 70 }}
-          environmentIntensity={night ? 0.12 : 1}
-          backgroundIntensity={night ? 0.06 : 1}
+          ground={{ height: 5, radius: 40, scale: 70 }}
+          environmentIntensity={night ? 0.25 : 1}
+          backgroundIntensity={night ? 0.5 : 1}
         />
       </Suspense>
 
-      {/* The projected skybox street is unlit, so night mode needs a real lit
-          surface to catch the luminaire's light pool. */}
+      {/* The projected skybox is unlit — a real mesh disc catches the luminaire's
+          warm light pool on the ground. Darkened to #17181c so the pool reads. */}
       {night && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} receiveShadow>
           <circleGeometry args={[24, 64]} />
-          <meshStandardMaterial color="#1b1c20" roughness={0.95} metalness={0} />
+          <meshStandardMaterial color="#17181c" roughness={0.95} metalness={0} />
         </mesh>
       )}
 

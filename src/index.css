@@ -580,6 +580,21 @@ body {
   gap: 8px;
 }
 
+.night-disclaimer {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 6px 10px;
+  background: rgba(230, 231, 232, 0.85);
+  color: #42413d;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 6px;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
 .scale-toggle {
   padding: 8px 14px;
   background: rgba(255, 255, 255, 0.85);

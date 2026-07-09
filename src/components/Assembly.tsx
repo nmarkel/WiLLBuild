@@ -41,7 +41,7 @@ function FixtureLight() {
       <spotLight
         ref={spot}
         color={LIGHT_COLOR}
-        intensity={150}
+        intensity={220}
         angle={0.85}
         penumbra={0.7}
         distance={25}

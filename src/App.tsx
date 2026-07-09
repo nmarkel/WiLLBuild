@@ -31,6 +31,9 @@ export default function App() {
       </aside>
       <main className="viewport">
         <Scene catalog={catalog} config={config} showScale={showScale} mode={mode} />
+        {mode === 'night' && (
+          <div className="night-disclaimer">Conceptual night preview — not a photometric simulation</div>
+        )}
         <div className="viewport-controls">
           <button
             className="scale-toggle"
