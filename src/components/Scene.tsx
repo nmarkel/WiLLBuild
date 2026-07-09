@@ -171,10 +171,10 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       </mesh>
       <ContactShadows
         key={shadowKey}
-        opacity={0.5}
+        opacity={0.6}
         scale={10}
         blur={2.4}
-        far={3.5}
+        far={4.5}
         resolution={512}
         frames={60}
       />
