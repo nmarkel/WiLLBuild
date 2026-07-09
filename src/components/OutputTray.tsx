@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import { getContact, saveLead, type Contact } from '../lib/leads'
 import { buildSummaryText } from '../lib/summary'
@@ -227,12 +227,29 @@ export function OutputTray({ catalog, config }: Props) {
   const [availFormats, setAvailFormats] = useState<Set<string>>(new Set())
   const [cardStates, setCardStates] = useState<Record<string, CardState>>({})
   const [warnings, setWarnings] = useState<string[]>([])
+  const timeoutIdsRef = useRef<NodeJS.Timeout[]>([])
 
   // Load available formats on mount
   useEffect(() => {
+    let cancelled = false
     availableFormats()
-      .then(setAvailFormats)
-      .catch(() => setAvailFormats(new Set()))
+      .then((formats) => {
+        if (!cancelled) setAvailFormats(formats)
+      })
+      .catch(() => {
+        if (!cancelled) setAvailFormats(new Set())
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    const timeoutIds = timeoutIdsRef.current
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id))
+    }
   }, [])
 
   const setCardState = useCallback((format: string, state: CardState) => {
@@ -274,9 +291,10 @@ export function OutputTray({ catalog, config }: Props) {
 
         setCardState(format, { phase: 'done' })
         // Revert to idle after 2 seconds
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCardState(format, { phase: 'idle' })
         }, 2000)
+        timeoutIdsRef.current.push(timeoutId)
       } catch (err: unknown) {
         const message =
           err instanceof Error
@@ -322,7 +340,8 @@ export function OutputTray({ catalog, config }: Props) {
   const copySummary = async () => {
     await navigator.clipboard.writeText(buildSummaryText(catalog, config))
     setCopied(true)
-    setTimeout(() => setCopied(false), 1600)
+    const timeoutId = setTimeout(() => setCopied(false), 1600)
+    timeoutIdsRef.current.push(timeoutId)
   }
 
   return (

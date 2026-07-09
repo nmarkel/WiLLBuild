@@ -88,10 +88,25 @@ export async function availableFormats(): Promise<Set<string>> {
 /**
  * Fetch a generated file and trigger a browser download.
  * File URLs from the server are relative paths — GEOMETRY_URL is prepended.
+ * Throws GeometryError with a user-facing message on any failure.
  */
 export async function downloadGeneratedFile(file: GeneratedFile): Promise<void> {
   const href = file.url.startsWith('http') ? file.url : `${GEOMETRY_URL}${file.url}`
-  const response = await fetch(href)
+  let response: Response
+  try {
+    response = await fetch(href)
+  } catch {
+    throw new GeometryError(
+      "Couldn't reach the file generator — is the geometry service running?",
+    )
+  }
+
+  if (!response.ok) {
+    throw new GeometryError(
+      `The file could not be downloaded (HTTP ${response.status}).`,
+    )
+  }
+
   const blob = await response.blob()
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

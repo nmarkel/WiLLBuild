@@ -122,6 +122,55 @@ describe('availableFormats', () => {
   })
 })
 
+describe('downloadGeneratedFile', () => {
+  it('throws GeometryError with network message on fetch failure', async () => {
+    const { downloadGeneratedFile } = await import('./geometry')
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')))
+
+    await expect(
+      downloadGeneratedFile({
+        format: 'step',
+        filename: 'test.step',
+        url: '/files/test.step',
+        sizeBytes: 1024,
+      }),
+    ).rejects.toThrow(GeometryError)
+    await expect(
+      downloadGeneratedFile({
+        format: 'step',
+        filename: 'test.step',
+        url: '/files/test.step',
+        sizeBytes: 1024,
+      }),
+    ).rejects.toThrow("Couldn't reach the file generator — is the geometry service running?")
+  })
+
+  it('throws GeometryError with HTTP status on non-ok response', async () => {
+    const { downloadGeneratedFile } = await import('./geometry')
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    }))
+
+    await expect(
+      downloadGeneratedFile({
+        format: 'step',
+        filename: 'test.step',
+        url: '/files/test.step',
+        sizeBytes: 1024,
+      }),
+    ).rejects.toThrow(GeometryError)
+    await expect(
+      downloadGeneratedFile({
+        format: 'step',
+        filename: 'test.step',
+        url: '/files/test.step',
+        sizeBytes: 1024,
+      }),
+    ).rejects.toThrow('404')
+  })
+})
+
 describe('GEOMETRY_URL', () => {
   it('is a string', () => {
     expect(typeof GEOMETRY_URL).toBe('string')
