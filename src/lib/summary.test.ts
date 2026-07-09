@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
 import { buildSummaryText } from './summary'
-import { configToParams } from './url'
+import { paramsToPartialConfig } from './url'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -37,22 +37,26 @@ describe('buildSummaryText', () => {
   it('round-trips the share URL with config params', () => {
     const testConfig = config({})
     const summary = buildSummaryText(catalog, testConfig)
-    const params = configToParams(testConfig)
 
     // Extract the URL line from summary
     const lines = summary.split('\n')
     const linkLine = lines.find((line) => line.startsWith('Link:'))
     expect(linkLine).toBeDefined()
 
-    // Verify the link contains all the config params
-    const paramStr = params.toString()
-    expect(linkLine).toContain(paramStr)
+    // Extract query string from "Link: ?param=val&..." format
+    const linkUrl = linkLine!.substring('Link: '.length)
+    const queryString = linkUrl.substring(linkUrl.indexOf('?') + 1)
+    const params = new URLSearchParams(queryString)
 
-    // Verify all keys are present
-    expect(linkLine).toContain('pole=')
-    expect(linkLine).toContain('baseCover=')
-    expect(linkLine).toContain('arm=')
-    expect(linkLine).toContain('fixture=')
-    expect(linkLine).toContain('finish=')
+    // Parse the params back to partial config
+    const parsed = paramsToPartialConfig(params)
+    expect(parsed).toBeDefined()
+
+    // Assert the parsed config matches the original values
+    expect(parsed!.pole).toBe(testConfig.pole)
+    expect(parsed!.baseCover).toBe(testConfig.baseCover)
+    expect(parsed!.arm).toBe(testConfig.arm)
+    expect(parsed!.fixture).toBe(testConfig.fixture)
+    expect(parsed!.finish).toBe(testConfig.finish)
   })
 })
