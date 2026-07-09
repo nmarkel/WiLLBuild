@@ -26,6 +26,7 @@ from __future__ import annotations
 import os
 
 from .base import Adapter, GenContext
+from .ifc_adapter import IfcAdapter
 from .step_adapter import StepAdapter
 
 __all__ = ["REGISTRY", "Adapter", "GenContext"]
@@ -35,10 +36,11 @@ __all__ = ["REGISTRY", "Adapter", "GenContext"]
 # ---------------------------------------------------------------------------
 
 _step = StepAdapter()
+_ifc = IfcAdapter()
 
 REGISTRY: dict[str, Adapter] = {}
 
-for _adapter in (_step,):
+for _adapter in (_step, _ifc):
     if _adapter.available():
         REGISTRY[_adapter.format] = _adapter  # type: ignore[assignment]
 
