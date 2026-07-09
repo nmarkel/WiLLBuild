@@ -92,7 +92,7 @@ describe('mount-type rules (H3b)', () => {
     configId: 'test',
     pole: 'alum-pole-14',
     baseCover: 'bc-fluted',
-    arm: 'sh1-shepherds-hook',
+    arm: '',
     fixture: 'gvx-pendant',
     finish: 'matte-black',
     rev: 1,
@@ -100,6 +100,12 @@ describe('mount-type rules (H3b)', () => {
 
   it('post-top fixtures only get the direct mount in the arm step', () => {
     const cfg = { ...base, fixture: 'drx-post-top' }
+    const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
+    expect(arms).toEqual(['direct-mount'])
+  })
+
+  it('TEX post-top also only gets the direct mount in the arm step', () => {
+    const cfg = { ...base, fixture: 'tex-post-top' }
     const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
     expect(arms).toEqual(['direct-mount'])
   })
