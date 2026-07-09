@@ -11,6 +11,7 @@
       "clearcoat": 0,
       "clearcoatRoughness": 0.5,
       "envMapIntensity": 0.9,
+      "ral": "RAL 9005",
       "keywords": [
         "black"
       ]
@@ -24,6 +25,7 @@
       "clearcoat": 0.15,
       "clearcoatRoughness": 0.4,
       "envMapIntensity": 1,
+      "ral": "RAL 8019",
       "keywords": [
         "bronze",
         "brown"
@@ -38,6 +40,7 @@
       "clearcoat": 0.3,
       "clearcoatRoughness": 0.3,
       "envMapIntensity": 1,
+      "ral": "RAL 6009",
       "keywords": [
         "green"
       ]
@@ -51,6 +54,7 @@
       "clearcoat": 1,
       "clearcoatRoughness": 0.12,
       "envMapIntensity": 1,
+      "ral": "RAL 9016",
       "keywords": [
         "white"
       ]
@@ -64,6 +68,7 @@
       "clearcoat": 0.25,
       "clearcoatRoughness": 0.25,
       "envMapIntensity": 1.1,
+      "ral": "RAL 9006",
       "keywords": [
         "silver",
         "gray",

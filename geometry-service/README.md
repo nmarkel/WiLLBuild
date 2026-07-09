@@ -53,6 +53,20 @@ GET /health
 - `app/naming.py` — `config_hash()` (SHA-256 over canonical JSON of geometry fields, first 8 hex chars), `base_name()`
 - `app/main.py` — FastAPI routes; adapter registry for format handlers (empty in this skeleton)
 
+## PDF spec-sheet / concept card
+
+The `pdf` format adapter generates a branded one-page PDF using **fpdf2 2.8.7**.
+
+- Template: `app/spec_template.py` — `render_spec(ctx, mode='spec'|'concept-card')`
+- Adapter: `app/adapters/pdf_adapter.py` — writes `<base_name>.pdf` to `out/`
+- **Font**: Helvetica (fpdf2 built-in core font) is used as a stand-in for Roboto.
+  Helvetica covers latin-1; special characters (e.g. em-dashes) must be avoided
+  in all string literals passed to the PDF renderer.  A TTF Roboto embed is a
+  Phase 1 improvement.
+- **Determinism**: `set_creation_date(datetime(2000,1,1,tzinfo=timezone.utc))`,
+  `set_producer("WiLL Geometry Service")`, and `set_creator("WiLL Geometry Service")`
+  are pinned so two runs with identical input produce byte-identical output.
+
 ## Disclaimer
 
 Generated files carry: *"Concept starter model - not final engineered or manufacturing-released design"*

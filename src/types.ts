@@ -56,6 +56,8 @@ export interface FinishDef {
   /** HDRI environment reflection strength for this finish. */
   envMapIntensity: number
   keywords: string[]
+  /** RAL colour code for this finish (provisional — palette unconfirmed). */
+  ral?: string
 }
 
 /** A known stock combination; a config matching one gets the "Standard" status chip. */

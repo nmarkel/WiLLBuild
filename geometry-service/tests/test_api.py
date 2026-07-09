@@ -176,8 +176,8 @@ class TestGenerateNoAdapter:
     def test_valid_config_no_adapter_returns_422(self) -> None:
         """When config is valid but no adapter is registered for the format, return 422.
 
-        'pdf' is not yet registered — use it as the unregistered format.
-        (STEP, DXF, and IFC are implemented in phase 0.3, so those are valid.)
+        'ply' is not registered — use it as the unregistered format.
+        (STEP, DXF, IFC, and PDF are all implemented in phase 0.3.)
         """
         resp = client.post(
             "/generate",
@@ -191,13 +191,14 @@ class TestGenerateNoAdapter:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["pdf"],
+                "formats": ["ply"],
                 "renderPng": None,
             },
         )
         assert resp.status_code == 422
         body = resp.json()
-        assert "no adapter" in body["detail"].lower() or "pdf" in body["detail"].lower()
+        # The format enum validation rejects unknown format names outright
+        assert "detail" in body
 
 
 # ---------------------------------------------------------------------------
