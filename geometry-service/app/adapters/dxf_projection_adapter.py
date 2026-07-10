@@ -27,7 +27,7 @@ from ezdxf.colors import rgb2int
 
 from app.adapters.dxf_adapter import _draw_dimensions
 from app.naming import base_name
-from app.titleblock import GUNMETAL, draw as draw_titleblock
+from app.adapters._titleblock import GUNMETAL, draw as draw_titleblock
 
 from .base import Adapter, GenContext
 

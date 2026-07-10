@@ -13,7 +13,7 @@ WiLL title block:
 
 Shared across both routes (read-only at swap time):
 
-- `app/titleblock.py` — A3 border, WiLL wordmark, config ID, date "—", finish, DISCLAIMER, 1:50 scale note
+- `app/adapters/_titleblock.py` — A3 border (scaled ×50 to model-space mm), WiLL wordmark, config ID, date "—", finish, DISCLAIMER, 1:50 scale note (`app/titleblock.py` is a backwards-compat re-export shim)
 - `app/adapters/dxf_adapter._draw_dimensions` — identical 5-dimension calls driven by `ctx.assembly.dims`
 
 ## The Env Flag
@@ -35,15 +35,17 @@ app/adapters/__init__.py    (3 lines: which adapter class is imported)
 ```
 
 The adapter files themselves are not modified — the registry simply imports
-a different class.  All other files (`titleblock.py`, `main.py`, `base.py`,
-`naming.py`, every test file) are identical between routes.
+a different class.  All other files (`app/adapters/_titleblock.py`, `main.py`,
+`base.py`, `naming.py`, every test file) are identical between routes.
 
 The `app/adapters/` directory at the route boundary:
 
 ```
 app/adapters/
   __init__.py                  ← only file that differs (env-gated import)
-  base.py                      ← shared (Protocol + GenContext)
+  _titleblock.py               ← shared title block (scaled ×50); ezdxf import lives here
+  _spec_template.py            ← shared PDF template; fpdf import lives here
+  base.py                      ← shared (Protocol + GenContext + produced tracking)
   dxf_adapter.py               ← Route 1 — loaded when DXF_ROUTE=direct
   dxf_projection_adapter.py    ← Route 2 — loaded when DXF_ROUTE=projection
   dwg_adapter.py               ← ODA wrapper (shared)

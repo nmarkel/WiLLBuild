@@ -190,6 +190,9 @@ def generate(req: GenerateRequest) -> GenerateResponse:
         adapter = REGISTRY[fmt]
         try:
             out_paths = adapter.generate(ctx)
+            # Track which files were produced in THIS request so bundle_adapter
+            # can tell them apart from stale on-disk artifacts.
+            ctx.produced[fmt] = list(out_paths)
             for out_path in out_paths:
                 files.append(
                     {

@@ -27,6 +27,13 @@ class GenContext:
     assembly: BuiltAssembly | None  # None when no geometric format is requested
     render_png: bytes | None
     summary: dict = field(default_factory=dict)
+    produced: dict[str, list[Path]] = field(default_factory=dict)
+    """Tracks files generated during THIS request, keyed by format string.
+
+    Adapters append their output paths here after generation so that the
+    bundle adapter can distinguish files produced in this request from
+    stale on-disk artifacts left by previous requests.
+    """
 
 
 @runtime_checkable

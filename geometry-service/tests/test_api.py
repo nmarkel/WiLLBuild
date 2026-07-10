@@ -307,6 +307,43 @@ class TestValidateConfig:
         with pytest.raises(ValueError, match="hot-pink"):
             validate_config(catalog, cfg)
 
+    def test_slot_mismatch_pole_in_fixture_field_raises(self, catalog: dict) -> None:
+        """Putting a pole id in the fixture field must raise a ValueError."""
+        cfg = PoleConfig(
+            configId="slot-mismatch-test",
+            pole="alum-pole-20",
+            baseCover="bc-fluted",
+            arm="sh1-shepherds-hook",
+            fixture="alum-pole-12",   # pole id, not a fixture id
+            finish="matte-black",
+            rev=1,
+        )
+        with pytest.raises(ValueError, match="pole"):
+            validate_config(catalog, cfg)
+
+    def test_slot_mismatch_via_api_returns_422(self) -> None:
+        """POST /generate with a pole id in the fixture field must return 422."""
+        resp = client.post(
+            "/generate",
+            json={
+                "config": {
+                    "configId": "slot-mismatch-api-test",
+                    "pole": "alum-pole-20",
+                    "baseCover": "bc-fluted",
+                    "arm": "sh1-shepherds-hook",
+                    "fixture": "alum-pole-12",   # pole id in fixture field
+                    "finish": "matte-black",
+                    "rev": 1,
+                },
+                "formats": ["step"],
+                "renderPng": None,
+            },
+        )
+        assert resp.status_code == 422
+        body = resp.json()
+        assert "detail" in body
+        assert "pole" in body["detail"] or "fixture" in body["detail"]
+
 
 # ---------------------------------------------------------------------------
 # /generate — summary.parts validation

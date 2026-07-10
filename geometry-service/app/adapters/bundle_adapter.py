@@ -194,23 +194,31 @@ class BundleAdapter:
 
         zip_path = ctx.out_dir / f"{ctx.base_name}_bundle.zip"
 
-        # --- Ensure STEP exists ---
+        # --- Ensure STEP exists (produced this request, or generate now) ---
         step_path = ctx.out_dir / f"{ctx.base_name}.step"
-        if not step_path.exists():
+        step_produced_this_request = any(
+            p == step_path for p in ctx.produced.get("step", [])
+        )
+        if not step_produced_this_request:
             step_adapter = REGISTRY.get("step")
             if step_adapter is None:
                 raise RuntimeError("No step adapter registered; cannot produce bundle")
-            step_adapter.generate(ctx)
+            new_paths = step_adapter.generate(ctx)
+            ctx.produced["step"] = list(new_paths)
         if not step_path.exists():
             raise RuntimeError(f"STEP not found after generation: {step_path}")
 
-        # --- Ensure PDF exists ---
+        # --- Ensure PDF exists (produced this request, or generate now) ---
         pdf_path = ctx.out_dir / f"{ctx.base_name}.pdf"
-        if not pdf_path.exists():
+        pdf_produced_this_request = any(
+            p == pdf_path for p in ctx.produced.get("pdf", [])
+        )
+        if not pdf_produced_this_request:
             pdf_adapter = REGISTRY.get("pdf")
             if pdf_adapter is None:
                 raise RuntimeError("No pdf adapter registered; cannot produce bundle")
-            pdf_adapter.generate(ctx)
+            new_paths = pdf_adapter.generate(ctx)
+            ctx.produced["pdf"] = list(new_paths)
         if not pdf_path.exists():
             raise RuntimeError(f"PDF not found after generation: {pdf_path}")
 

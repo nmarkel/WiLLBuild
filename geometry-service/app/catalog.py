@@ -110,14 +110,22 @@ def validate_config(catalog: dict, cfg: PoleConfig) -> None:
     ]:
         try:
             p = part(catalog, part_id)
-            if field == "fixture":
-                fixture_part = p
-            elif field == "arm":
-                arm_part = p
-            elif field == "pole":
-                pole_part = p
-            elif field == "baseCover":
-                base_cover_part = p
+            # Assert the resolved part's slot matches its config field.
+            # e.g. a pole id in the fixture field must be rejected.
+            part_slot = p.get("slot", "")
+            if part_slot != field:
+                problems.append(
+                    f"part {part_id!r} is a {part_slot}, not a {field}"
+                )
+            else:
+                if field == "fixture":
+                    fixture_part = p
+                elif field == "arm":
+                    arm_part = p
+                elif field == "pole":
+                    pole_part = p
+                elif field == "baseCover":
+                    base_cover_part = p
         except KeyError:
             problems.append(f"Unknown {field} id: {part_id!r}")
 

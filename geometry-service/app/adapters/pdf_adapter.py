@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from app.spec_template import render_spec
+from app.adapters._spec_template import render_spec
 
 from .base import Adapter, GenContext
 

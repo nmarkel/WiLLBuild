@@ -33,7 +33,7 @@ import ezdxf
 from ezdxf.colors import rgb2int
 
 from app.naming import base_name
-from app.titleblock import GUNMETAL, draw as draw_titleblock
+from app.adapters._titleblock import BLOCK_X, GUNMETAL, draw as draw_titleblock
 
 from .base import Adapter, GenContext
 
@@ -341,7 +341,7 @@ def _draw_dimensions(msp, ctx: GenContext) -> None:
 
     # Position dimension lines to the right of the silhouette (elevation area)
     # Silhouette is centred near X=0; dim lines at X = arm_reach + margin
-    from app.titleblock import BLOCK_X
+    # BLOCK_X is in model-space mm (scaled at 1:50).
     max_x = dims.arm_reach + 100.0  # 100 mm margin right of arm reach
     # Keep within elevation area (BLOCK_X - 20 mm)
     dim_x_right = min(max_x, BLOCK_X - 20.0)

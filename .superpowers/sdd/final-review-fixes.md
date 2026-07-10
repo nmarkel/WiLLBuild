@@ -53,6 +53,62 @@ for standalone configs.
 
 ---
 
+## Fix 5 — DXF sheet layout scale mismatch (app/adapters/_titleblock.py + app/adapters/dxf_adapter.py)
+
+**Finding:** The A3 border/title block was drawn at paper size (420×297 mm) at the origin while the elevation was 1:1 real-world mm (a 20 ft pole = ~6100 mm tall). Opened in a CAD viewer, the title block was a postage stamp overlapping the pole base. The "Scale 1:50" note was false.
+
+**Fix:** Moved the title block implementation to `app/adapters/_titleblock.py`. All geometry is now drawn at ×50 scale (A3 sheet = 21 000×14 850 mm in model space) and positioned dynamically relative to the elevation extents (elevation sits inside the border with MARGIN=250 mm clearance; title block occupies the right 4000 mm strip). `actual_measurement` values on DIMENSION entities remain the real mm values as before. `app/titleblock.py` is now a backwards-compat re-export shim.
+
+**Test evidence:** `tests/test_dxf.py::TestDxfTitleBlock::test_border_encloses_all_elevation_entities` — new test asserts the outer border rectangle encloses all elevation entity points (both routes). 163 service tests pass (157 baseline + 6 new).
+
+---
+
+## Fix 6 — Boundary hygiene: engine-importing helpers moved inside adapter package
+
+**Finding:** `app/titleblock.py` imported `ezdxf` and `app/spec_template.py` imported `fpdf` — both were outside `app/adapters/`. The rule is that engine imports (ezdxf, fpdf, ifcopenshell, build123d) must only appear in `app/adapters/` or `app/kit/`.
+
+**Fix:**
+- `app/titleblock.py` → `app/adapters/_titleblock.py` (real implementation)
+- `app/spec_template.py` → `app/adapters/_spec_template.py` (real implementation)
+- Both old files reduced to backwards-compat re-export shims so existing test imports keep working.
+- `app/adapters/pdf_adapter.py` updated to import from `app/adapters/_spec_template`.
+- `app/adapters/dxf_adapter.py` and `app/adapters/dxf_projection_adapter.py` updated to import from `app/adapters/_titleblock`.
+- `docs/adapter-swap-note.md` caveat line updated to reflect new locations.
+
+**Test evidence:** `grep -rn "import ezdxf|import fpdf|import ifcopenshell|from build123d" geometry-service/app --include="*.py" | grep -v "app/adapters/|app/kit/"` → empty (clean). 163 service tests pass.
+
+---
+
+## Fix 7 — Slot validation in validate_config (app/catalog.py)
+
+**Finding:** `_can_host` returns True when a part has no mount, so `{fixture: 'alum-pole-12', ...}` (a pole id in the fixture field) validated and built nonsense geometry.
+
+**Fix:** In `validate_config`'s full-assembly branch, after resolving each part from the catalog, assert that `part["slot"] == field`. Mismatches (e.g. slot="pole", field="fixture") are added to the problems list as `"part 'alum-pole-12' is a pole, not a fixture"`. The standalone path (pole/arm/baseCover === '') is unchanged — it intentionally accepts any catalog part id in the fixture field.
+
+**Test evidence:**
+- `tests/test_api.py::TestValidateConfig::test_slot_mismatch_pole_in_fixture_field_raises` — ValueError with "pole" in message
+- `tests/test_api.py::TestGenerateValidation::test_slot_mismatch_via_api_returns_422` — POST /generate with alum-pole-12 in fixture field → 422
+- 163 service tests pass.
+
+---
+
+## Fix 8 — Per-request bundle artifact staleness (app/adapters/bundle_adapter.py + app/adapters/base.py)
+
+**Finding:** `BundleAdapter.generate()` reused any `<base_name>.pdf`/`.step` already on disk, regardless of which request produced it. Two sequential requests with different configs (or render images) could produce a bundle containing stale artifacts from the previous request.
+
+**Fix:**
+- Added `produced: dict[str, list[Path]]` field to `GenContext` (default empty dict). Tracks which files were generated in THIS request.
+- `app/main.py` populates `ctx.produced[fmt]` after each adapter's `generate()` call.
+- `BundleAdapter.generate()` now checks `ctx.produced.get("step/pdf")` instead of `step_path.exists()`. If the file was not produced this request, it calls the peer adapter to regenerate it.
+- The DWG adapter's same-request DXF reuse pattern is unaffected (DWG checks `dxf_path.exists()` which still works since DXF was produced this request).
+
+**Test evidence:**
+- `tests/test_bundle.py::TestBundlePerRequestArtifacts::test_bundle_regenerates_pdf_when_not_produced_this_request` — writes sentinel bytes to disk before bundle call; asserts bundled PDF starts with `%PDF`, not the sentinel.
+- `tests/test_bundle.py::TestBundlePerRequestArtifacts::test_bundle_reuses_pdf_when_produced_this_request` — asserts PDF mtime unchanged when `ctx.produced` already has the PDF path.
+- 163 service tests pass.
+
+---
+
 ## Fix 4 — Download anchor hardening (geometry.ts + OutputTray.tsx)
 
 **Finding:** Both `downloadGeneratedFile` (geometry.ts ~line 112) and `downloadSnapshot`

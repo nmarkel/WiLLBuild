@@ -497,3 +497,137 @@ class TestBundleIntegration:
         assert resp.status_code == 200
         body = resp.json()
         assert body["adapters"].get("bundle") is True
+
+
+# ---------------------------------------------------------------------------
+# Test: bundle regenerates PDF when not produced in the same request
+# ---------------------------------------------------------------------------
+
+class TestBundlePerRequestArtifacts:
+    """Verify the bundle does not embed stale on-disk PDFs from previous requests.
+
+    If a PDF exists on disk from request A (with render_png=bytes_A), a
+    subsequent bundle request B (with render_png=bytes_B) must embed a freshly
+    generated PDF (reflecting bytes_B), NOT the stale on-disk bytes_A PDF.
+
+    We verify this by:
+      1. Pre-creating a PDF on disk using ctx_a (with a different render_png).
+      2. Calling the bundle adapter with ctx_b (render_png=_TINY_PNG) and
+         produced={} (empty — the PDF was NOT produced this request).
+      3. Asserting the bundle uses a freshly generated PDF (different bytes
+         from the pre-created one, since render_png differs).
+    """
+
+    def test_bundle_regenerates_pdf_when_not_produced_this_request(
+        self, tmp_path, cat, default_cfg, built_assembly
+    ):
+        """Bundle must call the PDF adapter (not reuse disk file) when pdf not in ctx.produced.
+
+        Verification: write a sentinel byte sequence at the start of the on-disk PDF
+        before calling the bundle.  If the bundle reuses the disk file the embedded
+        PDF will start with the sentinel; if it regenerates, the embedded PDF will
+        start with %PDF (a valid PDF header), not the sentinel.
+        """
+        from app.adapters.base import GenContext
+
+        bn = base_name(cat, default_cfg)
+        pdf_path = tmp_path / f"{bn}.pdf"
+
+        # --- Write a deliberately invalid "stale" PDF to disk with a sentinel header ---
+        sentinel = b"STALE_SENTINEL_SHOULD_NOT_APPEAR_IN_BUNDLE"
+        pdf_path.write_bytes(sentinel + b"\x00" * 100)
+
+        summary = {
+            "parts": [
+                {"slot": "fixture", "id": default_cfg.fixture, "name": "GVX Pendant", "productUrl": ""},
+                {"slot": "arm", "id": default_cfg.arm, "name": "Shepherds Hook", "productUrl": ""},
+                {"slot": "pole", "id": default_cfg.pole, "name": "Alum Pole 20ft", "productUrl": ""},
+                {"slot": "baseCover", "id": default_cfg.baseCover, "name": "Fluted Base Cover", "productUrl": ""},
+            ],
+            "finish": "Matte Black",
+            "finish_ral": "RAL 9005",
+            "dims": {
+                "overall_height_mm": 6200.0,
+                "pole_height_mm": 6096.0,
+                "mounting_height_mm": 6000.0,
+                "arm_reach_mm": 610.0,
+                "base_diameter_mm": 152.0,
+            },
+        }
+
+        # Generate bundle with produced={} — PDF was NOT produced this request.
+        # The bundle adapter must regenerate the PDF (calling pdf_adapter.generate)
+        # rather than reading the stale sentinel bytes from disk.
+        ctx = GenContext(
+            catalog=cat,
+            cfg=default_cfg,
+            out_dir=tmp_path,
+            base_name=bn,
+            assembly=built_assembly,
+            render_png=None,
+            summary=summary,
+            produced={},  # PDF not produced this request
+        )
+        adapter = BundleAdapter()
+        paths = adapter.generate(ctx)
+
+        # Extract the PDF from the bundle and verify it is a real PDF (not sentinel)
+        with zipfile.ZipFile(paths[0]) as zf:
+            bundled_pdf_bytes = zf.read(f"{bn}.pdf")
+
+        assert not bundled_pdf_bytes.startswith(sentinel[:20]), (
+            "Bundle embedded the stale sentinel bytes rather than regenerating the PDF. "
+            "bundle_adapter must call the pdf adapter when 'pdf' is not in ctx.produced."
+        )
+        assert bundled_pdf_bytes[:4] == b"%PDF", (
+            f"Bundled PDF does not start with %PDF magic: {bundled_pdf_bytes[:20]!r}"
+        )
+
+    def test_bundle_reuses_pdf_when_produced_this_request(
+        self, tmp_path, cat, default_cfg, built_assembly
+    ):
+        """When the PDF was produced in THIS request (ctx.produced has it), reuse it."""
+        from app.adapters.base import GenContext
+        from app.adapters.pdf_adapter import PdfAdapter
+
+        bn = base_name(cat, default_cfg)
+        summary = {
+            "parts": [],
+            "finish": "Matte Black",
+            "finish_ral": "",
+            "dims": {
+                "overall_height_mm": 6200.0,
+                "pole_height_mm": 6096.0,
+                "mounting_height_mm": 6000.0,
+                "arm_reach_mm": 610.0,
+                "base_diameter_mm": 152.0,
+            },
+        }
+
+        ctx = GenContext(
+            catalog=cat,
+            cfg=default_cfg,
+            out_dir=tmp_path,
+            base_name=bn,
+            assembly=built_assembly,
+            render_png=None,
+            summary=summary,
+            produced={},
+        )
+
+        # Generate PDF first (simulating main.py dispatch before bundle)
+        pdf_adapter = PdfAdapter()
+        pdf_paths = pdf_adapter.generate(ctx)
+        ctx.produced["pdf"] = pdf_paths
+
+        pdf_mtime_before = pdf_paths[0].stat().st_mtime
+
+        # Generate bundle — should reuse the already-produced PDF
+        adapter = BundleAdapter()
+        adapter.generate(ctx)
+
+        # PDF on disk must NOT have been overwritten (mtime unchanged)
+        pdf_mtime_after = pdf_paths[0].stat().st_mtime
+        assert pdf_mtime_after == pdf_mtime_before, (
+            "Bundle adapter regenerated the PDF even though it was already in ctx.produced"
+        )

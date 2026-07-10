@@ -204,6 +204,73 @@ class TestDxfTitleBlock:
             f"Texts: {texts[:5]}"
         )
 
+    def test_border_encloses_all_elevation_entities(self, cat, default_cfg, tmp_path, route):
+        """The outer border rectangle must enclose every non-border/titleblock entity.
+
+        The elevation (silhouette polylines + dimension lines) must all lie
+        inside the border, proving the title block is positioned at the correct
+        scale relative to the elevation geometry.
+        """
+        dxf_path = _build_dxf(cat, default_cfg, tmp_path, route)
+        doc = ezdxf.readfile(str(dxf_path))
+        msp = doc.modelspace()
+
+        # Collect all LWPOLYLINE entity bounding points to find border extents.
+        # The border is the largest closed lwpolyline (4 points).
+        polys = [e for e in msp if e.dxftype() == "LWPOLYLINE"]
+        # Find the border: it's the outermost rectangle; largest area closed poly.
+        border_rect = None
+        border_area = 0.0
+        for poly in polys:
+            pts = list(poly.get_points())
+            if len(pts) < 4:
+                continue
+            xs = [p[0] for p in pts]
+            ys = [p[1] for p in pts]
+            w = max(xs) - min(xs)
+            h = max(ys) - min(ys)
+            area = w * h
+            if area > border_area:
+                border_area = area
+                border_rect = (min(xs), min(ys), max(xs), max(ys))
+
+        assert border_rect is not None, "No border rectangle found in DXF"
+        bx0, by0, bx1, by1 = border_rect
+
+        # Collect all LINE start/end points from silhouette and dimensions.
+        line_pts: list[tuple[float, float]] = []
+        for e in msp:
+            if e.dxftype() == "LINE":
+                line_pts.append((e.dxf.start.x, e.dxf.start.y))
+                line_pts.append((e.dxf.end.x, e.dxf.end.y))
+            elif e.dxftype() == "LWPOLYLINE":
+                for p in e.get_points():
+                    line_pts.append((p[0], p[1]))
+
+        # Filter to elevation points (exclude title-block geometry in right strip).
+        # Title block lives roughly in the right 4000mm of the border.
+        # Any point at X > (bx1 - 5000) is considered title-block territory.
+        tb_left_approx = bx1 - 5000.0
+        elevation_pts = [(x, y) for x, y in line_pts if x < tb_left_approx]
+
+        assert elevation_pts, "No elevation points found to test against border"
+
+        # All elevation points must be inside the border with 1mm tolerance.
+        TOL = 1.0
+        for x, y in elevation_pts:
+            assert x >= bx0 - TOL, (
+                f"Elevation point X={x:.1f} is outside border left={bx0:.1f}"
+            )
+            assert x <= bx1 + TOL, (
+                f"Elevation point X={x:.1f} is outside border right={bx1:.1f}"
+            )
+            assert y >= by0 - TOL, (
+                f"Elevation point Y={y:.1f} is outside border bottom={by0:.1f}"
+            )
+            assert y <= by1 + TOL, (
+                f"Elevation point Y={y:.1f} is outside border top={by1:.1f}"
+            )
+
 
 # ---------------------------------------------------------------------------
 # Test: route parity (boundary proof — DoD 8)
