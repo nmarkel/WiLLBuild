@@ -70,6 +70,25 @@ describe('generateOutputs', () => {
     await expect(generateOutputs(mockConfig, ['step'])).rejects.toThrow('500')
   })
 
+  it('returns an empty files array when the service returns files: []', async () => {
+    // The empty-files guard lives in the component (runDelivery), not in generateOutputs itself.
+    // This test verifies that generateOutputs faithfully surfaces files: [] so the component
+    // can detect the silent failure and throw.
+    const serverResponse = {
+      configHash: 'abc123',
+      files: [],
+      warnings: ['DWG adapter unavailable'],
+    }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => serverResponse,
+    }))
+
+    const result = await generateOutputs(mockConfig, ['dwg'])
+    expect(result.files).toHaveLength(0)
+    expect(result.warnings).toEqual(['DWG adapter unavailable'])
+  })
+
   it('strips the data-URL prefix from renderPng before sending', async () => {
     let capturedBody: Record<string, unknown> = {}
     vi.stubGlobal('fetch', vi.fn().mockImplementation((_url: unknown, opts: { body: string }) => {

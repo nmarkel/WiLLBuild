@@ -144,7 +144,7 @@ function SinglePartCanvas({
  * - No `placeholder` (tier 3)       → PhotoCard + OutputTray ['pdf'] (no PNG card)
  */
 export function ProductViewer({ part, catalog }: Props) {
-  const defaultFinish = part.finishes[0] ?? catalog.finishes[0]?.id ?? ''
+  const defaultFinish = part.finishes.length > 0 ? part.finishes[0] : ''
   const [selectedFinish, setSelectedFinish] = useState(defaultFinish)
   const [configId] = useState(() => crypto.randomUUID())
   const has3D = Boolean(part.placeholder)

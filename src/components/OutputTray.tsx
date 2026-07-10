@@ -7,6 +7,7 @@ import {
   availableFormats,
   generateOutputs,
   downloadGeneratedFile,
+  GeometryError,
   type OutputFormat,
 } from '../lib/geometry'
 
@@ -102,7 +103,9 @@ async function downloadSnapshot(configId: string) {
   const a = document.createElement('a')
   a.href = url
   a.download = `will-config-${configId.slice(0, 8)}.png`
+  document.body.appendChild(a)
   a.click()
+  document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 
@@ -165,13 +168,15 @@ interface DeliverableCardProps {
   available: boolean
   state: CardState
   availFormats: Set<string>
+  /** Effective format to request — may differ from def.format (e.g. dwg replaces dxf). */
+  requestFormat: OutputFormat | null
   onRequest: (format: OutputFormat) => void
 }
 
-function DeliverableCard({ def, available, state, availFormats, onRequest }: DeliverableCardProps) {
+function DeliverableCard({ def, available, state, availFormats, requestFormat, onRequest }: DeliverableCardProps) {
   const disabled = def.alwaysDisabled || !available || state.phase === 'working'
 
-  // Build the format label — 2D Drawing mentions DWG when the service provides it.
+  // Build the format label — 2D Drawing shows DWG when the service provides it, DXF otherwise.
   let formatLabel = def.formatLabel
   if (def.format === 'dxf') {
     formatLabel = availFormats.has('dwg') ? 'DWG' : 'DXF · DWG on request'
@@ -195,8 +200,8 @@ function DeliverableCard({ def, available, state, availFormats, onRequest }: Del
       className={classNames}
       disabled={disabled}
       onClick={() => {
-        if (def.format && available && !def.alwaysDisabled) {
-          onRequest(def.format)
+        if (requestFormat && available && !def.alwaysDisabled) {
+          onRequest(requestFormat)
         }
       }}
     >
@@ -288,6 +293,16 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
           })
         }
 
+        // Treat an empty file list as a failure — the service returned 200 but
+        // no adapter produced output (adapter error surfaced only in warnings).
+        if (response.files.length === 0) {
+          const detail =
+            response.warnings.length > 0
+              ? response.warnings.join(' ')
+              : "The service couldn't generate this file."
+          throw new GeometryError(detail)
+        }
+
         // Download each returned file
         for (const file of response.files) {
           await downloadGeneratedFile(file)
@@ -370,15 +385,20 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
         {DELIVERABLE_DEFS.filter(
           (def) => !allowedFormats || (def.format !== null && allowedFormats.includes(def.format)),
         ).map((def) => {
-          const format = def.format
-          const available = format !== null && !def.alwaysDisabled && availFormats.has(format)
+          // For the 2D Drawing card: request dwg when available, dxf otherwise.
+          const requestFormat: OutputFormat | null =
+            def.format === 'dxf' && availFormats.has('dwg') ? 'dwg' : def.format
+          const cardKey = requestFormat ?? 'ies'
+          const available =
+            requestFormat !== null && !def.alwaysDisabled && availFormats.has(requestFormat)
           return (
             <DeliverableCard
-              key={format ?? 'ies'}
+              key={cardKey}
               def={def}
               available={available}
-              state={getCardState(format ?? 'ies')}
+              state={getCardState(cardKey)}
               availFormats={availFormats}
+              requestFormat={requestFormat}
               onRequest={requestDelivery}
             />
           )
