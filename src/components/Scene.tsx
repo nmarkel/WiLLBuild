@@ -165,11 +165,11 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       />
 
       {/* Own boundary: the HDRI streams from /public and must not suspend the scene.
-          Ground projection keeps the assembly planted at night; the night HDRI
-          (moonless_golf) is dimmed so the luminaire becomes the dominant light. */}
+          Day: sunny park path (sunny_vondelpark). Night: suburban street
+          (preller_drive), dimmed so the luminaire becomes the dominant light. */}
       <Suspense fallback={null}>
         <Environment
-          files={import.meta.env.BASE_URL + (night ? 'hdri/moonless_golf_2k.hdr' : 'hdri/abandoned_parking_2k.hdr')}
+          files={import.meta.env.BASE_URL + (night ? 'hdri/preller_drive_2k.hdr' : 'hdri/sunny_vondelpark_2k.hdr')}
           background
           ground={{ height: 5, radius: 40, scale: 70 }}
           environmentIntensity={night ? 0.25 : 1}
@@ -178,11 +178,12 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       </Suspense>
 
       {/* The projected skybox is unlit — a real mesh disc catches the luminaire's
-          warm light pool on the ground. Darkened to #17181c so the pool reads. */}
+          warm light pool on the ground. Dark grass tone so the disc blends into
+          the preller_drive lawn while keeping the pool readable. */}
       {night && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} receiveShadow>
           <circleGeometry args={[24, 64]} />
-          <meshStandardMaterial color="#17181c" roughness={0.95} metalness={0} />
+          <meshStandardMaterial color="#161a10" roughness={0.95} metalness={0} />
         </mesh>
       )}
 
