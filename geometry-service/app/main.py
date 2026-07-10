@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from .adapters import REGISTRY, DWG_WARNING
 from .adapters.base import GenContext
-from .catalog import load_catalog, validate_config
+from .catalog import load_catalog, validate_config, is_standalone_config
 from .kit.assembly import build_assembly
 from .models import GenerateRequest, GenerateResponse
 from .naming import base_name, config_hash
@@ -81,6 +81,19 @@ def generate(req: GenerateRequest) -> GenerateResponse:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
+    # --- Standalone config: only 'pdf' format is permitted ---
+    _is_standalone = is_standalone_config(req.config)
+    if _is_standalone:
+        non_pdf = [f for f in req.formats if f != "pdf"]
+        if non_pdf:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "only spec sheets are available for standalone products; "
+                    f"unsupported formats: {non_pdf}"
+                ),
+            )
+
     # --- Guard: all requested formats must have a registered adapter ---
     # Exception: "dwg" without ODA is demoted to a warning (not a 422 error)
     # so the caller still gets the DXF output.
@@ -96,7 +109,8 @@ def generate(req: GenerateRequest) -> GenerateResponse:
                 )
 
     # --- Build assembly once if any geometric format is requested ---
-    needs_geometry = any(fmt in _GEOMETRIC_FORMATS for fmt in req.formats)
+    # Standalone configs have no assembly (no pole/arm/baseCover).
+    needs_geometry = not _is_standalone and any(fmt in _GEOMETRIC_FORMATS for fmt in req.formats)
     assembly = build_assembly(catalog, req.config) if needs_geometry else None
 
     # --- Build summary (part names from catalog, finish, dims) ---
@@ -109,10 +123,13 @@ def generate(req: GenerateRequest) -> GenerateResponse:
             "arm_reach_mm": assembly.dims.arm_reach,
             "base_diameter_mm": assembly.dims.base_diameter,
         }
-    finish_map = {f["id"]: f.get("name", f["id"]) for f in catalog.get("finishes", [])}
-    summary["finish"] = finish_map.get(req.config.finish, req.config.finish)
+    finish_map = {f["id"]: f for f in catalog.get("finishes", [])}
+    finish_obj = finish_map.get(req.config.finish, {})
+    summary["finish"] = finish_obj.get("name", req.config.finish) if finish_obj else req.config.finish
+    summary["finish_ral"] = finish_obj.get("ral", "") if finish_obj else ""
 
     # --- Add parts with names, slot, and productUrl for downstream adapters ---
+    # For standalone configs, only the fixture slot is populated; skip empty slots.
     parts_list = []
     part_map = {p["id"]: p for p in catalog.get("parts", [])}
     for slot_field, slot_name in [
@@ -122,6 +139,8 @@ def generate(req: GenerateRequest) -> GenerateResponse:
         ("baseCover", "baseCover"),
     ]:
         part_id = getattr(req.config, slot_field)
+        if not part_id:
+            continue  # standalone: arm/pole/baseCover are ''
         part_obj = part_map.get(part_id)
         if part_obj:
             parts_list.append({

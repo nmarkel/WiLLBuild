@@ -56,18 +56,47 @@ def _can_host(host: dict, guest: dict) -> bool:
     return False
 
 
+def is_standalone_config(cfg: PoleConfig) -> bool:
+    """Return True when the config represents a standalone single-product request.
+
+    A standalone config has pole, arm, and baseCover all set to '' and a non-empty
+    fixture id.  Finish may be '' (no finish selected) or a valid finish id.
+    """
+    return cfg.pole == "" and cfg.arm == "" and cfg.baseCover == "" and cfg.fixture != ""
+
+
 def validate_config(catalog: dict, cfg: PoleConfig) -> None:
     """Validate a PoleConfig against the catalog.
 
     Raises ValueError with a descriptive message listing all problems found.
-    Checks:
+
+    For full assembly configs, checks:
       1. All part ids exist in catalog
       2. Finish id exists in catalog
       3. Socket-compat: arm hosts fixture, pole hosts arm, pole hosts baseCover
+
+    For standalone configs (pole == arm == baseCover == ''):
+      1. fixture id exists in catalog (any slot, including 'standalone')
+      2. finish is either '' or a valid finish id
+      No socket-compat checks (no assembly).
     """
     problems: list[str] = []
 
-    # --- Resolve parts (collect failures but continue to check compat) ---
+    # --- Standalone path: single product, no assembly ---
+    if is_standalone_config(cfg):
+        try:
+            part(catalog, cfg.fixture)
+        except KeyError:
+            problems.append(f"Unknown fixture id: {cfg.fixture!r}")
+        if cfg.finish != "":
+            finish_ids = {f["id"] for f in catalog.get("finishes", [])}
+            if cfg.finish not in finish_ids:
+                problems.append(f"Unknown finish id: {cfg.finish!r}")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return
+
+    # --- Full assembly path ---
     fixture_part: dict | None = None
     arm_part: dict | None = None
     pole_part: dict | None = None
