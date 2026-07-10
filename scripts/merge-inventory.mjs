@@ -236,6 +236,16 @@ lines.push('| **P1** | M1 / Task 6 | WiLLstudio assembly-parts (arms, poles, bas
 lines.push('| **P2** | M2 | WiLLstudio standalone luminaires (bollard, wall mount, ceiling, flood) — photo-card display only; no wizard role. |');
 lines.push('| **P3** | M3+ | NAFCO, WiLLsport, WiLLev, WiLLcloud products — catalog reference / product-finder; photo-card display only. |');
 lines.push('');
+lines.push('## Task 6 Modeling Decisions (Workstream G — P1 tier-2 promotion)');
+lines.push('');
+lines.push('All P1 WiLLstudio pole-system assembly-parts were promoted from `standalone`/tier-3 to their wizard slot at tier 2 with `tube`/`pole`/`baseCover` parametric placeholders (meters, +Y up, origin at the lower attachment point). Notes:');
+lines.push('');
+lines.push('- **Multi-head arms are OUT of scope for 0.3.** Crossarms (CR2, FR2), bullhorn brackets, side-shepherds-hook, suspension and supported arms are physically double/quad-headed, but each promoted arm exposes exactly **one** fixture socket (single-tube sweep, socket at the tube tip). Multi-head fan-out is deferred to a later phase.');
+lines.push('- **Arm fixture-socket types by host:** crossarms + bullhorn + supported arms expose `tenon-2-3/8` (host post-top DRX/TEX); side-shepherds-hook + suspension expose `pendant` (hang GVX); HSX decorative upsweep exposes `arm-mount` (hosts MVX coach, mirroring the curated `upsweep`).');
+lines.push('- **Poles** use the `pole` (tapered-cylinder) kind at a representative ~4.27 m / 14 ft height, top socket `tenon-3in` at the pole height, base socket `base-collar` at the origin. The fluted steel pole stays a plain taper at concept level.');
+lines.push('- **DEMOTED — Light Pole Bolt Circle Adapters:** judged an *installation accessory* (adapts a pole base to a non-matching anchor bolt circle), not a configurable wizard part. Kept `tier: 3` / photo-card and set `productClass: standalone`.');
+lines.push('- Every promoted pole hosts every arm (`tenon-3in` top) and every base cover (`base-collar` base); the promoted base cover fits every pole. This grows the geometry-service valid-combo matrix from 48 to 561.');
+lines.push('');
 lines.push('## Product Coverage');
 lines.push('');
 lines.push('| Name | Line | Category | Class | Tier | Status |');

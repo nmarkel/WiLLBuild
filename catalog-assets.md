@@ -20,6 +20,16 @@ To find upgrade candidates: `catalog.parts.filter(p => p.productClass === "assem
 | **P2** | M2 | WiLLstudio standalone luminaires (bollard, wall mount, ceiling, flood) — photo-card display only; no wizard role. |
 | **P3** | M3+ | NAFCO, WiLLsport, WiLLev, WiLLcloud products — catalog reference / product-finder; photo-card display only. |
 
+## Task 6 Modeling Decisions (Workstream G — P1 tier-2 promotion)
+
+All P1 WiLLstudio pole-system assembly-parts were promoted from `standalone`/tier-3 to their wizard slot at tier 2 with `tube`/`pole`/`baseCover` parametric placeholders (meters, +Y up, origin at the lower attachment point). Notes:
+
+- **Multi-head arms are OUT of scope for 0.3.** Crossarms (CR2, FR2), bullhorn brackets, side-shepherds-hook, suspension and supported arms are physically double/quad-headed, but each promoted arm exposes exactly **one** fixture socket (single-tube sweep, socket at the tube tip). Multi-head fan-out is deferred to a later phase.
+- **Arm fixture-socket types by host:** crossarms + bullhorn + supported arms expose `tenon-2-3/8` (host post-top DRX/TEX); side-shepherds-hook + suspension expose `pendant` (hang GVX); HSX decorative upsweep exposes `arm-mount` (hosts MVX coach, mirroring the curated `upsweep`).
+- **Poles** use the `pole` (tapered-cylinder) kind at a representative ~4.27 m / 14 ft height, top socket `tenon-3in` at the pole height, base socket `base-collar` at the origin. The fluted steel pole stays a plain taper at concept level.
+- **DEMOTED — Light Pole Bolt Circle Adapters:** judged an *installation accessory* (adapts a pole base to a non-matching anchor bolt circle), not a configurable wizard part. Kept `tier: 3` / photo-card and set `productClass: standalone`.
+- Every promoted pole hosts every arm (`tenon-3in` top) and every base cover (`base-collar` base); the promoted base cover fits every pole. This grows the geometry-service valid-combo matrix from 48 to 561.
+
 ## Product Coverage
 
 | Name | Line | Category | Class | Tier | Status |
@@ -101,31 +111,31 @@ To find upgrade candidates: `catalog.parts.filter(p => p.productClass === "assem
 | WiLLsport® RPCX Sports & Large Area Remote Power Control | WiLLsport | fixture | standalone | 3 | photo-card |
 | WiLLsport® Sports & Large Area Brackets & Arms | WiLLsport | fixture | standalone | 3 | photo-card |
 | WiLLsport® Wrestling Dual Light Packages | WiLLsport | fixture | standalone | 3 | photo-card |
-| Aluminum Decorative Bullhorn Brackets, Round Pole Mount | WiLLstudio | arm | assembly-part | 3 | photo-card |
-| Aluminum Light Pole Base Covers | WiLLstudio | base-cover | assembly-part | 3 | photo-card |
+| Aluminum Decorative Bullhorn Brackets, Round Pole Mount | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
+| Aluminum Light Pole Base Covers | WiLLstudio | base-cover | assembly-part | 2 | 3D parametric |
 | Aluminum Transformer Bases | WiLLstudio | accessory | standalone | 3 | photo-card |
 | Anchor Bolt Kit, 0.625" x 16" x 2", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
 | Anchor Bolt Kit, 0.75" x 17" x 3", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
 | Anchor Bolt Kit, 1.0" x 36" x 4", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Huntington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Light Pole Bolt Circle Adapters | WiLLstudio | pole | assembly-part | 3 | photo-card |
+| Huntington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Light Pole Bolt Circle Adapters | WiLLstudio | pole | standalone | 3 | photo-card |
 | Light Pole Top Caps | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Round Tapered Fiberglass Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Round Tapered Fiberglass Direct Burial Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Round Tapered Steel Fluted Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Sacramento Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Washington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| Williamsburg Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 3 | photo-card |
-| WiLLstudio® CR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 3 | photo-card |
+| Round Tapered Fiberglass Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Round Tapered Fiberglass Direct Burial Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel Fluted Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Sacramento Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Washington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| Williamsburg Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
+| WiLLstudio® CR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
 | WiLLstudio® DWX Flood & Spot | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® FR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 3 | photo-card |
-| WiLLstudio® HSX Decorative Upsweep Arms | WiLLstudio | arm | assembly-part | 3 | photo-card |
+| WiLLstudio® FR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
+| WiLLstudio® HSX Decorative Upsweep Arms | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
 | WiLLstudio® Pendant Ceiling Mounts | WiLLstudio | fixture | standalone | 3 | photo-card |
 | WiLLstudio® RXB / SXB Bollard | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® Side Shepherds Hook Pole Top Brackets | WiLLstudio | arm | assembly-part | 3 | photo-card |
-| WiLLstudio® Supported Decorative Arms | WiLLstudio | fixture | assembly-part | 3 | photo-card |
-| WiLLstudio® Suspension Arm Pole Top Brackets | WiLLstudio | arm | assembly-part | 3 | photo-card |
+| WiLLstudio® Side Shepherds Hook Pole Top Brackets | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
+| WiLLstudio® Supported Decorative Arms | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
+| WiLLstudio® Suspension Arm Pole Top Brackets | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
 | WiLLstudio® WM1 Single Wall Mount Pendant | WiLLstudio | fixture | standalone | 3 | photo-card |
 | WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial | WiLLstudio | fixture | standalone | 3 | photo-card |
 
-_Generated by scripts/merge-inventory.mjs (Phase 0.3) — 103 total parts (15 tier-2 curated + 88 tier-3 inventory)_
+_Generated by scripts/merge-inventory.mjs (Phase 0.3) — 103 total parts (30 tier-2 curated + 73 tier-3 inventory)_

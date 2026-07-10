@@ -19,7 +19,7 @@ DoD 7 requirements
 Parametrisation
 ---------------
 The ``all_valid_combos`` session fixture (from conftest.py) enumerates
-48 combos.  We parametrise over formats × combos → 48 × 4 = 192 tests.
+561 combos.  We parametrise over formats × combos → 561 × 4 = 2244 tests.
 Each test generates one format for one combo, asserts zero warnings that
 look like errors, and times itself.
 """

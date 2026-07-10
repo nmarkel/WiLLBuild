@@ -2439,17 +2439,54 @@
     },
     {
       "id": "aluminum-decorative-bullhorn-brackets-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Decorative Bullhorn Brackets, Round Pole Mount",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "tenon-2-3/8",
+          "position": [
+            0.6,
+            0.3,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/nafco-decorative-bullhorn-south-river.jpg?v=1666808980",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.03,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.6,
+            0.15,
+            0
+          ],
+          [
+            0.6,
+            0.3,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "aluminum",
         "decorative",
@@ -2460,21 +2497,35 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-decorative-bullhorn-brackets-round-pole-mount",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "aluminum-light-pole-base-covers",
-      "slot": "standalone",
+      "slot": "baseCover",
       "line": "WiLLstudio",
       "category": "base-cover",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Light Pole Base Covers",
       "family": "WiLLstudio Base Covers",
+      "mount": "base-collar",
+      "sockets": {},
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/base-cover-round-pole-1.jpg?v=1668625923",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.35,
+        "radiusTopM": 0.11,
+        "radiusBottomM": 0.17
+      },
       "keywords": [
         "aluminum",
         "light",
@@ -2483,7 +2534,13 @@
         "covers"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-light-pole-base-covers",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "aluminum-transformer-bases",
@@ -2585,17 +2642,42 @@
     },
     {
       "id": "huntington-decorative-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Huntington Decorative Aluminum Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/huntington-fluted-base.jpg?v=1666238088",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.06,
+        "radiusBottomM": 0.09
+      },
       "keywords": [
         "huntington",
         "decorative",
@@ -2606,14 +2688,20 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/huntington-decorative-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "light-pole-bolt-circle-adapters",
       "slot": "standalone",
       "line": "WiLLstudio",
       "category": "pole",
-      "productClass": "assembly-part",
+      "productClass": "standalone",
       "dropShip": true,
       "tier": 3,
       "name": "Light Pole Bolt Circle Adapters",
@@ -2655,17 +2743,42 @@
     },
     {
       "id": "round-tapered-fiberglass-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Fiberglass Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-fiberglass-anchor-base-light-ploe-1.jpg?v=1666725589",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.05,
+        "radiusBottomM": 0.08
+      },
       "keywords": [
         "round",
         "tapered",
@@ -2676,21 +2789,52 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-fiberglass-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "round-tapered-fiberglass-direct-burial-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Fiberglass Direct Burial Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-fiberglass-direct-burial-light-ploe-1.jpg?v=1666725863",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.05,
+        "radiusBottomM": 0.08
+      },
       "keywords": [
         "round",
         "tapered",
@@ -2701,21 +2845,52 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-fiberglass-direct-burial-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "round-tapered-steel-fluted-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Steel Fluted Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-steel-fluted2.jpg?v=1666800153",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.055,
+        "radiusBottomM": 0.085
+      },
       "keywords": [
         "round",
         "tapered",
@@ -2727,21 +2902,52 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-steel-fluted-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "sacramento-decorative-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Sacramento Decorative Aluminum Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/sacramento-fluted-base.jpg?v=1666237179",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.06,
+        "radiusBottomM": 0.09
+      },
       "keywords": [
         "sacramento",
         "decorative",
@@ -2752,21 +2958,52 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/sacramento-decorative-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "washington-decorative-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Washington Decorative Aluminum Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/washington-fluted-base.jpg?v=1666237658",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.06,
+        "radiusBottomM": 0.09
+      },
       "keywords": [
         "washington",
         "decorative",
@@ -2777,21 +3014,52 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/washington-decorative-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "williamsburg-decorative-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLstudio",
       "category": "pole",
       "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Williamsburg Decorative Aluminum Anchor Base Light Poles",
       "family": "WiLLstudio Poles",
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "tenon-3in",
+          "position": [
+            0,
+            4.27,
+            0
+          ]
+        },
+        "base": {
+          "type": "base-collar",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/williamsburg-fluted-base.jpg?v=1666238297",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 4.27,
+        "radiusTopM": 0.06,
+        "radiusBottomM": 0.09
+      },
       "keywords": [
         "williamsburg",
         "decorative",
@@ -2802,28 +3070,77 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/williamsburg-decorative-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-cr2-decorative-crossarm",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® CR2 Decorative Crossarm",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "tenon-2-3/8",
+          "position": [
+            0.55,
+            0.3,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/CR2-45.jpg?v=1752000844",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.028,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.55,
+            0.15,
+            0
+          ],
+          [
+            0.55,
+            0.3,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "cr2",
         "decorative",
         "crossarm"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-cr2-decorative-crossarm",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-dwx-flood-spot",
@@ -2848,38 +3165,128 @@
     },
     {
       "id": "willstudio-fr2-decorative-crossarm",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® FR2 Decorative Crossarm",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "tenon-2-3/8",
+          "position": [
+            0.62,
+            0.3,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/FR2-45.jpg?v=1752000911",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.028,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.62,
+            0.15,
+            0
+          ],
+          [
+            0.62,
+            0.3,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "fr2",
         "decorative",
         "crossarm"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-fr2-decorative-crossarm",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-hsx-decorative-upsweep-arms",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® HSX Decorative Upsweep Arms",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "side": {
+          "type": "arm-mount",
+          "position": [
+            0.5,
+            0.48,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/HS1-HS2-deco-brackets_eb28fcd8-f505-40ae-855a-b060ad97948e.jpg?v=1752001030",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.03,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.14,
+            0.02,
+            0
+          ],
+          [
+            0.3,
+            0.08,
+            0
+          ],
+          [
+            0.44,
+            0.2,
+            0
+          ],
+          [
+            0.5,
+            0.34,
+            0
+          ],
+          [
+            0.5,
+            0.48,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "hsx",
         "decorative",
@@ -2887,7 +3294,13 @@
         "arms"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-hsx-decorative-upsweep-arms",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-pendant-ceiling-mounts",
@@ -2933,17 +3346,64 @@
     },
     {
       "id": "willstudio-side-shepherds-hook-pole-top-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® Side Shepherds Hook Pole Top Brackets",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "pendant",
+          "position": [
+            0.6,
+            0.42,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ss-willstudio-brackets_25e084a2-28de-49b5-bfd8-35ce373c91ee.jpg?v=1752000129",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.028,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.55,
+            0
+          ],
+          [
+            0.14,
+            0.76,
+            0
+          ],
+          [
+            0.44,
+            0.78,
+            0
+          ],
+          [
+            0.6,
+            0.6,
+            0
+          ],
+          [
+            0.6,
+            0.42,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "side",
         "shepherds",
@@ -2953,42 +3413,128 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-side-shepherds-hook-pole-top-brackets",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-supported-decorative-arms",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® Supported Decorative Arms",
       "family": "WiLLstudio Fixtures",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "tenon-2-3/8",
+          "position": [
+            0.6,
+            0.4,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SD1-2.jpg?v=1777556810",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.032,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.15,
+            0
+          ],
+          [
+            0.5,
+            0.24,
+            0
+          ],
+          [
+            0.6,
+            0.4,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "supported",
         "decorative",
         "arms"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-supported-decorative-arms",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-suspension-arm-pole-top-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "WiLLstudio",
       "category": "arm",
       "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® Suspension Arm Pole Top Brackets",
       "family": "WiLLstudio Brackets & Arms",
+      "mount": "tenon-3in",
+      "sockets": {
+        "fixture": {
+          "type": "pendant",
+          "position": [
+            0.7,
+            0.14,
+            0
+          ]
+        }
+      },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ar-willstudio-brackets_7d06f83f-56ca-4c48-8c00-8399b7c911d8.jpg?v=1752000488",
       "thumbnail": null,
       "model": null,
+      "placeholder": {
+        "kind": "tube",
+        "radiusM": 0.026,
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.14,
+            0
+          ],
+          [
+            0.7,
+            0.14,
+            0
+          ]
+        ]
+      },
       "keywords": [
         "suspension",
         "arm",
@@ -2997,7 +3543,13 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-suspension-arm-pole-top-brackets",
-      "finishes": []
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ]
     },
     {
       "id": "willstudio-wm1-single-wall-mount-pendant",

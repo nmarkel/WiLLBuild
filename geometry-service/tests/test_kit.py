@@ -93,8 +93,13 @@ def _built(catalog):
 
 
 def test_combo_count(catalog):
-    """Sanity: the kit enumerates the expected 48 valid combos."""
-    assert len(valid_combos(catalog)) == 48
+    """Sanity: the kit enumerates the expected 561 valid combos.
+
+    Grew from 48 after Workstream G promoted the P1 pole-system parts
+    (7 arms, 7 poles, 1 base cover) into the wizard: 17 fixture-arm pairs
+    x 11 poles x 3 base covers = 561.
+    """
+    assert len(valid_combos(catalog)) == 561
 
 
 def test_every_combo_has_positive_volume(catalog, _built):
