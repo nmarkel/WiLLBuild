@@ -368,7 +368,7 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
 
         {/* ---- Geometry-service deliverables ---- */}
         {DELIVERABLE_DEFS.filter(
-          (def) => !allowedFormats || def.format === null || allowedFormats.includes(def.format),
+          (def) => !allowedFormats || (def.format !== null && allowedFormats.includes(def.format)),
         ).map((def) => {
           const format = def.format
           const available = format !== null && !def.alwaysDisabled && availFormats.has(format)

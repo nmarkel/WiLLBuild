@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef, useState, useMemo, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -67,14 +67,19 @@ function SinglePartCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const finishDef = catalog.finishes.find((f) => f.id === selectedFinish) ?? catalog.finishes[0]
 
-  const material = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(finishDef?.hex ?? '#888888'),
-    roughness: finishDef?.roughness ?? 0.6,
-    metalness: finishDef?.metalness ?? 0.2,
-    clearcoat: finishDef?.clearcoat ?? 0,
-    clearcoatRoughness: finishDef?.clearcoatRoughness ?? 0.5,
-    envMapIntensity: finishDef?.envMapIntensity ?? 1,
-  })
+  const material = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(finishDef?.hex ?? '#888888'),
+        roughness: finishDef?.roughness ?? 0.6,
+        metalness: finishDef?.metalness ?? 0.2,
+        clearcoat: finishDef?.clearcoat ?? 0,
+        clearcoatRoughness: finishDef?.clearcoatRoughness ?? 0.5,
+        envMapIntensity: finishDef?.envMapIntensity ?? 1,
+      }),
+    [finishDef],
+  )
+  useEffect(() => () => material.dispose(), [material])
 
   return (
     <Canvas
@@ -141,18 +146,22 @@ function SinglePartCanvas({
 export function ProductViewer({ part, catalog }: Props) {
   const defaultFinish = part.finishes[0] ?? catalog.finishes[0]?.id ?? ''
   const [selectedFinish, setSelectedFinish] = useState(defaultFinish)
+  const [configId] = useState(() => crypto.randomUUID())
   const has3D = Boolean(part.placeholder)
 
   // Synthetic standalone config for the OutputTray / geometry service
-  const standaloneConfig: PoleConfig = {
-    configId: crypto.randomUUID(),
-    pole: '',
-    baseCover: '',
-    arm: '',
-    fixture: part.id,
-    finish: selectedFinish,
-    rev: 1,
-  }
+  const standaloneConfig = useMemo<PoleConfig>(
+    () => ({
+      configId,
+      pole: '',
+      baseCover: '',
+      arm: '',
+      fixture: part.id,
+      finish: selectedFinish,
+      rev: 1,
+    }),
+    [configId, part.id, selectedFinish],
+  )
 
   return (
     <div className="product-viewer">
