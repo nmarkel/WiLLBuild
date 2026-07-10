@@ -1,3 +1,9 @@
+# Geometry service
+geometry-service/.venv/
+geometry-service/out/
+geometry-service/**/__pycache__/
+geometry-service/**/*.pyc
+
 # Logs
 logs
 *.log

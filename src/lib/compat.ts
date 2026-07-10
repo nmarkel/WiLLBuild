@@ -1,4 +1,5 @@
 import type { Catalog, CatalogPart, PoleConfig, Slot } from '../types'
+export { isAssemblyPart } from '../types'
 
 /**
  * Selection order is fixture-first (Phase 0.1): downstream steps filter on the
@@ -17,7 +18,7 @@ export function partsForSlot(catalog: Catalog, slot: Slot): CatalogPart[] {
 
 /** A host can carry a part when it exposes a socket of the part's mount type. */
 export function canHost(host: CatalogPart | undefined, part: CatalogPart | undefined): boolean {
-  if (!host || !part || !part.mount) return false
+  if (!host || !part || !part.mount || !host.sockets) return false
   return Object.values(host.sockets).some((s) => s.type === part.mount)
 }
 
@@ -42,6 +43,7 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
 
 /** The host socket a part attaches at (position offset comes from catalog data, never hardcoded). */
 export function attachSocket(part: CatalogPart, host: CatalogPart) {
+  if (!host.sockets) return undefined
   return Object.values(host.sockets).find((s) => s.type === part.mount)
 }
 

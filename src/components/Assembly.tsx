@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { attachSocket, partById } from '../lib/compat'
+import { isAssemblyPart, attachSocket, partById } from '../lib/compat'
 import { PlaceholderPart } from './PlaceholderPart'
 
 interface Props {
@@ -41,11 +41,14 @@ function FixtureLight() {
       <spotLight
         ref={spot}
         color={LIGHT_COLOR}
-        intensity={150}
+        intensity={220}
         angle={0.85}
         penumbra={0.7}
         distance={25}
         decay={1.5}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0005}
       />
       <object3D ref={target} position={[0, -6, 0]} />
     </group>
@@ -57,10 +60,16 @@ function FixtureLight() {
  * position — positions come from catalog data, never hardcoded offsets.
  */
 export function Assembly({ catalog, config, night = false }: Props) {
-  const pole = partById(catalog, config.pole)
-  const baseCover = partById(catalog, config.baseCover)
-  const arm = partById(catalog, config.arm)
-  const fixture = partById(catalog, config.fixture)
+  const poleRaw = partById(catalog, config.pole)
+  const baseCoverRaw = partById(catalog, config.baseCover)
+  const armRaw = partById(catalog, config.arm)
+  const fixtureRaw = partById(catalog, config.fixture)
+
+  // Guard each part before use; assembly parts must have placeholder & sockets
+  const pole = poleRaw && isAssemblyPart(poleRaw) ? poleRaw : undefined
+  const baseCover = baseCoverRaw && isAssemblyPart(baseCoverRaw) ? baseCoverRaw : undefined
+  const arm = armRaw && isAssemblyPart(armRaw) ? armRaw : undefined
+  const fixture = fixtureRaw && isAssemblyPart(fixtureRaw) ? fixtureRaw : undefined
 
   const finish = catalog.finishes.find((f) => f.id === config.finish) ?? catalog.finishes[0]
 

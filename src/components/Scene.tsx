@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { Bloom, EffectComposer, N8AO, SMAA } from '@react-three/postprocessing'
@@ -6,7 +7,6 @@ import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { Catalog, PoleConfig } from '../types'
 import type { SceneMode } from '../store'
-import { partById } from '../lib/compat'
 import { Assembly } from './Assembly'
 import { SnapshotRig } from './SnapshotRig'
 
@@ -24,10 +24,20 @@ const SUN_POSITION: [number, number, number] = [8, 12, 6]
 const AUTO_ORBIT_RESUME_MS = 6000
 
 /**
- * Keeps the camera framed on the assembly as pole height changes, and runs a
+ * Keeps the camera framed on the assembly as the config changes, and runs a
  * gentle auto-orbit while the user is idle.
+ *
+ * Uses Box3 to measure the real assembled geometry — no height heuristics —
+ * so the fixture head is always in frame. Re-fits whenever configKey changes.
+ * Finish changes and mode/scale toggles do NOT trigger a refit.
  */
-function CameraRig({ heightM }: { heightM: number }) {
+function CameraRig({
+  configKey,
+  assemblyRef,
+}: {
+  configKey: string
+  assemblyRef: RefObject<THREE.Group | null>
+}) {
   const controls = useRef<OrbitControlsImpl>(null)
   const camera = useThree((s) => s.camera)
   const [autoRotate, setAutoRotate] = useState(true)
@@ -35,16 +45,30 @@ function CameraRig({ heightM }: { heightM: number }) {
 
   useEffect(() => {
     const c = controls.current
-    if (!c) return
-    // Frame the whole assembly: target mid-height, back off far enough that
-    // the fixture above the pole top stays in view.
-    c.target.set(0, heightM * 0.55, 0)
-    const dir = camera.position.clone().sub(c.target)
-    if (dir.lengthSq() < 0.01) dir.set(1, 0.2, 1)
-    dir.setLength(heightM * 1.85)
-    camera.position.copy(c.target).add(dir)
-    c.update()
-  }, [heightM, camera])
+    const g = assemblyRef.current
+    if (!c || !g) return
+    // Defer one frame so newly-mounted part meshes are in the scene graph.
+    const id = requestAnimationFrame(() => {
+      const box = new THREE.Box3().setFromObject(g)
+      if (box.isEmpty()) return
+      const size = box.getSize(new THREE.Vector3())
+      const center = box.getCenter(new THREE.Vector3())
+      // Target the vertical center of the assembly (not just pole mid-height).
+      c.target.set(0, center.y, 0)
+      // Back the camera off until the tallest/widest dimension fits in the fov.
+      const fitDist =
+        ((Math.max(size.y, size.x * 1.4) / 2) / Math.tan((42 * Math.PI) / 360)) * 1.25
+      const dir = camera.position.clone().sub(c.target)
+      if (dir.lengthSq() < 0.01) dir.set(1, 0.2, 1)
+      dir.setLength(fitDist)
+      camera.position.copy(c.target).add(dir)
+      // Zoom limits derived from the measured assembly height.
+      c.minDistance = size.y * 0.35
+      c.maxDistance = size.y * 4
+      c.update()
+    })
+    return () => cancelAnimationFrame(id)
+  }, [configKey, camera, assemblyRef])
 
   // Pause the idle orbit the moment the user grabs the controls; resume a few
   // seconds after they let go. Clear the pending timer on unmount.
@@ -71,8 +95,6 @@ function CameraRig({ heightM }: { heightM: number }) {
       autoRotateSpeed={0.4}
       onStart={handleStart}
       onEnd={handleEnd}
-      minDistance={heightM * 0.5}
-      maxDistance={heightM * 3.5}
       maxPolarAngle={Math.PI / 2 - 0.03}
     />
   )
@@ -95,13 +117,18 @@ function HumanSilhouette() {
 }
 
 export function Scene({ catalog, config, showScale, mode }: Props) {
-  const pole = partById(catalog, config.pole)
-  const heightM = pole?.sockets.top?.position[1] ?? 4.3
   const night = mode === 'night'
 
   // ContactShadows stops refreshing after its frame budget; re-key it so the
   // ground shadow re-renders whenever the assembly (or scale figure) changes.
   const shadowKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.finish}-${showScale}-${mode}`
+
+  // Camera refit key: excludes finish, mode, and showScale so the camera only
+  // refits when the physical assembly geometry changes (not on finish swaps).
+  const configKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}`
+
+  // Ref to the group wrapping Assembly so CameraRig can measure real bounds.
+  const assemblyRef = useRef<THREE.Group>(null)
 
   return (
     <Canvas
@@ -124,7 +151,7 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       {/* Day: warm sun for crisp shadows. Night: faint cool moonlight — the
           luminaire itself becomes the dominant light (see FixtureLight). */}
       <directionalLight
-        castShadow
+        castShadow={!night}
         position={SUN_POSITION}
         color={night ? '#9db4d6' : '#fff5e6'}
         intensity={night ? 0.15 : 1.5}
@@ -138,30 +165,30 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       />
 
       {/* Own boundary: the HDRI streams from /public and must not suspend the scene.
-          Ground projection places the assembly on the street rather than in a void.
-          At night the same environment is dimmed to dusk levels. */}
+          Ground projection keeps the assembly planted at night; the night HDRI
+          (moonless_golf) is dimmed so the luminaire becomes the dominant light. */}
       <Suspense fallback={null}>
-        {/* backgroundIntensity has no effect on the ground-projected skybox
-            mesh, so night drops the projection and dims the plain panorama. */}
         <Environment
-          files={import.meta.env.BASE_URL + 'hdri/urban_street_04_2k.hdr'}
+          files={import.meta.env.BASE_URL + (night ? 'hdri/moonless_golf_2k.hdr' : 'hdri/abandoned_parking_2k.hdr')}
           background
-          ground={night ? undefined : { height: 5, radius: 40, scale: 70 }}
-          environmentIntensity={night ? 0.12 : 1}
-          backgroundIntensity={night ? 0.06 : 1}
+          ground={{ height: 5, radius: 40, scale: 70 }}
+          environmentIntensity={night ? 0.25 : 1}
+          backgroundIntensity={night ? 0.5 : 1}
         />
       </Suspense>
 
-      {/* The projected skybox street is unlit, so night mode needs a real lit
-          surface to catch the luminaire's light pool. */}
+      {/* The projected skybox is unlit — a real mesh disc catches the luminaire's
+          warm light pool on the ground. Darkened to #17181c so the pool reads. */}
       {night && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} receiveShadow>
           <circleGeometry args={[24, 64]} />
-          <meshStandardMaterial color="#1b1c20" roughness={0.95} metalness={0} />
+          <meshStandardMaterial color="#17181c" roughness={0.95} metalness={0} />
         </mesh>
       )}
 
-      <Assembly catalog={catalog} config={config} night={night} />
+      <group ref={assemblyRef}>
+        <Assembly catalog={catalog} config={config} night={night} />
+      </group>
       {showScale && <HumanSilhouette />}
 
       {/* Shadow catcher: invisible plane that receives the sun's cast shadow on
@@ -173,10 +200,10 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
       </mesh>
       <ContactShadows
         key={shadowKey}
-        opacity={0.5}
+        opacity={0.6}
         scale={10}
         blur={2.4}
-        far={3.5}
+        far={4.5}
         resolution={512}
         frames={60}
       />
@@ -189,7 +216,7 @@ export function Scene({ catalog, config, showScale, mode }: Props) {
         <Bloom mipmapBlur intensity={0.15} luminanceThreshold={1.1} />
       </EffectComposer>
 
-      <CameraRig heightM={heightM} />
+      <CameraRig configKey={configKey} assemblyRef={assemblyRef} />
       <SnapshotRig />
     </Canvas>
   )
