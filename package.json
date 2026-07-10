@@ -20,8 +20,6 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@oxlint/binding-darwin-arm64": "^1.73.0",
-    "@rolldown/binding-darwin-arm64": "^1.1.5",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
@@ -31,5 +29,9 @@
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
     "vitest": "^4.1.10"
+  },
+  "optionalDependencies": {
+    "@oxlint/binding-darwin-arm64": "^1.73.0",
+    "@rolldown/binding-darwin-arm64": "^1.1.5"
   }
 }
