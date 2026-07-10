@@ -681,6 +681,9 @@ body {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
+  /* .panel is a flex column; overflow:hidden lets this child shrink below
+     min-content and collapse to its borders — pin it. */
+  flex-shrink: 0;
 }
 
 .catalog-nav-toggle {
@@ -715,6 +718,7 @@ body {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(66, 65, 61, 0.08);
+  flex-shrink: 0; /* same flex-column collapse guard as .catalog-nav-collapsed */
 }
 
 .catalog-nav-header {
