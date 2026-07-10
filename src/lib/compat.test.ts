@@ -275,9 +275,25 @@ describe('standalone product class (two-product-class model)', () => {
 
   it('all tier-2 wizard parts have the required new fields', () => {
     // Tier-2 wizard parts: the original curated 15 (dropShip:false) plus the P1
-    // promotions from Workstream G. Promoted inventory parts legitimately keep
-    // dropShip:true, so we no longer assert dropShip here — just that it is a
-    // boolean. tier-3 inventory entries have other lines (NAFCO, WiLLsport…).
+    // promotions from Workstream G. Curated parts have dropShip:false;
+    // promoted inventory parts have a boolean dropShip. tier-3 entries (NAFCO, WiLLsport…).
+    const curatedIds = [
+      'drx-post-top',
+      'tex-post-top',
+      'mvx-coach',
+      'gvx-pendant',
+      'sh1-shepherds-hook',
+      'upsweep',
+      'pa1-pendant-arm',
+      'pm1-pendant-arm',
+      'direct-mount',
+      'alum-pole-12',
+      'alum-pole-14',
+      'alum-pole-16',
+      'alum-pole-20',
+      'bc-fluted',
+      'bc-round',
+    ]
     const wizardParts = catalog.parts.filter((p) => p.tier === 2)
     expect(wizardParts.length).toBeGreaterThan(0)
     for (const part of wizardParts) {
@@ -286,6 +302,10 @@ describe('standalone product class (two-product-class model)', () => {
       expect(typeof part.dropShip).toBe('boolean')
       expect(part.tier).toBe(2)
       expect(typeof part.category).toBe('string')
+      // Curated 15 must have dropShip===false
+      if (curatedIds.includes(part.id)) {
+        expect(part.dropShip).toBe(false)
+      }
     }
   })
 })
