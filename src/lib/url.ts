@@ -1,4 +1,5 @@
 import type { PoleConfig } from '../types'
+import type { ViewMode } from '../store'
 
 const PART_KEYS = ['pole', 'baseCover', 'arm', 'fixture', 'finish'] as const
 
@@ -26,6 +27,23 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
     }
   }
   return found ? partial : null
+}
+
+/** Serialize a product view into query params. */
+export function productToParams(productId: string): URLSearchParams {
+  const params = new URLSearchParams()
+  params.set('product', productId)
+  return params
+}
+
+/**
+ * Determine the current view mode from query params.
+ * Product param wins if both product and config params are present.
+ */
+export function paramsToViewMode(params: URLSearchParams): ViewMode {
+  const productId = params.get('product')
+  if (productId) return { kind: 'product', productId }
+  return { kind: 'builder' }
 }
 
 export function shareUrl(config: PoleConfig): string {
