@@ -13,6 +13,10 @@ import {
 interface Props {
   catalog: Catalog
   config: PoleConfig
+  /** Restrict which geometry-service formats are offered. Defaults to the full set. */
+  formats?: OutputFormat[]
+  /** Whether to show the PNG snapshot card. Defaults to true. Set to false for photo-card mode. */
+  showPngCard?: boolean
 }
 
 // ---- Card state machine ----
@@ -221,7 +225,7 @@ function DeliverableCard({ def, available, state, availFormats, onRequest }: Del
 
 // ---- OutputTray ----
 
-export function OutputTray({ catalog, config }: Props) {
+export function OutputTray({ catalog, config, formats: allowedFormats, showPngCard = true }: Props) {
   const [pendingDownload, setPendingDownload] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [availFormats, setAvailFormats] = useState<Set<string>>(new Set())
@@ -349,11 +353,13 @@ export function OutputTray({ catalog, config }: Props) {
       <h2>Downloads</h2>
       <div className="deliverables">
         {/* ---- Always-live cards ---- */}
-        <button className="deliverable" onClick={() => void downloadSnapshot(config.configId)}>
-          <span className="deliverable-title">Product Render</span>
-          <span className="deliverable-format">PNG · current 3D view</span>
-          <span className="deliverable-audience">For your client</span>
-        </button>
+        {showPngCard && (
+          <button className="deliverable" onClick={() => void downloadSnapshot(config.configId)}>
+            <span className="deliverable-title">Product Render</span>
+            <span className="deliverable-format">PNG · current 3D view</span>
+            <span className="deliverable-audience">For your client</span>
+          </button>
+        )}
         <button className="deliverable" onClick={() => void copySummary()}>
           <span className="deliverable-title">{copied ? 'Copied ✓' : 'Config Summary'}</span>
           <span className="deliverable-format">Text · copies to clipboard</span>
@@ -361,7 +367,9 @@ export function OutputTray({ catalog, config }: Props) {
         </button>
 
         {/* ---- Geometry-service deliverables ---- */}
-        {DELIVERABLE_DEFS.map((def) => {
+        {DELIVERABLE_DEFS.filter(
+          (def) => !allowedFormats || def.format === null || allowedFormats.includes(def.format),
+        ).map((def) => {
           const format = def.format
           const available = format !== null && !def.alwaysDisabled && availFormats.has(format)
           return (

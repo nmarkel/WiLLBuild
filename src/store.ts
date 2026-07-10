@@ -64,16 +64,20 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   },
 
   select: (slot, id) => {
-    const { catalog, config } = get()
+    const { catalog, config, view } = get()
     if (!catalog || !config || config[slot] === id) return
+    // Don't clobber the product URL when in product view
+    if (view.kind === 'product') return
     const next = repairConfig(catalog, { ...config, [slot]: id, rev: config.rev + 1 })
     syncUrl(next)
     set({ config: next })
   },
 
   applyDescription: (text) => {
-    const { catalog, config } = get()
+    const { catalog, config, view } = get()
     if (!catalog || !config) return []
+    // Don't clobber the product URL when in product view
+    if (view.kind === 'product') return []
     const { matched, matchedTerms } = parseDescription(catalog, text)
     if (matchedTerms.length === 0) return []
     const next = repairConfig(catalog, { ...config, ...matched, rev: config.rev + 1 })

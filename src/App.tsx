@@ -6,6 +6,7 @@ import { Summary } from './components/Summary'
 import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
 import { CatalogNav } from './components/CatalogNav'
+import { ProductViewer } from './components/ProductViewer'
 
 export default function App() {
   const { catalog, config, showScale, mode, view, loadCatalog, toggleScale, toggleMode, openBuilder } =
@@ -19,7 +20,7 @@ export default function App() {
     return <div className="loading">Loading catalog…</div>
   }
 
-  // Product view: full-width with brand header, back button, placeholder viewer
+  // Product view: catalog nav panel + real product viewer in main area
   if (view.kind === 'product') {
     const part = catalog.parts.find((p) => p.id === view.productId)
     return (
@@ -32,17 +33,23 @@ export default function App() {
           <CatalogNav catalog={catalog} />
         </aside>
         <main className="viewport">
-          <div className="product-viewer-placeholder">
-            <div>
+          <div className="product-viewer-shell">
+            <div className="product-viewer-back-bar">
               <button
                 className="btn secondary"
                 onClick={openBuilder}
-                style={{ marginBottom: 24, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                aria-label="Back to builder"
               >
                 ← Back to builder
               </button>
-              <p>{part ? part.name : view.productId} — product viewer coming in the next commit</p>
             </div>
+            {part ? (
+              <ProductViewer part={part} catalog={catalog} />
+            ) : (
+              <div className="product-viewer-not-found">
+                Product not found: {view.productId}
+              </div>
+            )}
           </div>
         </main>
       </div>

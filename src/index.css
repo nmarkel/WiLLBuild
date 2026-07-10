@@ -928,7 +928,7 @@ body {
   text-align: center;
 }
 
-/* ---- Product viewer placeholder ---- */
+/* ---- Product viewer placeholder (kept for backwards-compat) ---- */
 
 .product-viewer-placeholder {
   display: grid;
@@ -938,6 +938,228 @@ body {
   font-size: 15px;
   padding: 40px;
   text-align: center;
+}
+
+/* ---- Product viewer shell ---- */
+
+.product-viewer-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.product-viewer-back-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--will-gradient-silver);
+  flex-shrink: 0;
+}
+
+.product-viewer {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.product-viewer-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-viewer-canvas {
+  flex: 1;
+  min-height: 0;
+}
+
+.product-viewer-tray {
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+  background: var(--will-gradient-silver);
+  padding: 20px;
+}
+
+.product-viewer-not-found {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+/* ---- Finish chips in product viewer ---- */
+
+.product-viewer-finishes {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  flex-shrink: 0;
+}
+
+.product-viewer-finish-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.product-viewer-finish-chip:hover {
+  border-color: var(--will-gray);
+}
+
+.product-viewer-finish-chip.active {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.product-viewer-finish-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--chip-color, #888);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.product-viewer-finish-label {
+  white-space: nowrap;
+}
+
+/* ---- Photo card ---- */
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 32px;
+  gap: 28px;
+}
+
+@media (min-width: 700px) {
+  .photo-card {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}
+
+.photo-card-image-wrap {
+  flex-shrink: 0;
+  width: 260px;
+  height: 260px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--will-silver);
+  box-shadow: 0 2px 12px rgba(66, 65, 61, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.photo-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--will-silver);
+}
+
+.photo-card-image-placeholder-letter {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--text-dim);
+  opacity: 0.4;
+  user-select: none;
+}
+
+.photo-card-body {
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.photo-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.photo-card-category {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--will-silver);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.photo-card-badge-external {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f0ede4;
+  color: var(--will-gray);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  border: 1px solid var(--border);
+}
+
+.photo-card-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.photo-card-family {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  font-weight: 300;
+}
+
+.photo-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  width: fit-content;
 }
 
 /* ---- Mobile: 3D window above panel ---- */

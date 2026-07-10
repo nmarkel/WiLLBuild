@@ -54,7 +54,7 @@ export function CatalogNav({ catalog }: Props) {
         <button
           className="catalog-nav-toggle"
           onClick={() => setExpanded(true)}
-          aria-expanded="false"
+          aria-expanded={expanded}
         >
           Browse full catalog
           <span className="catalog-nav-toggle-arrow">›</span>
