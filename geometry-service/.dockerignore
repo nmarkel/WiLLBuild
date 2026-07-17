@@ -1,9 +1,0 @@
-.venv
-__pycache__
-out/
-tests/
-*.pyc
-docs/
-*.egg-info
-.pytest_cache
-dist/

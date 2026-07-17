@@ -1,0 +1,13 @@
+geometry-service/.venv
+geometry-service/__pycache__
+geometry-service/out/
+geometry-service/tests/
+geometry-service/*.pyc
+geometry-service/docs/
+geometry-service/*.egg-info
+geometry-service/.pytest_cache
+geometry-service/dist/
+node_modules
+dist
+.git
+.superpowers
