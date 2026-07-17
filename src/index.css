@@ -86,6 +86,60 @@ body {
   letter-spacing: 0.4px;
 }
 
+/* ---- Brand Switcher ---- */
+
+.brand-switcher {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0 4px;
+}
+
+.brand-switcher-item {
+  flex-shrink: 0;
+}
+
+.brand-switcher-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--panel-raised);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.brand-switcher-item.active .brand-switcher-link {
+  border-color: var(--will-gray);
+  background: var(--will-gray);
+  color: var(--will-yellow);
+}
+
+.brand-switcher-item.disabled .brand-switcher-link {
+  color: var(--text-dim);
+  cursor: default;
+  opacity: 0.7;
+}
+
+.brand-switcher-soon {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-dim);
+  background: var(--will-silver);
+  border-radius: 8px;
+  padding: 1px 5px;
+  letter-spacing: 0.2px;
+}
+
 /* ---- Describe box ---- */
 
 .describe {
