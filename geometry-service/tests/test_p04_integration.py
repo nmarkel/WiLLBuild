@@ -55,7 +55,7 @@ REPRESENTATIVE_CONFIGS = [
         baseCover="bc-round",
         arm="pa1-pendant-arm",
         fixture="gvx-pendant",
-        finish="bronze",
+        finish="statuary-bronze",
         rev=1,
     ),
     PoleConfig(
@@ -63,19 +63,19 @@ REPRESENTATIVE_CONFIGS = [
         brand="WiLLstudio",
         pole="alum-pole-14",
         baseCover="bc-fluted",
-        arm="decorative-upsweep",
+        arm="upsweep",
         fixture="mvx-coach",
-        finish="matte-black",
+        finish="forest-green",
         rev=1,
     ),
     PoleConfig(
         configId="p04-integ-config-D",
         brand="WiLLstudio",
         pole="alum-pole-12",
-        baseCover="bc-fluted",
-        arm="direct-pole-mount",
+        baseCover="bc-round",
+        arm="direct-mount",
         fixture="drx-post-top",
-        finish="silver",
+        finish="gloss-white",
         rev=1,
     ),
 ]
@@ -144,23 +144,29 @@ def _make_ctx(cat: dict, cfg: PoleConfig, out_dir: Path):
 
 
 # ---------------------------------------------------------------------------
-# Helper: resolve a config against the catalog; skip if any part id is absent
-# (configs B/C/D may not all exist in catalog — skip gracefully)
+# Helper: resolve a config against the catalog; fail loudly on any missing ID
 # ---------------------------------------------------------------------------
 
-def _resolve_config(cat: dict, cfg: PoleConfig) -> PoleConfig | None:
-    """Return cfg if all its part IDs exist in the catalog, else None."""
+def _resolve_config(cat: dict, cfg: PoleConfig) -> PoleConfig:
+    """Return cfg after asserting all its part/finish IDs exist in the catalog.
+
+    A bad ID is a test-authoring mistake — fail loudly instead of silently
+    skipping so that typos are caught immediately.
+    """
     part_ids = {p["id"] for p in cat.get("parts", [])}
     for slot in ("pole", "baseCover", "arm", "fixture"):
-        if getattr(cfg, slot) not in part_ids:
-            return None
+        part_id = getattr(cfg, slot)
+        if part_id not in part_ids:
+            pytest.fail(
+                f"Config {cfg.configId!r}: part ID {part_id!r} (slot={slot!r}) "
+                f"not found in catalog — fix the test config, not the catalog."
+            )
     finish_ids = {f["id"] for f in cat.get("finishes", [])}
     if cfg.finish not in finish_ids:
-        # Fall back to first available finish
-        if cat.get("finishes"):
-            cfg = cfg.model_copy(update={"finish": cat["finishes"][0]["id"]})
-        else:
-            return None
+        pytest.fail(
+            f"Config {cfg.configId!r}: finish ID {cfg.finish!r} "
+            f"not found in catalog — fix the test config, not the catalog."
+        )
     return cfg
 
 
@@ -178,9 +184,6 @@ class TestP04HeroCardSlice:
         from pypdf import PdfReader
 
         cfg = _resolve_config(cat, cfg_template)
-        if cfg is None:
-            pytest.skip(f"Config {cfg_template.configId} references parts not in catalog — skipping")
-
         out_dir = tmp_path_factory.mktemp(f"herocard_{cfg.configId}")
         ctx = _make_ctx(cat, cfg, out_dir)
         adapter = HeroCardAdapter()
@@ -208,9 +211,6 @@ class TestP04HeroCardSlice:
         from app.adapters.herocard_adapter import HeroCardAdapter
 
         cfg = _resolve_config(cat, cfg_template)
-        if cfg is None:
-            pytest.skip(f"Config {cfg_template.configId} references parts not in catalog — skipping")
-
         out1 = tmp_path_factory.mktemp(f"hc_det1_{cfg.configId}")
         out2 = tmp_path_factory.mktemp(f"hc_det2_{cfg.configId}")
         ctx1 = _make_ctx(cat, cfg, out1)
@@ -238,9 +238,6 @@ class TestP04RfaSlice:
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
 
         cfg = _resolve_config(cat, cfg_template)
-        if cfg is None:
-            pytest.skip(f"Config {cfg_template.configId} references parts not in catalog — skipping")
-
         out_dir = tmp_path_factory.mktemp(f"rfa_{cfg.configId}")
         ctx = _make_ctx(cat, cfg, out_dir)
         adapter = RfaAdapter()
@@ -281,9 +278,6 @@ class TestP04RfaSlice:
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
 
         cfg = _resolve_config(cat, cfg_template)
-        if cfg is None:
-            pytest.skip(f"Config {cfg_template.configId} references parts not in catalog — skipping")
-
         asm = build_assembly(cat, cfg)
         from app.adapters.base import GenContext
 

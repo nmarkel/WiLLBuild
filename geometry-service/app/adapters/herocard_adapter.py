@@ -35,3 +35,7 @@ class HeroCardAdapter:
         out_path = ctx.out_dir / f"{ctx.base_name}-hero.pdf"
         out_path.write_bytes(pdf_bytes)
         return [out_path]
+
+
+# Satisfy the Adapter Protocol at import time (type checker aid)
+_: Adapter = HeroCardAdapter()  # type: ignore[assignment]
