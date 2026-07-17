@@ -57,6 +57,22 @@ describe('brand round-trip', () => {
     // brand key absent — caller fills it from defaultConfig
     expect(partial?.brand).toBeUndefined()
   })
+
+  it('invalid brand (not in ProductLine union) is ignored', () => {
+    const params = new URLSearchParams('?pole=alum-pole-14&brand=evilstring')
+    const partial = paramsToPartialConfig(params)
+    // brand key must be absent when invalid
+    expect(partial?.brand).toBeUndefined()
+    // but other valid params are still present
+    expect(partial?.pole).toBe('alum-pole-14')
+  })
+
+  it('valid non-default brand is accepted and present in partial', () => {
+    const params = new URLSearchParams('?pole=alum-pole-14&brand=NAFCO')
+    const partial = paramsToPartialConfig(params)
+    expect(partial?.brand).toBe('NAFCO')
+    expect(partial?.pole).toBe('alum-pole-14')
+  })
 })
 
 describe('product view <-> URL params', () => {
