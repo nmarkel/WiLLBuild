@@ -68,4 +68,10 @@ describe('parseRoute', () => {
     expect(result.brand).toBe('WiLLstudio')
     expect(result.view.kind).toBe('builder')
   })
+
+  it('parses /studio/product/ (trailing slash, no id) as WiLLstudio builder', () => {
+    const result = parseRoute('/studio/product/')
+    expect(result.brand).toBe('WiLLstudio')
+    expect(result.view.kind).toBe('builder')
+  })
 })

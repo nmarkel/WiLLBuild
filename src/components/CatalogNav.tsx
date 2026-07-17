@@ -35,7 +35,7 @@ export function CatalogNav({ catalog, activeBrand }: Props) {
   const availableLines = useMemo(() => {
     // When brand-scoped, only show the active brand's tab
     const allowedLines = activeBrand ? [activeBrand] : LINE_ORDER
-    return allowedLines.filter((l) => standaloneByLine.has(l) || l === 'WiLLstudio')
+    return allowedLines.filter((l) => standaloneByLine.has(l) || (!activeBrand && l === 'WiLLstudio'))
   }, [standaloneByLine, activeBrand])
 
   const currentLine = activeLine ?? availableLines[0] ?? null
