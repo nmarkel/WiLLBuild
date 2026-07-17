@@ -90,6 +90,7 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
 export function defaultConfig(catalog: Catalog): PoleConfig {
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
+    brand: 'WiLLstudio',
     pole: '',
     baseCover: '',
     arm: '',

@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 class PoleConfig(BaseModel):
     configId: str
+    brand: str = "WiLLstudio"
     pole: str
     baseCover: str
     arm: str

@@ -104,6 +104,7 @@ export interface Catalog {
 /** The single serializable configuration object — becomes the platform's structured config JSON. */
 export interface PoleConfig {
   configId: string
+  brand: ProductLine
   pole: string
   baseCover: string
   arm: string

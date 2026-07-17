@@ -153,6 +153,7 @@ export function ProductViewer({ part, catalog }: Props) {
   const standaloneConfig = useMemo<PoleConfig>(
     () => ({
       configId,
+      brand: 'WiLLstudio',
       pole: '',
       baseCover: '',
       arm: '',

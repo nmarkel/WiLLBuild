@@ -4,6 +4,7 @@ import { configToParams, paramsToPartialConfig, productToParams, paramsToViewMod
 
 const config: PoleConfig = {
   configId: 'test',
+  brand: 'WiLLstudio',
   pole: 'alum-pole-14',
   baseCover: 'bc-fluted',
   arm: 'upsweep',
@@ -32,6 +33,29 @@ describe('config <-> URL params', () => {
 
   it('returns null for a URL with no config params', () => {
     expect(paramsToPartialConfig(new URLSearchParams('?utm_source=x'))).toBeNull()
+  })
+})
+
+describe('brand round-trip', () => {
+  it('default brand (WiLLstudio) is omitted from params', () => {
+    const params = configToParams({ ...config, brand: 'WiLLstudio' })
+    expect(params.get('brand')).toBeNull()
+  })
+
+  it('non-default brand is serialized to params', () => {
+    const params = configToParams({ ...config, brand: 'NAFCO' })
+    expect(params.get('brand')).toBe('NAFCO')
+  })
+
+  it('non-default brand round-trips through params', () => {
+    const partial = paramsToPartialConfig(configToParams({ ...config, brand: 'WiLLsport' }))
+    expect(partial?.brand).toBe('WiLLsport')
+  })
+
+  it('default brand is not present in partial (caller merges defaultConfig)', () => {
+    const partial = paramsToPartialConfig(configToParams({ ...config, brand: 'WiLLstudio' }))
+    // brand key absent — caller fills it from defaultConfig
+    expect(partial?.brand).toBeUndefined()
   })
 })
 

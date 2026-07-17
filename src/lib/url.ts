@@ -1,13 +1,19 @@
-import type { PoleConfig } from '../types'
+import type { PoleConfig, ProductLine } from '../types'
 import type { ViewMode } from '../store'
 
 const PART_KEYS = ['pole', 'baseCover', 'arm', 'fixture', 'finish'] as const
+
+const DEFAULT_BRAND: ProductLine = 'WiLLstudio'
 
 /** Serialize the selection into query params so any config is shareable as a URL. */
 export function configToParams(config: PoleConfig): URLSearchParams {
   const params = new URLSearchParams()
   for (const key of PART_KEYS) {
     if (config[key]) params.set(key, config[key])
+  }
+  // Only serialize brand when it differs from the default — keeps share URLs clean.
+  if (config.brand && config.brand !== DEFAULT_BRAND) {
+    params.set('brand', config.brand)
   }
   return params
 }
@@ -25,6 +31,11 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       partial[key] = value
       found = true
     }
+  }
+  const brandValue = params.get('brand')
+  if (brandValue) {
+    partial.brand = brandValue as ProductLine
+    found = true
   }
   return found ? partial : null
 }
