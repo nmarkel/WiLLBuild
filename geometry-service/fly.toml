@@ -1,0 +1,37 @@
+# fly.toml — WiLL Geometry Service (fly.io configuration)
+# Deploy from repo root:
+#   fly deploy --config geometry-service/fly.toml
+# See docs/DEPLOY.md for the full runbook.
+
+app = "willbuild-geometry"
+primary_region = "ord"
+
+[build]
+  # Build context is the repo root so public/catalog.json is reachable.
+  dockerfile = "geometry-service/Dockerfile"
+
+[env]
+  # Frontend origin that is allowed to call this service.
+  # After deploying the frontend, update this to the real Cloudflare URL.
+  ALLOWED_ORIGINS = "https://willbuild.nmarkel.workers.dev"
+  CATALOG_PATH    = "/app/catalog.json"
+
+[[http_service]]
+  internal_port       = 8080
+  force_https         = true
+  auto_stop_machines  = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  # Health check on the /health endpoint — fly.io will restart the VM if it fails.
+  [[http_service.checks]]
+    grace_period  = "30s"
+    interval      = "30s"
+    method        = "GET"
+    path          = "/health"
+    protocol      = "http"
+    timeout       = "10s"
+
+[[vm]]
+  size   = "shared-cpu-1x"
+  memory = "1gb"
