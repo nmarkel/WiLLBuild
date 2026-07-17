@@ -30,6 +30,7 @@ from .bundle_adapter import BundleAdapter
 from .herocard_adapter import HeroCardAdapter
 from .ifc_adapter import IfcAdapter
 from .pdf_adapter import PdfAdapter
+from .rfa_adapter import RfaAdapter
 from .step_adapter import StepAdapter
 
 __all__ = ["REGISTRY", "Adapter", "GenContext"]
@@ -43,10 +44,11 @@ _ifc = IfcAdapter()
 _pdf = PdfAdapter()
 _bundle = BundleAdapter()
 _herocard = HeroCardAdapter()
+_rfa = RfaAdapter()
 
 REGISTRY: dict[str, Adapter] = {}
 
-for _adapter in (_step, _ifc, _pdf, _bundle, _herocard):
+for _adapter in (_step, _ifc, _pdf, _bundle, _herocard, _rfa):
     if _adapter.available():
         REGISTRY[_adapter.format] = _adapter  # type: ignore[assignment]
 

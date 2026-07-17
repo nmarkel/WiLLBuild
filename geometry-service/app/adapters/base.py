@@ -34,6 +34,13 @@ class GenContext:
     bundle adapter can distinguish files produced in this request from
     stale on-disk artifacts left by previous requests.
     """
+    warnings: list[str] = field(default_factory=list)
+    """Warnings accumulated by adapters during this request.
+
+    Adapters append human-readable warnings here (e.g. the mock-APS notice).
+    main.py extends the response warnings list with ctx.warnings after
+    the dispatch loop.
+    """
 
 
 @runtime_checkable

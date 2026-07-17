@@ -66,16 +66,23 @@ const DELIVERABLE_DEFS: DeliverableDef[] = [
     audience: 'For your drawings',
   },
   {
-    format: 'ifc',
-    title: 'Revit Model',
-    formatLabel: 'IFC · BIM-ready',
-    audience: 'For your BIM workflow',
+    format: 'rfa',
+    title: 'Revit Family',
+    formatLabel: 'RFA · Revit family',
+    audience: 'For your Revit model',
+    includeRender: false,
   },
   {
     format: 'step',
     title: 'STEP',
     formatLabel: 'STEP · exact geometry',
     audience: 'For WiLL Engineering',
+  },
+  {
+    format: 'ifc',
+    title: 'Revit Model',
+    formatLabel: 'IFC · BIM-ready',
+    audience: 'For open BIM / import',
   },
   {
     format: 'bundle',

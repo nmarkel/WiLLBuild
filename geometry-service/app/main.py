@@ -28,7 +28,7 @@ OUT_DIR.mkdir(exist_ok=True)
 # ---------------------------------------------------------------------------
 # "pdf" is included so that AssemblyDims are computed and available in
 # ctx.summary for the dimensions block of the spec-sheet.
-_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle", "herocard"}
+_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle", "herocard", "rfa"}
 
 # ---------------------------------------------------------------------------
 # App
@@ -204,6 +204,9 @@ def generate(req: GenerateRequest) -> GenerateResponse:
                 )
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"{fmt}: {exc}")
+
+    # Collect adapter-emitted warnings (e.g. mock-APS notice from RfaAdapter)
+    warnings.extend(ctx.warnings)
 
     return GenerateResponse(
         configHash=config_hash(req.config),
