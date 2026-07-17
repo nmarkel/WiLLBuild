@@ -343,6 +343,116 @@ def _draw_footer(pdf: FPDF, cfg, top: float) -> None:
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Hero-card section helpers
+# ---------------------------------------------------------------------------
+
+def _draw_status_chip(
+    pdf: FPDF,
+    status: str,
+    left: float,
+    top: float,
+) -> None:
+    """Draw a gunmetal pill with status text.
+
+    'Standard'     → yellow text
+    'Configurable' → silver text
+
+    fpdf2 2.8.x has no public rounded_rect; we use rect with FD style to
+    approximate a pill.  The visual appearance is a tight rectangle; rounding
+    is a Phase 1 cosmetic improvement.
+    """
+    chip_w = 36.0
+    chip_h = 7.0
+
+    _set_fill(pdf, _GUNMETAL)
+    _set_draw(pdf, _GUNMETAL)
+    pdf.rect(left, top, chip_w, chip_h, style="F")
+
+    text_color = _YELLOW if status == "Standard" else _SILVER
+    _set_text(pdf, text_color)
+    pdf.set_font("Helvetica", "B", 7)
+    pdf.set_xy(left, top + 0.5)
+    pdf.cell(chip_w, chip_h - 1, _latin1(status), align="C")
+
+    # Reset colours
+    _set_text(pdf, _GUNMETAL)
+    _set_fill(pdf, _WHITE)
+    _set_draw(pdf, _GUNMETAL)
+
+
+def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
+    """Render concept-card hero layout.
+
+    Top ~55% height: full-width render band.
+    Bottom: component list, compact dims row, finish (with RAL), status chip.
+    Footer: unchanged (disclaimer + config ID + quote CTA).
+    """
+    content_top = _HEADER_H + _RULE_H + 3.0
+    usable_w = _PAGE_W - 2 * _MARGIN
+    footer_y = _PAGE_H - 18.0
+    content_h = footer_y - content_top
+
+    # Hero render band: ~55% of content height
+    render_band_h = content_h * 0.55
+    _draw_render_column(
+        pdf,
+        ctx.render_png,
+        left=_MARGIN,
+        top=content_top,
+        width=usable_w,
+        height=render_band_h,
+    )
+
+    # Below render: info area
+    info_top = content_top + render_band_h + 3.0
+    info_h = footer_y - info_top - 2.0
+
+    # Split info area: left = table + dims; right = finish + status chip
+    left_w = usable_w * 0.60
+    right_w = usable_w * 0.40 - 4.0
+    left_x = _MARGIN
+    right_x = _MARGIN + left_w + 4.0
+
+    # --- Left: component table (compact — smaller row height) ---
+    parts = ctx.summary.get("parts", [])
+    y_after_table = _draw_components_table(
+        pdf,
+        parts,
+        left=left_x,
+        top=info_top,
+        width=left_w,
+    )
+
+    # --- Left: compact dims row ---
+    dims = ctx.summary.get("dims", {})
+    _draw_dims_block(
+        pdf,
+        dims,
+        left=left_x,
+        top=y_after_table + 2.0,
+        width=left_w,
+    )
+
+    # --- Right: finish block ---
+    y_after_finish = _draw_finish_block(
+        pdf,
+        ctx.summary,
+        ctx.catalog,
+        left=right_x,
+        top=info_top - 4.0,
+        width=right_w,
+    )
+
+    # --- Right: status chip ---
+    status = ctx.summary.get("status", "Configurable")
+    _draw_status_chip(pdf, status, left=right_x, top=y_after_finish + 2.0)
+
+    # --- Footer ---
+    _draw_footer(pdf, ctx.cfg, top=footer_y)
+
+
+# ---------------------------------------------------------------------------
 # Public entry point
 # ---------------------------------------------------------------------------
 
@@ -357,8 +467,8 @@ def render_spec(
     ctx:
         Generation context (catalog, cfg, render_png, summary, …).
     mode:
-        'spec'         → title "Specification Sheet"
-        'concept-card' → title "Concept Card"
+        'spec'         → title "Specification Sheet" (two-column layout, unchanged)
+        'concept-card' → title "Concept Card" (hero render top band + info below)
 
     Returns
     -------
@@ -391,7 +501,11 @@ def render_spec(
     # --- Header ---
     _draw_header(pdf, title)
 
-    # --- Layout ---
+    if mode == "concept-card":
+        _render_hero_layout(pdf, ctx)
+        return bytes(pdf.output())
+
+    # --- Spec layout (unchanged) ---
     content_top = _HEADER_H + _RULE_H + 5.0
     usable_w = _PAGE_W - 2 * _MARGIN
     left_w = usable_w * _COL_SPLIT

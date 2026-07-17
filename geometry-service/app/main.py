@@ -28,7 +28,7 @@ OUT_DIR.mkdir(exist_ok=True)
 # ---------------------------------------------------------------------------
 # "pdf" is included so that AssemblyDims are computed and available in
 # ctx.summary for the dimensions block of the spec-sheet.
-_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle"}
+_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle", "herocard"}
 
 # ---------------------------------------------------------------------------
 # App

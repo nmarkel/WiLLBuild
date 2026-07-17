@@ -20,7 +20,7 @@ class PoleConfig(BaseModel):
 
 class GenerateRequest(BaseModel):
     config: PoleConfig
-    formats: list[Literal["step", "dxf", "dwg", "ifc", "pdf", "bundle"]]
+    formats: list[Literal["step", "dxf", "dwg", "ifc", "pdf", "bundle", "herocard"]]
     renderPng: str | None = None  # base64-encoded PNG
 
 

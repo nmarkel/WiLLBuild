@@ -46,6 +46,13 @@ interface DeliverableDef {
 
 const DELIVERABLE_DEFS: DeliverableDef[] = [
   {
+    format: 'herocard',
+    title: 'Concept Card',
+    formatLabel: 'PDF · hero card',
+    audience: 'For your client',
+    includeRender: true,
+  },
+  {
     format: 'pdf',
     title: 'Spec Sheet',
     formatLabel: 'PDF · full spec',
@@ -59,16 +66,16 @@ const DELIVERABLE_DEFS: DeliverableDef[] = [
     audience: 'For your drawings',
   },
   {
-    format: 'step',
-    title: 'Solid CAD',
-    formatLabel: 'STEP · exact geometry',
-    audience: 'For WiLL Engineering',
-  },
-  {
     format: 'ifc',
     title: 'Revit Model',
     formatLabel: 'IFC · BIM-ready',
     audience: 'For your BIM workflow',
+  },
+  {
+    format: 'step',
+    title: 'STEP',
+    formatLabel: 'STEP · exact geometry',
+    audience: 'For WiLL Engineering',
   },
   {
     format: 'bundle',

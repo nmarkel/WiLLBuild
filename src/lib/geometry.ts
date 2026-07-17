@@ -1,6 +1,6 @@
 import type { PoleConfig } from '../types'
 
-export type OutputFormat = 'step' | 'dxf' | 'dwg' | 'ifc' | 'pdf' | 'bundle'
+export type OutputFormat = 'step' | 'dxf' | 'dwg' | 'ifc' | 'pdf' | 'bundle' | 'herocard'
 
 export interface GeneratedFile {
   format: string

@@ -65,6 +65,23 @@ def is_standalone_config(cfg: PoleConfig) -> bool:
     return cfg.pole == "" and cfg.arm == "" and cfg.baseCover == "" and cfg.fixture != ""
 
 
+def config_status(catalog: dict, cfg: PoleConfig) -> str:
+    """Return 'Standard' if cfg matches a referenceAssemblies entry, else 'Configurable'.
+
+    Mirrors src/lib/compat.ts configStatus — both compare pole/baseCover/arm/fixture.
+    referenceAssemblies is currently empty, so this always returns 'Configurable'.
+    """
+    for ref in catalog.get("referenceAssemblies", []):
+        if (
+            ref.get("pole") == cfg.pole
+            and ref.get("baseCover") == cfg.baseCover
+            and ref.get("arm") == cfg.arm
+            and ref.get("fixture") == cfg.fixture
+        ):
+            return "Standard"
+    return "Configurable"
+
+
 def validate_config(catalog: dict, cfg: PoleConfig) -> None:
     """Validate a PoleConfig against the catalog.
 
