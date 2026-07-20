@@ -10,7 +10,7 @@ import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
 
 export default function App() {
-  const { catalog, config, showScale, mode, view, brand, loadCatalog, toggleScale, toggleMode, openBuilder } =
+  const { catalog, config, showScale, mode, view, loadCatalog, toggleScale, toggleMode, openBuilder } =
     useConfigurator()
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function App() {
             <span className="brand-sub">3D Pole Configurator</span>
           </header>
           <BrandSwitcher />
-          <CatalogNav catalog={catalog} activeBrand={brand} />
+          <CatalogNav catalog={catalog} />
         </aside>
         <main className="viewport">
           <div className="product-viewer-shell">
@@ -67,7 +67,7 @@ export default function App() {
           <span className="brand-sub">3D Pole Configurator</span>
         </header>
         <BrandSwitcher />
-        <CatalogNav catalog={catalog} activeBrand={brand} />
+        <CatalogNav catalog={catalog} />
         <DescribeBox />
         <Panel catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
