@@ -63,7 +63,7 @@ export function Panel({ catalog, config }: Props) {
                       >
                         <span className="thumb">
                           {part.thumbnail ? (
-                            <img src={part.thumbnail} alt="" />
+                            <img src={import.meta.env.BASE_URL + part.thumbnail} alt="" />
                           ) : (
                             part.family.slice(0, 2).toUpperCase()
                           )}
