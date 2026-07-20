@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest'
-import { parseRoute, builderPath, productPath, BRAND_SLUGS } from './routes'
+import { parseRoute, builderPath, productPath, brandHomePath, BRAND_SLUGS } from './routes'
 
 describe('BRAND_SLUGS', () => {
   it('maps WiLLstudio to studio', () => {
     expect(BRAND_SLUGS['WiLLstudio']).toBe('studio')
   })
-  it('maps all other brands to null', () => {
-    expect(BRAND_SLUGS['NAFCO']).toBeNull()
-    expect(BRAND_SLUGS['WiLLsport']).toBeNull()
-    expect(BRAND_SLUGS['WiLLev']).toBeNull()
-    expect(BRAND_SLUGS['WiLLcloud']).toBeNull()
+  it('maps every real brand to a slug; only Other has none', () => {
+    expect(BRAND_SLUGS['NAFCO']).toBe('nafco')
+    expect(BRAND_SLUGS['WiLLsport']).toBe('sport')
+    expect(BRAND_SLUGS['WiLLev']).toBe('ev')
+    expect(BRAND_SLUGS['WiLLcloud']).toBe('cloud')
     expect(BRAND_SLUGS['Other']).toBeNull()
   })
 })
@@ -19,7 +19,19 @@ describe('builderPath', () => {
     expect(builderPath('WiLLstudio')).toBe('/studio/design')
   })
   it('falls back to /studio/design for brands with no slug', () => {
-    expect(builderPath('NAFCO')).toBe('/studio/design')
+    expect(builderPath('Other')).toBe('/studio/design')
+  })
+})
+
+describe('brandHomePath', () => {
+  it('returns the builder for WiLLstudio', () => {
+    expect(brandHomePath('WiLLstudio')).toBe('/studio/design')
+  })
+  it('returns /<slug> for other brands', () => {
+    expect(brandHomePath('NAFCO')).toBe('/nafco')
+    expect(brandHomePath('WiLLsport')).toBe('/sport')
+    expect(brandHomePath('WiLLev')).toBe('/ev')
+    expect(brandHomePath('WiLLcloud')).toBe('/cloud')
   })
 })
 
@@ -73,5 +85,32 @@ describe('parseRoute', () => {
     const result = parseRoute('/studio/product/')
     expect(result.brand).toBe('WiLLstudio')
     expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /nafco as the NAFCO brand home', () => {
+    const result = parseRoute('/nafco')
+    expect(result.brand).toBe('NAFCO')
+    expect(result.view.kind).toBe('home')
+  })
+
+  it('parses /studio as the WiLLstudio builder (brand landing)', () => {
+    const result = parseRoute('/studio')
+    expect(result.brand).toBe('WiLLstudio')
+    expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /sport/product/<id> as a WiLLsport product', () => {
+    const result = parseRoute('/sport/product/willsport-kbx-lighting-system')
+    expect(result.brand).toBe('WiLLsport')
+    expect(result.view.kind).toBe('product')
+    if (result.view.kind === 'product') {
+      expect(result.view.productId).toBe('willsport-kbx-lighting-system')
+    }
+  })
+
+  it('parses /nafco/unknown as the NAFCO brand home', () => {
+    const result = parseRoute('/nafco/unknown')
+    expect(result.brand).toBe('NAFCO')
+    expect(result.view.kind).toBe('home')
   })
 })

@@ -131,7 +131,6 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     const adapter = partById(catalog, 'light-pole-bolt-circle-adapters')
     expect(adapter?.slot).toBe('standalone')
     expect(adapter?.productClass).toBe('standalone')
-    expect(adapter?.tier).toBe(3)
   })
 
   it('every promoted arm exposes exactly one fixture socket (multi-head out of scope)', () => {
@@ -234,12 +233,12 @@ describe('standalone product class (two-product-class model)', () => {
     expect(isAssemblyPart(standaloneEntry)).toBe(false)
   })
 
-  it('isAssemblyPart returns true for all curated assembly parts', () => {
-    // catalog.parts now includes tier-3 inventory entries (standalone, no placeholder).
-    // Filter to only the tier-2 curated wizard parts that should satisfy isAssemblyPart.
-    const curatedParts = catalog.parts.filter((p) => p.tier === 2)
-    expect(curatedParts.length).toBeGreaterThan(0)
-    for (const part of curatedParts) {
+  it('isAssemblyPart returns true for all wizard parts', () => {
+    // Every standalone product now carries a derived placeholder (tier 2 = 3D
+    // parametric), so tier no longer identifies wizard parts — slot does.
+    const wizardParts = catalog.parts.filter((p) => p.slot !== 'standalone')
+    expect(wizardParts.length).toBeGreaterThan(0)
+    for (const part of wizardParts) {
       expect(isAssemblyPart(part)).toBe(true)
     }
   })
@@ -295,7 +294,7 @@ describe('standalone product class (two-product-class model)', () => {
       'bc-fluted',
       'bc-round',
     ]
-    const wizardParts = catalog.parts.filter((p) => p.tier === 2)
+    const wizardParts = catalog.parts.filter((p) => p.slot !== 'standalone')
     expect(wizardParts.length).toBeGreaterThan(0)
     for (const part of wizardParts) {
       expect(part.line).toBe('WiLLstudio')
