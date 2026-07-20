@@ -4,6 +4,7 @@ import type { PoleConfig } from '../types'
 
 const mockConfig: PoleConfig = {
   configId: 'test-uuid',
+  brand: 'WiLLstudio',
   pole: 'alum-pole-20',
   baseCover: 'bc-fluted',
   arm: 'sh1-shepherds-hook',

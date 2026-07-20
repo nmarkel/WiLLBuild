@@ -8,6 +8,7 @@ const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8')
 function config(overrides: Partial<PoleConfig>): PoleConfig {
   return {
     configId: 'test',
+    brand: 'WiLLstudio',
     pole: 'alum-pole-14',
     baseCover: 'bc-fluted',
     arm: 'sh1-shepherds-hook',
@@ -313,6 +314,7 @@ describe('standalone product class (two-product-class model)', () => {
 describe('mount-type rules (H3b)', () => {
   const base: PoleConfig = {
     configId: 'test',
+    brand: 'WiLLstudio',
     pole: 'alum-pole-14',
     baseCover: 'bc-fluted',
     arm: '',

@@ -7,9 +7,10 @@ import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
 import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
+import { BrandSwitcher } from './components/BrandSwitcher'
 
 export default function App() {
-  const { catalog, config, showScale, mode, view, loadCatalog, toggleScale, toggleMode, openBuilder } =
+  const { catalog, config, showScale, mode, view, brand, loadCatalog, toggleScale, toggleMode, openBuilder } =
     useConfigurator()
 
   useEffect(() => {
@@ -30,7 +31,8 @@ export default function App() {
             <img className="brand-logo" src="/will-logo.png" alt="WiLL" />
             <span className="brand-sub">3D Pole Configurator</span>
           </header>
-          <CatalogNav catalog={catalog} />
+          <BrandSwitcher />
+          <CatalogNav catalog={catalog} activeBrand={brand} />
         </aside>
         <main className="viewport">
           <div className="product-viewer-shell">
@@ -64,7 +66,8 @@ export default function App() {
           <img className="brand-logo" src="/will-logo.png" alt="WiLL" />
           <span className="brand-sub">3D Pole Configurator</span>
         </header>
-        <CatalogNav catalog={catalog} />
+        <BrandSwitcher />
+        <CatalogNav catalog={catalog} activeBrand={brand} />
         <DescribeBox />
         <Panel catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -28,7 +29,29 @@ OUT_DIR.mkdir(exist_ok=True)
 # ---------------------------------------------------------------------------
 # "pdf" is included so that AssemblyDims are computed and available in
 # ctx.summary for the dimensions block of the spec-sheet.
-_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle"}
+_GEOMETRIC_FORMATS = {"step", "ifc", "dxf", "dwg", "pdf", "bundle", "herocard", "rfa"}
+
+# ---------------------------------------------------------------------------
+# CORS helpers
+# ---------------------------------------------------------------------------
+_LOCALHOST_DEFAULTS = ["http://localhost:5173", "http://localhost:5174"]
+
+
+def _allowed_origins(env_value: str | None) -> list[str]:
+    """Return the CORS allowed-origins list.
+
+    Merges ALLOWED_ORIGINS (comma-separated env var) with the localhost
+    development defaults.  Always de-duplicated; empty entries stripped.
+    When env_value is None or blank the localhost defaults are returned as-is.
+    """
+    seen: dict[str, None] = {o: None for o in _LOCALHOST_DEFAULTS}
+    if env_value:
+        for raw in env_value.split(","):
+            origin = raw.strip()
+            if origin:
+                seen[origin] = None
+    return list(seen.keys())
+
 
 # ---------------------------------------------------------------------------
 # App
@@ -37,7 +60,7 @@ app = FastAPI(title="WiLL Geometry Service", version="0.3.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_origins=_allowed_origins(os.environ.get("ALLOWED_ORIGINS")),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -204,6 +227,9 @@ def generate(req: GenerateRequest) -> GenerateResponse:
                 )
         except Exception as exc:  # noqa: BLE001
             warnings.append(f"{fmt}: {exc}")
+
+    # Collect adapter-emitted warnings (e.g. mock-APS notice from RfaAdapter)
+    warnings.extend(ctx.warnings)
 
     return GenerateResponse(
         configHash=config_hash(req.config),

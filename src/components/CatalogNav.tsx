@@ -6,9 +6,11 @@ const LINE_ORDER: ProductLine[] = ['WiLLstudio', 'NAFCO', 'WiLLsport', 'WiLLev',
 
 interface Props {
   catalog: Catalog
+  /** When set, only show tabs/products for this brand (brand-scoped flow). */
+  activeBrand?: ProductLine
 }
 
-export function CatalogNav({ catalog }: Props) {
+export function CatalogNav({ catalog, activeBrand }: Props) {
   const { openProduct, openBuilder, view } = useConfigurator()
   const [expanded, setExpanded] = useState(false)
   const [activeLine, setActiveLine] = useState<ProductLine | null>(null)
@@ -19,6 +21,8 @@ export function CatalogNav({ catalog }: Props) {
     const map = new Map<ProductLine, Map<string, CatalogPart[]>>()
     for (const p of catalog.parts) {
       if (p.slot !== 'standalone') continue
+      // When brand-scoped, only include parts for the active brand
+      if (activeBrand && p.line !== activeBrand) continue
       const line = p.line as ProductLine
       if (!map.has(line)) map.set(line, new Map())
       const byCategory = map.get(line)!
@@ -26,12 +30,13 @@ export function CatalogNav({ catalog }: Props) {
       byCategory.get(p.category)!.push(p)
     }
     return map
-  }, [catalog])
+  }, [catalog, activeBrand])
 
-  const availableLines = useMemo(
-    () => LINE_ORDER.filter((l) => standaloneByLine.has(l) || l === 'WiLLstudio'),
-    [standaloneByLine],
-  )
+  const availableLines = useMemo(() => {
+    // When brand-scoped, only show the active brand's tab
+    const allowedLines = activeBrand ? [activeBrand] : LINE_ORDER
+    return allowedLines.filter((l) => standaloneByLine.has(l) || (!activeBrand && l === 'WiLLstudio'))
+  }, [standaloneByLine, activeBrand])
 
   const currentLine = activeLine ?? availableLines[0] ?? null
   const categoriesForLine = currentLine ? standaloneByLine.get(currentLine) : null

@@ -9,6 +9,7 @@ const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8')
 function config(overrides: Partial<PoleConfig>): PoleConfig {
   return {
     configId: 'test-config-123',
+    brand: 'WiLLstudio',
     pole: 'alum-pole-14',
     baseCover: 'bc-fluted',
     arm: 'sh1-shepherds-hook',

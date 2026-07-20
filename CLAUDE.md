@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 WiLL 3D Pole Configurator — a standalone web page where customers assemble a light pole from WiLL's WiLLstudio catalog (fixture + arm + pole + base cover + finish) and view it in a live 3D window. Full spec: `Phase 0 — Claude Code Brief.md` (stack/architecture still governs). Phase 0.1 change spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.1 — Update Gameplan.md` (outside repo).
 
-**Status: 0.3 — live CAD/BIM pipeline (`geometry-service/`: STEP/DXF/IFC/PDF/zip), full willbrands.com catalog (103 parts, 5 lines), catalog nav + standalone product viewer, 561 wizard combos; placeholder primitives until M1 GLBs.** Phase 0.3 spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.3 — CAD-BIM Output Pipeline.md`; plans in `docs/superpowers/plans/`. Next milestone is M1: first real GLB through the asset pipeline (`ASSETS.md`).
+**Status: 0.4 (demo-critical slice) — WiLLstudio brand route (`/studio/design`), Tesla-style `BrandSwitcher`, `brand` field in config JSON + catalog, hero card (concept card PDF, `herocard` format), Revit mock (`.rfa` via mock APS, `rfa` format — real "loads in Revit" deferred until Autodesk developer account exists), env-driven CORS + fly.io deploy prep (`docs/DEPLOY.md`). Branch `phase-0.4`; W2 spec-sheet data + live deploy + live APS remain outstanding.** Phase 0.4 spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.4 — WiLLstudio Refocus.md`; plans in `docs/superpowers/plans/`. Underlying 0.3: STEP/DXF/IFC/PDF/zip pipeline, 103-part catalog, 561 combos; placeholder primitives until M1 GLBs.
 
 ## Commands
 
@@ -20,17 +20,19 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 
 ## geometry-service rules (Phase 0.3)
 
-- **Adapter boundary is sacred:** engines (build123d/ezdxf/ifcopenshell/fpdf2) are imported only inside `geometry-service/app/adapters/` (and the kit in `app/kit/`). `app/titleblock.py`/`app/spec_template.py` are re-export shims. Boundary check: `grep -rn "import ezdxf\|import fpdf\|import ifcopenshell\|from build123d" geometry-service/app --include="*.py" | grep -v "app/adapters/\|app/kit/"` must be empty.
+- **Adapter boundary is sacred:** engines (build123d/ezdxf/ifcopenshell/fpdf2/httpx) are imported only inside `geometry-service/app/adapters/` (and the kit in `app/kit/`). `app/titleblock.py`/`app/spec_template.py` are re-export shims. Boundary check: `grep -rn "import ezdxf\|import fpdf\|import ifcopenshell\|from build123d\|import httpx" geometry-service/app --include="*.py" | grep -v "app/adapters/\|app/kit/"` must be empty.
 - **Determinism:** same config → byte-identical output (config hash in filenames; no wall clock anywhere in generated artifacts — pinned STEP header/IFC GUIDs/zip dates/PDF metadata). `DXF_ROUTE=direct|projection` swaps the DXF engine route (boundary proof: `geometry-service/docs/adapter-swap-note.md`).
 - **Labeling:** every generated file carries the concept-starter disclaimer + config ID (enforced by tests per format).
 - The kit reads dims/sockets from `public/catalog.json` — one source of truth with the viewer. fpdf2 is latin-1: non-ASCII in part names goes through `_latin1()` in `app/adapters/_spec_template.py`.
-- HTTP contract (frozen, see `docs/superpowers/plans/2026-07-09-phase03-00-master.md`): `POST /generate {config, formats[], renderPng?}` → `{configHash, files[], warnings[]}` | 422 string detail; `GET /files/{name}`; `GET /health`. Standalone products (pole/arm/baseCover all `''`) get PDF only.
+- HTTP contract (frozen, see `docs/superpowers/plans/2026-07-09-phase03-00-master.md`): `POST /generate {config, formats[], renderPng?}` → `{configHash, files[], warnings[]}` | 422 string detail; `GET /files/{name}`; `GET /health`. Standalone products (pole/arm/baseCover all `''`) get PDF only. CORS is env-driven (`ALLOWED_ORIGINS`); fly.io deploy config in `geometry-service/fly.toml` + `geometry-service/Dockerfile` (build context = repo root, port 8080). New formats: `herocard` (concept card PDF, fpdf2 via herocard_adapter.py), `rfa` (mock APS `.rfa` via rfa_adapter.py + aps_client.py; real Design Automation scaffold gated on `APS_CLIENT_ID`/`APS_CLIENT_SECRET`).
 
 ## Code map
 
-- `src/types.ts` — `Catalog`, `CatalogPart`, `PoleConfig` (the serializable config object)
+- `src/types.ts` — `Catalog`, `CatalogPart`, `PoleConfig` (the serializable config object; includes `brand: ProductLine` field, default `"WiLLstudio"`)
 - `src/lib/compat.ts` — socket-matching compatibility; `SLOT_ORDER` is fixture-first (Fixture → Arm → Pole → Base Cover → Finish) so filtering flows fixture → arm → pole; `repairConfig` (fixes downstream selections on upstream change), `defaultConfig`, `configStatus()` (Standard if the config matches a catalog `referenceAssembly` — list currently empty — else Configurable)
-- `src/lib/url.ts` — config ↔ URL query params (share links)
+- `src/lib/url.ts` — config ↔ URL query params (share links); brand validated against allowed `ProductLine` values
+- `src/lib/routes.ts` — path routing: `/studio/design` (WiLLstudio builder), `/studio/product/:id` (standalone product viewer)
+- `src/components/BrandSwitcher.tsx` — Tesla-style brand switcher; non-WiLLstudio brands hidden in the WiLLstudio flow
 - `src/lib/parse.ts` — deterministic keyword parser for the "Describe Your Product" box; matches part/finish `keywords` in `public/catalog.json` plus a pole-height regex. Acceptance phrase: "I want a 10k lm decorative pendant light on a 20ft pole with shepherds hook arm in a black finish" → GVX + SH1 + 20 ft + matte black. Tests: `src/lib/parse.test.ts`
 - `src/lib/summary.ts` — shared config summary text + `SUMMARY_ROWS`
 - `src/lib/leads.ts` — contact-gate lead log; stored in localStorage (key `willbuild-leads`) as a stopgap — the "no localStorage" rule applies to config state only
@@ -51,7 +53,7 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 - Vite + React + TypeScript
 - Three.js via React Three Fiber + drei (`OrbitControls`, `Environment`, `useGLTF`)
 - zustand for configurator state
-- Frontend is still a static site; the only backend is the colocated `geometry-service/` (FastAPI, localhost-only CORS for now — no deploy story yet). No localStorage for config — config lives in state + URL. (Exception: `src/lib/leads.ts` logs contact-gate leads to localStorage as a stopgap.)
+- Frontend is a static site; the only backend is the colocated `geometry-service/` (FastAPI). CORS is env-driven (`ALLOWED_ORIGINS`); fly.io deploy prepped in `geometry-service/fly.toml` + `geometry-service/Dockerfile` + `docs/DEPLOY.md` (actual `fly deploy` is a manual user step). No localStorage for config — config lives in state + URL. (Exception: `src/lib/leads.ts` logs contact-gate leads to localStorage as a stopgap.)
 
 ## Core architecture rules
 
@@ -104,7 +106,7 @@ Document in repo as `ASSETS.md`. CAD (STEP/SolidWorks) → Blender → GLB:
 
 ## Explicitly out of scope (Phase 1+)
 
-LLM/AI intent parsing (the describe box is a deterministic keyword parser, not AI), pricing, photometrics (IES card stays disabled), EPA/structural validation, user accounts, CMS/Shopify integration (the inventory scripts only read Shopify's public JSON), photometric nighttime simulation (night view stays conceptual), native Revit RFA (IFC ships instead — APS deferred to Phase 3), manufacturing-fidelity CAD (outputs are concept starter models).
+LLM/AI intent parsing (the describe box is a deterministic keyword parser, not AI), pricing, photometrics (IES card stays disabled), EPA/structural validation, user accounts, CMS/Shopify integration (the inventory scripts only read Shopify's public JSON), photometric nighttime simulation (night view stays conceptual), Revit `.rfa` that loads in Revit (mock APS ships in Phase 0.4; real Design Automation requires the Autodesk developer account — deferred, adapter scaffold in `rfa_adapter.py` + `aps_client.py`), manufacturing-fidelity CAD (outputs are concept starter models).
 
 ## Milestones
 

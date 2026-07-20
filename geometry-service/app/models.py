@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 class PoleConfig(BaseModel):
     configId: str
+    brand: str = "WiLLstudio"
     pole: str
     baseCover: str
     arm: str
@@ -19,7 +20,7 @@ class PoleConfig(BaseModel):
 
 class GenerateRequest(BaseModel):
     config: PoleConfig
-    formats: list[Literal["step", "dxf", "dwg", "ifc", "pdf", "bundle"]]
+    formats: list[Literal["step", "dxf", "dwg", "ifc", "pdf", "bundle", "herocard", "rfa"]]
     renderPng: str | None = None  # base64-encoded PNG
 
 
