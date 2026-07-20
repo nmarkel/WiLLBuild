@@ -204,6 +204,25 @@ export function ProductViewer({ part, catalog }: Props) {
                 catalog={catalog}
                 selectedFinish={selectedFinish}
               />
+              <div className="product-viewer-id-card">
+                <span className="product-viewer-id-name">{part.name}</span>
+                <span className="product-viewer-id-family">{part.category}</span>
+                <a href={part.productUrl} target="_blank" rel="noreferrer">
+                  Product page ↗
+                </a>
+              </div>
+              {part.photo && (
+                <a
+                  className="product-viewer-photo"
+                  href={part.productUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Official product image"
+                >
+                  <img src={part.photo} alt={part.name} loading="lazy" />
+                  <span>Product photo</span>
+                </a>
+              )}
             </div>
             {part.finishes.length > 0 && (
               <FinishChips

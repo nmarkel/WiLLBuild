@@ -8,9 +8,10 @@ import { OutputTray } from './components/OutputTray'
 import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
+import { BrandHome } from './components/BrandHome'
 
 export default function App() {
-  const { catalog, config, showScale, mode, view, loadCatalog, toggleScale, toggleMode, openBuilder } =
+  const { catalog, config, showScale, mode, view, brand, loadCatalog, toggleScale, toggleMode, openHome } =
     useConfigurator()
 
   useEffect(() => {
@@ -19,6 +20,25 @@ export default function App() {
 
   if (!catalog || !config) {
     return <div className="loading">Loading catalog…</div>
+  }
+
+  // Brand home (non-WiLLstudio): brand-scoped nav + product grid in main area
+  if (view.kind === 'home') {
+    return (
+      <div className="app">
+        <aside className="panel">
+          <header className="brand">
+            <img className="brand-logo" src="/will-logo.png" alt="WiLL" />
+            <span className="brand-sub">3D Pole Configurator</span>
+          </header>
+          <BrandSwitcher />
+          <CatalogNav catalog={catalog} activeBrand={brand} />
+        </aside>
+        <main className="viewport brand-home-viewport">
+          <BrandHome catalog={catalog} brand={brand} />
+        </main>
+      </div>
+    )
   }
 
   // Product view: catalog nav panel + real product viewer in main area
@@ -32,17 +52,17 @@ export default function App() {
             <span className="brand-sub">3D Pole Configurator</span>
           </header>
           <BrandSwitcher />
-          <CatalogNav catalog={catalog} />
+          <CatalogNav catalog={catalog} activeBrand={brand} />
         </aside>
         <main className="viewport">
           <div className="product-viewer-shell">
             <div className="product-viewer-back-bar">
               <button
                 className="btn secondary"
-                onClick={openBuilder}
-                aria-label="Back to builder"
+                onClick={openHome}
+                aria-label={brand === 'WiLLstudio' ? 'Back to builder' : `Back to ${brand}`}
               >
-                ← Back to builder
+                ← {brand === 'WiLLstudio' ? 'Back to builder' : `Back to ${brand}`}
               </button>
             </div>
             {part ? (
@@ -67,7 +87,7 @@ export default function App() {
           <span className="brand-sub">3D Pole Configurator</span>
         </header>
         <BrandSwitcher />
-        <CatalogNav catalog={catalog} />
+        <CatalogNav catalog={catalog} activeBrand={brand} />
         <DescribeBox />
         <Panel catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />

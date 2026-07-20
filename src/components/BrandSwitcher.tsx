@@ -1,6 +1,6 @@
 import type { ProductLine } from '../types'
 import { useConfigurator } from '../store'
-import { builderPath, BRAND_SLUGS } from '../lib/routes'
+import { brandHomePath, BRAND_SLUGS } from '../lib/routes'
 
 /** Display order for the brand list — mirrors a Tesla-style model selector. */
 const BRAND_ORDER: ProductLine[] = ['WiLLstudio', 'NAFCO', 'WiLLsport', 'WiLLev', 'WiLLcloud']
@@ -34,7 +34,7 @@ export function BrandSwitcher() {
           >
             {hasFlow ? (
               <a
-                href={builderPath(b)}
+                href={brandHomePath(b)}
                 className="brand-switcher-link"
                 aria-current={isActive ? 'page' : undefined}
               >
