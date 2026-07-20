@@ -8,7 +8,7 @@ import { OutputTray } from './components/OutputTray'
 import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
-import { BrandHome } from './components/BrandHome'
+import { BrandProductList, firstBrandProduct } from './components/BrandProductList'
 
 export default function App() {
   const { catalog, config, showScale, mode, view, brand, loadCatalog, toggleScale, toggleMode, openHome } =
@@ -22,8 +22,13 @@ export default function App() {
     return <div className="loading">Loading catalog…</div>
   }
 
-  // Brand home (non-WiLLstudio): brand-scoped nav + product grid in main area
-  if (view.kind === 'home') {
+  // Brand showroom (non-WiLLstudio): product list in the panel, 3D renderer in
+  // the main area. Landing on the brand shows its first product immediately.
+  if (brand !== 'WiLLstudio' && (view.kind === 'home' || view.kind === 'product')) {
+    const activePart =
+      view.kind === 'product'
+        ? catalog.parts.find((p) => p.id === view.productId)
+        : firstBrandProduct(catalog, brand)
     return (
       <div className="app">
         <aside className="panel">
@@ -32,16 +37,22 @@ export default function App() {
             <span className="brand-sub">3D Pole Configurator</span>
           </header>
           <BrandSwitcher />
-          <CatalogNav catalog={catalog} activeBrand={brand} />
+          <BrandProductList catalog={catalog} brand={brand} activeId={activePart?.id} />
         </aside>
-        <main className="viewport brand-home-viewport">
-          <BrandHome catalog={catalog} brand={brand} />
+        <main className="viewport">
+          <div className="product-viewer-shell">
+            {activePart ? (
+              <ProductViewer part={activePart} catalog={catalog} />
+            ) : (
+              <div className="product-viewer-not-found">No products listed yet.</div>
+            )}
+          </div>
         </main>
       </div>
     )
   }
 
-  // Product view: catalog nav panel + real product viewer in main area
+  // WiLLstudio product view: catalog nav panel + product viewer in main area
   if (view.kind === 'product') {
     const part = catalog.parts.find((p) => p.id === view.productId)
     return (
