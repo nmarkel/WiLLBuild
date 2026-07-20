@@ -15,7 +15,7 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 - `npm run lint` — oxlint
 - `npm run build` — `tsc -b` typecheck + vite build
 - `./geometry-service/run.sh` — CAD/BIM service on :8000 (Python 3.13 venv at `geometry-service/.venv`); tests: `cd geometry-service && .venv/bin/pytest tests/ -q` (fast) or `-m slow tests/test_matrix.py` (full 561-combo × 4-format matrix, ~25 min)
-- `node scripts/fetch-catalog-inventory.mjs` / `node scripts/merge-inventory.mjs` — regenerate the willbrands.com inventory (`docs/catalog-inventory.json`), merged catalog and `catalog-assets.md` (both idempotent)
+- `node scripts/fetch-catalog-inventory.mjs` / `node scripts/merge-inventory.mjs` — regenerate the willbrands.com inventory (`docs/catalog-inventory.json`), merged catalog and `catalog-assets.md` (both idempotent). Part `category` values are the official willbrands.com/pages/products taxonomy (`SITE_TAXONOMY` in the fetch script — update it if the site page changes); the machine slug lives on as `categorySlug` in the inventory. Catalog root `categories` maps each line to its site-ordered category list (drives CatalogNav pill order); merge updates taxonomy fields on existing non-curated entries in place (wizard parts keep their `line`).
 - If a native-binding error appears for rolldown/oxlint (npm optional-deps bug), install the `-darwin-arm64` binding package explicitly.
 
 ## geometry-service rules (Phase 0.3)

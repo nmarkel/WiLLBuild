@@ -116,10 +116,9 @@ function titleToKeywords(title) {
   return [...new Set(words)];
 }
 
-/** Derive family string from line + category. */
-function deriveFamily(line, category) {
-  // Map category slugs to human labels
-  const catLabel = {
+/** Human label for a machine category slug (fallback when no site-taxonomy entry applies). */
+function fallbackLabel(slug) {
+  return {
     'fixture': 'Fixtures',
     'arm': 'Brackets & Arms',
     'pole': 'Poles',
@@ -127,8 +126,13 @@ function deriveFamily(line, category) {
     'accessory': 'Accessories',
     'controls': 'Controls',
     'ev-charging': 'EV Charging',
-  }[category] ?? category;
-  return `${line} ${catLabel}`;
+    'other': 'Other',
+  }[slug] ?? slug;
+}
+
+/** Derive family string from line + machine category slug. */
+function deriveFamily(line, categorySlug) {
+  return `${line} ${fallbackLabel(categorySlug)}`;
 }
 
 /** Build the 3D / photo-card / GLB status string. */
@@ -173,7 +177,7 @@ for (const product of inventory.products) {
     dropShip: product.dropShip,
     tier: 3,
     name: product.title,          // full title, no truncation per spec
-    family: deriveFamily(product.line, product.category),
+    family: deriveFamily(product.line, product.categorySlug ?? product.category),
     photo: product.image,         // remote CDN URL — acceptable in 0.3
     thumbnail: null,
     model: null,
@@ -186,14 +190,54 @@ for (const product of inventory.products) {
   existingIds.add(id);
 }
 
+// ── Update existing (non-curated) entries in place ────────────────────────────
+// The site taxonomy (pages/products) is the source of truth for line + category.
+// Standalone entries follow it wholesale; wizard parts (slot !== 'standalone')
+// keep their line — moving a promoted builder part to another brand tab would
+// break the brand-scoped flow — and only take the category when the taxonomy
+// entry agrees with their line (else the humanized slug label).
+const partById = new Map(catalog.parts.map(p => [p.id, p]));
+let updatedCount = 0;
+for (const product of inventory.products) {
+  if (CURATED_HANDLES.has(product.handle)) continue;
+  const part = partById.get(product.handle);
+  if (!part) continue;
+  const slug = product.categorySlug ?? product.category;
+  const nextLine = part.slot === 'standalone' ? product.line : part.line;
+  const nextCategory = part.slot === 'standalone' || product.line === part.line
+    ? product.category
+    : fallbackLabel(slug);
+  const nextFamily = deriveFamily(nextLine, slug);
+  if (part.line !== nextLine || part.category !== nextCategory || part.family !== nextFamily) {
+    part.line = nextLine;
+    part.category = nextCategory;
+    part.family = nextFamily;
+    updatedCount++;
+  }
+}
+console.log(`Updated taxonomy fields on ${updatedCount} existing entries`);
+
 // ── Merge into catalog ────────────────────────────────────────────────────────
 // Curated parts come first (untouched), then new entries sorted by line+name.
 const sortedNew = newEntries.sort((a, b) =>
   a.line.localeCompare(b.line) || a.name.localeCompare(b.name)
 );
 
+// Nav category ordering: official page order per line, then any extra
+// categories still present on standalone parts (appended, first-seen order).
+const categories = {};
+for (const [line, cats] of Object.entries(inventory.taxonomy ?? {})) {
+  categories[line] = [...cats];
+}
+for (const p of [...catalog.parts, ...sortedNew]) {
+  if (p.slot !== 'standalone') continue;
+  if (!categories[p.line]) categories[p.line] = [];
+  if (!categories[p.line].includes(p.category)) categories[p.line].push(p.category);
+}
+
 const mergedCatalog = {
   ...catalog,
+  categories,
   parts: [...catalog.parts, ...sortedNew],
 };
 
