@@ -142,6 +142,50 @@ function statusLabel(part) {
   return 'photo-card'; // new entries always have a CDN photo
 }
 
+/**
+ * Derive a parametric placeholder spec for a standalone product so it renders
+ * in the single-part 3D viewer (meters, +Y up, origin at the ground/attachment
+ * point — same conventions as PlaceholderPart). Category-shaped primitives:
+ * real dimensions arrive with the spec-sheet workstream; until then these are
+ * concept-level stand-ins, deterministic from name + categorySlug (idempotent).
+ */
+function derivePlaceholder(name, categorySlug, heightFt) {
+  const t = name.toLowerCase();
+  const box = (w, h, d) => ({ kind: 'box', sizeM: [w, h, d], direction: 'up' });
+
+  // Specific product shapes first
+  if (/bollard/.test(t))            return { kind: 'pole', heightM: 1.07, radiusTopM: 0.075, radiusBottomM: 0.09 };
+  if (/anchor bolt/.test(t))        return { kind: 'pole', heightM: 0.45, radiusTopM: 0.015, radiusBottomM: 0.015 };
+  if (/top cap|pole cap/.test(t))   return { kind: 'cone', radiusM: 0.1, heightM: 0.09, direction: 'up' };
+  if (/transformer base/.test(t))   return { kind: 'prism', radiusTopM: 0.16, radiusBottomM: 0.18, heightM: 0.5, sides: 4 };
+  if (/pre-?cast|concrete.*base/.test(t)) return { kind: 'pole', heightM: 0.76, radiusTopM: 0.28, radiusBottomM: 0.3 };
+  if (/base cover/.test(t) || categorySlug === 'base-cover')
+    return { kind: 'baseCover', heightM: 0.35, radiusTopM: 0.12, radiusBottomM: 0.22 };
+  if (/pedestal|evse|charging/.test(t)) return box(0.32, 1.35, 0.28);
+  if (/control|wireless|gateway/.test(t) || categorySlug === 'controls') return box(0.5, 0.65, 0.22);
+  if (/high bay/.test(t))
+    return { kind: 'lathe', profile: [[0.1, 0], [0.28, 0.05], [0.3, 0.15], [0.05, 0.42], [0.03, 0.5], [0, 0.5]] };
+  if (/prewired|ntx/.test(t))
+    return { kind: 'group', children: [
+      { spec: { kind: 'pole', heightM: 6.1, radiusTopM: 0.06, radiusBottomM: 0.1 }, position: [0, 0, 0] },
+      { spec: box(0.5, 0.15, 0.3), position: [0, 6.1, 0] },
+    ] };
+  if (/kbx|sportslighter|gtx|hdx|ebx|wrestling|sports light/.test(t)) return box(0.75, 0.22, 0.5);
+
+  // Category-shaped fallbacks
+  if (categorySlug === 'pole' || /light pole|mast/.test(t)) {
+    const heightM = heightFt ? heightFt * 0.3048 : 7.62; // 25 ft commercial default
+    return { kind: 'pole', heightM, radiusTopM: 0.06, radiusBottomM: 0.11 };
+  }
+  if (/crossarm|cross arm|bullhorn/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.1, 0], [0.7, 0.1, 0]], radiusM: 0.04 };
+  if (categorySlug === 'arm')
+    return { kind: 'tube', points: [[0, 0, 0], [0.35, 0.12, 0], [0.75, 0.28, 0]], radiusM: 0.035 };
+  if (categorySlug === 'fixture') return box(0.6, 0.18, 0.35);
+  if (categorySlug === 'accessory') return box(0.3, 0.25, 0.3);
+  return box(0.4, 0.4, 0.4);
+}
+
 // ── Load files ────────────────────────────────────────────────────────────────
 const inventory = JSON.parse(readFileSync(INVENTORY_PATH, 'utf8'));
 const catalog   = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
@@ -175,9 +219,10 @@ for (const product of inventory.products) {
     category: product.category,
     productClass: product.productClass,
     dropShip: product.dropShip,
-    tier: 3,
+    tier: 2,                      // derived parametric placeholder = 3D-viewable
     name: product.title,          // full title, no truncation per spec
     family: deriveFamily(product.line, product.categorySlug ?? product.category),
+    placeholder: derivePlaceholder(product.title, product.categorySlug ?? product.category, undefined),
     photo: product.image,         // remote CDN URL — acceptable in 0.3
     thumbnail: null,
     model: null,
@@ -208,10 +253,21 @@ for (const product of inventory.products) {
     ? product.category
     : fallbackLabel(slug);
   const nextFamily = deriveFamily(nextLine, slug);
-  if (part.line !== nextLine || part.category !== nextCategory || part.family !== nextFamily) {
+  // Standalone products always carry a derived placeholder so the single-part
+  // 3D viewer works (tier 2 = parametric 3D). Deterministic → idempotent.
+  const nextPlaceholder = part.slot === 'standalone'
+    ? derivePlaceholder(part.name, slug, part.heightFt)
+    : part.placeholder;
+  const nextTier = part.slot === 'standalone' ? 2 : part.tier;
+  if (
+    part.line !== nextLine || part.category !== nextCategory || part.family !== nextFamily ||
+    part.tier !== nextTier || JSON.stringify(part.placeholder) !== JSON.stringify(nextPlaceholder)
+  ) {
     part.line = nextLine;
     part.category = nextCategory;
     part.family = nextFamily;
+    part.tier = nextTier;
+    if (nextPlaceholder) part.placeholder = nextPlaceholder;
     updatedCount++;
   }
 }

@@ -13,8 +13,30 @@ interface Props {
   catalog: Catalog
 }
 
-/** Day HDRI used in the slim single-part canvas. */
-const DAY_HDRI = import.meta.env.BASE_URL + 'hdri/abandoned_parking_2k.hdr'
+/** Day HDRI used in the slim single-part canvas (same environment as the main scene). */
+const DAY_HDRI = import.meta.env.BASE_URL + 'hdri/sunny_vondelpark_2k.hdr'
+
+/** Approximate overall height of a placeholder spec in meters — drives camera framing. */
+function specHeight(spec: NonNullable<CatalogPart['placeholder']>): number {
+  switch (spec.kind) {
+    case 'pole':
+    case 'baseCover':
+    case 'prism':
+      return spec.heightM
+    case 'cone':
+      return spec.heightM
+    case 'box':
+      return spec.sizeM[1]
+    case 'tube':
+      return Math.max(...spec.points.map((p) => Math.abs(p[1])), spec.radiusM * 2)
+    case 'lathe':
+      return Math.max(...spec.profile.map(([, y]) => Math.abs(y)))
+    case 'group':
+      return Math.max(
+        ...spec.children.map((c) => c.position[1] + specHeight(c.spec)),
+      )
+  }
+}
 
 /**
  * Finish chip row — shown only when the part has at least one finish option.
@@ -67,6 +89,12 @@ function SinglePartCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const finishDef = catalog.finishes.find((f) => f.id === selectedFinish) ?? catalog.finishes[0]
 
+  // Frame the camera to the part's height — a 25 ft pole and a pole cap need very
+  // different distances. Orbit around the part's vertical midpoint.
+  const h = part.placeholder ? Math.max(specHeight(part.placeholder), 0.3) : 1
+  const camPos: [number, number, number] = [h * 0.9 + 0.9, h * 0.62 + 0.35, h * 1.5 + 1.5]
+  const target: [number, number, number] = [0, h * 0.45, 0]
+
   const material = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -85,7 +113,7 @@ function SinglePartCanvas({
     <Canvas
       ref={canvasRef}
       dpr={[1, 1.5]}
-      camera={{ position: [1.5, 0.8, 2.5], fov: 42 }}
+      camera={{ position: camPos, fov: 42 }}
       gl={{
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
@@ -120,18 +148,19 @@ function SinglePartCanvas({
         </group>
       )}
 
-      <ContactShadows opacity={0.5} scale={6} blur={2} far={3} frames={30} />
+      <ContactShadows opacity={0.5} scale={Math.max(6, h * 2)} blur={2} far={3} frames={30} />
 
       <OrbitControls
         makeDefault
+        target={target}
         enablePan={false}
         enableDamping
         dampingFactor={0.08}
         autoRotate
         autoRotateSpeed={0.5}
         maxPolarAngle={Math.PI / 2 - 0.03}
-        minDistance={0.5}
-        maxDistance={8}
+        minDistance={Math.max(0.5, h * 0.4)}
+        maxDistance={Math.max(8, h * 3)}
       />
     </Canvas>
   )
