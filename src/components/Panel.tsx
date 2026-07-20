@@ -22,9 +22,15 @@ export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const [openStep, setOpenStep] = useState<Slot | 'finish'>('fixture')
 
+  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
+  const steps = STEPS.filter(
+    (step) =>
+      step.key === 'finish' || compatibleParts(catalog, config, step.key as Slot).length > 0,
+  )
+
   return (
     <div className="stepper">
-      {STEPS.map((step, i) => {
+      {steps.map((step, i) => {
         const isFinish = step.key === 'finish'
         const selectedName = isFinish
           ? catalog.finishes.find((f) => f.id === config.finish)?.name
@@ -64,6 +70,8 @@ export function Panel({ catalog, config }: Props) {
                         <span className="thumb">
                           {part.thumbnail ? (
                             <img src={import.meta.env.BASE_URL + part.thumbnail} alt="" />
+                          ) : part.photo ? (
+                            <img src={part.photo} alt="" loading="lazy" />
                           ) : (
                             part.family.slice(0, 2).toUpperCase()
                           )}

@@ -24,12 +24,12 @@ describe('builderPath', () => {
 })
 
 describe('brandHomePath', () => {
-  it('returns the builder for WiLLstudio', () => {
+  it('returns the configurator for builder brands', () => {
     expect(brandHomePath('WiLLstudio')).toBe('/studio/design')
+    expect(brandHomePath('NAFCO')).toBe('/nafco/design')
+    expect(brandHomePath('WiLLsport')).toBe('/sport/design')
   })
-  it('returns /<slug> for other brands', () => {
-    expect(brandHomePath('NAFCO')).toBe('/nafco')
-    expect(brandHomePath('WiLLsport')).toBe('/sport')
+  it('returns the /<slug> showroom for non-builder brands', () => {
     expect(brandHomePath('WiLLev')).toBe('/ev')
     expect(brandHomePath('WiLLcloud')).toBe('/cloud')
   })
@@ -87,9 +87,15 @@ describe('parseRoute', () => {
     expect(result.view.kind).toBe('builder')
   })
 
-  it('parses /nafco as the NAFCO brand home', () => {
+  it('parses /nafco as the NAFCO configurator (builder brand)', () => {
     const result = parseRoute('/nafco')
     expect(result.brand).toBe('NAFCO')
+    expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /ev as the WiLLev showroom (no assembly parts)', () => {
+    const result = parseRoute('/ev')
+    expect(result.brand).toBe('WiLLev')
     expect(result.view.kind).toBe('home')
   })
 
@@ -108,9 +114,9 @@ describe('parseRoute', () => {
     }
   })
 
-  it('parses /nafco/unknown as the NAFCO brand home', () => {
+  it('parses /nafco/unknown as the NAFCO configurator (fallback)', () => {
     const result = parseRoute('/nafco/unknown')
     expect(result.brand).toBe('NAFCO')
-    expect(result.view.kind).toBe('home')
+    expect(result.view.kind).toBe('builder')
   })
 })

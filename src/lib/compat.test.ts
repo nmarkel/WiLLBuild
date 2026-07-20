@@ -113,17 +113,28 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
   })
 
-  it('every promoted pole hosts every arm (tenon-3in top socket)', () => {
-    for (const arm of catalog.parts.filter((p) => p.slot === 'arm')) {
+  it('every promoted WiLLstudio pole hosts every WiLLstudio arm (tenon-3in top socket)', () => {
+    for (const arm of catalog.parts.filter((p) => p.slot === 'arm' && p.line === 'WiLLstudio')) {
       const poles = sortedIds(compatibleParts(catalog, config({ arm: arm.id }), 'pole'))
       expect(poles).toEqual(ALL_POLES)
     }
   })
 
-  it('every pole (curated + promoted) hosts every base cover', () => {
-    for (const pole of catalog.parts.filter((p) => p.slot === 'pole')) {
+  it('every WiLLstudio pole hosts every base cover', () => {
+    for (const pole of catalog.parts.filter((p) => p.slot === 'pole' && p.line === 'WiLLstudio')) {
       const covers = sortedIds(compatibleParts(catalog, config({ pole: pole.id }), 'baseCover'))
       expect(covers).toEqual(ALL_BASE_COVERS)
+    }
+  })
+
+  it('brand builders never share parts: NAFCO/WiLLsport combos are invisible to WiLLstudio', () => {
+    // Brand-specific socket vocabularies (nafco-*, sport-*) plus the brand
+    // filter in compatibleParts keep cross-brand assemblies impossible.
+    for (const slot of ['fixture', 'arm', 'pole'] as const) {
+      const ids = compatibleParts(catalog, config({}), slot).map((p) => p.id)
+      for (const id of ids) {
+        expect(partById(catalog, id)?.line).toBe('WiLLstudio')
+      }
     }
   })
 
@@ -297,7 +308,8 @@ describe('standalone product class (two-product-class model)', () => {
     const wizardParts = catalog.parts.filter((p) => p.slot !== 'standalone')
     expect(wizardParts.length).toBeGreaterThan(0)
     for (const part of wizardParts) {
-      expect(part.line).toBe('WiLLstudio')
+      // Builder brands: WiLLstudio + the promoted NAFCO/WiLLsport configurators
+      expect(['WiLLstudio', 'NAFCO', 'WiLLsport']).toContain(part.line)
       expect(part.productClass).toBe('assembly-part')
       expect(typeof part.dropShip).toBe('boolean')
       expect(part.tier).toBe(2)

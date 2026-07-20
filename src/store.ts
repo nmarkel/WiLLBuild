@@ -67,8 +67,8 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     const initialBrand = routeResult.brand
     const fromUrl = paramsToPartialConfig(searchParams)
     const config = fromUrl
-      ? repairConfig(catalog, { ...defaultConfig(catalog), ...fromUrl })
-      : defaultConfig(catalog)
+      ? repairConfig(catalog, { ...defaultConfig(catalog, initialBrand), ...fromUrl, brand: initialBrand })
+      : defaultConfig(catalog, initialBrand)
     // Sync URL to match the resolved view
     if (initialView.kind === 'product') {
       syncProductUrl(initialBrand, initialView.productId)

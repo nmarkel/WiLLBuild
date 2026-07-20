@@ -99,7 +99,7 @@ export default function App() {
         </header>
         <BrandSwitcher />
         <CatalogNav catalog={catalog} activeBrand={brand} />
-        <DescribeBox />
+        {brand === 'WiLLstudio' && <DescribeBox />}
         <Panel catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
         <OutputTray catalog={catalog} config={config} />

@@ -48,17 +48,28 @@ export function productPath(brand: ProductLine, id: string): string {
   return `/${slug}/product/${id}`
 }
 
-/** Default view for a brand: WiLLstudio opens the builder, others their brand home. */
+/**
+ * Brands whose catalog contains wizard (assembly) parts and therefore get a
+ * configurator; WiLLev/WiLLcloud have nothing that assembles and land on the
+ * product showroom instead. Mirrors the promotions in scripts/merge-inventory.mjs.
+ */
+export const BUILDER_BRANDS: ReadonlySet<ProductLine> = new Set([
+  'WiLLstudio',
+  'NAFCO',
+  'WiLLsport',
+])
+
+/** Default view for a brand: builder brands open their configurator, others the showroom. */
 function homeView(brand: ProductLine): ViewMode {
-  return brand === 'WiLLstudio' ? { kind: 'builder' } : { kind: 'home' }
+  return BUILDER_BRANDS.has(brand) ? { kind: 'builder' } : { kind: 'home' }
 }
 
 /**
- * Returns the landing path for a brand — the builder for WiLLstudio,
- * the brand-home product grid for everything else.
+ * Returns the landing path for a brand — the configurator for builder brands,
+ * the product showroom for everything else.
  */
 export function brandHomePath(brand: ProductLine): string {
-  if (brand === 'WiLLstudio') return builderPath(brand)
+  if (BUILDER_BRANDS.has(brand)) return builderPath(brand)
   const slug = BRAND_SLUGS[brand] ?? BRAND_SLUGS[DEFAULT_BRAND]!
   return `/${slug}`
 }

@@ -18,6 +18,7 @@ from __future__ import annotations
 from build123d import (
     Align,
     Axis,
+    Box,
     BuildLine,
     BuildPart,
     BuildSketch,
@@ -200,14 +201,24 @@ def build_fixture_group(children: list[dict]):
     return solid
 
 
+def _build_box(spec: dict):
+    """Rectangular fixture housing; origin at the base center (viewer y-up -> CAD z-up)."""
+    w, h, d = (v * M for v in spec["sizeM"])
+    with BuildPart() as bp:
+        Box(w, d, h, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    return bp.part
+
+
 def build_fixture(p: dict):
-    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union."""
+    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union, box -> housing."""
     ph = p["placeholder"]
     kind = ph["kind"]
     if kind == "lathe":
         return build_fixture_lathe(ph["profile"])
     if kind == "group":
         return build_fixture_group(ph["children"])
+    if kind == "box":
+        return _build_box(ph)
     raise ValueError(f"unknown fixture kind: {kind!r}")
 
 
