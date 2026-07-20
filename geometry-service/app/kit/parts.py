@@ -186,6 +186,10 @@ def _build_group_child(spec: dict):
         return _build_prism(spec)
     if kind == "cone":
         return _build_cone(spec)
+    if kind == "box":
+        return _build_box(spec)
+    if kind == "lathe":
+        return build_fixture_lathe(spec["profile"])
     raise ValueError(f"unknown group child kind: {kind!r}")
 
 

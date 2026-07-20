@@ -152,38 +152,105 @@ function statusLabel(part) {
 function derivePlaceholder(name, categorySlug, heightFt) {
   const t = name.toLowerCase();
   const box = (w, h, d) => ({ kind: 'box', sizeM: [w, h, d], direction: 'up' });
+  const group = (children) => ({ kind: 'group', children });
+  const at = (spec, position) => ({ spec, position });
 
-  // Specific product shapes first
-  if (/bollard/.test(t))            return { kind: 'pole', heightM: 1.07, radiusTopM: 0.075, radiusBottomM: 0.09 };
-  if (/anchor bolt/.test(t))        return { kind: 'pole', heightM: 0.45, radiusTopM: 0.015, radiusBottomM: 0.015 };
-  if (/top cap|pole cap/.test(t))   return { kind: 'cone', radiusM: 0.1, heightM: 0.09, direction: 'up' };
-  if (/transformer base/.test(t))   return { kind: 'prism', radiusTopM: 0.16, radiusBottomM: 0.18, heightM: 0.5, sides: 4 };
-  if (/pre-?cast|concrete.*base/.test(t)) return { kind: 'pole', heightM: 0.76, radiusTopM: 0.28, radiusBottomM: 0.3 };
+  // ── Specific product shapes (silhouettes eyeballed from product photos) ──
+  if (/bollard/.test(t))
+    return group([
+      at({ kind: 'pole', heightM: 0.98, radiusTopM: 0.075, radiusBottomM: 0.09 }, [0, 0, 0]),
+      // Dome cap
+      at({ kind: 'lathe', profile: [[0.078, 0], [0.075, 0.05], [0.05, 0.085], [0, 0.1]] }, [0, 0.98, 0]),
+    ]);
+  if (/anchor bolt/.test(t))
+    // Kit of 4 threaded rods on a square bolt circle
+    return group([
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [-0.12, 0, -0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [0.12, 0, -0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [-0.12, 0, 0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [0.12, 0, 0.12]),
+    ]);
+  if (/top cap|pole cap/.test(t))
+    return { kind: 'lathe', profile: [[0.1, 0], [0.1, 0.03], [0.06, 0.07], [0, 0.09]] };
+  if (/transformer base/.test(t))
+    return { kind: 'prism', radiusTopM: 0.16, radiusBottomM: 0.18, heightM: 0.5, sides: 4 };
+  if (/bolt circle adapter/.test(t))
+    return { kind: 'baseCover', heightM: 0.05, radiusTopM: 0.16, radiusBottomM: 0.2 };
+  if (/pre-?cast|concrete.*base/.test(t))
+    return { kind: 'pole', heightM: 0.76, radiusTopM: 0.28, radiusBottomM: 0.3 };
   if (/base cover/.test(t) || categorySlug === 'base-cover')
     return { kind: 'baseCover', heightM: 0.35, radiusTopM: 0.12, radiusBottomM: 0.22 };
   if (/prewired|ntx/.test(t))
-    return { kind: 'group', children: [
-      { spec: { kind: 'pole', heightM: 6.1, radiusTopM: 0.06, radiusBottomM: 0.1 }, position: [0, 0, 0] },
-      { spec: box(0.5, 0.15, 0.3), position: [0, 6.1, 0] },
-    ] };
+    // Prewired pole with a slim area head at the top
+    return group([
+      at({ kind: 'pole', heightM: 6.1, radiusTopM: 0.06, radiusBottomM: 0.1 }, [0, 0, 0]),
+      at(box(0.55, 0.1, 0.26), [0.12, 6.05, 0]),
+    ]);
 
-  // Arms before poles — "mast arms" would otherwise hit the pole regex
-  if (/crossarm|cross arm|bullhorn/.test(t))
-    return { kind: 'tube', points: [[0, 0, 0], [0, 0.1, 0], [0.7, 0.1, 0]], radiusM: 0.04 };
+  // ── Arms before poles — "mast arms" would otherwise hit the pole regex ──
+  if (/crossarm|cross arm/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.12, 0], [0.75, 0.12, 0]], radiusM: 0.04 };
+  if (/bullhorn/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.25, 0], [0.35, 0.45, 0], [0.7, 0.5, 0]], radiusM: 0.045 };
+  if (/truss/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0.5, 0.18, 0], [1.2, 0.3, 0]], radiusM: 0.045 };
+  if (/mast arm|elliptical/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0.2, 0.28, 0], [0.65, 0.45, 0], [1.2, 0.5, 0]], radiusM: 0.04 };
+  if (/davit/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.5, 0], [0.35, 0.85, 0], [0.9, 0.9, 0]], radiusM: 0.045 };
   if (categorySlug === 'arm')
-    return { kind: 'tube', points: [[0, 0, 0], [0.35, 0.12, 0], [0.75, 0.28, 0]], radiusM: 0.035 };
+    return { kind: 'tube', points: [[0, 0, 0], [0.3, 0.2, 0], [0.8, 0.34, 0]], radiusM: 0.035 };
 
-  // Poles before EV pedestals — "Pedestal Base Light Poles" is a pole
+  // ── Poles before EV pedestals — "Pedestal Base Light Poles" is a pole ──
   if (categorySlug === 'pole' || /light pole|mast/.test(t)) {
     const heightM = heightFt ? heightFt * 0.3048 : 7.62; // 25 ft commercial default
     return { kind: 'pole', heightM, radiusTopM: 0.06, radiusBottomM: 0.11 };
   }
-  if (/pedestal|evse|charging/.test(t)) return box(0.32, 1.35, 0.28);
-  if (/control|wireless|gateway/.test(t) || categorySlug === 'controls') return box(0.5, 0.65, 0.22);
+
+  // ── Fixture / equipment families ──
+  if (/cobrahead/.test(t))
+    // Classic cobrahead: thicker mast-side body tapering to a slim nose
+    return group([
+      at(box(0.34, 0.13, 0.3), [0.08, 0, 0]),
+      at(box(0.32, 0.08, 0.24), [0.38, 0, 0]),
+    ]);
+  if (/shoebox/.test(t)) return box(0.5, 0.19, 0.5);
+  if (/slim/.test(t)) return box(0.58, 0.07, 0.3);
+  if (/wall mount|wall pack/.test(t)) return box(0.4, 0.16, 0.28);
+  if (/flood|spot/.test(t))
+    return group([
+      at({ kind: 'pole', heightM: 0.06, radiusTopM: 0.03, radiusBottomM: 0.05 }, [0, 0, 0]),
+      at(box(0.42, 0.3, 0.12), [0, 0.06, 0]),
+    ]);
+  if (/pedestal|evse|charging/.test(t))
+    // Charging pedestal with a screen face
+    return group([
+      at(box(0.3, 1.3, 0.24), [0, 0, 0]),
+      at(box(0.22, 0.28, 0.05), [0, 0.92, 0.13]),
+    ]);
+  if (/control|wireless|gateway/.test(t) || categorySlug === 'controls')
+    // Controls cabinet with an antenna
+    return group([
+      at(box(0.45, 0.6, 0.2), [0, 0, 0]),
+      at({ kind: 'pole', heightM: 0.25, radiusTopM: 0.008, radiusBottomM: 0.008 }, [0.16, 0.6, 0]),
+    ]);
   if (/high bay/.test(t))
-    return { kind: 'lathe', profile: [[0.1, 0], [0.28, 0.05], [0.3, 0.15], [0.05, 0.42], [0.03, 0.5], [0, 0.5]] };
-  if (/kbx|sportslighter|gtx|hdx|ebx|wrestling|sports light/.test(t)) return box(0.75, 0.22, 0.5);
-  if (categorySlug === 'fixture') return box(0.6, 0.18, 0.35);
+    // UFO high bay: wide shallow shade with a driver puck on top
+    return { kind: 'lathe', profile: [[0.02, 0], [0.17, 0], [0.3, 0.05], [0.3, 0.12], [0.12, 0.18], [0.12, 0.3], [0, 0.3]] };
+  if (/wrestling|dual light/.test(t))
+    // Two heads on a shared frame
+    return group([
+      at(box(0.4, 0.2, 0.4), [-0.28, 0, 0]),
+      at(box(0.4, 0.2, 0.4), [0.28, 0, 0]),
+      at(box(1.0, 0.06, 0.08), [0, 0.2, 0]),
+    ]);
+  if (/kbx|sportslighter|gtx|hdx|ebx|sports light/.test(t))
+    // Sports floodlight: deep housing with a visor lip
+    return group([
+      at(box(0.6, 0.25, 0.45), [0, 0, 0]),
+      at(box(0.6, 0.05, 0.14), [0, 0.25, 0.2]),
+    ]);
+  if (categorySlug === 'fixture') return box(0.55, 0.16, 0.35);
   if (categorySlug === 'accessory') return box(0.3, 0.25, 0.3);
   return box(0.4, 0.4, 0.4);
 }
@@ -255,7 +322,9 @@ const SPORT_BUILDER_FIXTURES = new Set([
 /** Promote a standalone product to a wizard slot. Deterministic → idempotent. */
 function promoteToBuilder(part, slug) {
   if (part.line === 'NAFCO') {
-    if (slug === 'pole' && part.placeholder?.kind === 'pole' && part.category.startsWith('Light Poles')) {
+    if (slug === 'pole' && part.category.startsWith('Light Poles')) {
+      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
+      if (part.placeholder.kind !== 'pole') return false;
       part.slot = 'pole';
       part.productClass = 'assembly-part';
       part.mount = null;
@@ -265,7 +334,9 @@ function promoteToBuilder(part, slug) {
       };
       return true;
     }
-    if (slug === 'arm' && part.placeholder?.kind === 'tube' && part.category === 'Brackets + Arms') {
+    if (slug === 'arm' && part.category === 'Brackets + Arms') {
+      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
+      if (part.placeholder.kind !== 'tube') return false;
       const tip = part.placeholder.points[part.placeholder.points.length - 1];
       part.slot = 'arm';
       part.productClass = 'assembly-part';
@@ -274,6 +345,7 @@ function promoteToBuilder(part, slug) {
       return true;
     }
     if (NAFCO_BUILDER_FIXTURES.has(part.id)) {
+      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
       part.slot = 'fixture';
       part.productClass = 'assembly-part';
       part.mount = 'nafco-fixture-mount';
@@ -296,6 +368,7 @@ function promoteToBuilder(part, slug) {
       return true;
     }
     if (SPORT_BUILDER_FIXTURES.has(part.id)) {
+      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
       part.slot = 'fixture';
       part.productClass = 'assembly-part';
       part.mount = 'sport-crossarm-mount';

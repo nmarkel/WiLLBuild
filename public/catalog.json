@@ -1022,12 +1022,12 @@
           ],
           [
             0,
-            0.1,
+            0.12,
             0
           ],
           [
-            0.7,
-            0.1,
+            0.75,
+            0.12,
             0
           ]
         ],
@@ -1038,8 +1038,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.1,
+            0.75,
+            0.12,
             0
           ]
         }
@@ -1079,25 +1079,30 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.2,
+            0.28,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.65,
+            0.45,
+            0
+          ],
+          [
+            1.2,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.04
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            1.2,
+            0.5,
             0
           ]
         }
@@ -1137,25 +1142,25 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.5,
+            0.18,
             0
           ],
           [
-            0.75,
-            0.28,
+            1.2,
+            0.3,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            1.2,
+            0.3,
             0
           ]
         }
@@ -1190,13 +1195,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1207,8 +1212,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1238,9 +1243,9 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
-          0.35
+          0.58,
+          0.07,
+          0.3
         ],
         "direction": "up"
       },
@@ -1284,16 +1289,21 @@
           ],
           [
             0,
-            0.1,
+            0.25,
+            0
+          ],
+          [
+            0.35,
+            0.45,
             0
           ],
           [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
@@ -1301,7 +1311,7 @@
           "type": "nafco-fixture-mount",
           "position": [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         }
@@ -1339,16 +1349,21 @@
           ],
           [
             0,
-            0.1,
+            0.25,
+            0
+          ],
+          [
+            0.35,
+            0.45,
             0
           ],
           [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
@@ -1356,7 +1371,7 @@
           "type": "nafco-fixture-mount",
           "position": [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         }
@@ -1394,16 +1409,21 @@
           ],
           [
             0,
-            0.1,
+            0.25,
+            0
+          ],
+          [
+            0.35,
+            0.45,
             0
           ],
           [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
@@ -1411,7 +1431,7 @@
           "type": "nafco-fixture-mount",
           "position": [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         }
@@ -1449,16 +1469,21 @@
           ],
           [
             0,
-            0.1,
+            0.25,
+            0
+          ],
+          [
+            0.35,
+            0.45,
             0
           ],
           [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
@@ -1466,7 +1491,7 @@
           "type": "nafco-fixture-mount",
           "position": [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         }
@@ -1492,13 +1517,41 @@
       "productUrl": "https://willbrands.com/products/nafco-chx-cobrahead",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.6,
-          0.18,
-          0.35
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.13,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.08,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.32,
+                0.08,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.38,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": "nafco-fixture-mount",
       "sockets": {},
@@ -1550,15 +1603,15 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.5,
-                0.15,
-                0.3
+                0.55,
+                0.1,
+                0.26
               ],
               "direction": "up"
             },
             "position": [
-              0,
-              6.1,
+              0.12,
+              6.05,
               0
             ]
           }
@@ -1617,9 +1670,9 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
-          0.35
+          0.5,
+          0.19,
+          0.5
         ],
         "direction": "up"
       },
@@ -1662,13 +1715,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1679,8 +1732,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1717,13 +1770,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1734,8 +1787,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1772,13 +1825,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1789,8 +1842,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1827,13 +1880,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1844,8 +1897,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1882,13 +1935,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1899,8 +1952,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1937,13 +1990,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -1954,8 +2007,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -1984,9 +2037,9 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
-          0.35
+          0.4,
+          0.16,
+          0.28
         ],
         "direction": "up"
       }
@@ -2318,10 +2371,30 @@
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-anchor-base-davit-arm-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0
+          ],
+          [
+            0.35,
+            0.85,
+            0
+          ],
+          [
+            0.9,
+            0.9,
+            0
+          ]
+        ],
+        "radiusM": 0.045
       },
       "mount": null,
       "sockets": {
@@ -3026,16 +3099,21 @@
           ],
           [
             0,
-            0.1,
+            0.25,
+            0
+          ],
+          [
+            0.35,
+            0.45,
             0
           ],
           [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.045
       },
       "mount": "nafco-tenon",
       "sockets": {
@@ -3043,7 +3121,7 @@
           "type": "nafco-fixture-mount",
           "position": [
             0.7,
-            0.1,
+            0.5,
             0
           ]
         }
@@ -3081,13 +3159,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -3098,8 +3176,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -3137,13 +3215,13 @@
             0
           ],
           [
-            0.35,
-            0.12,
+            0.3,
+            0.2,
             0
           ],
           [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         ],
@@ -3154,8 +3232,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.28,
+            0.8,
+            0.34,
             0
           ]
         }
@@ -3183,13 +3261,38 @@
       "productUrl": "https://willbrands.com/products/gfd-wireless-controls",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.5,
-          0.65,
-          0.22
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.6,
+                0.2
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.25,
+              "radiusTopM": 0.008,
+              "radiusBottomM": 0.008
+            },
+            "position": [
+              0.16,
+              0.6,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3290,15 +3393,15 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.5,
-                0.15,
-                0.3
+                0.55,
+                0.1,
+                0.26
               ],
               "direction": "up"
             },
             "position": [
-              0,
-              6.1,
+              0.12,
+              6.05,
               0
             ]
           }
@@ -3387,13 +3490,41 @@
       "productUrl": "https://willbrands.com/products/willev-evse-charging-pedestals",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.32,
-          1.35,
-          0.28
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                1.3,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.22,
+                0.28,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.92,
+              0.13
+            ]
+          }
+        ]
       }
     },
     {
@@ -3438,15 +3569,15 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.5,
-                0.15,
-                0.3
+                0.55,
+                0.1,
+                0.26
               ],
               "direction": "up"
             },
             "position": [
-              0,
-              6.1,
+              0.12,
+              6.05,
               0
             ]
           }
@@ -3522,33 +3653,13 @@
       "productUrl": "https://willbrands.com/products/willsport-ebx-slim-high-bay",
       "finishes": [],
       "placeholder": {
-        "kind": "lathe",
-        "profile": [
-          [
-            0.1,
-            0
-          ],
-          [
-            0.28,
-            0.05
-          ],
-          [
-            0.3,
-            0.15
-          ],
-          [
-            0.05,
-            0.42
-          ],
-          [
-            0.03,
-            0.5
-          ],
-          [
-            0,
-            0.5
-          ]
-        ]
+        "kind": "box",
+        "sizeM": [
+          0.58,
+          0.07,
+          0.3
+        ],
+        "direction": "up"
       }
     },
     {
@@ -3573,13 +3684,41 @@
       "productUrl": "https://willbrands.com/products/willsport-gtx-high-output-area",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.75,
-          0.22,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.25,
+                0.45
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.05,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.25,
+              0.2
+            ]
+          }
+        ]
       },
       "mount": "sport-crossarm-mount",
       "sockets": {},
@@ -3611,13 +3750,38 @@
       "productUrl": "https://willbrands.com/products/willsport-hdx-area-flood-sports",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.75,
-          0.22,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.06,
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.05
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.42,
+                0.3,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.06,
+              0
+            ]
+          }
+        ]
       },
       "mount": "sport-crossarm-mount",
       "sockets": {},
@@ -3652,28 +3816,32 @@
         "kind": "lathe",
         "profile": [
           [
-            0.1,
+            0.02,
             0
           ],
           [
-            0.28,
+            0.17,
+            0
+          ],
+          [
+            0.3,
             0.05
           ],
           [
             0.3,
-            0.15
+            0.12
           ],
           [
-            0.05,
-            0.42
+            0.12,
+            0.18
           ],
           [
-            0.03,
-            0.5
+            0.12,
+            0.3
           ],
           [
             0,
-            0.5
+            0.3
           ]
         ]
       }
@@ -3698,13 +3866,41 @@
       "productUrl": "https://willbrands.com/products/willsport-hsx-sportslighter",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.75,
-          0.22,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.25,
+                0.45
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.05,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.25,
+              0.2
+            ]
+          }
+        ]
       },
       "mount": "sport-crossarm-mount",
       "sockets": {},
@@ -3735,13 +3931,41 @@
       "productUrl": "https://willbrands.com/products/willsport-kbx-lighting-system",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.75,
-          0.22,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.25,
+                0.45
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.05,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.25,
+              0.2
+            ]
+          }
+        ]
       },
       "mount": "sport-crossarm-mount",
       "sockets": {},
@@ -3777,13 +4001,38 @@
       "productUrl": "https://willbrands.com/products/willsport-pdx-sports-large-area-power-distribution-controls-hub",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.5,
-          0.65,
-          0.22
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.6,
+                0.2
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.25,
+              "radiusTopM": 0.008,
+              "radiusBottomM": 0.008
+            },
+            "position": [
+              0.16,
+              0.6,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3811,13 +4060,38 @@
       "productUrl": "https://willbrands.com/products/willsport-rpcx-sports-large-area-remote-power-control",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.5,
-          0.65,
-          0.22
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.6,
+                0.2
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.25,
+              "radiusTopM": 0.008,
+              "radiusBottomM": 0.008
+            },
+            "position": [
+              0.16,
+              0.6,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3845,8 +4119,8 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
+          0.55,
+          0.16,
           0.35
         ],
         "direction": "up"
@@ -3874,13 +4148,57 @@
       "productUrl": "https://willbrands.com/products/willsport-wrestling-dual-light-packages",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.75,
-          0.22,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.2,
+                0.4
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.28,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.2,
+                0.4
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.28,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1,
+                0.06,
+                0.08
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.2,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -4042,10 +4360,61 @@
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 0.45,
-        "radiusTopM": 0.015,
-        "radiusBottomM": 0.015
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              0.12
+            ]
+          }
+        ]
       }
     },
     {
@@ -4074,10 +4443,61 @@
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-0-75-x-17-x-3-set-of-4-bolts-double-nuts-double-washers",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 0.45,
-        "radiusTopM": 0.015,
-        "radiusBottomM": 0.015
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              0.12
+            ]
+          }
+        ]
       }
     },
     {
@@ -4105,10 +4525,61 @@
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-1-0-x-36-x-4-set-of-4-bolts-double-nuts-double-washers",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 0.45,
-        "radiusTopM": 0.015,
-        "radiusBottomM": 0.015
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              0.12
+            ]
+          }
+        ]
       }
     },
     {
@@ -4190,10 +4661,10 @@
       "productUrl": "https://willbrands.com/products/light-pole-bolt-circle-adapters",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "baseCover",
+        "heightM": 0.05,
+        "radiusTopM": 0.16,
+        "radiusBottomM": 0.2
       }
     },
     {
@@ -4218,10 +4689,25 @@
       "productUrl": "https://willbrands.com/products/light-pole-top-caps",
       "finishes": [],
       "placeholder": {
-        "kind": "cone",
-        "radiusM": 0.1,
-        "heightM": 0.09,
-        "direction": "up"
+        "kind": "lathe",
+        "profile": [
+          [
+            0.1,
+            0
+          ],
+          [
+            0.1,
+            0.03
+          ],
+          [
+            0.06,
+            0.07
+          ],
+          [
+            0,
+            0.09
+          ]
+        ]
       }
     },
     {
@@ -4646,13 +5132,38 @@
       "productUrl": "https://willbrands.com/products/willstudio-dwx-flood-spot",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.6,
-          0.18,
-          0.35
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.06,
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.05
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.42,
+                0.3,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.06,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -4817,8 +5328,8 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
+          0.55,
+          0.16,
           0.35
         ],
         "direction": "up"
@@ -4845,10 +5356,50 @@
       "productUrl": "https://willbrands.com/products/willstudio-rxb-sxb-bollard",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 1.07,
-        "radiusTopM": 0.075,
-        "radiusBottomM": 0.09
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.98,
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.078,
+                  0
+                ],
+                [
+                  0.075,
+                  0.05
+                ],
+                [
+                  0.05,
+                  0.085
+                ],
+                [
+                  0,
+                  0.1
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.98,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -5082,9 +5633,9 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
-          0.35
+          0.4,
+          0.16,
+          0.28
         ],
         "direction": "up"
       }
@@ -5114,8 +5665,8 @@
       "placeholder": {
         "kind": "box",
         "sizeM": [
-          0.6,
-          0.18,
+          0.55,
+          0.16,
           0.35
         ],
         "direction": "up"
