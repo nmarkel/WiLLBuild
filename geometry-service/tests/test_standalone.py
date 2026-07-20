@@ -26,6 +26,7 @@ import uuid
 import pytest
 from fastapi.testclient import TestClient
 
+from app.adapters._spec_template import _latin1
 from app.catalog import load_catalog, validate_config, is_standalone_config
 from app.main import app
 from app.models import PoleConfig
@@ -194,7 +195,10 @@ class TestStandaloneGenerate:
         dl = client.get(file_url)
         assert dl.status_code == 200
         text = _extract_text(dl.content)
-        assert part_name in text, f"Part name {part_name!r} not found in standalone PDF"
+        # fpdf2 core fonts are latin-1: names go through the _latin1 sanitizer
+        # (e.g. "NAFCO(R)" for "NAFCO(r-mark)"), so compare the sanitized form.
+        expected = _latin1(part_name)
+        assert expected in text, f"Part name {expected!r} not found in standalone PDF"
 
     def test_standalone_pdf_contains_config_id(self) -> None:
         fixture_id = _first_standalone_id()
