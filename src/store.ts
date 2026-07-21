@@ -34,7 +34,7 @@ interface ConfiguratorState {
   openBuilder: () => void
   /** Return to the current brand's landing (builder for WiLLstudio, product grid otherwise). */
   openHome: () => void
-  /** High-res capture registered by SnapshotRig (mounted inside the R3F Canvas); null until mounted. */
+  /** High-res capture registered by the mounted viewer (CompositeViewer/ProductViewer); null until mounted. */
   snapshot: (() => Promise<Blob | null>) | null
   registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
 }
