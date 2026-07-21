@@ -1397,3 +1397,213 @@ body {
   font-size: 11px;
   color: #58595b;
 }
+
+/* ---- image-compositing viewer ---- */
+
+.composite-loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.composite-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--will-silver);
+  cursor: grab;
+  /* Same reasoning as the R3F viewport: keep the browser from intercepting
+     pointer/wheel gestures before the compositor's own handlers see them. */
+  touch-action: none;
+  user-select: none;
+}
+
+.composite-viewer:active {
+  cursor: grabbing;
+}
+
+.composite-viewer.night {
+  background: #111318;
+}
+
+.composite-stage {
+  position: relative;
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+.composite-layer {
+  position: absolute;
+  pointer-events: none;
+  transition: filter 0.2s ease;
+}
+
+.composite-viewer.night .composite-layer {
+  filter: brightness(0.42) saturate(0.8);
+}
+
+/* Soft ground-shadow ellipse under the assembly, centered on the pole's
+   ground line (layout.origin). */
+.composite-ground-shadow {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(66, 65, 61, 0.35) 0%, rgba(66, 65, 61, 0) 72%);
+  pointer-events: none;
+}
+
+/* Night: warm ground pool under the fixture's light. */
+.composite-light-pool {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 217, 160, 0.32) 0%, rgba(255, 217, 160, 0) 75%);
+  pointer-events: none;
+}
+
+/* Night: the fixture's ambient glow — sits under the fixture layer so the
+   housing itself occludes the hottest part of the gradient, same as the
+   PNG export in lib/snapshot.ts. */
+.composite-light-glow {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 217, 160, 0.55) 0%, rgba(255, 217, 160, 0) 70%);
+  pointer-events: none;
+}
+
+/* Night: the visible emissive bulb — sits above every layer so it always reads. */
+.composite-light-dot {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffd9a0;
+  box-shadow: 0 0 8px 2px rgba(255, 217, 160, 0.8);
+  pointer-events: none;
+}
+
+.composite-scale-figure {
+  position: absolute;
+  z-index: 6;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.composite-zoom {
+  position: absolute;
+  /* Sits above App.tsx's existing bottom-right viewport-controls bar
+     (day/night + human-scale toggles), which stays a sibling of this
+     component. */
+  bottom: 64px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.composite-zoom button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--will-gray);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.composite-zoom button:hover {
+  border-color: var(--will-gray);
+}
+
+/* ---- Render fallback ("coming soon") card ---- */
+
+.composite-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.composite-fallback-icon {
+  font-size: 28px;
+  color: var(--will-silver);
+}
+
+.composite-fallback-label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.composite-fallback-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.composite-fallback-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 96px;
+}
+
+.composite-fallback-thumb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.composite-fallback-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.composite-fallback-thumb-letter {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.composite-fallback-name {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
