@@ -1,0 +1,1878 @@
+{
+  "rig": {
+    "version": 1,
+    "pxPerMeter": 180,
+    "azimuthDeg": 35,
+    "elevationDeg": 6,
+    "worldToImage": [
+      [
+        147.44736797201853,
+        0,
+        -103.24375854318828
+      ],
+      [
+        10.791911422496156,
+        -179.0139411662892,
+        15.412446786975323
+      ]
+    ],
+    "pxPerMeterY": 179.0139411662892
+  },
+  "parts": {
+    "alum-pole-12": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/alum-pole-12--hero--forest-green.webp",
+              "width": 38,
+              "height": 670,
+              "anchor": [
+                19,
+                662.1
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-12--hero--gloss-white.webp",
+              "width": 38,
+              "height": 670,
+              "anchor": [
+                19,
+                662.1
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-12--hero--matte-black.webp",
+              "width": 38,
+              "height": 670,
+              "anchor": [
+                19,
+                662.1
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-12--hero--silver.webp",
+              "width": 38,
+              "height": 670,
+              "anchor": [
+                19,
+                662.1
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-12--hero--statuary-bronze.webp",
+              "width": 38,
+              "height": 670,
+              "anchor": [
+                19,
+                662.1
+              ]
+            }
+          }
+        }
+      }
+    },
+    "alum-pole-14": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/alum-pole-14--hero--forest-green.webp",
+              "width": 40,
+              "height": 779,
+              "anchor": [
+                20,
+                771.69
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-14--hero--gloss-white.webp",
+              "width": 40,
+              "height": 779,
+              "anchor": [
+                20,
+                771.69
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-14--hero--matte-black.webp",
+              "width": 40,
+              "height": 779,
+              "anchor": [
+                20,
+                771.69
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-14--hero--silver.webp",
+              "width": 40,
+              "height": 779,
+              "anchor": [
+                20,
+                771.69
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-14--hero--statuary-bronze.webp",
+              "width": 40,
+              "height": 779,
+              "anchor": [
+                20,
+                771.69
+              ]
+            }
+          }
+        }
+      }
+    },
+    "alum-pole-16": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/alum-pole-16--hero--forest-green.webp",
+              "width": 41,
+              "height": 889,
+              "anchor": [
+                20.5,
+                880.79
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-16--hero--gloss-white.webp",
+              "width": 41,
+              "height": 889,
+              "anchor": [
+                20.5,
+                880.79
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-16--hero--matte-black.webp",
+              "width": 41,
+              "height": 889,
+              "anchor": [
+                20.5,
+                880.79
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-16--hero--silver.webp",
+              "width": 41,
+              "height": 889,
+              "anchor": [
+                20.5,
+                880.79
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-16--hero--statuary-bronze.webp",
+              "width": 41,
+              "height": 889,
+              "anchor": [
+                20.5,
+                880.79
+              ]
+            }
+          }
+        }
+      }
+    },
+    "alum-pole-20": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/alum-pole-20--hero--forest-green.webp",
+              "width": 46,
+              "height": 1108,
+              "anchor": [
+                23,
+                1099.49
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-20--hero--gloss-white.webp",
+              "width": 46,
+              "height": 1108,
+              "anchor": [
+                23,
+                1099.49
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-20--hero--matte-black.webp",
+              "width": 46,
+              "height": 1108,
+              "anchor": [
+                23,
+                1099.49
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-20--hero--silver.webp",
+              "width": 46,
+              "height": 1108,
+              "anchor": [
+                23,
+                1099.49
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-20--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 1108,
+              "anchor": [
+                23,
+                1099.49
+              ]
+            }
+          }
+        }
+      }
+    },
+    "aluminum-decorative-bullhorn-brackets-round-pole-mount": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--hero--forest-green.webp",
+              "width": 116,
+              "height": 61,
+              "anchor": [
+                13.77,
+                54.11
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--hero--gloss-white.webp",
+              "width": 116,
+              "height": 61,
+              "anchor": [
+                13.77,
+                54.11
+              ]
+            },
+            "matte-black": {
+              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--hero--matte-black.webp",
+              "width": 116,
+              "height": 61,
+              "anchor": [
+                13.77,
+                54.11
+              ]
+            },
+            "silver": {
+              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--hero--silver.webp",
+              "width": 116,
+              "height": 61,
+              "anchor": [
+                13.77,
+                54.11
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--hero--statuary-bronze.webp",
+              "width": 116,
+              "height": 61,
+              "anchor": [
+                13.77,
+                54.11
+              ]
+            }
+          }
+        }
+      }
+    },
+    "aluminum-light-pole-base-covers": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/aluminum-light-pole-base-covers--hero--forest-green.webp",
+              "width": 74,
+              "height": 81,
+              "anchor": [
+                37,
+                71.33
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/aluminum-light-pole-base-covers--hero--gloss-white.webp",
+              "width": 74,
+              "height": 81,
+              "anchor": [
+                37,
+                71.33
+              ]
+            },
+            "matte-black": {
+              "file": "renders/aluminum-light-pole-base-covers--hero--matte-black.webp",
+              "width": 74,
+              "height": 81,
+              "anchor": [
+                37,
+                71.33
+              ]
+            },
+            "silver": {
+              "file": "renders/aluminum-light-pole-base-covers--hero--silver.webp",
+              "width": 74,
+              "height": 81,
+              "anchor": [
+                37,
+                71.33
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/aluminum-light-pole-base-covers--hero--statuary-bronze.webp",
+              "width": 74,
+              "height": 81,
+              "anchor": [
+                37,
+                71.33
+              ]
+            }
+          }
+        }
+      }
+    },
+    "bc-fluted": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/bc-fluted--hero--forest-green.webp",
+              "width": 81,
+              "height": 99,
+              "anchor": [
+                41,
+                88.78
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/bc-fluted--hero--gloss-white.webp",
+              "width": 81,
+              "height": 99,
+              "anchor": [
+                41,
+                88.78
+              ]
+            },
+            "matte-black": {
+              "file": "renders/bc-fluted--hero--matte-black.webp",
+              "width": 81,
+              "height": 99,
+              "anchor": [
+                41,
+                88.78
+              ]
+            },
+            "silver": {
+              "file": "renders/bc-fluted--hero--silver.webp",
+              "width": 81,
+              "height": 99,
+              "anchor": [
+                41,
+                88.78
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/bc-fluted--hero--statuary-bronze.webp",
+              "width": 81,
+              "height": 99,
+              "anchor": [
+                41,
+                88.78
+              ]
+            }
+          }
+        }
+      }
+    },
+    "bc-round": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/bc-round--hero--forest-green.webp",
+              "width": 71,
+              "height": 72,
+              "anchor": [
+                35.5,
+                62.35
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/bc-round--hero--gloss-white.webp",
+              "width": 71,
+              "height": 72,
+              "anchor": [
+                35.5,
+                62.35
+              ]
+            },
+            "matte-black": {
+              "file": "renders/bc-round--hero--matte-black.webp",
+              "width": 71,
+              "height": 72,
+              "anchor": [
+                35.5,
+                62.35
+              ]
+            },
+            "silver": {
+              "file": "renders/bc-round--hero--silver.webp",
+              "width": 71,
+              "height": 72,
+              "anchor": [
+                35.5,
+                62.35
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/bc-round--hero--statuary-bronze.webp",
+              "width": 71,
+              "height": 72,
+              "anchor": [
+                35.5,
+                62.35
+              ]
+            }
+          }
+        }
+      }
+    },
+    "direct-mount": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/direct-mount--hero--forest-green.webp",
+              "width": 27,
+              "height": 29,
+              "anchor": [
+                13.5,
+                21.66
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/direct-mount--hero--gloss-white.webp",
+              "width": 27,
+              "height": 29,
+              "anchor": [
+                13.5,
+                21.66
+              ]
+            },
+            "matte-black": {
+              "file": "renders/direct-mount--hero--matte-black.webp",
+              "width": 27,
+              "height": 29,
+              "anchor": [
+                13.5,
+                21.66
+              ]
+            },
+            "silver": {
+              "file": "renders/direct-mount--hero--silver.webp",
+              "width": 27,
+              "height": 29,
+              "anchor": [
+                13.5,
+                21.66
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/direct-mount--hero--statuary-bronze.webp",
+              "width": 27,
+              "height": 29,
+              "anchor": [
+                13.5,
+                21.66
+              ]
+            }
+          }
+        }
+      }
+    },
+    "drx-post-top": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/drx-post-top--hero--forest-green.webp",
+              "width": 126,
+              "height": 113,
+              "anchor": [
+                63,
+                105.73
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/drx-post-top--hero--gloss-white.webp",
+              "width": 126,
+              "height": 113,
+              "anchor": [
+                63,
+                105.73
+              ]
+            },
+            "matte-black": {
+              "file": "renders/drx-post-top--hero--matte-black.webp",
+              "width": 126,
+              "height": 113,
+              "anchor": [
+                63,
+                105.73
+              ]
+            },
+            "silver": {
+              "file": "renders/drx-post-top--hero--silver.webp",
+              "width": 126,
+              "height": 113,
+              "anchor": [
+                63,
+                105.73
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/drx-post-top--hero--statuary-bronze.webp",
+              "width": 126,
+              "height": 113,
+              "anchor": [
+                63,
+                105.73
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gvx-pendant": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/gvx-pendant--hero--forest-green.webp",
+              "width": 107,
+              "height": 90,
+              "anchor": [
+                53.5,
+                7.2
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/gvx-pendant--hero--gloss-white.webp",
+              "width": 107,
+              "height": 90,
+              "anchor": [
+                53.5,
+                7.2
+              ]
+            },
+            "matte-black": {
+              "file": "renders/gvx-pendant--hero--matte-black.webp",
+              "width": 107,
+              "height": 90,
+              "anchor": [
+                53.5,
+                7.2
+              ]
+            },
+            "silver": {
+              "file": "renders/gvx-pendant--hero--silver.webp",
+              "width": 107,
+              "height": 90,
+              "anchor": [
+                53.5,
+                7.2
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/gvx-pendant--hero--statuary-bronze.webp",
+              "width": 107,
+              "height": 90,
+              "anchor": [
+                53.5,
+                7.2
+              ]
+            }
+          }
+        }
+      }
+    },
+    "huntington-decorative-aluminum-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/huntington-decorative-aluminum-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/huntington-decorative-aluminum-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "matte-black": {
+              "file": "renders/huntington-decorative-aluminum-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "silver": {
+              "file": "renders/huntington-decorative-aluminum-anchor-base-light-poles--hero--silver.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/huntington-decorative-aluminum-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mvx-coach": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/mvx-coach--hero--forest-green.webp",
+              "width": 132,
+              "height": 137,
+              "anchor": [
+                66,
+                130.26
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/mvx-coach--hero--gloss-white.webp",
+              "width": 132,
+              "height": 137,
+              "anchor": [
+                66,
+                130.26
+              ]
+            },
+            "matte-black": {
+              "file": "renders/mvx-coach--hero--matte-black.webp",
+              "width": 132,
+              "height": 137,
+              "anchor": [
+                66,
+                130.26
+              ]
+            },
+            "silver": {
+              "file": "renders/mvx-coach--hero--silver.webp",
+              "width": 132,
+              "height": 137,
+              "anchor": [
+                66,
+                130.26
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/mvx-coach--hero--statuary-bronze.webp",
+              "width": 132,
+              "height": 137,
+              "anchor": [
+                66,
+                130.26
+              ]
+            }
+          }
+        }
+      }
+    },
+    "pa1-pendant-arm": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/pa1-pendant-arm--hero--forest-green.webp",
+              "width": 123,
+              "height": 69,
+              "anchor": [
+                12.29,
+                36.82
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/pa1-pendant-arm--hero--gloss-white.webp",
+              "width": 123,
+              "height": 69,
+              "anchor": [
+                12.29,
+                36.82
+              ]
+            },
+            "matte-black": {
+              "file": "renders/pa1-pendant-arm--hero--matte-black.webp",
+              "width": 123,
+              "height": 69,
+              "anchor": [
+                12.29,
+                36.82
+              ]
+            },
+            "silver": {
+              "file": "renders/pa1-pendant-arm--hero--silver.webp",
+              "width": 123,
+              "height": 69,
+              "anchor": [
+                12.29,
+                36.82
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/pa1-pendant-arm--hero--statuary-bronze.webp",
+              "width": 123,
+              "height": 69,
+              "anchor": [
+                12.29,
+                36.82
+              ]
+            }
+          }
+        }
+      }
+    },
+    "pm1-pendant-arm": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/pm1-pendant-arm--hero--forest-green.webp",
+              "width": 122,
+              "height": 53,
+              "anchor": [
+                13.66,
+                46.15
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/pm1-pendant-arm--hero--gloss-white.webp",
+              "width": 122,
+              "height": 53,
+              "anchor": [
+                13.66,
+                46.15
+              ]
+            },
+            "matte-black": {
+              "file": "renders/pm1-pendant-arm--hero--matte-black.webp",
+              "width": 122,
+              "height": 53,
+              "anchor": [
+                13.66,
+                46.15
+              ]
+            },
+            "silver": {
+              "file": "renders/pm1-pendant-arm--hero--silver.webp",
+              "width": 122,
+              "height": 53,
+              "anchor": [
+                13.66,
+                46.15
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/pm1-pendant-arm--hero--statuary-bronze.webp",
+              "width": 122,
+              "height": 53,
+              "anchor": [
+                13.66,
+                46.15
+              ]
+            }
+          }
+        }
+      }
+    },
+    "round-tapered-fiberglass-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/round-tapered-fiberglass-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/round-tapered-fiberglass-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "matte-black": {
+              "file": "renders/round-tapered-fiberglass-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "silver": {
+              "file": "renders/round-tapered-fiberglass-anchor-base-light-poles--hero--silver.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/round-tapered-fiberglass-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            }
+          }
+        }
+      }
+    },
+    "round-tapered-fiberglass-direct-burial-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/round-tapered-fiberglass-direct-burial-light-poles--hero--forest-green.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/round-tapered-fiberglass-direct-burial-light-poles--hero--gloss-white.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "matte-black": {
+              "file": "renders/round-tapered-fiberglass-direct-burial-light-poles--hero--matte-black.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "silver": {
+              "file": "renders/round-tapered-fiberglass-direct-burial-light-poles--hero--silver.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/round-tapered-fiberglass-direct-burial-light-poles--hero--statuary-bronze.webp",
+              "width": 41,
+              "height": 780,
+              "anchor": [
+                20.5,
+                771.69
+              ]
+            }
+          }
+        }
+      }
+    },
+    "round-tapered-steel-fluted-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/round-tapered-steel-fluted-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 43,
+              "height": 780,
+              "anchor": [
+                21.5,
+                771.69
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/round-tapered-steel-fluted-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 43,
+              "height": 780,
+              "anchor": [
+                21.5,
+                771.69
+              ]
+            },
+            "matte-black": {
+              "file": "renders/round-tapered-steel-fluted-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 43,
+              "height": 780,
+              "anchor": [
+                21.5,
+                771.69
+              ]
+            },
+            "silver": {
+              "file": "renders/round-tapered-steel-fluted-anchor-base-light-poles--hero--silver.webp",
+              "width": 43,
+              "height": 780,
+              "anchor": [
+                21.5,
+                771.69
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/round-tapered-steel-fluted-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 43,
+              "height": 780,
+              "anchor": [
+                21.5,
+                771.69
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sacramento-decorative-aluminum-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/sacramento-decorative-aluminum-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/sacramento-decorative-aluminum-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "matte-black": {
+              "file": "renders/sacramento-decorative-aluminum-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "silver": {
+              "file": "renders/sacramento-decorative-aluminum-anchor-base-light-poles--hero--silver.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/sacramento-decorative-aluminum-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            }
+          }
+        }
+      }
+    },
+    "sh1-shepherds-hook": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/sh1-shepherds-hook--hero--forest-green.webp",
+              "width": 118,
+              "height": 157,
+              "anchor": [
+                13.8,
+                150.28
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/sh1-shepherds-hook--hero--gloss-white.webp",
+              "width": 118,
+              "height": 157,
+              "anchor": [
+                13.8,
+                150.28
+              ]
+            },
+            "matte-black": {
+              "file": "renders/sh1-shepherds-hook--hero--matte-black.webp",
+              "width": 118,
+              "height": 157,
+              "anchor": [
+                13.8,
+                150.28
+              ]
+            },
+            "silver": {
+              "file": "renders/sh1-shepherds-hook--hero--silver.webp",
+              "width": 118,
+              "height": 157,
+              "anchor": [
+                13.8,
+                150.28
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/sh1-shepherds-hook--hero--statuary-bronze.webp",
+              "width": 118,
+              "height": 157,
+              "anchor": [
+                13.8,
+                150.28
+              ]
+            }
+          }
+        }
+      }
+    },
+    "tex-post-top": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/tex-post-top--hero--forest-green.webp",
+              "width": 90,
+              "height": 85,
+              "anchor": [
+                45,
+                78.01
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/tex-post-top--hero--gloss-white.webp",
+              "width": 90,
+              "height": 85,
+              "anchor": [
+                45,
+                78.01
+              ]
+            },
+            "matte-black": {
+              "file": "renders/tex-post-top--hero--matte-black.webp",
+              "width": 90,
+              "height": 85,
+              "anchor": [
+                45,
+                78.01
+              ]
+            },
+            "silver": {
+              "file": "renders/tex-post-top--hero--silver.webp",
+              "width": 90,
+              "height": 85,
+              "anchor": [
+                45,
+                78.01
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/tex-post-top--hero--statuary-bronze.webp",
+              "width": 90,
+              "height": 85,
+              "anchor": [
+                45,
+                78.01
+              ]
+            }
+          }
+        }
+      }
+    },
+    "upsweep": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/upsweep--hero--forest-green.webp",
+              "width": 95,
+              "height": 92,
+              "anchor": [
+                9.04,
+                80.36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/upsweep--hero--gloss-white.webp",
+              "width": 95,
+              "height": 92,
+              "anchor": [
+                9.04,
+                80.36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/upsweep--hero--matte-black.webp",
+              "width": 95,
+              "height": 92,
+              "anchor": [
+                9.04,
+                80.36
+              ]
+            },
+            "silver": {
+              "file": "renders/upsweep--hero--silver.webp",
+              "width": 95,
+              "height": 92,
+              "anchor": [
+                9.04,
+                80.36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/upsweep--hero--statuary-bronze.webp",
+              "width": 95,
+              "height": 92,
+              "anchor": [
+                9.04,
+                80.36
+              ]
+            }
+          }
+        }
+      }
+    },
+    "washington-decorative-aluminum-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/washington-decorative-aluminum-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/washington-decorative-aluminum-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "matte-black": {
+              "file": "renders/washington-decorative-aluminum-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "silver": {
+              "file": "renders/washington-decorative-aluminum-anchor-base-light-poles--hero--silver.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/washington-decorative-aluminum-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            }
+          }
+        }
+      }
+    },
+    "williamsburg-decorative-aluminum-anchor-base-light-poles": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/williamsburg-decorative-aluminum-anchor-base-light-poles--hero--forest-green.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/williamsburg-decorative-aluminum-anchor-base-light-poles--hero--gloss-white.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "matte-black": {
+              "file": "renders/williamsburg-decorative-aluminum-anchor-base-light-poles--hero--matte-black.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "silver": {
+              "file": "renders/williamsburg-decorative-aluminum-anchor-base-light-poles--hero--silver.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/williamsburg-decorative-aluminum-anchor-base-light-poles--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 780,
+              "anchor": [
+                23,
+                772.19
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-cr2-decorative-crossarm": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-cr2-decorative-crossarm--hero--forest-green.webp",
+              "width": 108,
+              "height": 62,
+              "anchor": [
+                13.45,
+                54.88
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-cr2-decorative-crossarm--hero--gloss-white.webp",
+              "width": 108,
+              "height": 62,
+              "anchor": [
+                13.45,
+                54.88
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-cr2-decorative-crossarm--hero--matte-black.webp",
+              "width": 108,
+              "height": 62,
+              "anchor": [
+                13.45,
+                54.88
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-cr2-decorative-crossarm--hero--silver.webp",
+              "width": 108,
+              "height": 62,
+              "anchor": [
+                13.45,
+                54.88
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-cr2-decorative-crossarm--hero--statuary-bronze.webp",
+              "width": 108,
+              "height": 62,
+              "anchor": [
+                13.45,
+                54.88
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-dwx-flood-spot": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-dwx-flood-spot--hero--forest-green.webp",
+              "width": 71,
+              "height": 75,
+              "anchor": [
+                35.5,
+                67.43
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-dwx-flood-spot--hero--gloss-white.webp",
+              "width": 71,
+              "height": 75,
+              "anchor": [
+                35.5,
+                67.43
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-dwx-flood-spot--hero--matte-black.webp",
+              "width": 71,
+              "height": 75,
+              "anchor": [
+                35.5,
+                67.43
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-dwx-flood-spot--hero--silver.webp",
+              "width": 71,
+              "height": 75,
+              "anchor": [
+                35.5,
+                67.43
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-dwx-flood-spot--hero--statuary-bronze.webp",
+              "width": 71,
+              "height": 75,
+              "anchor": [
+                35.5,
+                67.43
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-fr2-decorative-crossarm": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-fr2-decorative-crossarm--hero--forest-green.webp",
+              "width": 118,
+              "height": 61,
+              "anchor": [
+                13.29,
+                54.01
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-fr2-decorative-crossarm--hero--gloss-white.webp",
+              "width": 118,
+              "height": 61,
+              "anchor": [
+                13.29,
+                54.01
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-fr2-decorative-crossarm--hero--matte-black.webp",
+              "width": 118,
+              "height": 61,
+              "anchor": [
+                13.29,
+                54.01
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-fr2-decorative-crossarm--hero--silver.webp",
+              "width": 118,
+              "height": 61,
+              "anchor": [
+                13.29,
+                54.01
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-fr2-decorative-crossarm--hero--statuary-bronze.webp",
+              "width": 118,
+              "height": 61,
+              "anchor": [
+                13.29,
+                54.01
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-hsx-decorative-upsweep-arms": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-hsx-decorative-upsweep-arms--hero--forest-green.webp",
+              "width": 96,
+              "height": 99,
+              "anchor": [
+                9.93,
+                87.45
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-hsx-decorative-upsweep-arms--hero--gloss-white.webp",
+              "width": 96,
+              "height": 99,
+              "anchor": [
+                9.93,
+                87.45
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-hsx-decorative-upsweep-arms--hero--matte-black.webp",
+              "width": 96,
+              "height": 99,
+              "anchor": [
+                9.93,
+                87.45
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-hsx-decorative-upsweep-arms--hero--silver.webp",
+              "width": 96,
+              "height": 99,
+              "anchor": [
+                9.93,
+                87.45
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-hsx-decorative-upsweep-arms--hero--statuary-bronze.webp",
+              "width": 96,
+              "height": 99,
+              "anchor": [
+                9.93,
+                87.45
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-pendant-ceiling-mounts": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-pendant-ceiling-mounts--hero--forest-green.webp",
+              "width": 100,
+              "height": 173,
+              "anchor": [
+                50,
+                166.37
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-pendant-ceiling-mounts--hero--gloss-white.webp",
+              "width": 100,
+              "height": 173,
+              "anchor": [
+                50,
+                166.37
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-pendant-ceiling-mounts--hero--matte-black.webp",
+              "width": 100,
+              "height": 173,
+              "anchor": [
+                50,
+                166.37
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-pendant-ceiling-mounts--hero--silver.webp",
+              "width": 100,
+              "height": 173,
+              "anchor": [
+                50,
+                166.37
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-pendant-ceiling-mounts--hero--statuary-bronze.webp",
+              "width": 100,
+              "height": 173,
+              "anchor": [
+                50,
+                166.37
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-rxb-sxb-bollard": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-rxb-sxb-bollard--hero--forest-green.webp",
+              "width": 46,
+              "height": 208,
+              "anchor": [
+                23,
+                200.12
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-rxb-sxb-bollard--hero--gloss-white.webp",
+              "width": 46,
+              "height": 208,
+              "anchor": [
+                23,
+                200.12
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-rxb-sxb-bollard--hero--matte-black.webp",
+              "width": 46,
+              "height": 208,
+              "anchor": [
+                23,
+                200.12
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-rxb-sxb-bollard--hero--silver.webp",
+              "width": 46,
+              "height": 208,
+              "anchor": [
+                23,
+                200.12
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-rxb-sxb-bollard--hero--statuary-bronze.webp",
+              "width": 46,
+              "height": 208,
+              "anchor": [
+                23,
+                200.12
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-side-shepherds-hook-pole-top-brackets": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--forest-green.webp",
+              "width": 115,
+              "height": 158,
+              "anchor": [
+                14,
+                151.33
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--gloss-white.webp",
+              "width": 115,
+              "height": 158,
+              "anchor": [
+                14,
+                151.33
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--matte-black.webp",
+              "width": 115,
+              "height": 158,
+              "anchor": [
+                14,
+                151.33
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--silver.webp",
+              "width": 115,
+              "height": 158,
+              "anchor": [
+                14,
+                151.33
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--statuary-bronze.webp",
+              "width": 115,
+              "height": 158,
+              "anchor": [
+                14,
+                151.33
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-supported-decorative-arms": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-supported-decorative-arms--hero--forest-green.webp",
+              "width": 114,
+              "height": 82,
+              "anchor": [
+                14.11,
+                74.68
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-supported-decorative-arms--hero--gloss-white.webp",
+              "width": 114,
+              "height": 82,
+              "anchor": [
+                14.11,
+                74.68
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-supported-decorative-arms--hero--matte-black.webp",
+              "width": 114,
+              "height": 82,
+              "anchor": [
+                14.11,
+                74.68
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-supported-decorative-arms--hero--silver.webp",
+              "width": 114,
+              "height": 82,
+              "anchor": [
+                14.11,
+                74.68
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-supported-decorative-arms--hero--statuary-bronze.webp",
+              "width": 114,
+              "height": 82,
+              "anchor": [
+                14.11,
+                74.68
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-suspension-arm-pole-top-brackets": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--forest-green.webp",
+              "width": 125,
+              "height": 48,
+              "anchor": [
+                12.85,
+                40.66
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--gloss-white.webp",
+              "width": 125,
+              "height": 48,
+              "anchor": [
+                12.85,
+                40.66
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--matte-black.webp",
+              "width": 125,
+              "height": 48,
+              "anchor": [
+                12.85,
+                40.66
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--silver.webp",
+              "width": 125,
+              "height": 48,
+              "anchor": [
+                12.85,
+                40.66
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--statuary-bronze.webp",
+              "width": 125,
+              "height": 48,
+              "anchor": [
+                12.85,
+                40.66
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-wm1-single-wall-mount-pendant": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-wm1-single-wall-mount-pendant--hero--forest-green.webp",
+              "width": 105,
+              "height": 118,
+              "anchor": [
+                24.98,
+                105.8
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-wm1-single-wall-mount-pendant--hero--gloss-white.webp",
+              "width": 105,
+              "height": 118,
+              "anchor": [
+                24.98,
+                105.8
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-wm1-single-wall-mount-pendant--hero--matte-black.webp",
+              "width": 105,
+              "height": 118,
+              "anchor": [
+                24.98,
+                105.8
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-wm1-single-wall-mount-pendant--hero--silver.webp",
+              "width": 105,
+              "height": 118,
+              "anchor": [
+                24.98,
+                105.8
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-wm1-single-wall-mount-pendant--hero--statuary-bronze.webp",
+              "width": 105,
+              "height": 118,
+              "anchor": [
+                24.98,
+                105.8
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-wm2-single-wall-tenon-mount-w-finial": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willstudio-wm2-single-wall-tenon-mount-w-finial--hero--forest-green.webp",
+              "width": 109,
+              "height": 156,
+              "anchor": [
+                24.14,
+                154.86
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-wm2-single-wall-tenon-mount-w-finial--hero--gloss-white.webp",
+              "width": 109,
+              "height": 156,
+              "anchor": [
+                24.14,
+                154.86
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-wm2-single-wall-tenon-mount-w-finial--hero--matte-black.webp",
+              "width": 109,
+              "height": 156,
+              "anchor": [
+                24.14,
+                154.86
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-wm2-single-wall-tenon-mount-w-finial--hero--silver.webp",
+              "width": 109,
+              "height": 156,
+              "anchor": [
+                24.14,
+                154.86
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-wm2-single-wall-tenon-mount-w-finial--hero--statuary-bronze.webp",
+              "width": 109,
+              "height": 156,
+              "anchor": [
+                24.14,
+                154.86
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
