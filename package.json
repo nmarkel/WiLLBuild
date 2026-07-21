@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "render-rig": "node scripts/render-rig/generate.mjs",
+    "render-manifest": "node scripts/render-rig/merge-manifests.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -26,6 +28,7 @@
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
+    "puppeteer": "^24.43.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
     "vitest": "^4.1.10"
