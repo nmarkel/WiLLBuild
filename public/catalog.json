@@ -113,35 +113,39 @@
           ],
           [
             0.042,
-            0.01
+            0.012
           ],
           [
             0.042,
-            0.1
+            0.17
           ],
           [
             0.07,
-            0.13
+            0.21
           ],
           [
-            0.255,
-            0.4
+            0.29,
+            0.42
           ],
           [
-            0.26,
-            0.46
+            0.315,
+            0.45
           ],
           [
-            0.21,
-            0.49
+            0.3,
+            0.485
           ],
           [
-            0.09,
+            0.19,
             0.52
           ],
           [
+            0.08,
+            0.545
+          ],
+          [
             0,
-            0.53
+            0.55
           ]
         ]
       },
@@ -183,39 +187,105 @@
           {
             "spec": {
               "kind": "baseCover",
-              "heightM": 0.2,
-              "radiusTopM": 0.034,
-              "radiusBottomM": 0.042
-            },
-            "position": [
-              0,
-              0,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "baseCover",
-              "heightM": 0.02,
-              "radiusTopM": 0.19,
-              "radiusBottomM": 0.175
-            },
-            "position": [
-              0,
-              0.2,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "baseCover",
               "heightM": 0.16,
-              "radiusTopM": 0.215,
-              "radiusBottomM": 0.215
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.04
             },
             "position": [
               0,
-              0.22,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.44,
+                0.03,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.14,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.205,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.14,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.205,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.13,
+                  0
+                ],
+                [
+                  0.19,
+                  0.015
+                ],
+                [
+                  0.205,
+                  0.04
+                ],
+                [
+                  0.215,
+                  0.06
+                ],
+                [
+                  0.215,
+                  0.18
+                ],
+                [
+                  0.205,
+                  0.21
+                ],
+                [
+                  0.19,
+                  0.22
+                ],
+                [
+                  0,
+                  0.22
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.16,
               0
             ]
           }
@@ -260,7 +330,7 @@
           {
             "spec": {
               "kind": "baseCover",
-              "heightM": 0.07,
+              "heightM": 0.1,
               "radiusTopM": 0.03,
               "radiusBottomM": 0.038
             },
@@ -273,41 +343,78 @@
           {
             "spec": {
               "kind": "prism",
-              "radiusTopM": 0.23,
-              "radiusBottomM": 0.14,
-              "heightM": 0.28,
+              "radiusTopM": 0.17,
+              "radiusBottomM": 0.06,
+              "heightM": 0.08,
               "sides": 4
             },
             "position": [
               0,
-              0.07,
+              0.1,
               0
             ]
           },
           {
             "spec": {
               "kind": "prism",
-              "radiusTopM": 0.02,
-              "radiusBottomM": 0.34,
-              "heightM": 0.15,
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.15,
+              "heightM": 0.24,
               "sides": 4
             },
             "position": [
               0,
-              0.35,
+              0.18,
               0
             ]
           },
           {
             "spec": {
-              "kind": "cone",
-              "radiusM": 0.015,
-              "heightM": 0.1,
-              "direction": "up"
+              "kind": "prism",
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.34,
+              "heightM": 0.14,
+              "sides": 4
             },
             "position": [
               0,
-              0.5,
+              0.42,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.035,
+                  0
+                ],
+                [
+                  0.02,
+                  0.02
+                ],
+                [
+                  0.008,
+                  0.09
+                ],
+                [
+                  0.02,
+                  0.11
+                ],
+                [
+                  0.015,
+                  0.125
+                ],
+                [
+                  0,
+                  0.13
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.56,
               0
             ]
           }
@@ -350,42 +457,50 @@
         "profile": [
           [
             0,
-            -0.375
-          ],
-          [
-            0.15,
-            -0.375
-          ],
-          [
-            0.25,
-            -0.365
+            -0.4
           ],
           [
             0.245,
-            -0.335
+            -0.4
           ],
           [
-            0.2,
-            -0.3
+            0.26,
+            -0.395
           ],
           [
-            0.17,
-            -0.22
+            0.26,
+            -0.33
+          ],
+          [
+            0.24,
+            -0.28
+          ],
+          [
+            0.18,
+            -0.2
           ],
           [
             0.1,
-            -0.16
+            -0.15
+          ],
+          [
+            0.06,
+            -0.13
+          ],
+          [
+            0.085,
+            -0.1
           ],
           [
             0.05,
-            -0.11
+            -0.065
           ],
           [
-            0.022,
-            -0.07
+            0.02,
+            -0.05
           ],
           [
-            0.022,
+            0.02,
             0
           ]
         ]
@@ -1021,13 +1136,28 @@
             0
           ],
           [
+            0.35,
             0,
-            0.12,
             0
           ],
           [
-            0.75,
-            0.12,
+            0.7,
+            0,
+            0
+          ],
+          [
+            0.93,
+            0.005,
+            0
+          ],
+          [
+            1,
+            0.06,
+            0
+          ],
+          [
+            1,
+            0.18,
             0
           ]
         ],
@@ -1038,8 +1168,8 @@
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.75,
-            0.12,
+            1,
+            0.18,
             0
           ]
         }
@@ -1079,30 +1209,40 @@
             0
           ],
           [
-            0.2,
-            0.28,
+            0.55,
+            0.22,
             0
           ],
           [
-            0.65,
-            0.45,
+            1.1,
+            0.44,
             0
           ],
           [
-            1.2,
-            0.5,
+            1.45,
+            0.56,
+            0
+          ],
+          [
+            1.7,
+            0.61,
+            0
+          ],
+          [
+            1.9,
+            0.62,
             0
           ]
         ],
-        "radiusM": 0.04
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            1.2,
-            0.5,
+            1.9,
+            0.62,
             0
           ]
         }
@@ -1142,25 +1282,40 @@
             0
           ],
           [
-            0.5,
-            0.18,
+            0.4,
+            0.19,
             0
           ],
           [
-            1.2,
-            0.3,
+            0.8,
+            0.38,
+            0
+          ],
+          [
+            1.1,
+            0.5,
+            0
+          ],
+          [
+            1.4,
+            0.56,
+            0
+          ],
+          [
+            1.7,
+            0.57,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.038
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            1.2,
-            0.3,
+            1.7,
+            0.57,
             0
           ]
         }
@@ -1195,25 +1350,25 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0,
+            0.15,
             0
           ],
           [
-            0.8,
-            0.34,
+            0,
+            0.3,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.042
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0,
+            0.3,
             0
           ]
         }
@@ -1241,13 +1396,57 @@
       "productUrl": "https://willbrands.com/products/slx",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.58,
-          0.07,
-          0.3
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.055,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.29,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.08,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.08,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.045,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.2,
+              0.01,
+              0
+            ]
+          }
+        ]
       },
       "mount": "nafco-fixture-mount",
       "sockets": {},
@@ -1288,30 +1487,40 @@
             0
           ],
           [
+            0.2,
             0,
-            0.25,
             0
           ],
           [
             0.35,
-            0.45,
+            0.03,
             0
           ],
           [
-            0.7,
-            0.5,
+            0.45,
+            0.13,
+            0
+          ],
+          [
+            0.48,
+            0.3,
+            0
+          ],
+          [
+            0.48,
+            0.55,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.028
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.5,
+            0.48,
+            0.55,
             0
           ]
         }
@@ -1349,29 +1558,44 @@
           ],
           [
             0,
+            0.14,
+            0
+          ],
+          [
+            0.14,
+            0.17,
+            0
+          ],
+          [
+            0.38,
+            0.18,
+            0
+          ],
+          [
+            0.54,
             0.25,
             0
           ],
           [
-            0.35,
-            0.45,
+            0.6,
+            0.4,
             0
           ],
           [
-            0.7,
-            0.5,
+            0.6,
+            0.58,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.03
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.5,
+            0.6,
+            0.58,
             0
           ]
         }
@@ -1409,29 +1633,44 @@
           ],
           [
             0,
-            0.25,
+            0.15,
             0
           ],
           [
-            0.35,
+            0.15,
+            0.18,
+            0
+          ],
+          [
+            0.55,
+            0.18,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            0.95,
             0.45,
             0
           ],
           [
-            0.7,
-            0.5,
+            0.95,
+            0.65,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.5,
+            0.95,
+            0.65,
             0
           ]
         }
@@ -1469,29 +1708,44 @@
           ],
           [
             0,
-            0.25,
+            0.15,
             0
           ],
           [
-            0.35,
+            0.15,
+            0.18,
+            0
+          ],
+          [
+            0.55,
+            0.18,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            0.95,
             0.45,
             0
           ],
           [
-            0.7,
-            0.5,
+            0.95,
+            0.65,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.5,
+            0.95,
+            0.65,
             0
           ]
         }
@@ -1523,14 +1777,14 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.34,
-                0.13,
+                0.3,
+                0.15,
                 0.3
               ],
               "direction": "up"
             },
             "position": [
-              0.08,
+              0.1,
               0,
               0
             ]
@@ -1539,14 +1793,46 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.32,
-                0.08,
-                0.24
+                0.3,
+                0.11,
+                0.27
               ],
               "direction": "up"
             },
             "position": [
-              0.38,
+              0.37,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.11,
+                  0
+                ],
+                [
+                  0.135,
+                  0.025
+                ],
+                [
+                  0.135,
+                  0.06
+                ],
+                [
+                  0.1,
+                  0.09
+                ],
+                [
+                  0,
+                  0.1
+                ]
+              ]
+            },
+            "position": [
+              0.52,
               0,
               0
             ]
@@ -1588,10 +1874,11 @@
         "children": [
           {
             "spec": {
-              "kind": "pole",
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
               "heightM": 6.1,
-              "radiusTopM": 0.06,
-              "radiusBottomM": 0.1
+              "sides": 4
             },
             "position": [
               0,
@@ -1603,15 +1890,63 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.55,
-                0.1,
-                0.26
+                0.45,
+                0.07,
+                0.1
               ],
               "direction": "up"
             },
             "position": [
-              0.12,
-              6.05,
+              0.3,
+              5.55,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.07,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.3,
+              5.55,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.72,
+                0.1,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.78,
+              5.5,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.72,
+                0.1,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.78,
+              5.5,
               0
             ]
           }
@@ -1642,10 +1977,84 @@
       "productUrl": "https://willbrands.com/products/nafco-pre-cast-concrete-light-pole-bases",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 0.76,
-        "radiusTopM": 0.28,
-        "radiusBottomM": 0.3
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.48,
+              "radiusTopM": 0.235,
+              "radiusBottomM": 0.235
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.42,
+              "radiusTopM": 0.29,
+              "radiusBottomM": 0.29
+            },
+            "position": [
+              0,
+              0.48,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.32,
+                  0,
+                  0
+                ],
+                [
+                  0.32,
+                  0,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              0,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.006
+            },
+            "position": [
+              0.025,
+              0.9,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.006
+            },
+            "position": [
+              -0.025,
+              0.9,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -1668,13 +2077,55 @@
       "productUrl": "https://willbrands.com/products/nafco-shx-shoebox",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.5,
-          0.19,
-          0.5
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.46,
+                0.07,
+                0.46
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.25,
+              "radiusBottomM": 0.3,
+              "heightM": 0.14,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.07,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.1,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.26,
+              0.02,
+              0
+            ]
+          }
+        ]
       },
       "mount": "nafco-fixture-mount",
       "sockets": {},
@@ -1715,25 +2166,35 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0,
+            0.1,
             0
           ],
           [
-            0.8,
-            0.34,
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.03
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.62,
+            0.16,
             0
           ]
         }
@@ -1770,25 +2231,35 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0,
+            0.1,
             0
           ],
           [
-            0.8,
-            0.34,
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.03
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.62,
+            0.16,
             0
           ]
         }
@@ -1825,25 +2296,35 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0,
+            0.1,
             0
           ],
           [
-            0.8,
-            0.34,
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.03
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.62,
+            0.16,
             0
           ]
         }
@@ -1880,25 +2361,35 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0,
+            0.1,
             0
           ],
           [
-            0.8,
-            0.34,
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.03
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.62,
+            0.16,
             0
           ]
         }
@@ -1935,24 +2426,39 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            0.18,
+            0.03,
             0
           ],
           [
-            0.8,
+            0.6,
+            0.1,
+            0
+          ],
+          [
+            0.85,
+            0.24,
+            0
+          ],
+          [
+            1.05,
+            0.32,
+            0
+          ],
+          [
+            1.25,
             0.34,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
+            1.25,
             0.34,
             0
           ]
@@ -1990,25 +2496,75 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            -0.5,
+            0.1,
             0
           ],
           [
-            0.8,
-            0.34,
+            -0.82,
+            0.26,
+            0
+          ],
+          [
+            -1.05,
+            0.32,
+            0
+          ],
+          [
+            -1.2,
+            0.33,
+            0
+          ],
+          [
+            -1.03,
+            0.31,
+            0.003
+          ],
+          [
+            -0.8,
+            0.25,
+            0.003
+          ],
+          [
+            -0.45,
+            0.09,
+            0.003
+          ],
+          [
+            0.005,
+            0.005,
+            0.003
+          ],
+          [
+            0.5,
+            0.1,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            1.05,
+            0.32,
+            0
+          ],
+          [
+            1.2,
+            0.33,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            1.2,
+            0.33,
             0
           ]
         }
@@ -2035,13 +2591,57 @@
       "productUrl": "https://willbrands.com/products/nafco-wcx-wall-mount",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.16,
-          0.28
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.19,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              -0.09
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.14,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.08,
+                0.11
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.11
+            ]
+          }
+        ]
       }
     },
     {
@@ -2069,10 +2669,49 @@
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-3-bolt-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.26,
+              "heightM": 0.06,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.22,
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.19
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2119,10 +2758,38 @@
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.27,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2169,10 +2836,35 @@
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-direct-burial-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.9,
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2219,10 +2911,54 @@
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-hinged-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.24,
+                  0
+                ],
+                [
+                  0.25,
+                  0.03
+                ],
+                [
+                  0.25,
+                  0.13
+                ],
+                [
+                  0.2,
+                  0.19
+                ],
+                [
+                  0.09,
+                  0.21
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2269,10 +3005,70 @@
       "productUrl": "https://willbrands.com/products/round-straight-steel-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.26,
+                  0
+                ],
+                [
+                  0.26,
+                  0.24
+                ],
+                [
+                  0.23,
+                  0.32
+                ],
+                [
+                  0.12,
+                  0.35
+                ],
+                [
+                  0.09,
+                  0.35
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.24,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.07,
+              0.85,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2319,10 +3115,50 @@
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-3-bolt-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.025,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.09,
+              "radiusBottomM": 0.18,
+              "heightM": 0.12,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0.025,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2441,10 +3277,36 @@
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.13,
+              "radiusBottomM": 0.25,
+              "heightM": 0.22,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2491,10 +3353,35 @@
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-direct-burial-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 1.5,
+              "radiusTopM": 0.088,
+              "radiusBottomM": 0.088
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2541,10 +3428,54 @@
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-hinged-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.28,
+                  0
+                ],
+                [
+                  0.285,
+                  0.05
+                ],
+                [
+                  0.27,
+                  0.13
+                ],
+                [
+                  0.22,
+                  0.16
+                ],
+                [
+                  0.1,
+                  0.17
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2591,10 +3522,52 @@
       "productUrl": "https://willbrands.com/products/round-tapered-steel-3-bolt-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.03,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.22,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.08,
+              0.85,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2641,10 +3614,52 @@
       "productUrl": "https://willbrands.com/products/round-tapered-steel-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.15,
+              "radiusBottomM": 0.24,
+              "heightM": 0.3,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.2,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.08,
+              0.85,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2693,7 +3708,7 @@
       "placeholder": {
         "kind": "pole",
         "heightM": 7.62,
-        "radiusTopM": 0.06,
+        "radiusTopM": 0.055,
         "radiusBottomM": 0.11
       },
       "mount": null,
@@ -2741,10 +3756,50 @@
       "productUrl": "https://willbrands.com/products/round-tapered-steel-pedestal-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.19,
+              "radiusBottomM": 0.3,
+              "heightM": 0.55,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.025,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.55,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2791,10 +3846,39 @@
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.44,
+                0.24,
+                0.44
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.085,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2841,10 +3925,53 @@
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-direct-burial-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.095,
+              "radiusBottomM": 0.095,
+              "heightM": 1.1,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.22,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.075,
+              1.35,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2891,10 +4018,53 @@
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-hinged-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.21,
+              "heightM": 0.28,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.26,
+                0.11
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.075,
+              0.75,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2941,10 +4111,37 @@
       "productUrl": "https://willbrands.com/products/square-straight-steel-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.085,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -2991,10 +4188,37 @@
       "productUrl": "https://willbrands.com/products/square-tapered-steel-anchor-base-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -3041,10 +4265,53 @@
       "productUrl": "https://willbrands.com/products/square-tapered-steel-external-hinged-light-poles",
       "finishes": [],
       "placeholder": {
-        "kind": "pole",
-        "heightM": 7.62,
-        "radiusTopM": 0.06,
-        "radiusBottomM": 0.11
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.07,
+                0.55,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.12,
+              0,
+              0
+            ]
+          }
+        ]
       },
       "mount": null,
       "sockets": {
@@ -3098,30 +4365,70 @@
             0
           ],
           [
+            -0.3,
+            0.01,
+            0
+          ],
+          [
+            -0.5,
+            0.06,
+            0
+          ],
+          [
+            -0.6,
+            0.18,
+            0
+          ],
+          [
+            -0.6,
+            0.38,
+            0
+          ],
+          [
+            -0.58,
+            0.16,
+            0.003
+          ],
+          [
+            -0.48,
+            0.05,
+            0.003
+          ],
+          [
             0,
-            0.25,
+            0.005,
+            0.003
+          ],
+          [
+            0.3,
+            0.01,
             0
           ],
           [
-            0.35,
-            0.45,
-            0
-          ],
-          [
-            0.7,
             0.5,
+            0.06,
+            0
+          ],
+          [
+            0.6,
+            0.18,
+            0
+          ],
+          [
+            0.6,
+            0.38,
             0
           ]
         ],
-        "radiusM": 0.045
+        "radiusM": 0.04
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.7,
-            0.5,
+            0.6,
+            0.38,
             0
           ]
         }
@@ -3159,25 +4466,65 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            -0.3,
+            0.01,
             0
           ],
           [
-            0.8,
-            0.34,
+            -0.55,
+            0.02,
+            0
+          ],
+          [
+            -0.3,
+            0.01,
+            0.003
+          ],
+          [
+            -0.003,
+            0.005,
+            0.003
+          ],
+          [
+            0.003,
+            0.01,
+            0.3
+          ],
+          [
+            0.003,
+            0.02,
+            0.55
+          ],
+          [
+            0.006,
+            0.01,
+            0.3
+          ],
+          [
+            0.006,
+            0.005,
+            0.006
+          ],
+          [
+            0.3,
+            0.01,
+            0
+          ],
+          [
+            0.55,
+            0.02,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.032
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.55,
+            0.02,
             0
           ]
         }
@@ -3215,25 +4562,75 @@
             0
           ],
           [
-            0.3,
-            0.2,
+            -0.12,
+            0.13,
             0
           ],
           [
-            0.8,
-            0.34,
+            -0.35,
+            0.3,
+            0
+          ],
+          [
+            -0.65,
+            0.4,
+            0
+          ],
+          [
+            -0.95,
+            0.43,
+            0
+          ],
+          [
+            -0.62,
+            0.38,
+            0.003
+          ],
+          [
+            -0.32,
+            0.28,
+            0.003
+          ],
+          [
+            -0.1,
+            0.11,
+            0.003
+          ],
+          [
+            0.004,
+            0.004,
+            0.003
+          ],
+          [
+            0.12,
+            0.13,
+            0
+          ],
+          [
+            0.35,
+            0.3,
+            0
+          ],
+          [
+            0.65,
+            0.4,
+            0
+          ],
+          [
+            0.95,
+            0.43,
             0
           ]
         ],
-        "radiusM": 0.035
+        "radiusM": 0.028
       },
       "mount": "nafco-tenon",
       "sockets": {
         "fixture": {
           "type": "nafco-fixture-mount",
           "position": [
-            0.8,
-            0.34,
+            0.95,
+            0.43,
             0
           ]
         }
@@ -3268,8 +4665,8 @@
               "kind": "box",
               "sizeM": [
                 0.45,
-                0.6,
-                0.2
+                0.55,
+                0.18
               ],
               "direction": "up"
             },
@@ -3281,14 +4678,30 @@
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.25,
-              "radiusTopM": 0.008,
-              "radiusBottomM": 0.008
+              "kind": "box",
+              "sizeM": [
+                0.36,
+                0.42,
+                0.04
+              ],
+              "direction": "up"
             },
             "position": [
-              0.16,
-              0.6,
+              0,
+              0.065,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.32,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.009
+            },
+            "position": [
+              0.14,
+              0.55,
               0
             ]
           }
@@ -3315,13 +4728,57 @@
       "productUrl": "https://willbrands.com/products/tesla-hss",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.4,
-          0.4
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.1,
+                0.32,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              0.04,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3344,13 +4801,57 @@
       "productUrl": "https://willbrands.com/products/tesla-hss-ak-hi-can-shipping-only",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.4,
-          0.4
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.1,
+                0.32,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              0.04,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3378,10 +4879,11 @@
         "children": [
           {
             "spec": {
-              "kind": "pole",
+              "kind": "prism",
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075,
               "heightM": 6.1,
-              "radiusTopM": 0.06,
-              "radiusBottomM": 0.1
+              "sides": 4
             },
             "position": [
               0,
@@ -3394,14 +4896,46 @@
               "kind": "box",
               "sizeM": [
                 0.55,
-                0.1,
-                0.26
+                0.13,
+                0.15
               ],
               "direction": "up"
             },
             "position": [
-              0.12,
-              6.05,
+              0.33,
+              5.7,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.15,
+                0.42
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.88,
+              5.76,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.32,
+                0.08,
+                0.38
+              ],
+              "direction": "up"
+            },
+            "position": [
+              1.32,
+              5.83,
               0
             ]
           }
@@ -3429,13 +4963,57 @@
       "productUrl": "https://willbrands.com/products/tesla-slx-ak-hi-can-shipping-only",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.4,
-          0.4
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.11,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.25,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.17,
+                0.5
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.75,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.32,
+                0.09,
+                0.46
+              ],
+              "direction": "up"
+            },
+            "position": [
+              1.15,
+              0.07,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3459,13 +5037,70 @@
       "productUrl": "https://willbrands.com/products/tesla-slx",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.4,
-          0.4
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.07,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.45,
+              0.09,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.11,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.22,
+                0.05,
+                0.33
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.4,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.035,
+              "radiusBottomM": 0.035
+            },
+            "position": [
+              -0.15,
+              0,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3496,9 +5131,9 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.3,
-                1.3,
-                0.24
+                0.34,
+                0.04,
+                0.34
               ],
               "direction": "up"
             },
@@ -3510,18 +5145,102 @@
           },
           {
             "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.07,
+              "radiusBottomM": 0.07,
+              "heightM": 2.15,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
               "kind": "box",
               "sizeM": [
-                0.22,
-                0.28,
-                0.05
+                0.1,
+                0.14,
+                0.12
               ],
               "direction": "up"
             },
             "position": [
               0,
-              0.92,
-              0.13
+              1.95,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.24,
+                0.38,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.05,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.24,
+                0.38,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.05,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  0,
+                  2,
+                  0.16
+                ],
+                [
+                  0.42,
+                  1.25,
+                  0.18
+                ],
+                [
+                  0.08,
+                  0.3,
+                  0.2
+                ],
+                [
+                  -0.38,
+                  1.2,
+                  0.22
+                ],
+                [
+                  -0.04,
+                  1.95,
+                  0.18
+                ]
+              ],
+              "radiusM": 0.02
+            },
+            "position": [
+              0,
+              0,
+              0
             ]
           }
         ]
@@ -3554,10 +5273,11 @@
         "children": [
           {
             "spec": {
-              "kind": "pole",
+              "kind": "prism",
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075,
               "heightM": 6.1,
-              "radiusTopM": 0.06,
-              "radiusBottomM": 0.1
+              "sides": 4
             },
             "position": [
               0,
@@ -3569,15 +5289,95 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.55,
-                0.1,
-                0.26
+                0.3,
+                0.12,
+                0.16
               ],
               "direction": "up"
             },
             "position": [
-              0.12,
-              6.05,
+              0.18,
+              5.8,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.12,
+                0.16
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.18,
+              5.8,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.7,
+                0.09,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.7,
+                0.09,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.16,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.86,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.16,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.86,
+              5.88,
               0
             ]
           }
@@ -3653,13 +5453,73 @@
       "productUrl": "https://willbrands.com/products/willsport-ebx-slim-high-bay",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.58,
-          0.07,
-          0.3
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.055,
+                0.16
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.01,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.62,
+                0.045,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.125
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.62,
+                0.045,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              -0.125
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.02,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.21,
+              0.065,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -3690,9 +5550,9 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.6,
-                0.25,
-                0.45
+                0.62,
+                0.1,
+                0.48
               ],
               "direction": "up"
             },
@@ -3704,18 +5564,16 @@
           },
           {
             "spec": {
-              "kind": "box",
-              "sizeM": [
-                0.6,
-                0.05,
-                0.14
-              ],
-              "direction": "up"
+              "kind": "prism",
+              "radiusTopM": 0.16,
+              "radiusBottomM": 0.3,
+              "heightM": 0.16,
+              "sides": 4
             },
             "position": [
               0,
-              0.25,
-              0.2
+              0.1,
+              0
             ]
           }
         ]
@@ -3755,7 +5613,7 @@
           {
             "spec": {
               "kind": "pole",
-              "heightM": 0.06,
+              "heightM": 0.07,
               "radiusTopM": 0.03,
               "radiusBottomM": 0.05
             },
@@ -3769,15 +5627,47 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.42,
-                0.3,
-                0.12
+                0.34,
+                0.1,
+                0.13
               ],
               "direction": "up"
             },
             "position": [
               0,
-              0.06,
+              0.07,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.185,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.3,
               0
             ]
           }
@@ -3813,36 +5703,56 @@
       "productUrl": "https://willbrands.com/products/willsport-hdx-high-bay-sports",
       "finishes": [],
       "placeholder": {
-        "kind": "lathe",
-        "profile": [
-          [
-            0.02,
-            0
-          ],
-          [
-            0.17,
-            0
-          ],
-          [
-            0.3,
-            0.05
-          ],
-          [
-            0.3,
-            0.12
-          ],
-          [
-            0.12,
-            0.18
-          ],
-          [
-            0.12,
-            0.3
-          ],
-          [
-            0,
-            0.3
-          ]
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.13,
+                0.38
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.26,
+                0.1,
+                0.26
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.13,
+              0.13,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.15,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.08,
+              0.13,
+              0
+            ]
+          }
         ]
       }
     },
@@ -3872,9 +5782,9 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.6,
-                0.25,
-                0.45
+                0.24,
+                0.05,
+                0.24
               ],
               "direction": "up"
             },
@@ -3886,18 +5796,28 @@
           },
           {
             "spec": {
-              "kind": "box",
-              "sizeM": [
-                0.6,
-                0.05,
-                0.14
-              ],
-              "direction": "up"
+              "kind": "pole",
+              "heightM": 0.28,
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.27
             },
             "position": [
               0,
-              0.25,
-              0.2
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.04,
+              "radiusTopM": 0.1,
+              "radiusBottomM": 0.14
+            },
+            "position": [
+              0,
+              0.33,
+              0
             ]
           }
         ]
@@ -3935,13 +5855,10 @@
         "children": [
           {
             "spec": {
-              "kind": "box",
-              "sizeM": [
-                0.6,
-                0.25,
-                0.45
-              ],
-              "direction": "up"
+              "kind": "pole",
+              "heightM": 0.1,
+              "radiusTopM": 0.038,
+              "radiusBottomM": 0.05
             },
             "position": [
               0,
@@ -3953,16 +5870,32 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.6,
-                0.05,
-                0.14
+                0.72,
+                0.13,
+                0.5
               ],
               "direction": "up"
             },
             "position": [
               0,
-              0.25,
-              0.2
+              0.1,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.1,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.23,
+              -0.12
             ]
           }
         ]
@@ -4007,29 +5940,48 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.45,
-                0.6,
-                0.2
+                0.42,
+                0.5,
+                0.25
               ],
               "direction": "up"
             },
             "position": [
               0,
-              0,
+              0.05,
               0
             ]
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.25,
-              "radiusTopM": 0.008,
-              "radiusBottomM": 0.008
+              "kind": "box",
+              "sizeM": [
+                0.46,
+                0.52,
+                0.04
+              ],
+              "direction": "up"
             },
             "position": [
-              0.16,
-              0.6,
-              0
+              0,
+              0.04,
+              -0.16
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.34,
+                0.06
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.23,
+              0.12,
+              0.04
             ]
           }
         ]
@@ -4066,29 +6018,48 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.45,
-                0.6,
-                0.2
+                0.38,
+                1.35,
+                0.33
               ],
               "direction": "up"
             },
             "position": [
               0,
-              0,
+              0.05,
               0
             ]
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.25,
-              "radiusTopM": 0.008,
-              "radiusBottomM": 0.008
+              "kind": "box",
+              "sizeM": [
+                0.2,
+                0.08,
+                0.1
+              ],
+              "direction": "up"
             },
             "position": [
-              0.16,
-              0.6,
-              0
+              0,
+              1.28,
+              -0.21
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2,
+                0.08,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.1,
+              -0.21
             ]
           }
         ]
@@ -4117,13 +6088,64 @@
       "productUrl": "https://willbrands.com/products/willsport-sports-large-area-brackets-arms",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.55,
-          0.16,
-          0.35
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.14,
+              "radiusTopM": 0.032,
+              "radiusBottomM": 0.032
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.3,
+                0.09,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.14,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.2,
+              "radiusTopM": 0.024,
+              "radiusBottomM": 0.024
+            },
+            "position": [
+              0.52,
+              0.23,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.2,
+              "radiusTopM": 0.024,
+              "radiusBottomM": 0.024
+            },
+            "position": [
+              -0.52,
+              0.23,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -4148,56 +6170,44 @@
       "productUrl": "https://willbrands.com/products/willsport-wrestling-dual-light-packages",
       "finishes": [],
       "placeholder": {
-        "kind": "group",
-        "children": [
-          {
-            "spec": {
-              "kind": "box",
-              "sizeM": [
-                0.4,
-                0.2,
-                0.4
-              ],
-              "direction": "up"
-            },
-            "position": [
-              -0.28,
-              0,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "box",
-              "sizeM": [
-                0.4,
-                0.2,
-                0.4
-              ],
-              "direction": "up"
-            },
-            "position": [
-              0.28,
-              0,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "box",
-              "sizeM": [
-                1,
-                0.06,
-                0.08
-              ],
-              "direction": "up"
-            },
-            "position": [
-              0,
-              0.2,
-              0
-            ]
-          }
+        "kind": "lathe",
+        "profile": [
+          [
+            0.3,
+            0
+          ],
+          [
+            0.305,
+            0.05
+          ],
+          [
+            0.3,
+            0.11
+          ],
+          [
+            0.25,
+            0.22
+          ],
+          [
+            0.17,
+            0.3
+          ],
+          [
+            0.12,
+            0.34
+          ],
+          [
+            0.115,
+            0.56
+          ],
+          [
+            0.1,
+            0.585
+          ],
+          [
+            0,
+            0.59
+          ]
         ]
       }
     },
@@ -4327,11 +6337,67 @@
       "productUrl": "https://willbrands.com/products/aluminum-transformer-bases",
       "finishes": [],
       "placeholder": {
-        "kind": "prism",
-        "radiusTopM": 0.16,
-        "radiusBottomM": 0.18,
-        "heightM": 0.5,
-        "sides": 4
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.24,
+              "heightM": 0.035,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.155,
+              "radiusBottomM": 0.22,
+              "heightM": 0.41,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.035,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.175,
+              "radiusBottomM": 0.175,
+              "heightM": 0.03,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.445,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.14,
+                0.26,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0.13
+            ]
+          }
+        ]
       }
     },
     {
@@ -4364,54 +6430,170 @@
         "children": [
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.45,
-              "radiusTopM": 0.012,
-              "radiusBottomM": 0.012
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
             },
             "position": [
-              -0.12,
+              -0.1,
               0,
-              -0.12
+              -0.1
             ]
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.45,
-              "radiusTopM": 0.012,
-              "radiusBottomM": 0.012
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
             },
             "position": [
-              0.12,
+              0.1,
               0,
-              -0.12
+              -0.1
             ]
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.45,
-              "radiusTopM": 0.012,
-              "radiusBottomM": 0.012
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
             },
             "position": [
-              -0.12,
+              -0.1,
               0,
-              0.12
+              0.1
             ]
           },
           {
             "spec": {
-              "kind": "pole",
-              "heightM": 0.45,
-              "radiusTopM": 0.012,
-              "radiusBottomM": 0.012
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
             },
             "position": [
-              0.12,
+              0.1,
               0,
-              0.12
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              -0.1,
+              0.34,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              0.1,
+              0.34,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              -0.1,
+              0.34,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              0.1,
+              0.34,
+              0.1
             ]
           }
         ]
@@ -4661,10 +6843,61 @@
       "productUrl": "https://willbrands.com/products/light-pole-bolt-circle-adapters",
       "finishes": [],
       "placeholder": {
-        "kind": "baseCover",
-        "heightM": 0.05,
-        "radiusTopM": 0.16,
-        "radiusBottomM": 0.2
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.2,
+                  0
+                ],
+                [
+                  0.2,
+                  0.215
+                ],
+                [
+                  0.185,
+                  0.24
+                ],
+                [
+                  0.09,
+                  0.24
+                ],
+                [
+                  0.09,
+                  0.245
+                ],
+                [
+                  0,
+                  0.245
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.19,
+                0.17,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.035,
+              0.192
+            ]
+          }
+        ]
       }
     },
     {
@@ -4692,20 +6925,44 @@
         "kind": "lathe",
         "profile": [
           [
-            0.1,
+            0.052,
             0
           ],
           [
-            0.1,
-            0.03
+            0.064,
+            0.008
+          ],
+          [
+            0.052,
+            0.016
+          ],
+          [
+            0.064,
+            0.024
+          ],
+          [
+            0.052,
+            0.032
           ],
           [
             0.06,
+            0.042
+          ],
+          [
+            0.098,
+            0.048
+          ],
+          [
+            0.098,
+            0.064
+          ],
+          [
+            0.088,
             0.07
           ],
           [
             0,
-            0.09
+            0.07
           ]
         ]
       }
@@ -5137,9 +7394,9 @@
           {
             "spec": {
               "kind": "pole",
-              "heightM": 0.06,
-              "radiusTopM": 0.03,
-              "radiusBottomM": 0.05
+              "heightM": 0.05,
+              "radiusTopM": 0.035,
+              "radiusBottomM": 0.055
             },
             "position": [
               0,
@@ -5151,15 +7408,71 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.42,
+                0.02,
                 0.3,
-                0.12
+                0.05
               ],
               "direction": "up"
             },
             "position": [
+              -0.17,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.3,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.17,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0,
+                  -0.15
+                ],
+                [
+                  0.1,
+                  -0.12
+                ],
+                [
+                  0.15,
+                  -0.05
+                ],
+                [
+                  0.16,
+                  0.03
+                ],
+                [
+                  0.13,
+                  0.1
+                ],
+                [
+                  0.08,
+                  0.13
+                ],
+                [
+                  0,
+                  0.14
+                ]
+              ]
+            },
+            "position": [
               0,
-              0.06,
+              0.2,
               0
             ]
           }
@@ -5326,13 +7639,51 @@
       "productUrl": "https://willbrands.com/products/willstudio-pendant-ceiling-mounts",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.55,
-          0.16,
-          0.35
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.85,
+              "radiusTopM": 0.032,
+              "radiusBottomM": 0.032
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.06,
+              "radiusTopM": 0.042,
+              "radiusBottomM": 0.038
+            },
+            "position": [
+              0,
+              0.79,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.35,
+                0.02,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.85,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -5361,9 +7712,9 @@
           {
             "spec": {
               "kind": "pole",
-              "heightM": 0.98,
-              "radiusTopM": 0.075,
-              "radiusBottomM": 0.09
+              "heightM": 0.72,
+              "radiusTopM": 0.088,
+              "radiusBottomM": 0.092
             },
             "position": [
               0,
@@ -5373,29 +7724,63 @@
           },
           {
             "spec": {
+              "kind": "baseCover",
+              "heightM": 0.04,
+              "radiusTopM": 0.09,
+              "radiusBottomM": 0.095
+            },
+            "position": [
+              0,
+              0.72,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.16,
+              "radiusTopM": 0.07,
+              "radiusBottomM": 0.07
+            },
+            "position": [
+              0,
+              0.76,
+              0
+            ]
+          },
+          {
+            "spec": {
               "kind": "lathe",
               "profile": [
                 [
-                  0.078,
+                  0.088,
                   0
                 ],
                 [
-                  0.075,
-                  0.05
+                  0.09,
+                  0.03
                 ],
                 [
-                  0.05,
-                  0.085
+                  0.084,
+                  0.08
+                ],
+                [
+                  0.06,
+                  0.13
+                ],
+                [
+                  0.032,
+                  0.155
                 ],
                 [
                   0,
-                  0.1
+                  0.165
                 ]
               ]
             },
             "position": [
               0,
-              0.98,
+              0.92,
               0
             ]
           }
@@ -5631,13 +8016,82 @@
       "productUrl": "https://willbrands.com/products/willstudio-wm1-single-wall-mount-pendant",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.4,
-          0.16,
-          0.28
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.32,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.42,
+                0.12,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.23,
+              0.2,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.55,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.045
+            },
+            "position": [
+              0.44,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.05,
+                  0
+                ],
+                [
+                  0.05,
+                  0.012
+                ],
+                [
+                  0.028,
+                  0.028
+                ],
+                [
+                  0,
+                  0.035
+                ]
+              ]
+            },
+            "position": [
+              0.44,
+              0.55,
+              0
+            ]
+          }
+        ]
       }
     },
     {
@@ -5663,13 +8117,94 @@
       "productUrl": "https://willbrands.com/products/willstudio-wm2-single-wall-tenon-mount-w-finial",
       "finishes": [],
       "placeholder": {
-        "kind": "box",
-        "sizeM": [
-          0.55,
-          0.16,
-          0.35
-        ],
-        "direction": "up"
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.3,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.42,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.11,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.22,
+              0.48,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.5,
+              "radiusTopM": 0.048,
+              "radiusBottomM": 0.048
+            },
+            "position": [
+              0.42,
+              0.35,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0,
+                  -0.3
+                ],
+                [
+                  0.025,
+                  -0.27
+                ],
+                [
+                  0.01,
+                  -0.235
+                ],
+                [
+                  0.032,
+                  -0.12
+                ],
+                [
+                  0.095,
+                  -0.05
+                ],
+                [
+                  0.04,
+                  -0.02
+                ],
+                [
+                  0.048,
+                  0
+                ]
+              ]
+            },
+            "position": [
+              0.42,
+              0.35,
+              0
+            ]
+          }
+        ]
       }
     },
     {

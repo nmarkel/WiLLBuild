@@ -57,6 +57,24 @@ def _place(solid: Part, world_origin_mm: tuple[float, float, float]) -> Part:
     return Location(world_origin_mm) * solid
 
 
+def _base_radius_m(spec: dict) -> float:
+    """Ground-level radius of a placeholder spec (group specs take the widest
+    child sitting at the base) — feeds the drawing's base-diameter callout."""
+    kind = spec.get("kind")
+    if kind in ("pole", "baseCover", "prism"):
+        return spec["radiusBottomM"]
+    if kind == "box":
+        return spec["sizeM"][0] / 2.0
+    if kind == "cone":
+        return spec["radiusM"]
+    if kind == "lathe":
+        return max(r for r, _ in spec["profile"])
+    if kind == "group":
+        ground = [c for c in spec["children"] if abs(c["position"][1]) < 0.05]
+        return max((_base_radius_m(c["spec"]) for c in (ground or spec["children"])), default=0.1)
+    return 0.1
+
+
 def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
     """Compose a fused assembly solid from a validated PoleConfig."""
     pole = part(catalog, cfg.pole)
@@ -141,10 +159,10 @@ def _compute_dims(
     # Base diameter from the base cover when present, else the pole's own base
     if cfg.baseCover:
         base_cover = part(catalog, cfg.baseCover)
-        base_diameter = base_cover["placeholder"]["radiusBottomM"] * 2.0 * 1000.0
+        base_diameter = _base_radius_m(base_cover["placeholder"]) * 2.0 * 1000.0
     else:
         pole_part_dims = part(catalog, cfg.pole)
-        base_diameter = pole_part_dims["placeholder"]["radiusBottomM"] * 2.0 * 1000.0
+        base_diameter = _base_radius_m(pole_part_dims["placeholder"]) * 2.0 * 1000.0
 
     return AssemblyDims(
         overall_height=overall_height,

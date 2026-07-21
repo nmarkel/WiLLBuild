@@ -73,6 +73,18 @@ const ROOT = resolve(__dirname, '..');
 const INVENTORY_PATH = resolve(ROOT, 'docs/catalog-inventory.json');
 const CATALOG_PATH   = resolve(ROOT, 'public/catalog.json');
 const ASSETS_MD_PATH = resolve(ROOT, 'catalog-assets.md');
+const OVERRIDES_PATH = resolve(ROOT, 'scripts/placeholder-overrides.json');
+
+/**
+ * Hand/agent-authored placeholder specs keyed by part id — produced by the
+ * shape-refinement pass against the product photos. When present, an override
+ * wins over derivePlaceholder. Missing file -> no overrides.
+ */
+let PLACEHOLDER_OVERRIDES = {};
+try {
+  PLACEHOLDER_OVERRIDES = JSON.parse(readFileSync(OVERRIDES_PATH, 'utf8'));
+} catch { /* optional */ }
+
 
 // ── Curated mapping: inventory handles that are already covered by a curated part ──
 // One handle may cover multiple curated parts (height/style variants).
@@ -255,6 +267,23 @@ function derivePlaceholder(name, categorySlug, heightFt) {
   return box(0.4, 0.4, 0.4);
 }
 
+/** Placeholder for a part: photo-refined override first, derived recipe otherwise. */
+function placeholderFor(part, slug) {
+  return PLACEHOLDER_OVERRIDES[part.id] ?? derivePlaceholder(part.name, slug, part.heightFt);
+}
+
+/** Overall height of a spec in meters (drives wizard pole socket positions). */
+function specHeightM(spec) {
+  switch (spec.kind) {
+    case 'pole': case 'baseCover': case 'prism': case 'cone': return spec.heightM;
+    case 'box': return spec.sizeM[1];
+    case 'tube': return Math.max(...spec.points.map((pt) => Math.abs(pt[1])), spec.radiusM * 2);
+    case 'lathe': return Math.max(...spec.profile.map(([, y]) => Math.abs(y)));
+    case 'group': return Math.max(...spec.children.map((c) => c.position[1] + specHeightM(c.spec)));
+  }
+  return 0;
+}
+
 // ── Load files ────────────────────────────────────────────────────────────────
 const inventory = JSON.parse(readFileSync(INVENTORY_PATH, 'utf8'));
 const catalog   = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
@@ -323,19 +352,21 @@ const SPORT_BUILDER_FIXTURES = new Set([
 function promoteToBuilder(part, slug) {
   if (part.line === 'NAFCO') {
     if (slug === 'pole' && part.category.startsWith('Light Poles')) {
-      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
-      if (part.placeholder.kind !== 'pole') return false;
+      const ph = placeholderFor(part, slug);
+      const h = specHeightM(ph);
+      if (!(ph.kind === 'pole' || (ph.kind === 'group' && h > 2))) return false;
+      part.placeholder = ph;
       part.slot = 'pole';
       part.productClass = 'assembly-part';
       part.mount = null;
       part.sockets = {
-        top: { type: 'nafco-tenon', position: [0, part.placeholder.heightM, 0] },
+        top: { type: 'nafco-tenon', position: [0, h, 0] },
         base: { type: 'nafco-base', position: [0, 0, 0] },
       };
       return true;
     }
     if (slug === 'arm' && part.category === 'Brackets + Arms') {
-      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
+      part.placeholder = placeholderFor(part, slug);
       if (part.placeholder.kind !== 'tube') return false;
       const tip = part.placeholder.points[part.placeholder.points.length - 1];
       part.slot = 'arm';
@@ -345,7 +376,7 @@ function promoteToBuilder(part, slug) {
       return true;
     }
     if (NAFCO_BUILDER_FIXTURES.has(part.id)) {
-      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
+      part.placeholder = placeholderFor(part, slug);
       part.slot = 'fixture';
       part.productClass = 'assembly-part';
       part.mount = 'nafco-fixture-mount';
@@ -368,7 +399,7 @@ function promoteToBuilder(part, slug) {
       return true;
     }
     if (SPORT_BUILDER_FIXTURES.has(part.id)) {
-      part.placeholder = derivePlaceholder(part.name, slug, part.heightFt);
+      part.placeholder = placeholderFor(part, slug);
       part.slot = 'fixture';
       part.productClass = 'assembly-part';
       part.mount = 'sport-crossarm-mount';
@@ -448,7 +479,7 @@ for (const product of inventory.products) {
   // Standalone products always carry a derived placeholder so the single-part
   // 3D viewer works (tier 2 = parametric 3D). Deterministic → idempotent.
   const nextPlaceholder = part.slot === 'standalone'
-    ? derivePlaceholder(part.name, slug, part.heightFt)
+    ? placeholderFor(part, slug)
     : part.placeholder;
   const nextTier = part.slot === 'standalone' ? 2 : part.tier;
   if (
@@ -465,6 +496,14 @@ for (const product of inventory.products) {
   if (promoteToBuilder(part, slug)) promotedCount++;
 }
 console.log(`Updated taxonomy fields on ${updatedCount} existing entries; ${promotedCount} promoted to brand builders`);
+
+// Curated WiLLstudio fixtures may take a photo-refined shape override too
+// (placeholder only — sockets and lightOffset stay hand-tuned).
+for (const id of ['drx-post-top', 'tex-post-top', 'mvx-coach', 'gvx-pendant']) {
+  const override = PLACEHOLDER_OVERRIDES[id];
+  const part = partById.get(id);
+  if (override && part) part.placeholder = override;
+}
 
 // Upsert builder pseudo-parts (deterministic content → idempotent)
 for (const pseudo of PSEUDO_PARTS) {

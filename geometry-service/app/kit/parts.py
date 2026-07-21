@@ -60,8 +60,11 @@ def _tapered_cylinder(radius_bottom_m: float, radius_top_m: float, height_m: flo
 
 
 def build_pole(p: dict):
-    """Tapered aluminium pole from placeholder radii/height."""
+    """Tapered pole from placeholder radii/height; group poles (shaft + base
+    details from the photo-refined specs) build as a union of children."""
     ph = p["placeholder"]
+    if ph["kind"] == "group":
+        return build_fixture_group(ph["children"])
     return _tapered_cylinder(ph["radiusBottomM"], ph["radiusTopM"], ph["heightM"])
 
 
