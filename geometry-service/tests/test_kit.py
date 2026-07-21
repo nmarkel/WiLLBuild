@@ -31,23 +31,28 @@ def _fixture_top_extent_m(fixture: dict) -> float:
 
     Returns 0 for pendants that hang entirely below their origin.
     """
-    ph = fixture["placeholder"]
-    kind = ph["kind"]
+    return _spec_top_extent_m(fixture["placeholder"])
+
+
+def _spec_top_extent_m(spec: dict) -> float:
+    """Vertical extent (meters) of any placeholder spec above its origin."""
+    kind = spec["kind"]
     if kind == "lathe":
-        return max(0.0, max(y for _r, y in ph["profile"]))
+        return max(0.0, max(y for _r, y in spec["profile"]))
+    if kind == "box":
+        return spec["sizeM"][1] if spec.get("direction", "up") == "up" else 0.0
+    if kind == "cone":
+        return spec["heightM"] if spec.get("direction", "up") == "up" else 0.0
+    if kind in ("prism", "pole", "baseCover"):
+        return spec["heightM"]
+    if kind == "tube":
+        return max(0.0, max(pt[1] for pt in spec["points"]))
     if kind == "group":
-        top = 0.0
-        for child in ph["children"]:
-            pos_y = child["position"][1]
-            spec = child["spec"]
-            ck = spec["kind"]
-            if ck == "cone":
-                ch = spec["heightM"]
-            else:  # baseCover / prism / pole
-                ch = spec["heightM"]
-            top = max(top, pos_y + ch)
-        return top
-    raise AssertionError(f"unexpected fixture kind {kind!r}")
+        return max(
+            child["position"][1] + _spec_top_extent_m(child["spec"])
+            for child in spec["children"]
+        )
+    raise AssertionError(f"unexpected spec kind {kind!r}")
 
 
 def _expected_height_m(catalog: dict, cfg) -> float:
