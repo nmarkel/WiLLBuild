@@ -3,14 +3,16 @@ import type { ViewMode } from '../store'
 
 /**
  * Maps each ProductLine to its URL slug.
- * Only WiLLstudio has a live flow — all others are null (Coming soon).
+ * WiLLstudio gets the pole builder at /studio/design; every other brand gets a
+ * Tesla-style brand home (product grid) at /<slug> with products at
+ * /<slug>/product/<id>. `Other` has no route.
  */
 export const BRAND_SLUGS: Record<ProductLine, string | null> = {
   WiLLstudio: 'studio',
-  NAFCO: null,
-  WiLLsport: null,
-  WiLLev: null,
-  WiLLcloud: null,
+  NAFCO: 'nafco',
+  WiLLsport: 'sport',
+  WiLLev: 'ev',
+  WiLLcloud: 'cloud',
   Other: null,
 }
 
@@ -47,20 +49,49 @@ export function productPath(brand: ProductLine, id: string): string {
 }
 
 /**
+ * Brands whose catalog contains wizard (assembly) parts and therefore get a
+ * configurator; WiLLev/WiLLcloud have nothing that assembles and land on the
+ * product showroom instead. Mirrors the promotions in scripts/merge-inventory.mjs.
+ */
+export const BUILDER_BRANDS: ReadonlySet<ProductLine> = new Set([
+  'WiLLstudio',
+  'NAFCO',
+  'WiLLsport',
+])
+
+/** Default view for a brand: builder brands open their configurator, others the showroom. */
+function homeView(brand: ProductLine): ViewMode {
+  return BUILDER_BRANDS.has(brand) ? { kind: 'builder' } : { kind: 'home' }
+}
+
+/**
+ * Returns the landing path for a brand — the configurator for builder brands,
+ * the product showroom for everything else.
+ */
+export function brandHomePath(brand: ProductLine): string {
+  if (BUILDER_BRANDS.has(brand)) return builderPath(brand)
+  const slug = BRAND_SLUGS[brand] ?? BRAND_SLUGS[DEFAULT_BRAND]!
+  return `/${slug}`
+}
+
+/**
  * Parses a pathname into a brand + view.
- * Format: /<brand-slug>/design  → builder
- *         /<brand-slug>/product/<id>  → product
+ * Format: /<brand-slug>                → brand home (builder for WiLLstudio)
+ *         /<brand-slug>/design         → builder
+ *         /<brand-slug>/product/<id>   → product
  * Anything else → default (WiLLstudio builder).
  */
 export function parseRoute(pathname: string): { brand: ProductLine; view: ViewMode } {
   // Split on '/' and drop empty segments
   const segments = pathname.split('/').filter((s) => s.length > 0)
-  // segments[0] = brand slug, segments[1] = 'design'|'product', segments[2] = id
-  if (segments.length < 2) return DEFAULT_RESULT
+  if (segments.length === 0) return DEFAULT_RESULT
 
   const brand = SLUG_TO_BRAND[segments[0]]
   if (!brand) return DEFAULT_RESULT
 
+  if (segments.length === 1) {
+    return { brand, view: homeView(brand) }
+  }
   if (segments[1] === 'design') {
     return { brand, view: { kind: 'builder' } }
   }
@@ -68,5 +99,5 @@ export function parseRoute(pathname: string): { brand: ProductLine; view: ViewMo
     return { brand, view: { kind: 'product', productId: segments[2] } }
   }
 
-  return DEFAULT_RESULT
+  return { brand, view: homeView(brand) }
 }

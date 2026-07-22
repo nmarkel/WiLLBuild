@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest'
-import { parseRoute, builderPath, productPath, BRAND_SLUGS } from './routes'
+import { parseRoute, builderPath, productPath, brandHomePath, BRAND_SLUGS } from './routes'
 
 describe('BRAND_SLUGS', () => {
   it('maps WiLLstudio to studio', () => {
     expect(BRAND_SLUGS['WiLLstudio']).toBe('studio')
   })
-  it('maps all other brands to null', () => {
-    expect(BRAND_SLUGS['NAFCO']).toBeNull()
-    expect(BRAND_SLUGS['WiLLsport']).toBeNull()
-    expect(BRAND_SLUGS['WiLLev']).toBeNull()
-    expect(BRAND_SLUGS['WiLLcloud']).toBeNull()
+  it('maps every real brand to a slug; only Other has none', () => {
+    expect(BRAND_SLUGS['NAFCO']).toBe('nafco')
+    expect(BRAND_SLUGS['WiLLsport']).toBe('sport')
+    expect(BRAND_SLUGS['WiLLev']).toBe('ev')
+    expect(BRAND_SLUGS['WiLLcloud']).toBe('cloud')
     expect(BRAND_SLUGS['Other']).toBeNull()
   })
 })
@@ -19,7 +19,19 @@ describe('builderPath', () => {
     expect(builderPath('WiLLstudio')).toBe('/studio/design')
   })
   it('falls back to /studio/design for brands with no slug', () => {
-    expect(builderPath('NAFCO')).toBe('/studio/design')
+    expect(builderPath('Other')).toBe('/studio/design')
+  })
+})
+
+describe('brandHomePath', () => {
+  it('returns the configurator for builder brands', () => {
+    expect(brandHomePath('WiLLstudio')).toBe('/studio/design')
+    expect(brandHomePath('NAFCO')).toBe('/nafco/design')
+    expect(brandHomePath('WiLLsport')).toBe('/sport/design')
+  })
+  it('returns the /<slug> showroom for non-builder brands', () => {
+    expect(brandHomePath('WiLLev')).toBe('/ev')
+    expect(brandHomePath('WiLLcloud')).toBe('/cloud')
   })
 })
 
@@ -72,6 +84,39 @@ describe('parseRoute', () => {
   it('parses /studio/product/ (trailing slash, no id) as WiLLstudio builder', () => {
     const result = parseRoute('/studio/product/')
     expect(result.brand).toBe('WiLLstudio')
+    expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /nafco as the NAFCO configurator (builder brand)', () => {
+    const result = parseRoute('/nafco')
+    expect(result.brand).toBe('NAFCO')
+    expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /ev as the WiLLev showroom (no assembly parts)', () => {
+    const result = parseRoute('/ev')
+    expect(result.brand).toBe('WiLLev')
+    expect(result.view.kind).toBe('home')
+  })
+
+  it('parses /studio as the WiLLstudio builder (brand landing)', () => {
+    const result = parseRoute('/studio')
+    expect(result.brand).toBe('WiLLstudio')
+    expect(result.view.kind).toBe('builder')
+  })
+
+  it('parses /sport/product/<id> as a WiLLsport product', () => {
+    const result = parseRoute('/sport/product/willsport-kbx-lighting-system')
+    expect(result.brand).toBe('WiLLsport')
+    expect(result.view.kind).toBe('product')
+    if (result.view.kind === 'product') {
+      expect(result.view.productId).toBe('willsport-kbx-lighting-system')
+    }
+  })
+
+  it('parses /nafco/unknown as the NAFCO configurator (fallback)', () => {
+    const result = parseRoute('/nafco/unknown')
+    expect(result.brand).toBe('NAFCO')
     expect(result.view.kind).toBe('builder')
   })
 })

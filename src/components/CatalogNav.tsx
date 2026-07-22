@@ -40,7 +40,16 @@ export function CatalogNav({ catalog, activeBrand }: Props) {
 
   const currentLine = activeLine ?? availableLines[0] ?? null
   const categoriesForLine = currentLine ? standaloneByLine.get(currentLine) : null
-  const categoryList = categoriesForLine ? Array.from(categoriesForLine.keys()) : []
+  // Pills follow the official site order (catalog.categories); unlisted ones go last.
+  const siteOrder = (currentLine && catalog.categories?.[currentLine]) || []
+  const categoryList = (categoriesForLine ? Array.from(categoriesForLine.keys()) : []).sort((a, b) => {
+    const ia = siteOrder.indexOf(a)
+    const ib = siteOrder.indexOf(b)
+    if (ia === -1 && ib === -1) return a.localeCompare(b)
+    if (ia === -1) return 1
+    if (ib === -1) return -1
+    return ia - ib
+  })
   const currentCategory = activeCategory && categoryList.includes(activeCategory)
     ? activeCategory
     : categoryList[0] ?? null

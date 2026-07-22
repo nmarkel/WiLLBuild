@@ -102,16 +102,9 @@ const DELIVERABLE_DEFS: DeliverableDef[] = [
 
 // ---- Helpers ----
 
-/** Fallback when no SnapshotRig is registered: raw grab of the visible canvas. */
-function grabRawCanvas(): Promise<Blob | null> {
-  const canvas = document.querySelector<HTMLCanvasElement>('.viewport canvas')
-  if (!canvas) return Promise.resolve(null)
-  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
-}
-
 async function downloadSnapshot(configId: string) {
   const { snapshot } = useConfigurator.getState()
-  const blob = snapshot ? await snapshot() : await grabRawCanvas()
+  const blob = snapshot ? await snapshot() : null
   if (!blob) return
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -291,7 +284,7 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
         let renderPng: string | undefined
         if (def.includeRender) {
           const { snapshot } = useConfigurator.getState()
-          const blob = snapshot ? await snapshot() : await grabRawCanvas()
+          const blob = snapshot ? await snapshot() : null
           if (blob) {
             renderPng = await blobToDataUrl(blob)
           }
@@ -385,7 +378,7 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
         {showPngCard && (
           <button className="deliverable" onClick={() => void downloadSnapshot(config.configId)}>
             <span className="deliverable-title">Product Render</span>
-            <span className="deliverable-format">PNG · current 3D view</span>
+            <span className="deliverable-format">PNG · current view</span>
             <span className="deliverable-audience">For your client</span>
           </button>
         )}

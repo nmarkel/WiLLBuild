@@ -1,4 +1,4 @@
-import type { Catalog, CatalogPart, PoleConfig, Slot } from '../types'
+import type { Catalog, CatalogPart, PoleConfig, ProductLine, Slot } from '../types'
 export { isAssemblyPart } from '../types'
 
 /**
@@ -12,8 +12,9 @@ export function partById(catalog: Catalog, id: string): CatalogPart | undefined 
   return catalog.parts.find((p) => p.id === id)
 }
 
-export function partsForSlot(catalog: Catalog, slot: Slot): CatalogPart[] {
-  return catalog.parts.filter((p) => p.slot === slot)
+/** Wizard parts for a slot; brand-scoped when a brand is given (each line has its own builder). */
+export function partsForSlot(catalog: Catalog, slot: Slot, brand?: ProductLine): CatalogPart[] {
+  return catalog.parts.filter((p) => p.slot === slot && (!brand || p.line === brand))
 }
 
 /** A host can carry a part when it exposes a socket of the part's mount type. */
@@ -28,7 +29,7 @@ export function canHost(host: CatalogPart | undefined, part: CatalogPart | undef
  * covers must fit the chosen pole.
  */
 export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot): CatalogPart[] {
-  const options = partsForSlot(catalog, slot)
+  const options = partsForSlot(catalog, slot, config.brand)
   switch (slot) {
     case 'fixture':
       return options
@@ -55,8 +56,9 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const next = { ...config }
   for (const slot of SLOT_ORDER) {
     if (slot === 'fixture') {
-      if (partById(catalog, next.fixture)?.slot !== 'fixture') {
-        next.fixture = partsForSlot(catalog, 'fixture')[0].id
+      const fixture = partById(catalog, next.fixture)
+      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
+        next.fixture = partsForSlot(catalog, 'fixture', next.brand)[0]?.id ?? ''
       }
       continue
     }
@@ -87,14 +89,14 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
   return isStandard ? 'Standard' : 'Configurable'
 }
 
-export function defaultConfig(catalog: Catalog): PoleConfig {
+export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio'): PoleConfig {
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
-    brand: 'WiLLstudio',
+    brand,
     pole: '',
     baseCover: '',
     arm: '',
-    fixture: partsForSlot(catalog, 'fixture')[0].id,
+    fixture: partsForSlot(catalog, 'fixture', brand)[0]?.id ?? '',
     finish: catalog.finishes[0].id,
     rev: 1,
   })

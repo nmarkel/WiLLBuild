@@ -49,93 +49,95 @@ All P1 WiLLstudio pole-system assembly-parts were promoted from `standalone`/tie
 | 20 ft Decorative Aluminum | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
 | Fluted Base Cover | WiLLstudio | base-cover | assembly-part | 2 | 3D parametric |
 | Round Base Cover | WiLLstudio | base-cover | assembly-part | 2 | 3D parametric |
-| Aluminum Cross Arm Brackets, Wood Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| Aluminum Tapered Elliptical Mast Arms, Round Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| Aluminum Tapered Elliptical Truss Arm, Round Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| Aluminum Tenon Adapters | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO®  SLX SLIM LED LIGHTING | NAFCO | fixture | standalone | 3 | photo-card |
-| NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® CHX Cobrahead | NAFCO | fixture | standalone | 3 | photo-card |
-| NAFCO® NTX Pole + Slim Area Light | NAFCO | pole | standalone | 3 | photo-card |
-| NAFCO® Pre-Cast Concrete Light Pole Bases | NAFCO | pole | standalone | 3 | photo-card |
-| NAFCO® SHX Shoebox | NAFCO | fixture | standalone | 3 | photo-card |
-| NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets | NAFCO | arm | standalone | 3 | photo-card |
-| NAFCO® WCX Wall Mount | NAFCO | fixture | standalone | 3 | photo-card |
-| Round Straight Aluminum 3-Bolt Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Straight Aluminum Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Straight Aluminum Direct Burial Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Straight Aluminum Hinged Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Straight Steel Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Aluminum 3-Bolt Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Aluminum Anchor Base + Davit Arm Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Aluminum Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Aluminum Direct Burial Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Aluminum Hinged Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Steel 3-Bolt Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Steel Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Steel Direct Burial Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Round Tapered Steel Pedestal Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Straight Aluminum Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Straight Aluminum Direct Burial Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Straight Aluminum Hinged Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Straight Steel Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Tapered Steel Anchor Base Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Square Tapered Steel External Hinged Light Poles | NAFCO | pole | standalone | 3 | photo-card |
-| Steel Bullhorn Brackets, Round Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| Steel Spoke Brackets, Round Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| Steel Upsweep Brackets, Round Pole Mount | NAFCO | arm | standalone | 3 | photo-card |
-| GFD Wireless Lighting Controls | WiLLcloud | controls | standalone | 3 | photo-card |
-| Tesla HSS -  Lower 48 Shipping Only | WiLLev | ev-charging | standalone | 3 | photo-card |
-| Tesla HSS - AK, HI, CAN Shipping Only | WiLLev | ev-charging | standalone | 3 | photo-card |
-| Tesla NTX  (3000K) - Lower 48 Shipping Only | WiLLev | ev-charging | standalone | 3 | photo-card |
-| Tesla SLX (3000K) - AK, HI, CAN Shipping Only | WiLLev | ev-charging | standalone | 3 | photo-card |
-| Tesla SLX (3000K) - Lower 48 Shipping Only | WiLLev | ev-charging | standalone | 3 | photo-card |
-| WiLLev™ EVSE L2 Charging Pedestals | WiLLev | ev-charging | standalone | 3 | photo-card |
-| WiLLev™ NTX Pole + Slim Area Light | WiLLev | pole | standalone | 3 | photo-card |
-| Sports Poles & Cross Arms | WiLLsport | pole | standalone | 3 | photo-card |
-| WiLLsport® EBX Slim High Bay | WiLLsport | fixture | standalone | 3 | photo-card |
-| WILLsport® GTX High-Output Area | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® HDX Area / Flood / Sports | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® HDX High Bay & Sports | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® HSX Sportslighter | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® KBX Lighting System | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® RPCX Sports & Large Area Remote Power Control | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® Sports & Large Area Brackets & Arms | WiLLsport | fixture | standalone | 3 | photo-card |
-| WiLLsport® Wrestling Dual Light Packages | WiLLsport | fixture | standalone | 3 | photo-card |
-| Aluminum Decorative Bullhorn Brackets, Round Pole Mount | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| Aluminum Light Pole Base Covers | WiLLstudio | base-cover | assembly-part | 2 | 3D parametric |
-| Aluminum Transformer Bases | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Anchor Bolt Kit, 0.625" x 16" x 2", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Anchor Bolt Kit, 0.75" x 17" x 3", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Anchor Bolt Kit, 1.0" x 36" x 4", Set of (4) Bolts, Double Nuts & Double Washers | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Huntington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Light Pole Bolt Circle Adapters | WiLLstudio | pole | standalone | 3 | photo-card |
-| Light Pole Top Caps | WiLLstudio | accessory | standalone | 3 | photo-card |
-| Round Tapered Fiberglass Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Round Tapered Fiberglass Direct Burial Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Round Tapered Steel Fluted Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Sacramento Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Washington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| Williamsburg Decorative Aluminum Anchor Base Light Poles | WiLLstudio | pole | assembly-part | 2 | 3D parametric |
-| WiLLstudio® CR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® DWX Flood & Spot | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® FR2 Decorative Crossarm | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® HSX Decorative Upsweep Arms | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® Pendant Ceiling Mounts | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® RXB / SXB Bollard | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® Side Shepherds Hook Pole Top Brackets | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® Supported Decorative Arms | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® Suspension Arm Pole Top Brackets | WiLLstudio | arm | assembly-part | 2 | 3D parametric |
-| WiLLstudio® WM1 Single Wall Mount Pendant | WiLLstudio | fixture | standalone | 3 | photo-card |
-| WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial | WiLLstudio | fixture | standalone | 3 | photo-card |
+| Aluminum Cross Arm Brackets, Wood Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Aluminum Tapered Elliptical Mast Arms, Round Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Aluminum Tapered Elliptical Truss Arm, Round Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Aluminum Tenon Adapters | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO®  SLX SLIM LED LIGHTING | NAFCO | SLX Slim Area | assembly-part | 2 | 3D parametric |
+| NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® CHX Cobrahead | NAFCO | CHX Cobrahead | assembly-part | 2 | 3D parametric |
+| NAFCO® NTX Pole + Slim Area Light | NAFCO | NTX Prewired Pole Lighting | standalone | 2 | 3D parametric |
+| NAFCO® Pre-Cast Concrete Light Pole Bases | NAFCO | Pre-Cast Concrete Light Pole Bases | standalone | 2 | 3D parametric |
+| NAFCO® SHX Shoebox | NAFCO | SHX Shoebox | assembly-part | 2 | 3D parametric |
+| NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| NAFCO® WCX Wall Mount | NAFCO | WCX Wall Mount | standalone | 2 | 3D parametric |
+| Round Straight Aluminum 3-Bolt Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Straight Aluminum Anchor Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Straight Aluminum Direct Burial Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Straight Aluminum Hinged Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Straight Steel Anchor Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Round Tapered Aluminum 3-Bolt Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Tapered Aluminum Anchor Base + Davit Arm Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Tapered Aluminum Anchor Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Tapered Aluminum Direct Burial Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Tapered Aluminum Hinged Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel 3-Bolt Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel Anchor Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel Direct Burial Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel Pedestal Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Square Straight Aluminum Anchor Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Square Straight Aluminum Direct Burial Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Square Straight Aluminum Hinged Base Light Poles | NAFCO | Light Poles - Aluminum | assembly-part | 2 | 3D parametric |
+| Square Straight Steel Anchor Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Square Tapered Steel Anchor Base Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Square Tapered Steel External Hinged Light Poles | NAFCO | Light Poles - Steel | assembly-part | 2 | 3D parametric |
+| Steel Bullhorn Brackets, Round Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Steel Spoke Brackets, Round Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Steel Upsweep Brackets, Round Pole Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| GFD Wireless Lighting Controls | WiLLcloud | GFD Sports & Entertainment Controls | standalone | 2 | 3D parametric |
+| Tesla HSS -  Lower 48 Shipping Only | WiLLev | EV Charging | standalone | 2 | 3D parametric |
+| Tesla HSS - AK, HI, CAN Shipping Only | WiLLev | EV Charging | standalone | 2 | 3D parametric |
+| Tesla NTX  (3000K) - Lower 48 Shipping Only | WiLLev | EV Charging | standalone | 2 | 3D parametric |
+| Tesla SLX (3000K) - AK, HI, CAN Shipping Only | WiLLev | EV Charging | standalone | 2 | 3D parametric |
+| Tesla SLX (3000K) - Lower 48 Shipping Only | WiLLev | EV Charging | standalone | 2 | 3D parametric |
+| WiLLev™ EVSE L2 Charging Pedestals | WiLLev | EVSE L2 Charging Pedestals | standalone | 2 | 3D parametric |
+| WiLLev™ NTX Pole + Slim Area Light | WiLLev | NTX Prewired Pole Lighting | standalone | 2 | 3D parametric |
+| Sports Poles & Cross Arms | WiLLsport | Sports Poles + Crossarms | assembly-part | 2 | 3D parametric |
+| WiLLsport® EBX Slim High Bay | WiLLsport | EBX Slim High Bay | standalone | 2 | 3D parametric |
+| WILLsport® GTX High-Output Area | WiLLsport | GTX High-Output Area | assembly-part | 2 | 3D parametric |
+| WiLLsport® HDX Area / Flood / Sports | WiLLsport | HDX Area / Flood / Sports | assembly-part | 2 | 3D parametric |
+| WiLLsport® HDX High Bay & Sports | WiLLsport | HDX High Bay | standalone | 2 | 3D parametric |
+| WiLLsport® HSX Sportslighter | WiLLsport | HSX Sportslighter | assembly-part | 2 | 3D parametric |
+| WiLLsport® KBX Lighting System | WiLLsport | KBX Lighting System | assembly-part | 2 | 3D parametric |
+| WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub | WiLLsport | PDX Power Distribution & Controls Hub | standalone | 2 | 3D parametric |
+| WiLLsport® RPCX Sports & Large Area Remote Power Control | WiLLsport | RPCX Remote Power Control | standalone | 2 | 3D parametric |
+| WiLLsport® Sports & Large Area Brackets & Arms | WiLLsport | Sports & Large Area Brackets | standalone | 2 | 3D parametric |
+| WiLLsport® Wrestling Dual Light Packages | WiLLsport | Wrestling Dual Light Packages | standalone | 2 | 3D parametric |
+| Aluminum Decorative Bullhorn Brackets, Round Pole Mount | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| Aluminum Light Pole Base Covers | WiLLstudio | Base Covers | assembly-part | 2 | 3D parametric |
+| Aluminum Transformer Bases | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Anchor Bolt Kit, 0.625" x 16" x 2", Set of (4) Bolts, Double Nuts & Double Washers | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Anchor Bolt Kit, 0.75" x 17" x 3", Set of (4) Bolts, Double Nuts & Double Washers | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Anchor Bolt Kit, 1.0" x 36" x 4", Set of (4) Bolts, Double Nuts & Double Washers | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Huntington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| Light Pole Bolt Circle Adapters | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Light Pole Top Caps | NAFCO | Light Pole Accessories | standalone | 2 | 3D parametric |
+| Round Tapered Fiberglass Anchor Base Light Poles | WiLLstudio | Poles | assembly-part | 2 | 3D parametric |
+| Round Tapered Fiberglass Direct Burial Light Poles | WiLLstudio | Poles | assembly-part | 2 | 3D parametric |
+| Round Tapered Steel Fluted Anchor Base Light Poles | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| Sacramento Decorative Aluminum Anchor Base Light Poles | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| Washington Decorative Aluminum Anchor Base Light Poles | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| Williamsburg Decorative Aluminum Anchor Base Light Poles | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| WiLLstudio® CR2 Decorative Crossarm | WiLLstudio | Decorative Brackets & Arms | assembly-part | 2 | 3D parametric |
+| WiLLstudio® DWX Flood & Spot | WiLLstudio | DWX Flood & Spot | standalone | 2 | 3D parametric |
+| WiLLstudio® FR2 Decorative Crossarm | WiLLstudio | Decorative Brackets & Arms | assembly-part | 2 | 3D parametric |
+| WiLLstudio® HSX Decorative Upsweep Arms | WiLLstudio | Decorative Brackets & Arms | assembly-part | 2 | 3D parametric |
+| WiLLstudio® Pendant Ceiling Mounts | WiLLstudio | Decorative Light Poles | standalone | 2 | 3D parametric |
+| WiLLstudio® RXB / SXB Bollard | WiLLstudio | RXB / SXB Bollard | standalone | 2 | 3D parametric |
+| WiLLstudio® Side Shepherds Hook Pole Top Brackets | WiLLstudio | Decorative Brackets & Arms | assembly-part | 2 | 3D parametric |
+| WiLLstudio® Supported Decorative Arms | WiLLstudio | Decorative Light Poles | assembly-part | 2 | 3D parametric |
+| WiLLstudio® Suspension Arm Pole Top Brackets | WiLLstudio | Decorative Brackets & Arms | assembly-part | 2 | 3D parametric |
+| WiLLstudio® WM1 Single Wall Mount Pendant | WiLLstudio | Decorative Light Poles | standalone | 2 | 3D parametric |
+| WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial | WiLLstudio | Decorative Light Poles | standalone | 2 | 3D parametric |
+| Direct / Slipfitter Mount | NAFCO | Brackets + Arms | assembly-part | 2 | 3D parametric |
+| Integrated Crossarm (included with pole) | WiLLsport | Sports Poles + Crossarms | assembly-part | 2 | 3D parametric |
 
-_Generated by scripts/merge-inventory.mjs (Phase 0.3) — 103 total parts (30 tier-2 curated + 73 tier-3 inventory)_
+_Generated by scripts/merge-inventory.mjs (Phase 0.3) — 105 total parts (105 tier-2 curated + 0 tier-3 inventory)_

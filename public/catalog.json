@@ -113,39 +113,43 @@
           ],
           [
             0.042,
-            0.01
+            0.012
           ],
           [
             0.042,
-            0.1
+            0.17
           ],
           [
             0.07,
-            0.13
+            0.21
           ],
           [
-            0.255,
-            0.4
+            0.29,
+            0.42
           ],
           [
-            0.26,
-            0.46
+            0.315,
+            0.45
           ],
           [
-            0.21,
-            0.49
+            0.3,
+            0.485
           ],
           [
-            0.09,
+            0.19,
             0.52
           ],
           [
+            0.08,
+            0.545
+          ],
+          [
             0,
-            0.53
+            0.55
           ]
         ]
       },
-      "thumbnail": "thumbnails/drx-post-top.jpg",
+      "thumbnail": "thumbnails/drx-post-top.png",
       "productUrl": "https://willbrands.com/products/willstudio-drx-post-top-area",
       "lightOffset": [
         0,
@@ -183,45 +187,111 @@
           {
             "spec": {
               "kind": "baseCover",
-              "heightM": 0.2,
-              "radiusTopM": 0.034,
-              "radiusBottomM": 0.042
-            },
-            "position": [
-              0,
-              0,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "baseCover",
-              "heightM": 0.02,
-              "radiusTopM": 0.19,
-              "radiusBottomM": 0.175
-            },
-            "position": [
-              0,
-              0.2,
-              0
-            ]
-          },
-          {
-            "spec": {
-              "kind": "baseCover",
               "heightM": 0.16,
-              "radiusTopM": 0.215,
-              "radiusBottomM": 0.215
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.04
             },
             "position": [
               0,
-              0.22,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.44,
+                0.03,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.14,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.205,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.14,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.205,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.13,
+                  0
+                ],
+                [
+                  0.19,
+                  0.015
+                ],
+                [
+                  0.205,
+                  0.04
+                ],
+                [
+                  0.215,
+                  0.06
+                ],
+                [
+                  0.215,
+                  0.18
+                ],
+                [
+                  0.205,
+                  0.21
+                ],
+                [
+                  0.19,
+                  0.22
+                ],
+                [
+                  0,
+                  0.22
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.16,
               0
             ]
           }
         ]
       },
-      "thumbnail": "thumbnails/tex-post-top.jpg",
+      "thumbnail": "thumbnails/tex-post-top.png",
       "productUrl": "https://willbrands.com/products/willstudio-tex-post-top-area",
       "lightOffset": [
         0,
@@ -260,7 +330,7 @@
           {
             "spec": {
               "kind": "baseCover",
-              "heightM": 0.07,
+              "heightM": 0.1,
               "radiusTopM": 0.03,
               "radiusBottomM": 0.038
             },
@@ -273,47 +343,84 @@
           {
             "spec": {
               "kind": "prism",
-              "radiusTopM": 0.23,
-              "radiusBottomM": 0.14,
-              "heightM": 0.28,
+              "radiusTopM": 0.17,
+              "radiusBottomM": 0.06,
+              "heightM": 0.08,
               "sides": 4
             },
             "position": [
               0,
-              0.07,
+              0.1,
               0
             ]
           },
           {
             "spec": {
               "kind": "prism",
-              "radiusTopM": 0.02,
-              "radiusBottomM": 0.34,
-              "heightM": 0.15,
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.15,
+              "heightM": 0.24,
               "sides": 4
             },
             "position": [
               0,
-              0.35,
+              0.18,
               0
             ]
           },
           {
             "spec": {
-              "kind": "cone",
-              "radiusM": 0.015,
-              "heightM": 0.1,
-              "direction": "up"
+              "kind": "prism",
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.34,
+              "heightM": 0.14,
+              "sides": 4
             },
             "position": [
               0,
-              0.5,
+              0.42,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.035,
+                  0
+                ],
+                [
+                  0.02,
+                  0.02
+                ],
+                [
+                  0.008,
+                  0.09
+                ],
+                [
+                  0.02,
+                  0.11
+                ],
+                [
+                  0.015,
+                  0.125
+                ],
+                [
+                  0,
+                  0.13
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.56,
               0
             ]
           }
         ]
       },
-      "thumbnail": "thumbnails/mvx-coach.jpg",
+      "thumbnail": "thumbnails/mvx-coach.png",
       "productUrl": "https://willbrands.com/products/willstudio-mvx-coach",
       "lightOffset": [
         0,
@@ -350,47 +457,55 @@
         "profile": [
           [
             0,
-            -0.375
-          ],
-          [
-            0.15,
-            -0.375
-          ],
-          [
-            0.25,
-            -0.365
+            -0.4
           ],
           [
             0.245,
-            -0.335
+            -0.4
           ],
           [
-            0.2,
-            -0.3
+            0.26,
+            -0.395
           ],
           [
-            0.17,
-            -0.22
+            0.26,
+            -0.33
+          ],
+          [
+            0.24,
+            -0.28
+          ],
+          [
+            0.18,
+            -0.2
           ],
           [
             0.1,
-            -0.16
+            -0.15
+          ],
+          [
+            0.06,
+            -0.13
+          ],
+          [
+            0.085,
+            -0.1
           ],
           [
             0.05,
-            -0.11
+            -0.065
           ],
           [
-            0.022,
-            -0.07
+            0.02,
+            -0.05
           ],
           [
-            0.022,
+            0.02,
             0
           ]
         ]
       },
-      "thumbnail": "thumbnails/gvx-pendant.jpg",
+      "thumbnail": "thumbnails/gvx-pendant.png",
       "productUrl": "https://willbrands.com/products/willstudio-gvx-pendant",
       "lightOffset": [
         0,
@@ -469,7 +584,7 @@
         ],
         "radiusM": 0.028
       },
-      "thumbnail": "thumbnails/sh1-shepherds-hook.jpg",
+      "thumbnail": "thumbnails/sh1-shepherds-hook.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
     },
     {
@@ -612,7 +727,7 @@
         ],
         "radiusM": 0.025
       },
-      "thumbnail": "thumbnails/pa1-pendant-arm.jpg",
+      "thumbnail": "thumbnails/pa1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
     },
     {
@@ -674,7 +789,7 @@
         ],
         "radiusM": 0.025
       },
-      "thumbnail": "thumbnails/pm1-pendant-arm.jpg",
+      "thumbnail": "thumbnails/pm1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
     },
     {
@@ -768,7 +883,7 @@
         "radiusTopM": 0.045,
         "radiusBottomM": 0.07
       },
-      "thumbnail": "thumbnails/alum-pole.jpg",
+      "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
     },
     {
@@ -819,7 +934,7 @@
         "radiusTopM": 0.045,
         "radiusBottomM": 0.075
       },
-      "thumbnail": "thumbnails/alum-pole.jpg",
+      "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
     },
     {
@@ -870,7 +985,7 @@
         "radiusTopM": 0.05,
         "radiusBottomM": 0.08
       },
-      "thumbnail": "thumbnails/alum-pole.jpg",
+      "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
     },
     {
@@ -921,7 +1036,7 @@
         "radiusTopM": 0.05,
         "radiusBottomM": 0.09
       },
-      "thumbnail": "thumbnails/alum-pole.jpg",
+      "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
     },
     {
@@ -953,7 +1068,7 @@
         "radiusTopM": 0.1,
         "radiusBottomM": 0.19
       },
-      "thumbnail": "thumbnails/base-covers.jpg",
+      "thumbnail": "thumbnails/base-covers.png",
       "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers"
     },
     {
@@ -985,17 +1100,17 @@
         "radiusTopM": 0.11,
         "radiusBottomM": 0.16
       },
-      "thumbnail": "thumbnails/base-covers.jpg",
+      "thumbnail": "thumbnails/base-covers.png",
       "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers"
     },
     {
       "id": "aluminum-cross-arm-brackets-wood-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Cross Arm Brackets, Wood Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/WiLLCrossarm-4-Tenon.jpg?v=1666807472",
@@ -1011,16 +1126,63 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-cross-arm-brackets-wood-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.35,
+            0,
+            0
+          ],
+          [
+            0.7,
+            0,
+            0
+          ],
+          [
+            0.93,
+            0.005,
+            0
+          ],
+          [
+            1,
+            0.06,
+            0
+          ],
+          [
+            1,
+            0.18,
+            0
+          ]
+        ],
+        "radiusM": 0.04
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            1,
+            0.18,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "aluminum-tapered-elliptical-mast-arms-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Tapered Elliptical Mast Arms, Round Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/single-hub-mount.jpg?v=1666808146",
@@ -1037,16 +1199,63 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-tapered-elliptical-mast-arms-round-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.55,
+            0.22,
+            0
+          ],
+          [
+            1.1,
+            0.44,
+            0
+          ],
+          [
+            1.45,
+            0.56,
+            0
+          ],
+          [
+            1.7,
+            0.61,
+            0
+          ],
+          [
+            1.9,
+            0.62,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            1.9,
+            0.62,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "aluminum-tapered-elliptical-truss-arm-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Tapered Elliptical Truss Arm, Round Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/single-bolt-on-mount.jpg?v=1666808610",
@@ -1063,16 +1272,63 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-tapered-elliptical-truss-arm-round-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.4,
+            0.19,
+            0
+          ],
+          [
+            0.8,
+            0.38,
+            0
+          ],
+          [
+            1.1,
+            0.5,
+            0
+          ],
+          [
+            1.4,
+            0.56,
+            0
+          ],
+          [
+            1.7,
+            0.57,
+            0
+          ]
+        ],
+        "radiusM": 0.038
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            1.7,
+            0.57,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "aluminum-tenon-adapters",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Tenon Adapters",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ATA-40S-1-000.jpg?v=1726062514",
@@ -1084,16 +1340,48 @@
         "adapters"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-tenon-adapters",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0,
+            0.3,
+            0
+          ]
+        ],
+        "radiusM": 0.042
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0,
+            0.3,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "slx",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "NAFCO",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "SLX Slim Area",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO®  SLX SLIM LED LIGHTING",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SLS-45-6ARM.jpg?v=1713905297",
@@ -1106,16 +1394,76 @@
         "lighting"
       ],
       "productUrl": "https://willbrands.com/products/slx",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.055,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.29,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.08,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.08,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.045,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.2,
+              0.01,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "nafco-fixture-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.09,
+        0
+      ]
     },
     {
       "id": "nafco-abh-1-single-arm-aluminum-bullhorn-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-1_fba6752c-4dc0-48ed-9ba9-4a94ff6fec2f.jpg?v=1751998545",
@@ -1129,16 +1477,63 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-abh-1-single-arm-aluminum-bullhorn-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.2,
+            0,
+            0
+          ],
+          [
+            0.35,
+            0.03,
+            0
+          ],
+          [
+            0.45,
+            0.13,
+            0
+          ],
+          [
+            0.48,
+            0.3,
+            0
+          ],
+          [
+            0.48,
+            0.55,
+            0
+          ]
+        ],
+        "radiusM": 0.028
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.48,
+            0.55,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-abh-2-double-arm-aluminum-bullhorn-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-2_2ce50611-37af-4f5b-98c8-41ae28054037.jpg?v=1751998572",
@@ -1152,16 +1547,68 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-abh-2-double-arm-aluminum-bullhorn-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.14,
+            0
+          ],
+          [
+            0.14,
+            0.17,
+            0
+          ],
+          [
+            0.38,
+            0.18,
+            0
+          ],
+          [
+            0.54,
+            0.25,
+            0
+          ],
+          [
+            0.6,
+            0.4,
+            0
+          ],
+          [
+            0.6,
+            0.58,
+            0
+          ]
+        ],
+        "radiusM": 0.03
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.6,
+            0.58,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-abh-3-triple-arm-aluminum-bullhorn-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-3_8500e87e-56ef-4026-9c6d-2a24ef10bd6c.jpg?v=1751998739",
@@ -1175,16 +1622,68 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-abh-3-triple-arm-aluminum-bullhorn-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.15,
+            0.18,
+            0
+          ],
+          [
+            0.55,
+            0.18,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            0.95,
+            0.45,
+            0
+          ],
+          [
+            0.95,
+            0.65,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.95,
+            0.65,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-abh-4-quad-arm-aluminum-bullhorn-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-4_5e0dc957-9913-47e2-8b97-3a0b6feb19ca.jpg?v=1751998680",
@@ -1198,16 +1697,68 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-abh-4-quad-arm-aluminum-bullhorn-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.15,
+            0.18,
+            0
+          ],
+          [
+            0.55,
+            0.18,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            0.95,
+            0.45,
+            0
+          ],
+          [
+            0.95,
+            0.65,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.95,
+            0.65,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-chx-cobrahead",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "NAFCO",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "CHX Cobrahead",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® CHX Cobrahead",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/chx-4-roadway-light-mast-arm-mount-45-light-gray.jpg?v=1666033524",
@@ -1218,16 +1769,92 @@
         "cobrahead"
       ],
       "productUrl": "https://willbrands.com/products/nafco-chx-cobrahead",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.15,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.1,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.11,
+                0.27
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.37,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.11,
+                  0
+                ],
+                [
+                  0.135,
+                  0.025
+                ],
+                [
+                  0.135,
+                  0.06
+                ],
+                [
+                  0.1,
+                  0.09
+                ],
+                [
+                  0,
+                  0.1
+                ]
+              ]
+            },
+            "position": [
+              0.52,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "nafco-fixture-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.09,
+        0
+      ]
     },
     {
       "id": "nafco-ntx-pole-slim-area-light",
       "slot": "standalone",
       "line": "NAFCO",
-      "category": "pole",
+      "category": "NTX Prewired Pole Lighting",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® NTX Pole + Slim Area Light",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ntx-pole-slim-area-light.jpg?v=1696880463",
@@ -1241,16 +1868,99 @@
         "light"
       ],
       "productUrl": "https://willbrands.com/products/nafco-ntx-pole-slim-area-light",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
+              "heightM": 6.1,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.07,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.3,
+              5.55,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.07,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.3,
+              5.55,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.72,
+                0.1,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.78,
+              5.5,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.72,
+                0.1,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.78,
+              5.5,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "nafco-pre-cast-concrete-light-pole-bases",
       "slot": "standalone",
       "line": "NAFCO",
-      "category": "pole",
+      "category": "Pre-Cast Concrete Light Pole Bases",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® Pre-Cast Concrete Light Pole Bases",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/pre-cast-base-main.jpg?v=1770992982",
@@ -1265,16 +1975,96 @@
         "bases"
       ],
       "productUrl": "https://willbrands.com/products/nafco-pre-cast-concrete-light-pole-bases",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.48,
+              "radiusTopM": 0.235,
+              "radiusBottomM": 0.235
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.42,
+              "radiusTopM": 0.29,
+              "radiusBottomM": 0.29
+            },
+            "position": [
+              0,
+              0.48,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.32,
+                  0,
+                  0
+                ],
+                [
+                  0.32,
+                  0,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              0,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.006
+            },
+            "position": [
+              0.025,
+              0.9,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.006
+            },
+            "position": [
+              -0.025,
+              0.9,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "nafco-shx-shoebox",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "NAFCO",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "SHX Shoebox",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® SHX Shoebox",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SHM-6Arm-45.jpg?v=1748955914",
@@ -1285,16 +2075,74 @@
         "shoebox"
       ],
       "productUrl": "https://willbrands.com/products/nafco-shx-shoebox",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.46,
+                0.07,
+                0.46
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.25,
+              "radiusBottomM": 0.3,
+              "heightM": 0.14,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.07,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.1,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.26,
+              0.02,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "nafco-fixture-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.09,
+        0
+      ]
     },
     {
       "id": "nafco-spx-1-aluminum-spoke-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-1_7a3df7df-6117-4fc2-81df-ab932d9b3f1a.jpg?v=1751995676",
@@ -1308,16 +2156,58 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-spx-1-aluminum-spoke-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.1,
+            0
+          ],
+          [
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
+            0
+          ]
+        ],
+        "radiusM": 0.03
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.62,
+            0.16,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-spx-2-aluminum-spoke-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-2_5017030e-cad4-49e5-a229-3063fc7fc761.jpg?v=1751995781",
@@ -1331,16 +2221,58 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-spx-2-aluminum-spoke-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.1,
+            0
+          ],
+          [
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
+            0
+          ]
+        ],
+        "radiusM": 0.03
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.62,
+            0.16,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-spx-3-aluminum-spoke-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-3_0bd8b450-057f-4492-9679-fe751b02a463.jpg?v=1751995883",
@@ -1354,16 +2286,58 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-spx-3-aluminum-spoke-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.1,
+            0
+          ],
+          [
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
+            0
+          ]
+        ],
+        "radiusM": 0.03
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.62,
+            0.16,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-spx-4-aluminum-spoke-brackets",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-4_9f95ad68-2a16-4bc9-8096-d58eeed85bcc.jpg?v=1751995997",
@@ -1377,16 +2351,58 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-spx-4-aluminum-spoke-brackets",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.1,
+            0
+          ],
+          [
+            0.08,
+            0.15,
+            0
+          ],
+          [
+            0.35,
+            0.16,
+            0
+          ],
+          [
+            0.62,
+            0.16,
+            0
+          ]
+        ],
+        "radiusM": 0.03
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.62,
+            0.16,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-upx-1-aluminum-upsweep-arms",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/upx-1.jpg?v=1751997624",
@@ -1400,16 +2416,63 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-upx-1-aluminum-upsweep-arms",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.18,
+            0.03,
+            0
+          ],
+          [
+            0.6,
+            0.1,
+            0
+          ],
+          [
+            0.85,
+            0.24,
+            0
+          ],
+          [
+            1.05,
+            0.32,
+            0
+          ],
+          [
+            1.25,
+            0.34,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            1.25,
+            0.34,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-upx-2-aluminum-upsweep-arms",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/upx-2.jpg?v=1751997678",
@@ -1423,16 +2486,98 @@
         "brackets"
       ],
       "productUrl": "https://willbrands.com/products/nafco-upx-2-aluminum-upsweep-arms",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            -0.5,
+            0.1,
+            0
+          ],
+          [
+            -0.82,
+            0.26,
+            0
+          ],
+          [
+            -1.05,
+            0.32,
+            0
+          ],
+          [
+            -1.2,
+            0.33,
+            0
+          ],
+          [
+            -1.03,
+            0.31,
+            0.003
+          ],
+          [
+            -0.8,
+            0.25,
+            0.003
+          ],
+          [
+            -0.45,
+            0.09,
+            0.003
+          ],
+          [
+            0.005,
+            0.005,
+            0.003
+          ],
+          [
+            0.5,
+            0.1,
+            0
+          ],
+          [
+            0.82,
+            0.26,
+            0
+          ],
+          [
+            1.05,
+            0.32,
+            0
+          ],
+          [
+            1.2,
+            0.33,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            1.2,
+            0.33,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "nafco-wcx-wall-mount",
       "slot": "standalone",
       "line": "NAFCO",
-      "category": "fixture",
+      "category": "WCX Wall Mount",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "NAFCO® WCX Wall Mount",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/wcl-wallpack-light-standard-mount-45-black.jpg?v=1696884856",
@@ -1444,16 +2589,69 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/nafco-wcx-wall-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.19,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              -0.09
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.14,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.01
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.08,
+                0.11
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.11
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "round-straight-aluminum-3-bolt-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Straight Aluminum 3-Bolt Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-bottom-half-lab-3-anchors.jpg?v=1666152137",
@@ -1469,16 +2667,80 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-3-bolt-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.26,
+              "heightM": 0.06,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.22,
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.19
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-straight-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Straight Aluminum Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-base-final.jpg?v=1666151488",
@@ -1494,16 +2756,69 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.27,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-straight-aluminum-direct-burial-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Straight Aluminum Direct Burial Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-direct-burial-bottom-half.jpg?v=1666152014",
@@ -1519,16 +2834,66 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-direct-burial-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.9,
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-straight-aluminum-hinged-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Straight Aluminum Hinged Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-hinge-bottom-half.jpg?v=1666151821",
@@ -1544,16 +2909,85 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-straight-aluminum-hinged-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.065,
+              "radiusBottomM": 0.065
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.24,
+                  0
+                ],
+                [
+                  0.25,
+                  0.03
+                ],
+                [
+                  0.25,
+                  0.13
+                ],
+                [
+                  0.2,
+                  0.19
+                ],
+                [
+                  0.09,
+                  0.21
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-straight-steel-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Straight Steel Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-bottom-half-steel.jpg?v=1666382045",
@@ -1569,16 +3003,101 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-straight-steel-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.26,
+                  0
+                ],
+                [
+                  0.26,
+                  0.24
+                ],
+                [
+                  0.23,
+                  0.32
+                ],
+                [
+                  0.12,
+                  0.35
+                ],
+                [
+                  0.09,
+                  0.35
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.24,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.07,
+              0.85,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-aluminum-3-bolt-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Aluminum 3-Bolt Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-bottom-half-lab-3-anchors_cc020af8-676c-412a-8947-4dfb187a84d8.jpg?v=1666236374",
@@ -1594,16 +3113,81 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-3-bolt-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.025,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.09,
+              "radiusBottomM": 0.18,
+              "heightM": 0.12,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0.025,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-aluminum-anchor-base-davit-arm-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Aluminum Anchor Base + Davit Arm Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/davit6-pole-detail.jpg?v=1666236516",
@@ -1621,16 +3205,61 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-anchor-base-davit-arm-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0
+          ],
+          [
+            0.35,
+            0.85,
+            0
+          ],
+          [
+            0.9,
+            0.9,
+            0
+          ]
+        ],
+        "radiusM": 0.045
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Aluminum Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/6in-round-tapered-bottom.jpg?v=1666152461",
@@ -1646,16 +3275,67 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.13,
+              "radiusBottomM": 0.25,
+              "heightM": 0.22,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-aluminum-direct-burial-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Aluminum Direct Burial Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-direct-burial-bottom-half_393207b4-1c15-45f7-bfe5-3aeb9f01fa47.jpg?v=1666236283",
@@ -1671,16 +3351,66 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-direct-burial-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 1.5,
+              "radiusTopM": 0.088,
+              "radiusBottomM": 0.088
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-aluminum-hinged-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Aluminum Hinged Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-round-hinge-bottom-half_d76d2376-10a7-4621-ada4-0a3bf20ffce2.jpg?v=1666236160",
@@ -1696,16 +3426,85 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-aluminum-hinged-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.28,
+                  0
+                ],
+                [
+                  0.285,
+                  0.05
+                ],
+                [
+                  0.27,
+                  0.13
+                ],
+                [
+                  0.22,
+                  0.16
+                ],
+                [
+                  0.1,
+                  0.17
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-steel-3-bolt-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Steel 3-Bolt Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-3-anchors-bottom-half-lab.jpg?v=1666382577",
@@ -1721,16 +3520,83 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-steel-3-bolt-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.03,
+              "sides": 3
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.22,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.08,
+              0.85,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-steel-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Steel Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/6in-20ft-round-tapered-bottom.jpg?v=1666382142",
@@ -1746,16 +3612,83 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-steel-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.1
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.15,
+              "radiusBottomM": 0.24,
+              "heightM": 0.3,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.2,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.08,
+              0.85,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-steel-direct-burial-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Steel Direct Burial Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-steel-direct-burial.jpg?v=1666799155",
@@ -1771,16 +3704,41 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-steel-direct-burial-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 7.62,
+        "radiusTopM": 0.055,
+        "radiusBottomM": 0.11
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "round-tapered-steel-pedestal-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Round Tapered Steel Pedestal Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-tapered-pedestal-bottom-half-lab.jpg?v=1666382479",
@@ -1796,16 +3754,81 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/round-tapered-steel-pedestal-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 7.62,
+              "radiusTopM": 0.06,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.19,
+              "radiusBottomM": 0.3,
+              "heightM": 0.55,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.22,
+              "radiusBottomM": 0.22,
+              "heightM": 0.025,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.55,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-straight-aluminum-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Straight Aluminum Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-base-final.jpg?v=1666122413",
@@ -1821,16 +3844,70 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.44,
+                0.24,
+                0.44
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.085,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-straight-aluminum-direct-burial-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Straight Aluminum Direct Burial Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-direct-burial-bottom-half.jpg?v=1666151337",
@@ -1846,16 +3923,84 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-direct-burial-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.095,
+              "radiusBottomM": 0.095,
+              "heightM": 1.1,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.22,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.075,
+              1.35,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-straight-aluminum-hinged-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Aluminum",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Straight Aluminum Hinged Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-hinge-bottom-half.jpg?v=1666151001",
@@ -1871,16 +4016,84 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-straight-aluminum-hinged-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.08,
+              "radiusBottomM": 0.08,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.21,
+              "heightM": 0.28,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.26,
+                0.11
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.075,
+              0.75,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-straight-steel-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Straight Steel Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-bottom-half-steel.jpg?v=1666381786",
@@ -1896,16 +4109,68 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-straight-steel-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.085,
+              "radiusBottomM": 0.085,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-tapered-steel-anchor-base-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Tapered Steel Anchor Base Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-bottom-half-steel_fb2e4424-29eb-4dce-93a8-7f882a36710e.jpg?v=1666382239",
@@ -1921,16 +4186,68 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-tapered-steel-anchor-base-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "square-tapered-steel-external-hinged-light-poles",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "NAFCO",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Light Poles - Steel",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Square Tapered Steel External Hinged Light Poles",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/4in-square-bottom-half-steel_715ea311-a0e9-401b-87b2-8927fa47e2ea.jpg?v=1666382682",
@@ -1946,16 +4263,84 @@
         "poles"
       ],
       "productUrl": "https://willbrands.com/products/square-tapered-steel-external-hinged-light-poles",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.055,
+              "radiusBottomM": 0.1,
+              "heightM": 7.62,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.14,
+              "radiusBottomM": 0.3,
+              "heightM": 0.26,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.07,
+                0.55,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.12,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "nafco-tenon",
+          "position": [
+            0,
+            7.62,
+            0
+          ]
+        },
+        "base": {
+          "type": "nafco-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "steel-bullhorn-brackets-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Steel Bullhorn Brackets, Round Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/MD102.jpg?v=1666809283",
@@ -1970,16 +4355,93 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/steel-bullhorn-brackets-round-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            -0.3,
+            0.01,
+            0
+          ],
+          [
+            -0.5,
+            0.06,
+            0
+          ],
+          [
+            -0.6,
+            0.18,
+            0
+          ],
+          [
+            -0.6,
+            0.38,
+            0
+          ],
+          [
+            -0.58,
+            0.16,
+            0.003
+          ],
+          [
+            -0.48,
+            0.05,
+            0.003
+          ],
+          [
+            0,
+            0.005,
+            0.003
+          ],
+          [
+            0.3,
+            0.01,
+            0
+          ],
+          [
+            0.5,
+            0.06,
+            0
+          ],
+          [
+            0.6,
+            0.18,
+            0
+          ],
+          [
+            0.6,
+            0.38,
+            0
+          ]
+        ],
+        "radiusM": 0.04
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.6,
+            0.38,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "steel-spoke-brackets-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Steel Spoke Brackets, Round Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/MX404.jpg?v=1666809470",
@@ -1994,16 +4456,88 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/steel-spoke-brackets-round-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            -0.3,
+            0.01,
+            0
+          ],
+          [
+            -0.55,
+            0.02,
+            0
+          ],
+          [
+            -0.3,
+            0.01,
+            0.003
+          ],
+          [
+            -0.003,
+            0.005,
+            0.003
+          ],
+          [
+            0.003,
+            0.01,
+            0.3
+          ],
+          [
+            0.003,
+            0.02,
+            0.55
+          ],
+          [
+            0.006,
+            0.01,
+            0.3
+          ],
+          [
+            0.006,
+            0.005,
+            0.006
+          ],
+          [
+            0.3,
+            0.01,
+            0
+          ],
+          [
+            0.55,
+            0.02,
+            0
+          ]
+        ],
+        "radiusM": 0.032
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.55,
+            0.02,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "steel-upsweep-brackets-round-pole-mount",
-      "slot": "standalone",
+      "slot": "arm",
       "line": "NAFCO",
-      "category": "arm",
-      "productClass": "standalone",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Steel Upsweep Brackets, Round Pole Mount",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/MD322.jpg?v=1666809614",
@@ -2018,16 +4552,98 @@
         "mount"
       ],
       "productUrl": "https://willbrands.com/products/steel-upsweep-brackets-round-pole-mount",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            -0.12,
+            0.13,
+            0
+          ],
+          [
+            -0.35,
+            0.3,
+            0
+          ],
+          [
+            -0.65,
+            0.4,
+            0
+          ],
+          [
+            -0.95,
+            0.43,
+            0
+          ],
+          [
+            -0.62,
+            0.38,
+            0.003
+          ],
+          [
+            -0.32,
+            0.28,
+            0.003
+          ],
+          [
+            -0.1,
+            0.11,
+            0.003
+          ],
+          [
+            0.004,
+            0.004,
+            0.003
+          ],
+          [
+            0.12,
+            0.13,
+            0
+          ],
+          [
+            0.35,
+            0.3,
+            0
+          ],
+          [
+            0.65,
+            0.4,
+            0
+          ],
+          [
+            0.95,
+            0.43,
+            0
+          ]
+        ],
+        "radiusM": 0.028
+      },
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0.95,
+            0.43,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "gfd-wireless-controls",
       "slot": "standalone",
       "line": "WiLLcloud",
-      "category": "controls",
+      "category": "GFD Sports & Entertainment Controls",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "GFD Wireless Lighting Controls",
       "family": "WiLLcloud Controls",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/willcloud-sports-gfd.jpg?v=1779888096",
@@ -2040,16 +4656,66 @@
         "controls"
       ],
       "productUrl": "https://willbrands.com/products/gfd-wireless-controls",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.55,
+                0.18
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.36,
+                0.42,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.065,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.32,
+              "radiusTopM": 0.006,
+              "radiusBottomM": 0.009
+            },
+            "position": [
+              0.14,
+              0.55,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "tesla-hss",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EV Charging",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "Tesla HSS -  Lower 48 Shipping Only",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/House-Side-Shield.png?v=1727720396",
@@ -2060,16 +4726,69 @@
         "hss"
       ],
       "productUrl": "https://willbrands.com/products/tesla-hss",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.1,
+                0.32,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              0.04,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "tesla-hss-ak-hi-can-shipping-only",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EV Charging",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "Tesla HSS - AK, HI, CAN Shipping Only",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/House-Side-Shield_08c20c53-c49f-4688-87f2-e0e8dc452c77.png?v=1727725025",
@@ -2080,16 +4799,69 @@
         "hss"
       ],
       "productUrl": "https://willbrands.com/products/tesla-hss-ak-hi-can-shipping-only",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.1,
+                0.32,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              0.26,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.09,
+                0.08,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              0.04,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "tesla-ntx",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EV Charging",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "Tesla NTX  (3000K) - Lower 48 Shipping Only",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/NTX-Single-Half.png?v=1727720298",
@@ -2101,16 +4873,83 @@
         "3000k"
       ],
       "productUrl": "https://willbrands.com/products/tesla-ntx",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075,
+              "heightM": 6.1,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.13,
+                0.15
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.33,
+              5.7,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.15,
+                0.42
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.88,
+              5.76,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.32,
+                0.08,
+                0.38
+              ],
+              "direction": "up"
+            },
+            "position": [
+              1.32,
+              5.83,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "tesla-slx-ak-hi-can-shipping-only",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EV Charging",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "Tesla SLX (3000K) - AK, HI, CAN Shipping Only",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/NTX-Extra-Fixture_d48b9564-1669-4f99-9237-7855def30695.png?v=1727724959",
@@ -2122,16 +4961,69 @@
         "3000k"
       ],
       "productUrl": "https://willbrands.com/products/tesla-slx-ak-hi-can-shipping-only",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.11,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.25,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.17,
+                0.5
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.75,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.32,
+                0.09,
+                0.46
+              ],
+              "direction": "up"
+            },
+            "position": [
+              1.15,
+              0.07,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "tesla-slx",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EV Charging",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "Tesla SLX (3000K) - Lower 48 Shipping Only",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/NTX-Extra-Fixture.png?v=1727720357",
@@ -2143,16 +5035,82 @@
         "3000k"
       ],
       "productUrl": "https://willbrands.com/products/tesla-slx",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.07,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.45,
+              0.09,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.11,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.22,
+                0.05,
+                0.33
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.4,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.035,
+              "radiusBottomM": 0.035
+            },
+            "position": [
+              -0.15,
+              0,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willev-evse-charging-pedestals",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "ev-charging",
+      "category": "EVSE L2 Charging Pedestals",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLev™ EVSE L2 Charging Pedestals",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/willev-8ft-pedestal.jpg?v=1697054055",
@@ -2165,16 +5123,137 @@
         "pedestals"
       ],
       "productUrl": "https://willbrands.com/products/willev-evse-charging-pedestals",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.04,
+                0.34
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.07,
+              "radiusBottomM": 0.07,
+              "heightM": 2.15,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.1,
+                0.14,
+                0.12
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.95,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.24,
+                0.38,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.05,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.24,
+                0.38,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.05,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  0,
+                  2,
+                  0.16
+                ],
+                [
+                  0.42,
+                  1.25,
+                  0.18
+                ],
+                [
+                  0.08,
+                  0.3,
+                  0.2
+                ],
+                [
+                  -0.38,
+                  1.2,
+                  0.22
+                ],
+                [
+                  -0.04,
+                  1.95,
+                  0.18
+                ]
+              ],
+              "radiusM": 0.02
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willev-ntx-pole-slim-area-light",
       "slot": "standalone",
       "line": "WiLLev",
-      "category": "pole",
+      "category": "NTX Prewired Pole Lighting",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLev™ NTX Pole + Slim Area Light",
       "family": "WiLLev Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ntx-pole-slim-area-light.jpg?v=1696880463",
@@ -2188,16 +5267,131 @@
         "light"
       ],
       "productUrl": "https://willbrands.com/products/willev-ntx-pole-slim-area-light",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.075,
+              "radiusBottomM": 0.075,
+              "heightM": 6.1,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.12,
+                0.16
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.18,
+              5.8,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.12,
+                0.16
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.18,
+              5.8,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.7,
+                0.09,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.55,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.7,
+                0.09,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.55,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.16,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.86,
+              5.88,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.16,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.86,
+              5.88,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "sports-poles-cross-arms",
-      "slot": "standalone",
+      "slot": "pole",
       "line": "WiLLsport",
-      "category": "pole",
-      "productClass": "standalone",
+      "category": "Sports Poles + Crossarms",
+      "productClass": "assembly-part",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Sports Poles & Cross Arms",
       "family": "WiLLsport Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/assembly-front-iso-ground.jpg?v=1668197831",
@@ -2210,16 +5404,41 @@
         "arms"
       ],
       "productUrl": "https://willbrands.com/products/sports-poles-cross-arms",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "pole",
+        "heightM": 10.67,
+        "radiusTopM": 0.1,
+        "radiusBottomM": 0.18
+      },
+      "mount": null,
+      "sockets": {
+        "top": {
+          "type": "sport-pole-top",
+          "position": [
+            0,
+            10.67,
+            0
+          ]
+        },
+        "base": {
+          "type": "sport-base",
+          "position": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
     },
     {
       "id": "willsport-ebx-slim-high-bay",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "EBX Slim High Bay",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® EBX Slim High Bay",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/eb2-high-bay-light-standard-mount-45-black.jpg?v=1666122739",
@@ -2232,16 +5451,85 @@
         "bay"
       ],
       "productUrl": "https://willbrands.com/products/willsport-ebx-slim-high-bay",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.6,
+                0.055,
+                0.16
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.01,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.62,
+                0.045,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0.125
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.62,
+                0.045,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              -0.125
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.12,
+                0.02,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.21,
+              0.065,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willsport-gtx-high-output-area",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "WiLLsport",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "GTX High-Output Area",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WILLsport® GTX High-Output Area",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/GT6-6Arm-45_16eaf644-92e5-4ccb-8cb7-fc0e6fcb9a63.jpg?v=1752069434",
@@ -2254,16 +5542,58 @@
         "area"
       ],
       "productUrl": "https://willbrands.com/products/willsport-gtx-high-output-area",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.62,
+                0.1,
+                0.48
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.16,
+              "radiusBottomM": 0.3,
+              "heightM": 0.16,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.1,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "sport-crossarm-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.1,
+        0
+      ]
     },
     {
       "id": "willsport-hdx-area-flood-sports",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "WiLLsport",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "HDX Area / Flood / Sports",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® HDX Area / Flood / Sports",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/HD6-Flood-APY.jpg?v=1695389217",
@@ -2276,16 +5606,89 @@
         "sports"
       ],
       "productUrl": "https://willbrands.com/products/willsport-hdx-area-flood-sports",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.07,
+              "radiusTopM": 0.03,
+              "radiusBottomM": 0.05
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.1,
+                0.13
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.07,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.185,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.34,
+                0.1,
+                0.14
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.3,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "sport-crossarm-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.1,
+        0
+      ]
     },
     {
       "id": "willsport-hdx-high-bay-sports",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "HDX High Bay",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® HDX High Bay & Sports",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/hd6-45bottom-harp.jpg?v=1682715467",
@@ -2298,16 +5701,69 @@
         "sports"
       ],
       "productUrl": "https://willbrands.com/products/willsport-hdx-high-bay-sports",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.55,
+                0.13,
+                0.38
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.26,
+                0.1,
+                0.26
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.13,
+              0.13,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.05,
+                0.15,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.08,
+              0.13,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willsport-hsx-sportslighter",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "WiLLsport",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "HSX Sportslighter",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® HSX Sportslighter",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/hsx-10-gs-sportslighter-light-stud-mount-45-black.jpg?v=1666185924",
@@ -2318,16 +5774,70 @@
         "sportslighter"
       ],
       "productUrl": "https://willbrands.com/products/willsport-hsx-sportslighter",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.24,
+                0.05,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.28,
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.27
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.04,
+              "radiusTopM": 0.1,
+              "radiusBottomM": 0.14
+            },
+            "position": [
+              0,
+              0.33,
+              0
+            ]
+          }
+        ]
+      },
+      "mount": "sport-crossarm-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.1,
+        0
+      ]
     },
     {
       "id": "willsport-kbx-lighting-system",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "WiLLsport",
-      "category": "fixture",
-      "productClass": "standalone",
+      "category": "KBX Lighting System",
+      "productClass": "assembly-part",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® KBX Lighting System",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/kbx-8-sports-light-yoke-mount-45-black.jpg?v=1666290901",
@@ -2339,16 +5849,73 @@
         "system"
       ],
       "productUrl": "https://willbrands.com/products/willsport-kbx-lighting-system",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.1,
+              "radiusTopM": 0.038,
+              "radiusBottomM": 0.05
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.72,
+                0.13,
+                0.5
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.1,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.45,
+                0.1,
+                0.24
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.23,
+              -0.12
+            ]
+          }
+        ]
+      },
+      "mount": "sport-crossarm-mount",
+      "sockets": {},
+      "lightOffset": [
+        0,
+        0.1,
+        0
+      ]
     },
     {
       "id": "willsport-pdx-sports-large-area-power-distribution-controls-hub",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "PDX Power Distribution & Controls Hub",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/PDH-45R.jpg?v=1727185686",
@@ -2365,16 +5932,69 @@
         "hub"
       ],
       "productUrl": "https://willbrands.com/products/willsport-pdx-sports-large-area-power-distribution-controls-hub",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.42,
+                0.5,
+                0.25
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.46,
+                0.52,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.04,
+              -0.16
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.34,
+                0.06
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.23,
+              0.12,
+              0.04
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willsport-rpcx-sports-large-area-remote-power-control",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "RPCX Remote Power Control",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® RPCX Sports & Large Area Remote Power Control",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/RPC-L-45L.jpg?v=1749489925",
@@ -2390,16 +6010,69 @@
         "control"
       ],
       "productUrl": "https://willbrands.com/products/willsport-rpcx-sports-large-area-remote-power-control",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.38,
+                1.35,
+                0.33
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.05,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2,
+                0.08,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              1.28,
+              -0.21
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2,
+                0.08,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.1,
+              -0.21
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willsport-sports-large-area-brackets-arms",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "Sports & Large Area Brackets",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® Sports & Large Area Brackets & Arms",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/willsport-brackets-arms-1_2d5591d2-4a4c-49eb-87ff-077cacc82e58.jpg?v=1722626958",
@@ -2413,16 +6086,76 @@
         "arms"
       ],
       "productUrl": "https://willbrands.com/products/willsport-sports-large-area-brackets-arms",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.14,
+              "radiusTopM": 0.032,
+              "radiusBottomM": 0.032
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                1.3,
+                0.09,
+                0.09
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.14,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.2,
+              "radiusTopM": 0.024,
+              "radiusBottomM": 0.024
+            },
+            "position": [
+              0.52,
+              0.23,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.2,
+              "radiusTopM": 0.024,
+              "radiusBottomM": 0.024
+            },
+            "position": [
+              -0.52,
+              0.23,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willsport-wrestling-dual-light-packages",
       "slot": "standalone",
       "line": "WiLLsport",
-      "category": "fixture",
+      "category": "Wrestling Dual Light Packages",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLsport® Wrestling Dual Light Packages",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/PIN-1C-WhiteLED-Bottom.jpg?v=1761224932",
@@ -2435,13 +6168,54 @@
         "packages"
       ],
       "productUrl": "https://willbrands.com/products/willsport-wrestling-dual-light-packages",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "lathe",
+        "profile": [
+          [
+            0.3,
+            0
+          ],
+          [
+            0.305,
+            0.05
+          ],
+          [
+            0.3,
+            0.11
+          ],
+          [
+            0.25,
+            0.22
+          ],
+          [
+            0.17,
+            0.3
+          ],
+          [
+            0.12,
+            0.34
+          ],
+          [
+            0.115,
+            0.56
+          ],
+          [
+            0.1,
+            0.585
+          ],
+          [
+            0,
+            0.59
+          ]
+        ]
+      }
     },
     {
       "id": "aluminum-decorative-bullhorn-brackets-round-pole-mount",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2509,7 +6283,7 @@
       "id": "aluminum-light-pole-base-covers",
       "slot": "baseCover",
       "line": "WiLLstudio",
-      "category": "base-cover",
+      "category": "Base Covers",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2545,13 +6319,13 @@
     {
       "id": "aluminum-transformer-bases",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "accessory",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Aluminum Transformer Bases",
-      "family": "WiLLstudio Accessories",
+      "family": "NAFCO Accessories",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/transformer-base-tb1-17-detail.jpg?v=1673037203",
       "thumbnail": null,
       "model": null,
@@ -2561,18 +6335,81 @@
         "bases"
       ],
       "productUrl": "https://willbrands.com/products/aluminum-transformer-bases",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.24,
+              "radiusBottomM": 0.24,
+              "heightM": 0.035,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.155,
+              "radiusBottomM": 0.22,
+              "heightM": 0.41,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.035,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.175,
+              "radiusBottomM": 0.175,
+              "heightM": 0.03,
+              "sides": 4
+            },
+            "position": [
+              0,
+              0.445,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.14,
+                0.26,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0.13
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "accessory",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Anchor Bolt Kit, 0.625\" x 16\" x 2\", Set of (4) Bolts, Double Nuts & Double Washers",
-      "family": "WiLLstudio Accessories",
+      "family": "NAFCO Accessories",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/5-8-anchor-bolt-kit.jpg?v=1668624764",
       "thumbnail": null,
       "model": null,
@@ -2587,18 +6424,191 @@
         "washers"
       ],
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              -0.1,
+              0,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              0.1,
+              0,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              -0.1,
+              0,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "tube",
+              "points": [
+                [
+                  -0.07,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.01,
+                  0
+                ],
+                [
+                  0,
+                  0.4,
+                  0
+                ]
+              ],
+              "radiusM": 0.008
+            },
+            "position": [
+              0.1,
+              0,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              -0.1,
+              0.34,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              0.1,
+              0.34,
+              -0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              -0.1,
+              0.34,
+              0.1
+            ]
+          },
+          {
+            "spec": {
+              "kind": "prism",
+              "radiusTopM": 0.02,
+              "radiusBottomM": 0.02,
+              "heightM": 0.035,
+              "sides": 6
+            },
+            "position": [
+              0.1,
+              0.34,
+              0.1
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "anchor-bolt-kit-0-75-x-17-x-3-set-of-4-bolts-double-nuts-double-washers",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "accessory",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Anchor Bolt Kit, 0.75\" x 17\" x 3\", Set of (4) Bolts, Double Nuts & Double Washers",
-      "family": "WiLLstudio Accessories",
+      "family": "NAFCO Accessories",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/3-4-anchor-bolt-kit.jpg?v=1668625210",
       "thumbnail": null,
       "model": null,
@@ -2613,18 +6623,75 @@
         "washers"
       ],
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-0-75-x-17-x-3-set-of-4-bolts-double-nuts-double-washers",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              0.12
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "anchor-bolt-kit-1-0-x-36-x-4-set-of-4-bolts-double-nuts-double-washers",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "accessory",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Anchor Bolt Kit, 1.0\" x 36\" x 4\", Set of (4) Bolts, Double Nuts & Double Washers",
-      "family": "WiLLstudio Accessories",
+      "family": "NAFCO Accessories",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/1-anchor-bolt-kit.jpg?v=1668625394",
       "thumbnail": null,
       "model": null,
@@ -2638,13 +6705,70 @@
         "washers"
       ],
       "productUrl": "https://willbrands.com/products/anchor-bolt-kit-1-0-x-36-x-4-set-of-4-bolts-double-nuts-double-washers",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              -0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              -0.12,
+              0,
+              0.12
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.45,
+              "radiusTopM": 0.012,
+              "radiusBottomM": 0.012
+            },
+            "position": [
+              0.12,
+              0,
+              0.12
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "huntington-decorative-aluminum-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2699,13 +6823,13 @@
     {
       "id": "light-pole-bolt-circle-adapters",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "pole",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Light Pole Bolt Circle Adapters",
-      "family": "WiLLstudio Poles",
+      "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-bolt-circle-adapter.jpg?v=1673036645",
       "thumbnail": null,
       "model": null,
@@ -2717,18 +6841,75 @@
         "adapters"
       ],
       "productUrl": "https://willbrands.com/products/light-pole-bolt-circle-adapters",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.2,
+                  0
+                ],
+                [
+                  0.2,
+                  0.215
+                ],
+                [
+                  0.185,
+                  0.24
+                ],
+                [
+                  0.09,
+                  0.24
+                ],
+                [
+                  0.09,
+                  0.245
+                ],
+                [
+                  0,
+                  0.245
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.19,
+                0.17,
+                0.02
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.035,
+              0.192
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "light-pole-top-caps",
       "slot": "standalone",
-      "line": "WiLLstudio",
-      "category": "accessory",
+      "line": "NAFCO",
+      "category": "Light Pole Accessories",
       "productClass": "standalone",
       "dropShip": true,
-      "tier": 3,
+      "tier": 2,
       "name": "Light Pole Top Caps",
-      "family": "WiLLstudio Accessories",
+      "family": "NAFCO Accessories",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/round-light-pole-top-cap.jpg?v=1668626284",
       "thumbnail": null,
       "model": null,
@@ -2739,13 +6920,58 @@
         "caps"
       ],
       "productUrl": "https://willbrands.com/products/light-pole-top-caps",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "lathe",
+        "profile": [
+          [
+            0.052,
+            0
+          ],
+          [
+            0.064,
+            0.008
+          ],
+          [
+            0.052,
+            0.016
+          ],
+          [
+            0.064,
+            0.024
+          ],
+          [
+            0.052,
+            0.032
+          ],
+          [
+            0.06,
+            0.042
+          ],
+          [
+            0.098,
+            0.048
+          ],
+          [
+            0.098,
+            0.064
+          ],
+          [
+            0.088,
+            0.07
+          ],
+          [
+            0,
+            0.07
+          ]
+        ]
+      }
     },
     {
       "id": "round-tapered-fiberglass-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2801,7 +7027,7 @@
       "id": "round-tapered-fiberglass-direct-burial-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2857,7 +7083,7 @@
       "id": "round-tapered-steel-fluted-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2914,7 +7140,7 @@
       "id": "sacramento-decorative-aluminum-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -2970,7 +7196,7 @@
       "id": "washington-decorative-aluminum-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -3026,7 +7252,7 @@
       "id": "williamsburg-decorative-aluminum-anchor-base-light-poles",
       "slot": "pole",
       "line": "WiLLstudio",
-      "category": "pole",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": true,
       "tier": 2,
@@ -3082,7 +7308,7 @@
       "id": "willstudio-cr2-decorative-crossarm",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Brackets & Arms",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
@@ -3146,10 +7372,10 @@
       "id": "willstudio-dwx-flood-spot",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "DWX Flood & Spot",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® DWX Flood & Spot",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/DWX-45.jpg?v=1763042175",
@@ -3161,13 +7387,103 @@
         "spot"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-dwx-flood-spot",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.05,
+              "radiusTopM": 0.035,
+              "radiusBottomM": 0.055
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.3,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              -0.17,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.3,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.17,
+              0.03,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0,
+                  -0.15
+                ],
+                [
+                  0.1,
+                  -0.12
+                ],
+                [
+                  0.15,
+                  -0.05
+                ],
+                [
+                  0.16,
+                  0.03
+                ],
+                [
+                  0.13,
+                  0.1
+                ],
+                [
+                  0.08,
+                  0.13
+                ],
+                [
+                  0,
+                  0.14
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.2,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willstudio-fr2-decorative-crossarm",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Brackets & Arms",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
@@ -3231,7 +7547,7 @@
       "id": "willstudio-hsx-decorative-upsweep-arms",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Brackets & Arms",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
@@ -3306,10 +7622,10 @@
       "id": "willstudio-pendant-ceiling-mounts",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "Decorative Light Poles",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® Pendant Ceiling Mounts",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/pc-willstudio-brackets_a4d79091-ece7-476a-9e13-5eec3dc3ce09.jpg?v=1752001534",
@@ -3321,16 +7637,63 @@
         "mounts"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-pendant-ceiling-mounts",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.85,
+              "radiusTopM": 0.032,
+              "radiusBottomM": 0.032
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.06,
+              "radiusTopM": 0.042,
+              "radiusBottomM": 0.038
+            },
+            "position": [
+              0,
+              0.79,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.35,
+                0.02,
+                0.35
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.85,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willstudio-rxb-sxb-bollard",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "RXB / SXB Bollard",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® RXB / SXB Bollard",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/rdb-c-bollard-light-standard-mount-close-bronze.jpg?v=1666129115",
@@ -3342,13 +7705,93 @@
         "bollard"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-rxb-sxb-bollard",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.72,
+              "radiusTopM": 0.088,
+              "radiusBottomM": 0.092
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.04,
+              "radiusTopM": 0.09,
+              "radiusBottomM": 0.095
+            },
+            "position": [
+              0,
+              0.72,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.16,
+              "radiusTopM": 0.07,
+              "radiusBottomM": 0.07
+            },
+            "position": [
+              0,
+              0.76,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.088,
+                  0
+                ],
+                [
+                  0.09,
+                  0.03
+                ],
+                [
+                  0.084,
+                  0.08
+                ],
+                [
+                  0.06,
+                  0.13
+                ],
+                [
+                  0.032,
+                  0.155
+                ],
+                [
+                  0,
+                  0.165
+                ]
+              ]
+            },
+            "position": [
+              0,
+              0.92,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willstudio-side-shepherds-hook-pole-top-brackets",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Brackets & Arms",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
@@ -3425,12 +7868,12 @@
       "id": "willstudio-supported-decorative-arms",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Light Poles",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
       "name": "WiLLstudio® Supported Decorative Arms",
-      "family": "WiLLstudio Brackets & Arms",
+      "family": "WiLLstudio Fixtures",
       "mount": "tenon-3in",
       "sockets": {
         "fixture": {
@@ -3494,7 +7937,7 @@
       "id": "willstudio-suspension-arm-pole-top-brackets",
       "slot": "arm",
       "line": "WiLLstudio",
-      "category": "arm",
+      "category": "Decorative Brackets & Arms",
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
@@ -3555,10 +7998,10 @@
       "id": "willstudio-wm1-single-wall-mount-pendant",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "Decorative Light Poles",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® WM1 Single Wall Mount Pendant",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/WM1-45.jpg?v=1752001308",
@@ -3571,16 +8014,94 @@
         "pendant"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-wm1-single-wall-mount-pendant",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.32,
+                0.32
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.08,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.42,
+                0.12,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.23,
+              0.2,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.55,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.045
+            },
+            "position": [
+              0.44,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0.05,
+                  0
+                ],
+                [
+                  0.05,
+                  0.012
+                ],
+                [
+                  0.028,
+                  0.028
+                ],
+                [
+                  0,
+                  0.035
+                ]
+              ]
+            },
+            "position": [
+              0.44,
+              0.55,
+              0
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "willstudio-wm2-single-wall-tenon-mount-w-finial",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "fixture",
+      "category": "Decorative Light Poles",
       "productClass": "standalone",
       "dropShip": false,
-      "tier": 3,
+      "tier": 2,
       "name": "WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/WM2-45.jpg?v=1752001400",
@@ -3594,7 +8115,243 @@
         "finial"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-wm2-single-wall-tenon-mount-w-finial",
-      "finishes": []
+      "finishes": [],
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                0.3,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0.42,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.4,
+                0.11,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.22,
+              0.48,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 0.5,
+              "radiusTopM": 0.048,
+              "radiusBottomM": 0.048
+            },
+            "position": [
+              0.42,
+              0.35,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "lathe",
+              "profile": [
+                [
+                  0,
+                  -0.3
+                ],
+                [
+                  0.025,
+                  -0.27
+                ],
+                [
+                  0.01,
+                  -0.235
+                ],
+                [
+                  0.032,
+                  -0.12
+                ],
+                [
+                  0.095,
+                  -0.05
+                ],
+                [
+                  0.04,
+                  -0.02
+                ],
+                [
+                  0.048,
+                  0
+                ]
+              ]
+            },
+            "position": [
+              0.42,
+              0.35,
+              0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nafco-direct-mount",
+      "slot": "arm",
+      "line": "NAFCO",
+      "category": "Brackets + Arms",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Direct / Slipfitter Mount",
+      "family": "NAFCO Brackets & Arms",
+      "mount": "nafco-tenon",
+      "sockets": {
+        "fixture": {
+          "type": "nafco-fixture-mount",
+          "position": [
+            0,
+            0.06,
+            0
+          ]
+        }
+      },
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.06,
+            0
+          ]
+        ],
+        "radiusM": 0.04
+      },
+      "keywords": [
+        "direct",
+        "slipfitter",
+        "mount"
+      ],
+      "finishes": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/brackets-arms"
+    },
+    {
+      "id": "willsport-integrated-crossarm",
+      "slot": "arm",
+      "line": "WiLLsport",
+      "category": "Sports Poles + Crossarms",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Integrated Crossarm (included with pole)",
+      "family": "WiLLsport Poles",
+      "mount": "sport-pole-top",
+      "sockets": {
+        "fixture": {
+          "type": "sport-crossarm-mount",
+          "position": [
+            0.9,
+            0.15,
+            0
+          ]
+        }
+      },
+      "placeholder": {
+        "kind": "tube",
+        "points": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.15,
+            0
+          ],
+          [
+            0.9,
+            0.15,
+            0
+          ]
+        ],
+        "radiusM": 0.05
+      },
+      "keywords": [
+        "crossarm",
+        "sports"
+      ],
+      "finishes": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/sports-poles-cross-arms"
     }
-  ]
+  ],
+  "categories": {
+    "NAFCO": [
+      "CHX Cobrahead",
+      "SHX Shoebox",
+      "SLX Slim Area",
+      "WCX Wall Mount",
+      "Light Poles - Aluminum",
+      "Light Poles - Steel",
+      "Light Poles - Fiberglass",
+      "Brackets + Arms",
+      "NTX Prewired Pole Lighting",
+      "Pre-Cast Concrete Light Pole Bases",
+      "Light Pole Accessories"
+    ],
+    "WiLLsport": [
+      "KBX Lighting System",
+      "HSX Sportslighter",
+      "GTX High-Output Area",
+      "HDX High Bay",
+      "HDX Area / Flood / Sports",
+      "EBX Slim High Bay",
+      "Sports Poles + Crossarms",
+      "Sports & Large Area Brackets",
+      "PDX Power Distribution & Controls Hub",
+      "RPCX Remote Power Control",
+      "Wrestling Dual Light Packages"
+    ],
+    "WiLLstudio": [
+      "RXB / SXB Bollard",
+      "DRX Post Top & Area",
+      "GVX Pendant",
+      "MVX Coach",
+      "TEX Post Top & Area",
+      "DWX Flood & Spot",
+      "Decorative Light Poles",
+      "Decorative Brackets & Arms",
+      "Decorative Base Covers"
+    ],
+    "WiLLev": [
+      "EVSE L2 Charging Pedestals",
+      "NTX Prewired Pole Lighting",
+      "EV Charging"
+    ],
+    "WiLLcloud": [
+      "GFD Sports & Entertainment Controls",
+      "WiLLcloud+ Lighting Management Platform"
+    ]
+  }
 }

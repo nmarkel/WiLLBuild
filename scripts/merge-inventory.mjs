@@ -73,6 +73,18 @@ const ROOT = resolve(__dirname, '..');
 const INVENTORY_PATH = resolve(ROOT, 'docs/catalog-inventory.json');
 const CATALOG_PATH   = resolve(ROOT, 'public/catalog.json');
 const ASSETS_MD_PATH = resolve(ROOT, 'catalog-assets.md');
+const OVERRIDES_PATH = resolve(ROOT, 'scripts/placeholder-overrides.json');
+
+/**
+ * Hand/agent-authored placeholder specs keyed by part id — produced by the
+ * shape-refinement pass against the product photos. When present, an override
+ * wins over derivePlaceholder. Missing file -> no overrides.
+ */
+let PLACEHOLDER_OVERRIDES = {};
+try {
+  PLACEHOLDER_OVERRIDES = JSON.parse(readFileSync(OVERRIDES_PATH, 'utf8'));
+} catch { /* optional */ }
+
 
 // ── Curated mapping: inventory handles that are already covered by a curated part ──
 // One handle may cover multiple curated parts (height/style variants).
@@ -116,10 +128,9 @@ function titleToKeywords(title) {
   return [...new Set(words)];
 }
 
-/** Derive family string from line + category. */
-function deriveFamily(line, category) {
-  // Map category slugs to human labels
-  const catLabel = {
+/** Human label for a machine category slug (fallback when no site-taxonomy entry applies). */
+function fallbackLabel(slug) {
+  return {
     'fixture': 'Fixtures',
     'arm': 'Brackets & Arms',
     'pole': 'Poles',
@@ -127,8 +138,13 @@ function deriveFamily(line, category) {
     'accessory': 'Accessories',
     'controls': 'Controls',
     'ev-charging': 'EV Charging',
-  }[category] ?? category;
-  return `${line} ${catLabel}`;
+    'other': 'Other',
+  }[slug] ?? slug;
+}
+
+/** Derive family string from line + machine category slug. */
+function deriveFamily(line, categorySlug) {
+  return `${line} ${fallbackLabel(categorySlug)}`;
 }
 
 /** Build the 3D / photo-card / GLB status string. */
@@ -136,6 +152,136 @@ function statusLabel(part) {
   if (part.placeholder) return '3D parametric';
   if (part.photo)        return 'photo-card';
   return 'photo-card'; // new entries always have a CDN photo
+}
+
+/**
+ * Derive a parametric placeholder spec for a standalone product so it renders
+ * in the single-part 3D viewer (meters, +Y up, origin at the ground/attachment
+ * point — same conventions as PlaceholderPart). Category-shaped primitives:
+ * real dimensions arrive with the spec-sheet workstream; until then these are
+ * concept-level stand-ins, deterministic from name + categorySlug (idempotent).
+ */
+function derivePlaceholder(name, categorySlug, heightFt) {
+  const t = name.toLowerCase();
+  const box = (w, h, d) => ({ kind: 'box', sizeM: [w, h, d], direction: 'up' });
+  const group = (children) => ({ kind: 'group', children });
+  const at = (spec, position) => ({ spec, position });
+
+  // ── Specific product shapes (silhouettes eyeballed from product photos) ──
+  if (/bollard/.test(t))
+    return group([
+      at({ kind: 'pole', heightM: 0.98, radiusTopM: 0.075, radiusBottomM: 0.09 }, [0, 0, 0]),
+      // Dome cap
+      at({ kind: 'lathe', profile: [[0.078, 0], [0.075, 0.05], [0.05, 0.085], [0, 0.1]] }, [0, 0.98, 0]),
+    ]);
+  if (/anchor bolt/.test(t))
+    // Kit of 4 threaded rods on a square bolt circle
+    return group([
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [-0.12, 0, -0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [0.12, 0, -0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [-0.12, 0, 0.12]),
+      at({ kind: 'pole', heightM: 0.45, radiusTopM: 0.012, radiusBottomM: 0.012 }, [0.12, 0, 0.12]),
+    ]);
+  if (/top cap|pole cap/.test(t))
+    return { kind: 'lathe', profile: [[0.1, 0], [0.1, 0.03], [0.06, 0.07], [0, 0.09]] };
+  if (/transformer base/.test(t))
+    return { kind: 'prism', radiusTopM: 0.16, radiusBottomM: 0.18, heightM: 0.5, sides: 4 };
+  if (/bolt circle adapter/.test(t))
+    return { kind: 'baseCover', heightM: 0.05, radiusTopM: 0.16, radiusBottomM: 0.2 };
+  if (/pre-?cast|concrete.*base/.test(t))
+    return { kind: 'pole', heightM: 0.76, radiusTopM: 0.28, radiusBottomM: 0.3 };
+  if (/base cover/.test(t) || categorySlug === 'base-cover')
+    return { kind: 'baseCover', heightM: 0.35, radiusTopM: 0.12, radiusBottomM: 0.22 };
+  if (/prewired|ntx/.test(t))
+    // Prewired pole with a slim area head at the top
+    return group([
+      at({ kind: 'pole', heightM: 6.1, radiusTopM: 0.06, radiusBottomM: 0.1 }, [0, 0, 0]),
+      at(box(0.55, 0.1, 0.26), [0.12, 6.05, 0]),
+    ]);
+
+  // ── Arms before poles — "mast arms" would otherwise hit the pole regex ──
+  if (/crossarm|cross arm/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.12, 0], [0.75, 0.12, 0]], radiusM: 0.04 };
+  if (/bullhorn/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.25, 0], [0.35, 0.45, 0], [0.7, 0.5, 0]], radiusM: 0.045 };
+  if (/truss/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0.5, 0.18, 0], [1.2, 0.3, 0]], radiusM: 0.045 };
+  if (/mast arm|elliptical/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0.2, 0.28, 0], [0.65, 0.45, 0], [1.2, 0.5, 0]], radiusM: 0.04 };
+  if (/davit/.test(t))
+    return { kind: 'tube', points: [[0, 0, 0], [0, 0.5, 0], [0.35, 0.85, 0], [0.9, 0.9, 0]], radiusM: 0.045 };
+  if (categorySlug === 'arm')
+    return { kind: 'tube', points: [[0, 0, 0], [0.3, 0.2, 0], [0.8, 0.34, 0]], radiusM: 0.035 };
+
+  // ── Poles before EV pedestals — "Pedestal Base Light Poles" is a pole ──
+  if (categorySlug === 'pole' || /light pole|mast/.test(t)) {
+    const heightM = heightFt ? heightFt * 0.3048 : 7.62; // 25 ft commercial default
+    return { kind: 'pole', heightM, radiusTopM: 0.06, radiusBottomM: 0.11 };
+  }
+
+  // ── Fixture / equipment families ──
+  if (/cobrahead/.test(t))
+    // Classic cobrahead: thicker mast-side body tapering to a slim nose
+    return group([
+      at(box(0.34, 0.13, 0.3), [0.08, 0, 0]),
+      at(box(0.32, 0.08, 0.24), [0.38, 0, 0]),
+    ]);
+  if (/shoebox/.test(t)) return box(0.5, 0.19, 0.5);
+  if (/slim/.test(t)) return box(0.58, 0.07, 0.3);
+  if (/wall mount|wall pack/.test(t)) return box(0.4, 0.16, 0.28);
+  if (/flood|spot/.test(t))
+    return group([
+      at({ kind: 'pole', heightM: 0.06, radiusTopM: 0.03, radiusBottomM: 0.05 }, [0, 0, 0]),
+      at(box(0.42, 0.3, 0.12), [0, 0.06, 0]),
+    ]);
+  if (/pedestal|evse|charging/.test(t))
+    // Charging pedestal with a screen face
+    return group([
+      at(box(0.3, 1.3, 0.24), [0, 0, 0]),
+      at(box(0.22, 0.28, 0.05), [0, 0.92, 0.13]),
+    ]);
+  if (/control|wireless|gateway/.test(t) || categorySlug === 'controls')
+    // Controls cabinet with an antenna
+    return group([
+      at(box(0.45, 0.6, 0.2), [0, 0, 0]),
+      at({ kind: 'pole', heightM: 0.25, radiusTopM: 0.008, radiusBottomM: 0.008 }, [0.16, 0.6, 0]),
+    ]);
+  if (/high bay/.test(t))
+    // UFO high bay: wide shallow shade with a driver puck on top
+    return { kind: 'lathe', profile: [[0.02, 0], [0.17, 0], [0.3, 0.05], [0.3, 0.12], [0.12, 0.18], [0.12, 0.3], [0, 0.3]] };
+  if (/wrestling|dual light/.test(t))
+    // Two heads on a shared frame
+    return group([
+      at(box(0.4, 0.2, 0.4), [-0.28, 0, 0]),
+      at(box(0.4, 0.2, 0.4), [0.28, 0, 0]),
+      at(box(1.0, 0.06, 0.08), [0, 0.2, 0]),
+    ]);
+  if (/kbx|sportslighter|gtx|hdx|ebx|sports light/.test(t))
+    // Sports floodlight: deep housing with a visor lip
+    return group([
+      at(box(0.6, 0.25, 0.45), [0, 0, 0]),
+      at(box(0.6, 0.05, 0.14), [0, 0.25, 0.2]),
+    ]);
+  if (categorySlug === 'fixture') return box(0.55, 0.16, 0.35);
+  if (categorySlug === 'accessory') return box(0.3, 0.25, 0.3);
+  return box(0.4, 0.4, 0.4);
+}
+
+/** Placeholder for a part: photo-refined override first, derived recipe otherwise. */
+function placeholderFor(part, slug) {
+  return PLACEHOLDER_OVERRIDES[part.id] ?? derivePlaceholder(part.name, slug, part.heightFt);
+}
+
+/** Overall height of a spec in meters (drives wizard pole socket positions). */
+function specHeightM(spec) {
+  switch (spec.kind) {
+    case 'pole': case 'baseCover': case 'prism': case 'cone': return spec.heightM;
+    case 'box': return spec.sizeM[1];
+    case 'tube': return Math.max(...spec.points.map((pt) => Math.abs(pt[1])), spec.radiusM * 2);
+    case 'lathe': return Math.max(...spec.profile.map(([, y]) => Math.abs(y)));
+    case 'group': return Math.max(...spec.children.map((c) => c.position[1] + specHeightM(c.spec)));
+  }
+  return 0;
 }
 
 // ── Load files ────────────────────────────────────────────────────────────────
@@ -171,9 +317,10 @@ for (const product of inventory.products) {
     category: product.category,
     productClass: product.productClass,
     dropShip: product.dropShip,
-    tier: 3,
+    tier: 2,                      // derived parametric placeholder = 3D-viewable
     name: product.title,          // full title, no truncation per spec
-    family: deriveFamily(product.line, product.category),
+    family: deriveFamily(product.line, product.categorySlug ?? product.category),
+    placeholder: derivePlaceholder(product.title, product.categorySlug ?? product.category, undefined),
     photo: product.image,         // remote CDN URL — acceptable in 0.3
     thumbnail: null,
     model: null,
@@ -186,14 +333,211 @@ for (const product of inventory.products) {
   existingIds.add(id);
 }
 
+// ── Brand-builder promotions (NAFCO + WiLLsport configurators) ────────────────
+// Each brand line gets a configurator like WiLLstudio's where the data allows:
+// NAFCO has a full pole system (fixtures + mast arms + poles), WiLLsport a thin
+// fixture-on-sports-pole flow. Promoted parts get brand-specific socket types
+// (nafco-*, sport-*) so cross-brand combos are impossible by construction.
+// WiLLev/WiLLcloud have nothing that assembles — they keep the showroom.
+
+const NAFCO_BUILDER_FIXTURES = new Set(['nafco-chx-cobrahead', 'nafco-shx-shoebox', 'slx']);
+const SPORT_BUILDER_FIXTURES = new Set([
+  'willsport-kbx-lighting-system',
+  'willsport-hsx-sportslighter',
+  'willsport-gtx-high-output-area',
+  'willsport-hdx-area-flood-sports',
+]);
+
+/** Promote a standalone product to a wizard slot. Deterministic → idempotent. */
+function promoteToBuilder(part, slug) {
+  if (part.line === 'NAFCO') {
+    if (slug === 'pole' && part.category.startsWith('Light Poles')) {
+      const ph = placeholderFor(part, slug);
+      const h = specHeightM(ph);
+      if (!(ph.kind === 'pole' || (ph.kind === 'group' && h > 2))) return false;
+      part.placeholder = ph;
+      part.slot = 'pole';
+      part.productClass = 'assembly-part';
+      part.mount = null;
+      part.sockets = {
+        top: { type: 'nafco-tenon', position: [0, h, 0] },
+        base: { type: 'nafco-base', position: [0, 0, 0] },
+      };
+      return true;
+    }
+    if (slug === 'arm' && part.category === 'Brackets + Arms') {
+      part.placeholder = placeholderFor(part, slug);
+      if (part.placeholder.kind !== 'tube') return false;
+      const tip = part.placeholder.points[part.placeholder.points.length - 1];
+      part.slot = 'arm';
+      part.productClass = 'assembly-part';
+      part.mount = 'nafco-tenon';
+      part.sockets = { fixture: { type: 'nafco-fixture-mount', position: tip } };
+      return true;
+    }
+    if (NAFCO_BUILDER_FIXTURES.has(part.id)) {
+      part.placeholder = placeholderFor(part, slug);
+      part.slot = 'fixture';
+      part.productClass = 'assembly-part';
+      part.mount = 'nafco-fixture-mount';
+      part.sockets = {};
+      part.lightOffset = [0, 0.09, 0];
+      return true;
+    }
+  }
+  if (part.line === 'WiLLsport') {
+    if (part.id === 'sports-poles-cross-arms') {
+      part.slot = 'pole';
+      part.productClass = 'assembly-part';
+      part.mount = null;
+      // Sports poles run tall — 35 ft concept height until spec-sheet data lands
+      part.placeholder = { kind: 'pole', heightM: 10.67, radiusTopM: 0.1, radiusBottomM: 0.18 };
+      part.sockets = {
+        top: { type: 'sport-pole-top', position: [0, 10.67, 0] },
+        base: { type: 'sport-base', position: [0, 0, 0] },
+      };
+      return true;
+    }
+    if (SPORT_BUILDER_FIXTURES.has(part.id)) {
+      part.placeholder = placeholderFor(part, slug);
+      part.slot = 'fixture';
+      part.productClass = 'assembly-part';
+      part.mount = 'sport-crossarm-mount';
+      part.sockets = {};
+      part.lightOffset = [0, 0.1, 0];
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Pseudo-parts the builders need but the store has no product page for:
+ * NAFCO's direct/slipfitter mount and WiLLsport's integrated crossarm (the
+ * crossarm ships as part of the Sports Poles + Crossarms product).
+ */
+const PSEUDO_PARTS = [
+  {
+    id: 'nafco-direct-mount',
+    slot: 'arm',
+    line: 'NAFCO',
+    category: 'Brackets + Arms',
+    productClass: 'assembly-part',
+    dropShip: false,
+    tier: 2,
+    name: 'Direct / Slipfitter Mount',
+    family: 'NAFCO Brackets & Arms',
+    mount: 'nafco-tenon',
+    sockets: { fixture: { type: 'nafco-fixture-mount', position: [0, 0.06, 0] } },
+    placeholder: { kind: 'tube', points: [[0, 0, 0], [0, 0.06, 0]], radiusM: 0.04 },
+    keywords: ['direct', 'slipfitter', 'mount'],
+    finishes: [],
+    model: null,
+    thumbnail: null,
+    productUrl: 'https://willbrands.com/collections/brackets-arms',
+  },
+  {
+    id: 'willsport-integrated-crossarm',
+    slot: 'arm',
+    line: 'WiLLsport',
+    category: 'Sports Poles + Crossarms',
+    productClass: 'assembly-part',
+    dropShip: false,
+    tier: 2,
+    name: 'Integrated Crossarm (included with pole)',
+    family: 'WiLLsport Poles',
+    mount: 'sport-pole-top',
+    sockets: { fixture: { type: 'sport-crossarm-mount', position: [0.9, 0.15, 0] } },
+    placeholder: { kind: 'tube', points: [[0, 0, 0], [0, 0.15, 0], [0.9, 0.15, 0]], radiusM: 0.05 },
+    keywords: ['crossarm', 'sports'],
+    finishes: [],
+    model: null,
+    thumbnail: null,
+    productUrl: 'https://willbrands.com/products/sports-poles-cross-arms',
+  },
+];
+
+// ── Update existing (non-curated) entries in place ────────────────────────────
+// The site taxonomy (pages/products) is the source of truth for line + category.
+// Standalone entries follow it wholesale; wizard parts (slot !== 'standalone')
+// keep their line — moving a promoted builder part to another brand tab would
+// break the brand-scoped flow — and only take the category when the taxonomy
+// entry agrees with their line (else the humanized slug label).
+const partById = new Map(catalog.parts.map(p => [p.id, p]));
+let updatedCount = 0;
+let promotedCount = 0;
+for (const product of inventory.products) {
+  if (CURATED_HANDLES.has(product.handle)) continue;
+  const part = partById.get(product.handle);
+  if (!part) continue;
+  const slug = product.categorySlug ?? product.category;
+  const nextLine = part.slot === 'standalone' ? product.line : part.line;
+  const nextCategory = part.slot === 'standalone' || product.line === part.line
+    ? product.category
+    : fallbackLabel(slug);
+  const nextFamily = deriveFamily(nextLine, slug);
+  // Standalone products always carry a derived placeholder so the single-part
+  // 3D viewer works (tier 2 = parametric 3D). Deterministic → idempotent.
+  const nextPlaceholder = part.slot === 'standalone'
+    ? placeholderFor(part, slug)
+    : part.placeholder;
+  const nextTier = part.slot === 'standalone' ? 2 : part.tier;
+  if (
+    part.line !== nextLine || part.category !== nextCategory || part.family !== nextFamily ||
+    part.tier !== nextTier || JSON.stringify(part.placeholder) !== JSON.stringify(nextPlaceholder)
+  ) {
+    part.line = nextLine;
+    part.category = nextCategory;
+    part.family = nextFamily;
+    part.tier = nextTier;
+    if (nextPlaceholder) part.placeholder = nextPlaceholder;
+    updatedCount++;
+  }
+  if (promoteToBuilder(part, slug)) promotedCount++;
+}
+console.log(`Updated taxonomy fields on ${updatedCount} existing entries; ${promotedCount} promoted to brand builders`);
+
+// Curated WiLLstudio fixtures may take a photo-refined shape override too
+// (placeholder only — sockets and lightOffset stay hand-tuned).
+for (const id of ['drx-post-top', 'tex-post-top', 'mvx-coach', 'gvx-pendant']) {
+  const override = PLACEHOLDER_OVERRIDES[id];
+  const part = partById.get(id);
+  if (override && part) part.placeholder = override;
+}
+
+// Upsert builder pseudo-parts (deterministic content → idempotent)
+for (const pseudo of PSEUDO_PARTS) {
+  const existing = partById.get(pseudo.id);
+  if (existing) {
+    Object.assign(existing, pseudo);
+  } else {
+    catalog.parts.push(pseudo);
+    partById.set(pseudo.id, pseudo);
+    existingIds.add(pseudo.id);
+  }
+}
+
 // ── Merge into catalog ────────────────────────────────────────────────────────
 // Curated parts come first (untouched), then new entries sorted by line+name.
 const sortedNew = newEntries.sort((a, b) =>
   a.line.localeCompare(b.line) || a.name.localeCompare(b.name)
 );
 
+// Nav category ordering: official page order per line, then any extra
+// categories still present on standalone parts (appended, first-seen order).
+const categories = {};
+for (const [line, cats] of Object.entries(inventory.taxonomy ?? {})) {
+  categories[line] = [...cats];
+}
+for (const p of [...catalog.parts, ...sortedNew]) {
+  if (p.slot !== 'standalone') continue;
+  if (!categories[p.line]) categories[p.line] = [];
+  if (!categories[p.line].includes(p.category)) categories[p.line].push(p.category);
+}
+
 const mergedCatalog = {
   ...catalog,
+  categories,
   parts: [...catalog.parts, ...sortedNew],
 };
 

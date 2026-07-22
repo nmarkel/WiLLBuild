@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 WiLL 3D Pole Configurator — a standalone web page where customers assemble a light pole from WiLL's WiLLstudio catalog (fixture + arm + pole + base cover + finish) and view it in a live 3D window. Full spec: `Phase 0 — Claude Code Brief.md` (stack/architecture still governs). Phase 0.1 change spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.1 — Update Gameplan.md` (outside repo).
 
-**Status: 0.4 (demo-critical slice) — WiLLstudio brand route (`/studio/design`), Tesla-style `BrandSwitcher`, `brand` field in config JSON + catalog, hero card (concept card PDF, `herocard` format), Revit mock (`.rfa` via mock APS, `rfa` format — real "loads in Revit" deferred until Autodesk developer account exists), env-driven CORS + fly.io deploy prep (`docs/DEPLOY.md`). Branch `phase-0.4`; W2 spec-sheet data + live deploy + live APS remain outstanding.** Phase 0.4 spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.4 — WiLLstudio Refocus.md`; plans in `docs/superpowers/plans/`. Underlying 0.3: STEP/DXF/IFC/PDF/zip pipeline, 103-part catalog, 561 combos; placeholder primitives until M1 GLBs.
+**Status: 0.5 (image-based viewer switchover) — the live three.js/R3F 3D viewer is REMOVED from the app (`grep -rn "three\|@react-three" src/` is empty; three.js is a devDependency used only by the offline render rig). Every brand tab (WiLLstudio/NAFCO/WiLLsport builders + WiLLev/WiLLcloud showrooms) and both product types now render through an image-compositing viewer: assembly products stack pre-rendered transparent WebP layers positioned by projecting catalog socket offsets through a shared render rig's linear map (`src/lib/composite.ts`); standalone products show a single render. 525 interim WebP layers (105 parts × 5 finishes) live in `public/renders/` with `manifest.json`; a full-catalog coverage test (`src/lib/composite.coverage.test.ts`) proves zero fallback. Interim layers are rig-rendered from the photo-informed placeholder solids (Sales-drive `17.Renderings` not locally reachable); Cole's SolidWorks renders drop into the same manifest slots later — no app code change. Feature parity kept: finish swap, night view (with "Conceptual — not a photometric simulation" label), human-scale silhouette, image zoom (no free orbit — deliberate). Branch `phase-0.5` off `Dev`.** Phase 0.5 spec: `/Users/nickmarkel/Documents/Design Assistant/Phase 0.5 — Image-Based Viewer Switchover.md`; plan + coverage doc: `docs/superpowers/plans/2026-07-21-phase05-image-viewer.md`, `viewer-assets.md`. Prior 0.4: WiLLstudio brand route, Tesla-style `BrandSwitcher`, `brand` field in config JSON + catalog, hero card (`herocard`), Revit mock (`.rfa` via mock APS). Underlying 0.3: STEP/DXF/IFC/PDF/zip pipeline, 105-part catalog, 561 combos.
 
 ## Commands
 
@@ -15,7 +15,7 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 - `npm run lint` — oxlint
 - `npm run build` — `tsc -b` typecheck + vite build
 - `./geometry-service/run.sh` — CAD/BIM service on :8000 (Python 3.13 venv at `geometry-service/.venv`); tests: `cd geometry-service && .venv/bin/pytest tests/ -q` (fast) or `-m slow tests/test_matrix.py` (full 561-combo × 4-format matrix, ~25 min)
-- `node scripts/fetch-catalog-inventory.mjs` / `node scripts/merge-inventory.mjs` — regenerate the willbrands.com inventory (`docs/catalog-inventory.json`), merged catalog and `catalog-assets.md` (both idempotent)
+- `node scripts/fetch-catalog-inventory.mjs` / `node scripts/merge-inventory.mjs` — regenerate the willbrands.com inventory (`docs/catalog-inventory.json`), merged catalog and `catalog-assets.md` (both idempotent). Part `category` values are the official willbrands.com/pages/products taxonomy (`SITE_TAXONOMY` in the fetch script — update it if the site page changes); the machine slug lives on as `categorySlug` in the inventory. Catalog root `categories` maps each line to its site-ordered category list (drives CatalogNav pill order); merge updates taxonomy fields on existing non-curated entries in place (wizard parts keep their `line`).
 - If a native-binding error appears for rolldown/oxlint (npm optional-deps bug), install the `-darwin-arm64` binding package explicitly.
 
 ## geometry-service rules (Phase 0.3)
@@ -36,22 +36,26 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 - `src/lib/parse.ts` — deterministic keyword parser for the "Describe Your Product" box; matches part/finish `keywords` in `public/catalog.json` plus a pole-height regex. Acceptance phrase: "I want a 10k lm decorative pendant light on a 20ft pole with shepherds hook arm in a black finish" → GVX + SH1 + 20 ft + matte black. Tests: `src/lib/parse.test.ts`
 - `src/lib/summary.ts` — shared config summary text + `SUMMARY_ROWS`
 - `src/lib/leads.ts` — contact-gate lead log; stored in localStorage (key `willbuild-leads`) as a stopgap — the "no localStorage" rule applies to config state only
-- `src/store.ts` — zustand store; every selection change runs `repairConfig` and re-syncs the URL
-- `src/components/Assembly.tsx` — attaches parts at catalog socket positions (physical assembly still stacks pole-up); one shared PBR material for instant finish swaps
-- `src/components/PlaceholderPart.tsx` — parametric primitives rendered while `model` is null
-- `src/components/Scene.tsx` — R3F canvas: ground-projected street HDRI (day) with dimmed-panorama night preset, sun/moon light, shadow catcher + contact shadows, SMAA/N8AO/Bloom post stack, idle auto-orbit, camera framing follows pole height. Day/night `mode` lives in the store; night adds a lit ground disc (the projected skybox is unlit) and `FixtureLight` in Assembly.tsx — emissive lens + point/spot at the fixture's catalog `lightOffset`. Night is a conceptual preview, not photometric (guardrails).
+- `src/store.ts` — zustand store; every selection change runs `repairConfig` and re-syncs the URL; `registerSnapshot`/`snapshot` let the mounted viewer register a PNG-export fn for OutputTray
+- `src/lib/composite.ts` — pure compositing engine (no three): `RenderManifest`/`RenderAsset`/`CompositeLayout` types; `projectOffset` applies the rig's `worldToImage` 2×3 map (world meters, +Y up → pixel offset, y down); `resolveAssemblyLayout` walks catalog sockets (`attachSocket`) fixture-first — same walk the old 3D Assembly did — and places layers by projecting socket offsets, reporting `missing` parts instead of throwing; `resolveRenderAsset` (exact finish → first available → undefined); `SLOT_Z` draw order pole<baseCover<arm<fixture; `HERO_ANGLE`. Tests: `composite.test.ts`, coverage gate `composite.coverage.test.ts` (reads real catalog+manifest, asserts every part × 5 finishes + every builder combo composites with 0 missing)
+- `src/lib/renders.ts` — fetches `public/renders/manifest.json` once (cached promise); `useRenderManifest()` (undefined=loading, null=unavailable → fallback), `renderUrl(file)`
+- `src/lib/snapshot.ts` — `compositeToBlob(layout, {night, pxPerMeterY, showScale?})` draws a `CompositeLayout` onto a ≥1920×1080 canvas → PNG Blob (day/night bg, night glow+pool at `lightPx`, optional human silhouette); pure `fitScale` helper is unit-tested. DOM/canvas-2D only
+- `src/components/CompositeViewer.tsx` — assembly image viewer (drop-in replacement for the old `<Scene>`): stacks absolutely-positioned `<img>` layers from `resolveAssemblyLayout`, scaled by a ResizeObserver `fitScale × zoom`; wheel/button zoom + drag pan (reset on assembly change); ground-shadow ellipse; night `.night` class dims layers + warm glow/pool at `lightPx`; human-scale SVG silhouette; registers `compositeToBlob` as the snapshot. Falls back to `RenderFallback` on missing renders — never a broken viewer
+- `src/components/RenderFallback.tsx` — "Preview render coming" fallback listing missing part names (photo thumbnails when present)
+- `src/components/PlaceholderPart.tsx` — REMOVED in 0.5 (was the R3F parametric primitives); its geometry switch lives on only in the offline rig's `specToObject` port
 - `src/components/DescribeBox.tsx` — "Describe Your Product" input wired to `parse.ts`
-- `src/components/OutputTray.tsx` — live downloads gallery: PNG snapshot + STEP/DXF(or DWG)/IFC/PDF/zip cards calling the geometry-service via `src/lib/geometry.ts`, gated behind the contact modal (`leads.ts`); cards degrade to "coming soon" when the service is down; IES stays a disabled placeholder
+- `src/components/OutputTray.tsx` — live downloads gallery: PNG snapshot (from the viewer's registered `snapshot` fn) + STEP/DXF(or DWG)/IFC/PDF/zip cards calling the geometry-service via `src/lib/geometry.ts`, gated behind the contact modal (`leads.ts`); cards degrade to "coming soon" when the service is down; IES stays a disabled placeholder
 - `src/lib/geometry.ts` — geometry-service client (`VITE_GEOMETRY_URL`, default `http://localhost:8000`); throws user-facing `GeometryError`
 - `src/components/CatalogNav.tsx` — collapsed-by-default "Browse full catalog" nav (line tabs → categories → product cards; "External product" badge on `dropShip`); careful: `.panel` is a flex column — nav children need `flex-shrink: 0`
-- `src/components/ProductViewer.tsx` / `PhotoCard.tsx` — standalone product view (`?product=<id>` URL mode, `view` in the store): tier-2 parts get a slim 3D canvas, tier-3 a photo-card, deliverables scoped to spec-sheet PDF
+- `src/components/ProductViewer.tsx` / `PhotoCard.tsx` — standalone product view (`view` in the store): `StandaloneRender` shows a single manifest render with zoom + finish chips (gated on available render variants); no render → `<PhotoCard renderComing>`; deliverables scoped to spec-sheet PDF
+- `scripts/render-rig/` — OFFLINE asset generator (not shipped in the app bundle): a plain-three.js rig page driven by Puppeteer renders each catalog part's placeholder solid into trimmed transparent WebP layers under a shared orthographic camera (`PX_PER_M=180`, azimuth 35°/elevation 6°), one per part per finish, plus `manifest-<slug>.json` shards. `npm run render-rig -- [--line <ProductLine>] [--parts id,id]`; `npm run render-manifest` merges shards → `public/renders/manifest.json` (asserts identical rig blocks, sorts keys). `node scripts/build-viewer-assets.mjs` regenerates `viewer-assets.md`. Determinism: no wall clock; `specToObject` faithfully ports the old `PlaceholderPart` geometry switch
 - `geometry-service/` — FastAPI CAD/BIM service; `app/kit/` parametric build123d solids, `app/adapters/` STEP/DXF/DWG/IFC/PDF/bundle
 - `scripts/` + `docs/catalog-inventory.json` + `catalog-assets.md` — willbrands.com inventory pipeline and 3D-coverage table (P1 modeled tier 2; P2/P3 photo-cards)
 
 ## Stack
 
 - Vite + React + TypeScript
-- Three.js via React Three Fiber + drei (`OrbitControls`, `Environment`, `useGLTF`)
+- Viewer is pure DOM: stacked `<img>` layers + canvas-2D snapshot (`src/lib/composite.ts`/`snapshot.ts`). No three.js/R3F in the app bundle (0.5 switchover). `three` + Puppeteer are devDependencies used only by the offline `scripts/render-rig/` asset generator
 - zustand for configurator state
 - Frontend is a static site; the only backend is the colocated `geometry-service/` (FastAPI). CORS is env-driven (`ALLOWED_ORIGINS`); fly.io deploy prepped in `geometry-service/fly.toml` + `geometry-service/Dockerfile` + `docs/DEPLOY.md` (actual `fly deploy` is a manual user step). No localStorage for config — config lives in state + URL. (Exception: `src/lib/leads.ts` logs contact-gate leads to localStorage as a stopgap.)
 
@@ -75,16 +79,16 @@ WiLL 3D Pole Configurator — a standalone web page where customers assemble a l
 3. **Compatibility = socket matching only.** Each part has `mount` (what it attaches to) and `sockets` (what it carries). Selection order is fixture-first (`SLOT_ORDER` in `src/lib/compat.ts`): Fixture → Arm → Pole → Base Cover → Finish. Socket rules: post tops (DRX/TEX) mount `tenon-2-3/8` (direct pole mount, crossarms, bullhorns, supported arms — NOT the upsweep, which is arm-mount only per H3b), GVX Pendant mounts `pendant` (pendant arms, shepherd hooks, suspension brackets), MVX Coach mounts `arm-mount` (upsweeps). Rules live in catalog socket data, never component code. Filter the UI so invalid combos are unselectable — never render a broken assembly.
 4. **Catalog part shape:** `id`, `slot` (pole|baseCover|arm|fixture), `name`, `family`, `heightFt`/`dims`, `sockets`, `compatibleSockets`, `finishes[]`, `keywords[]` (describe-box matching; finishes have them too), `model` (GLB path), `thumbnail`, `productUrl` (real willbrands.com page). Catalog root also has `finishesProvisional: true` (WiLLcoat palette unconfirmed — flagged in the Finish step UI) and `referenceAssemblies[]` (drives the Standard/Configurable status chip).
 5. **In-house products only.** Fixtures: DRX Post Top & Area, TEX Post Top & Area, MVX Coach, GVX Pendant. Arms: SH1 Shepherds Hook, Decorative Upsweep, PA1/PM1 Pendant Arms, plus a "Direct Pole Mount" tenon-adapter pseudo-arm. Poles: WiLLstudio Decorative Aluminum (12/14/16/20 ft, ids `alum-pole-NN`). Base covers: fluted/round.
-6. **Don't block on assets.** Until real GLBs arrive, use parametric placeholder primitives generated in code (cylinder pole, torus base, box fixture) behind the same catalog interface.
+6. **Don't block on assets.** The viewer never renders geometry at runtime. Every part shows a pre-rendered image layer (interim: rig renders of the placeholder solids; final: Cole's SolidWorks renders into the same manifest slots). Missing render → labeled "Preview render coming" fallback, never a broken viewer.
 
-## 3D scene requirements
+## Compositing viewer requirements (0.5 — replaces the old 3D scene)
 
-- Ground plane, soft shadows, neutral HDRI environment
-- Orbit + zoom with sensible min/max distance; camera framing follows assembled height
-- Optional ~6 ft human silhouette scale toggle
-- Parts assemble by attaching each GLB at named socket positions from catalog data — no hardcoded offsets
-- Finish swap = swap one shared PBR material (color + roughness/metalness), instant
-- Real units: 1 unit = 1 meter; poles are 10–16 ft — get scale right
+- **Assembly products:** stack transparent WebP layers in z-order (pole < baseCover < arm < fixture) from `resolveAssemblyLayout`. Layers align because every layer is rendered against ONE shared rig (fixed ortho camera/lighting/scale) and positioned by projecting catalog socket offsets through the rig's `worldToImage` map — no hardcoded offsets, same socket walk as the old 3D assembly.
+- **Standalone products:** one hero render (`resolveRenderAsset`). Asset model is keyed by angle (`angles.hero`) so front/45°/side can be added later; one hero angle ships now (no free orbit — deliberate tradeoff).
+- Finish swap = swap the layer set for that finish id (instant; all 5 finishes pre-rendered per part).
+- Night view (conceptual, labeled "not a photometric simulation"), ~1.83 m human-scale silhouette overlay, and image zoom carry over from the 3D viewer. Orbit is gone.
+- Real units: the rig renders at 1 world meter = `rig.pxPerMeter` px; the app never re-derives camera math — it consumes `worldToImage`/`pxPerMeterY` from the manifest.
+- Asset generation lives entirely in `scripts/render-rig/` (offline, devDeps). Catalog knowledge stays in `public/catalog.json` + `public/renders/manifest.json`; components never hardcode offsets.
 
 ## Asset pipeline
 
@@ -99,10 +103,10 @@ Document in repo as `ASSETS.md`. CAD (STEP/SolidWorks) → Blender → GLB:
 ## UI
 
 - Left panel: stepper (Fixture → Arm → Pole → Base Cover → Finish, from `SLOT_ORDER`) with thumbnails and names; each step filtered by compatibility
-- Right: 3D window; below/side: config summary (part names + product-page links) with the config ID and a status chip from `configStatus()` (Standard/Configurable)
+- Right: image-compositing viewer (layered WebP render); below/side: config summary (part names + product-page links) with the config ID and a status chip from `configStatus()` (Standard/Configurable)
 - **Share** — config serialized into URL query params; loading that URL restores the build
 - **Request a Quote** — link to https://willbrands.com/pages/request-a-quote with config summary prefilled (query param or copyable text block)
-- Style: official WiLL brand (Brand-Identity Guidelines 2020), light UI. Palette (CSS variables in `src/index.css`): Gunmetal Gray `#42413D` (chrome/primary text), Yellow Light `#FFCF2E` (selected states + primary CTAs only, always with gunmetal text), Gunmetal Silver `#E6E7E8` (panels/dividers/muted), dark yellow `#7F6717` only alongside yellow; white base with approved silver (`#FFFFFF→#E6E7E8`) and gray (`#58595B→#42413D`) gradients. **Blue (e.g. `#1434ff`) is prohibited — not a WiLL brand color.** Fonts: Roboto 400/500/700 (main), Open Sans 300 (accent text); logo font is never faked. Logo asset: `public/will-logo.png` (reversed white-on-dark lockup — keep it on the gunmetal header bar, min 150px wide, clear space ½ logo height). Mobile: 3D window above panel, still usable.
+- Style: official WiLL brand (Brand-Identity Guidelines 2020), light UI. Palette (CSS variables in `src/index.css`): Gunmetal Gray `#42413D` (chrome/primary text), Yellow Light `#FFCF2E` (selected states + primary CTAs only, always with gunmetal text), Gunmetal Silver `#E6E7E8` (panels/dividers/muted), dark yellow `#7F6717` only alongside yellow; white base with approved silver (`#FFFFFF→#E6E7E8`) and gray (`#58595B→#42413D`) gradients. **Blue (e.g. `#1434ff`) is prohibited — not a WiLL brand color.** Fonts: Roboto 400/500/700 (main), Open Sans 300 (accent text); logo font is never faked. Logo asset: `public/will-logo.png` (reversed white-on-dark lockup — keep it on the gunmetal header bar, min 150px wide, clear space ½ logo height). Mobile: viewer above panel, still usable.
 
 ## Explicitly out of scope (Phase 1+)
 
@@ -110,6 +114,6 @@ LLM/AI intent parsing (the describe box is a deterministic keyword parser, not A
 
 ## Milestones
 
-M0 skeleton with placeholders → M1 one real GLB through the pipeline → M2 full kit + sockets + compatibility → M3 finishes, share URL, quote handoff, deploy.
+M0 skeleton with placeholders → M1 one real GLB through the pipeline → M2 full kit + sockets + compatibility → M3 finishes, share URL, quote handoff, deploy. **0.5 retired the runtime-3D track (M1's CAD→GLB was never achieved): the viewer is now pre-rendered image compositing; realism now scales with render quality, not runtime geometry.**
 
-**Definition of done:** a customer opens a URL, builds any valid combination, orbits it at correct scale, shares the link, and submits the configuration as a quote request.
+**Definition of done:** a customer opens a URL, builds any valid combination, views it at correct scale in the compositing viewer (finish swap / night / human-scale / zoom), shares the link, and submits the configuration as a quote request.

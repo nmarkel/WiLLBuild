@@ -1,0 +1,76 @@
+{
+  "rig": {
+    "version": 1,
+    "pxPerMeter": 180,
+    "azimuthDeg": 35,
+    "elevationDeg": 6,
+    "worldToImage": [
+      [
+        147.44736797201853,
+        0,
+        -103.24375854318828
+      ],
+      [
+        10.791911422496156,
+        -179.0139411662892,
+        15.412446786975323
+      ]
+    ],
+    "pxPerMeterY": 179.0139411662892
+  },
+  "parts": {
+    "gfd-wireless-controls": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/gfd-wireless-controls--hero--forest-green.webp",
+              "width": 98,
+              "height": 171,
+              "anchor": [
+                49.05,
+                160.64
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/gfd-wireless-controls--hero--gloss-white.webp",
+              "width": 98,
+              "height": 171,
+              "anchor": [
+                49.05,
+                160.64
+              ]
+            },
+            "matte-black": {
+              "file": "renders/gfd-wireless-controls--hero--matte-black.webp",
+              "width": 98,
+              "height": 171,
+              "anchor": [
+                49.05,
+                160.64
+              ]
+            },
+            "silver": {
+              "file": "renders/gfd-wireless-controls--hero--silver.webp",
+              "width": 98,
+              "height": 171,
+              "anchor": [
+                49.05,
+                160.64
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/gfd-wireless-controls--hero--statuary-bronze.webp",
+              "width": 98,
+              "height": 171,
+              "anchor": [
+                49.05,
+                160.64
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

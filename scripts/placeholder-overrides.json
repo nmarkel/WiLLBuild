@@ -1,0 +1,4068 @@
+{
+ "nafco-abh-3-triple-arm-aluminum-bullhorn-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.15,
+    0
+   ],
+   [
+    0.15,
+    0.18,
+    0
+   ],
+   [
+    0.55,
+    0.18,
+    0
+   ],
+   [
+    0.82,
+    0.26,
+    0
+   ],
+   [
+    0.95,
+    0.45,
+    0
+   ],
+   [
+    0.95,
+    0.65,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "nafco-abh-4-quad-arm-aluminum-bullhorn-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.15,
+    0
+   ],
+   [
+    0.15,
+    0.18,
+    0
+   ],
+   [
+    0.55,
+    0.18,
+    0
+   ],
+   [
+    0.82,
+    0.26,
+    0
+   ],
+   [
+    0.95,
+    0.45,
+    0
+   ],
+   [
+    0.95,
+    0.65,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "nafco-spx-1-aluminum-spoke-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.1,
+    0
+   ],
+   [
+    0.08,
+    0.15,
+    0
+   ],
+   [
+    0.35,
+    0.16,
+    0
+   ],
+   [
+    0.62,
+    0.16,
+    0
+   ]
+  ],
+  "radiusM": 0.03
+ },
+ "nafco-spx-2-aluminum-spoke-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.1,
+    0
+   ],
+   [
+    0.08,
+    0.15,
+    0
+   ],
+   [
+    0.35,
+    0.16,
+    0
+   ],
+   [
+    0.62,
+    0.16,
+    0
+   ]
+  ],
+  "radiusM": 0.03
+ },
+ "nafco-spx-3-aluminum-spoke-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.1,
+    0
+   ],
+   [
+    0.08,
+    0.15,
+    0
+   ],
+   [
+    0.35,
+    0.16,
+    0
+   ],
+   [
+    0.62,
+    0.16,
+    0
+   ]
+  ],
+  "radiusM": 0.03
+ },
+ "nafco-spx-4-aluminum-spoke-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.1,
+    0
+   ],
+   [
+    0.08,
+    0.15,
+    0
+   ],
+   [
+    0.35,
+    0.16,
+    0
+   ],
+   [
+    0.62,
+    0.16,
+    0
+   ]
+  ],
+  "radiusM": 0.03
+ },
+ "square-straight-aluminum-direct-burial-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.08,
+     "radiusBottomM": 0.08,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.095,
+     "radiusBottomM": 0.095,
+     "heightM": 1.1,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.05,
+      0.22,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.075,
+     1.35,
+     0
+    ]
+   }
+  ]
+ },
+ "square-straight-aluminum-hinged-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.08,
+     "radiusBottomM": 0.08,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.14,
+     "radiusBottomM": 0.21,
+     "heightM": 0.28,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.05,
+      0.26,
+      0.11
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.075,
+     0.75,
+     0
+    ]
+   }
+  ]
+ },
+ "round-straight-steel-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.08,
+     "radiusBottomM": 0.08
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.26,
+       0
+      ],
+      [
+       0.26,
+       0.24
+      ],
+      [
+       0.23,
+       0.32
+      ],
+      [
+       0.12,
+       0.35
+      ],
+      [
+       0.09,
+       0.35
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.06,
+      0.24,
+      0.13
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.07,
+     0.85,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-steel-3-bolt-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.06,
+     "radiusBottomM": 0.1
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.22,
+     "radiusBottomM": 0.22,
+     "heightM": 0.03,
+     "sides": 3
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.05,
+      0.22,
+      0.12
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.08,
+     0.85,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-steel-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.06,
+     "radiusBottomM": 0.1
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.15,
+     "radiusBottomM": 0.24,
+     "heightM": 0.3,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.05,
+      0.2,
+      0.12
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.08,
+     0.85,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-steel-direct-burial-light-poles": {
+  "kind": "pole",
+  "heightM": 7.62,
+  "radiusTopM": 0.055,
+  "radiusBottomM": 0.11
+ },
+ "round-tapered-aluminum-3-bolt-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.22,
+     "radiusBottomM": 0.22,
+     "heightM": 0.025,
+     "sides": 3
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.09,
+     "radiusBottomM": 0.18,
+     "heightM": 0.12,
+     "sides": 3
+    },
+    "position": [
+     0,
+     0.025,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.05,
+     "radiusBottomM": 0.08
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-aluminum-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.13,
+     "radiusBottomM": 0.25,
+     "heightM": 0.22,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.055,
+     "radiusBottomM": 0.1
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-aluminum-direct-burial-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 1.5,
+     "radiusTopM": 0.088,
+     "radiusBottomM": 0.088
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.05,
+     "radiusBottomM": 0.08
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-aluminum-hinged-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.28,
+       0
+      ],
+      [
+       0.285,
+       0.05
+      ],
+      [
+       0.27,
+       0.13
+      ],
+      [
+       0.22,
+       0.16
+      ],
+      [
+       0.1,
+       0.17
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.055,
+     "radiusBottomM": 0.09
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "square-straight-aluminum-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.44,
+      0.24,
+      0.44
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.085,
+     "radiusBottomM": 0.085,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "nafco-shx-shoebox": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.46,
+      0.07,
+      0.46
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.25,
+     "radiusBottomM": 0.3,
+     "heightM": 0.14,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.07,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.1,
+      0.1,
+      0.14
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.26,
+     0.02,
+     0
+    ]
+   }
+  ]
+ },
+ "slx": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.12,
+      0.055,
+      0.14
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.29,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.08,
+      0.32
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.08,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.3,
+      0.045,
+      0.3
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.2,
+     0.01,
+     0
+    ]
+   }
+  ]
+ },
+ "round-straight-aluminum-3-bolt-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.065,
+     "radiusBottomM": 0.065
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.24,
+     "radiusBottomM": 0.26,
+     "heightM": 0.06,
+     "sides": 3
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.22,
+     "radiusTopM": 0.085,
+     "radiusBottomM": 0.19
+    },
+    "position": [
+     0,
+     0.05,
+     0
+    ]
+   }
+  ]
+ },
+ "round-straight-aluminum-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.065,
+     "radiusBottomM": 0.065
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.27,
+      0.34
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-straight-aluminum-direct-burial-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.065,
+     "radiusBottomM": 0.065
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.9,
+     "radiusTopM": 0.075,
+     "radiusBottomM": 0.075
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-straight-aluminum-hinged-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.065,
+     "radiusBottomM": 0.065
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.24,
+       0
+      ],
+      [
+       0.25,
+       0.03
+      ],
+      [
+       0.25,
+       0.13
+      ],
+      [
+       0.2,
+       0.19
+      ],
+      [
+       0.09,
+       0.21
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "aluminum-cross-arm-brackets-wood-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0.35,
+    0,
+    0
+   ],
+   [
+    0.7,
+    0,
+    0
+   ],
+   [
+    0.93,
+    0.005,
+    0
+   ],
+   [
+    1,
+    0.06,
+    0
+   ],
+   [
+    1,
+    0.18,
+    0
+   ]
+  ],
+  "radiusM": 0.04
+ },
+ "aluminum-tapered-elliptical-mast-arms-round-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0.55,
+    0.22,
+    0
+   ],
+   [
+    1.1,
+    0.44,
+    0
+   ],
+   [
+    1.45,
+    0.56,
+    0
+   ],
+   [
+    1.7,
+    0.61,
+    0
+   ],
+   [
+    1.9,
+    0.62,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "aluminum-tapered-elliptical-truss-arm-round-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0.4,
+    0.19,
+    0
+   ],
+   [
+    0.8,
+    0.38,
+    0
+   ],
+   [
+    1.1,
+    0.5,
+    0
+   ],
+   [
+    1.4,
+    0.56,
+    0
+   ],
+   [
+    1.7,
+    0.57,
+    0
+   ]
+  ],
+  "radiusM": 0.038
+ },
+ "aluminum-tenon-adapters": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.15,
+    0
+   ],
+   [
+    0,
+    0.3,
+    0
+   ]
+  ],
+  "radiusM": 0.042
+ },
+ "nafco-abh-1-single-arm-aluminum-bullhorn-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0.2,
+    0,
+    0
+   ],
+   [
+    0.35,
+    0.03,
+    0
+   ],
+   [
+    0.45,
+    0.13,
+    0
+   ],
+   [
+    0.48,
+    0.3,
+    0
+   ],
+   [
+    0.48,
+    0.55,
+    0
+   ]
+  ],
+  "radiusM": 0.028
+ },
+ "nafco-abh-2-double-arm-aluminum-bullhorn-brackets": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0.14,
+    0
+   ],
+   [
+    0.14,
+    0.17,
+    0
+   ],
+   [
+    0.38,
+    0.18,
+    0
+   ],
+   [
+    0.54,
+    0.25,
+    0
+   ],
+   [
+    0.6,
+    0.4,
+    0
+   ],
+   [
+    0.6,
+    0.58,
+    0
+   ]
+  ],
+  "radiusM": 0.03
+ },
+ "nafco-upx-1-aluminum-upsweep-arms": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    0.18,
+    0.03,
+    0
+   ],
+   [
+    0.6,
+    0.1,
+    0
+   ],
+   [
+    0.85,
+    0.24,
+    0
+   ],
+   [
+    1.05,
+    0.32,
+    0
+   ],
+   [
+    1.25,
+    0.34,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "nafco-upx-2-aluminum-upsweep-arms": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    -0.5,
+    0.1,
+    0
+   ],
+   [
+    -0.82,
+    0.26,
+    0
+   ],
+   [
+    -1.05,
+    0.32,
+    0
+   ],
+   [
+    -1.2,
+    0.33,
+    0
+   ],
+   [
+    -1.03,
+    0.31,
+    0.003
+   ],
+   [
+    -0.8,
+    0.25,
+    0.003
+   ],
+   [
+    -0.45,
+    0.09,
+    0.003
+   ],
+   [
+    0.005,
+    0.005,
+    0.003
+   ],
+   [
+    0.5,
+    0.1,
+    0
+   ],
+   [
+    0.82,
+    0.26,
+    0
+   ],
+   [
+    1.05,
+    0.32,
+    0
+   ],
+   [
+    1.2,
+    0.33,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "steel-bullhorn-brackets-round-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    -0.3,
+    0.01,
+    0
+   ],
+   [
+    -0.5,
+    0.06,
+    0
+   ],
+   [
+    -0.6,
+    0.18,
+    0
+   ],
+   [
+    -0.6,
+    0.38,
+    0
+   ],
+   [
+    -0.58,
+    0.16,
+    0.003
+   ],
+   [
+    -0.48,
+    0.05,
+    0.003
+   ],
+   [
+    0,
+    0.005,
+    0.003
+   ],
+   [
+    0.3,
+    0.01,
+    0
+   ],
+   [
+    0.5,
+    0.06,
+    0
+   ],
+   [
+    0.6,
+    0.18,
+    0
+   ],
+   [
+    0.6,
+    0.38,
+    0
+   ]
+  ],
+  "radiusM": 0.04
+ },
+ "steel-spoke-brackets-round-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    -0.3,
+    0.01,
+    0
+   ],
+   [
+    -0.55,
+    0.02,
+    0
+   ],
+   [
+    -0.3,
+    0.01,
+    0.003
+   ],
+   [
+    -0.003,
+    0.005,
+    0.003
+   ],
+   [
+    0.003,
+    0.01,
+    0.3
+   ],
+   [
+    0.003,
+    0.02,
+    0.55
+   ],
+   [
+    0.006,
+    0.01,
+    0.3
+   ],
+   [
+    0.006,
+    0.005,
+    0.006
+   ],
+   [
+    0.3,
+    0.01,
+    0
+   ],
+   [
+    0.55,
+    0.02,
+    0
+   ]
+  ],
+  "radiusM": 0.032
+ },
+ "steel-upsweep-brackets-round-pole-mount": {
+  "kind": "tube",
+  "points": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    -0.12,
+    0.13,
+    0
+   ],
+   [
+    -0.35,
+    0.3,
+    0
+   ],
+   [
+    -0.65,
+    0.4,
+    0
+   ],
+   [
+    -0.95,
+    0.43,
+    0
+   ],
+   [
+    -0.62,
+    0.38,
+    0.003
+   ],
+   [
+    -0.32,
+    0.28,
+    0.003
+   ],
+   [
+    -0.1,
+    0.11,
+    0.003
+   ],
+   [
+    0.004,
+    0.004,
+    0.003
+   ],
+   [
+    0.12,
+    0.13,
+    0
+   ],
+   [
+    0.35,
+    0.3,
+    0
+   ],
+   [
+    0.65,
+    0.4,
+    0
+   ],
+   [
+    0.95,
+    0.43,
+    0
+   ]
+  ],
+  "radiusM": 0.028
+ },
+ "nafco-chx-cobrahead": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.3,
+      0.15,
+      0.3
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.1,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.3,
+      0.11,
+      0.27
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.37,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.11,
+       0
+      ],
+      [
+       0.135,
+       0.025
+      ],
+      [
+       0.135,
+       0.06
+      ],
+      [
+       0.1,
+       0.09
+      ],
+      [
+       0,
+       0.1
+      ]
+     ]
+    },
+    "position": [
+     0.52,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "round-tapered-steel-pedestal-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 7.62,
+     "radiusTopM": 0.06,
+     "radiusBottomM": 0.09
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.19,
+     "radiusBottomM": 0.3,
+     "heightM": 0.55,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.22,
+     "radiusBottomM": 0.22,
+     "heightM": 0.025,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.55,
+     0
+    ]
+   }
+  ]
+ },
+ "square-straight-steel-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.085,
+     "radiusBottomM": 0.085,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.14,
+     "radiusBottomM": 0.3,
+     "heightM": 0.26,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "square-tapered-steel-anchor-base-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.055,
+     "radiusBottomM": 0.1,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.14,
+     "radiusBottomM": 0.3,
+     "heightM": 0.26,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "square-tapered-steel-external-hinged-light-poles": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.055,
+     "radiusBottomM": 0.1,
+     "heightM": 7.62,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.14,
+     "radiusBottomM": 0.3,
+     "heightM": 0.26,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.07,
+      0.55,
+      0.12
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.12,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "aluminum-transformer-bases": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.24,
+     "radiusBottomM": 0.24,
+     "heightM": 0.035,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.155,
+     "radiusBottomM": 0.22,
+     "heightM": 0.41,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.035,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.175,
+     "radiusBottomM": 0.175,
+     "heightM": 0.03,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.445,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.14,
+      0.26,
+      0.03
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.08,
+     0.13
+    ]
+   }
+  ]
+ },
+ "anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       -0.07,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.4,
+       0
+      ]
+     ],
+     "radiusM": 0.008
+    },
+    "position": [
+     -0.1,
+     0,
+     -0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       -0.07,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.4,
+       0
+      ]
+     ],
+     "radiusM": 0.008
+    },
+    "position": [
+     0.1,
+     0,
+     -0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       -0.07,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.4,
+       0
+      ]
+     ],
+     "radiusM": 0.008
+    },
+    "position": [
+     -0.1,
+     0,
+     0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       -0.07,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.01,
+       0
+      ],
+      [
+       0,
+       0.4,
+       0
+      ]
+     ],
+     "radiusM": 0.008
+    },
+    "position": [
+     0.1,
+     0,
+     0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.02,
+     "radiusBottomM": 0.02,
+     "heightM": 0.035,
+     "sides": 6
+    },
+    "position": [
+     -0.1,
+     0.34,
+     -0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.02,
+     "radiusBottomM": 0.02,
+     "heightM": 0.035,
+     "sides": 6
+    },
+    "position": [
+     0.1,
+     0.34,
+     -0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.02,
+     "radiusBottomM": 0.02,
+     "heightM": 0.035,
+     "sides": 6
+    },
+    "position": [
+     -0.1,
+     0.34,
+     0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.02,
+     "radiusBottomM": 0.02,
+     "heightM": 0.035,
+     "sides": 6
+    },
+    "position": [
+     0.1,
+     0.34,
+     0.1
+    ]
+   }
+  ]
+ },
+ "nafco-wcx-wall-mount": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.19,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     -0.09
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.14,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0.01
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.08,
+      0.11
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0.11
+    ]
+   }
+  ]
+ },
+ "gfd-wireless-controls": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.45,
+      0.55,
+      0.18
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.36,
+      0.42,
+      0.04
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.065,
+     0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.32,
+     "radiusTopM": 0.006,
+     "radiusBottomM": 0.009
+    },
+    "position": [
+     0.14,
+     0.55,
+     0
+    ]
+   }
+  ]
+ },
+ "tesla-hss": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      1.1,
+      0.32,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.09,
+      0.08,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.55,
+     0.26,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.09,
+      0.08,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.55,
+     0.04,
+     0
+    ]
+   }
+  ]
+ },
+ "tesla-hss-ak-hi-can-shipping-only": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      1.1,
+      0.32,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.09,
+      0.08,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.55,
+     0.26,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.09,
+      0.08,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.55,
+     0.04,
+     0
+    ]
+   }
+  ]
+ },
+ "tesla-ntx": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.075,
+     "radiusBottomM": 0.075,
+     "heightM": 6.1,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.13,
+      0.15
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.33,
+     5.7,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.6,
+      0.15,
+      0.42
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.88,
+     5.76,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.32,
+      0.08,
+      0.38
+     ],
+     "direction": "up"
+    },
+    "position": [
+     1.32,
+     5.83,
+     0
+    ]
+   }
+  ]
+ },
+ "tesla-slx-ak-hi-can-shipping-only": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.5,
+      0.11,
+      0.13
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.25,
+     0.03,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.17,
+      0.5
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.75,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.32,
+      0.09,
+      0.46
+     ],
+     "direction": "up"
+    },
+    "position": [
+     1.15,
+     0.07,
+     0
+    ]
+   }
+  ]
+ },
+ "light-pole-bolt-circle-adapters": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.2,
+       0
+      ],
+      [
+       0.2,
+       0.215
+      ],
+      [
+       0.185,
+       0.24
+      ],
+      [
+       0.09,
+       0.24
+      ],
+      [
+       0.09,
+       0.245
+      ],
+      [
+       0,
+       0.245
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.19,
+      0.17,
+      0.02
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.035,
+     0.192
+    ]
+   }
+  ]
+ },
+ "light-pole-top-caps": {
+  "kind": "lathe",
+  "profile": [
+   [
+    0.052,
+    0
+   ],
+   [
+    0.064,
+    0.008
+   ],
+   [
+    0.052,
+    0.016
+   ],
+   [
+    0.064,
+    0.024
+   ],
+   [
+    0.052,
+    0.032
+   ],
+   [
+    0.06,
+    0.042
+   ],
+   [
+    0.098,
+    0.048
+   ],
+   [
+    0.098,
+    0.064
+   ],
+   [
+    0.088,
+    0.07
+   ],
+   [
+    0,
+    0.07
+   ]
+  ]
+ },
+ "nafco-ntx-pole-slim-area-light": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.08,
+     "radiusBottomM": 0.08,
+     "heightM": 6.1,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.45,
+      0.07,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.3,
+     5.55,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.45,
+      0.07,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.3,
+     5.55,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.72,
+      0.1,
+      0.34
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.78,
+     5.5,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.72,
+      0.1,
+      0.34
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.78,
+     5.5,
+     0
+    ]
+   }
+  ]
+ },
+ "nafco-pre-cast-concrete-light-pole-bases": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.48,
+     "radiusTopM": 0.235,
+     "radiusBottomM": 0.235
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.42,
+     "radiusTopM": 0.29,
+     "radiusBottomM": 0.29
+    },
+    "position": [
+     0,
+     0.48,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       -0.32,
+       0,
+       0
+      ],
+      [
+       0.32,
+       0,
+       0
+      ]
+     ],
+     "radiusM": 0.008
+    },
+    "position": [
+     0,
+     0.26,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.05,
+     "radiusTopM": 0.006,
+     "radiusBottomM": 0.006
+    },
+    "position": [
+     0.025,
+     0.9,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.05,
+     "radiusTopM": 0.006,
+     "radiusBottomM": 0.006
+    },
+    "position": [
+     -0.025,
+     0.9,
+     0
+    ]
+   }
+  ]
+ },
+ "tesla-slx": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.4,
+      0.07,
+      0.12
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.45,
+     0.09,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.6,
+      0.11,
+      0.35
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.05,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.22,
+      0.05,
+      0.33
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.4,
+     0.03,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.05,
+     "radiusTopM": 0.035,
+     "radiusBottomM": 0.035
+    },
+    "position": [
+     -0.15,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "willev-evse-charging-pedestals": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.04,
+      0.34
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.07,
+     "radiusBottomM": 0.07,
+     "heightM": 2.15,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.1,
+      0.14,
+      0.12
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     1.95,
+     0.1
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.24,
+      0.38,
+      0.13
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     1.05,
+     0.12
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.24,
+      0.38,
+      0.13
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     1.05,
+     -0.12
+    ]
+   },
+   {
+    "spec": {
+     "kind": "tube",
+     "points": [
+      [
+       0,
+       2,
+       0.16
+      ],
+      [
+       0.42,
+       1.25,
+       0.18
+      ],
+      [
+       0.08,
+       0.3,
+       0.2
+      ],
+      [
+       -0.38,
+       1.2,
+       0.22
+      ],
+      [
+       -0.04,
+       1.95,
+       0.18
+      ]
+     ],
+     "radiusM": 0.02
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "willev-ntx-pole-slim-area-light": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.075,
+     "radiusBottomM": 0.075,
+     "heightM": 6.1,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.3,
+      0.12,
+      0.16
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.18,
+     5.8,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.3,
+      0.12,
+      0.16
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.18,
+     5.8,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.7,
+      0.09,
+      0.35
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.55,
+     5.88,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.7,
+      0.09,
+      0.35
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.55,
+     5.88,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.12,
+      0.16,
+      0.32
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.86,
+     5.88,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.12,
+      0.16,
+      0.32
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.86,
+     5.88,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-gtx-high-output-area": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.62,
+      0.1,
+      0.48
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.16,
+     "radiusBottomM": 0.3,
+     "heightM": 0.16,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.1,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-hdx-area-flood-sports": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.07,
+     "radiusTopM": 0.03,
+     "radiusBottomM": 0.05
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.1,
+      0.13
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.07,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.1,
+      0.14
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.185,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.34,
+      0.1,
+      0.14
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.3,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-hsx-sportslighter": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.24,
+      0.05,
+      0.24
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.28,
+     "radiusTopM": 0.24,
+     "radiusBottomM": 0.27
+    },
+    "position": [
+     0,
+     0.05,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.04,
+     "radiusTopM": 0.1,
+     "radiusBottomM": 0.14
+    },
+    "position": [
+     0,
+     0.33,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-kbx-lighting-system": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.1,
+     "radiusTopM": 0.038,
+     "radiusBottomM": 0.05
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.72,
+      0.13,
+      0.5
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.1,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.45,
+      0.1,
+      0.24
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.23,
+     -0.12
+    ]
+   }
+  ]
+ },
+ "sports-poles-cross-arms": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 10.67,
+     "radiusTopM": 0.08,
+     "radiusBottomM": 0.17
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      3.6,
+      0.1,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     10.45,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.12,
+     "radiusTopM": 0.19,
+     "radiusBottomM": 0.22
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-ebx-slim-high-bay": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.6,
+      0.055,
+      0.16
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.01,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.62,
+      0.045,
+      0.09
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0.125
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.62,
+      0.045,
+      0.09
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     -0.125
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.12,
+      0.02,
+      0.24
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.21,
+     0.065,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-hdx-high-bay-sports": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.55,
+      0.13,
+      0.38
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.26,
+      0.1,
+      0.26
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.13,
+     0.13,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.05,
+      0.15,
+      0.3
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.08,
+     0.13,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-pdx-sports-large-area-power-distribution-controls-hub": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.42,
+      0.5,
+      0.25
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.05,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.46,
+      0.52,
+      0.04
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.04,
+     -0.16
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.06,
+      0.34,
+      0.06
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.23,
+     0.12,
+     0.04
+    ]
+   }
+  ]
+ },
+ "willsport-rpcx-sports-large-area-remote-power-control": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.38,
+      1.35,
+      0.33
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.05,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.2,
+      0.08,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     1.28,
+     -0.21
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.2,
+      0.08,
+      0.1
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.1,
+     -0.21
+    ]
+   }
+  ]
+ },
+ "willstudio-pendant-ceiling-mounts": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.85,
+     "radiusTopM": 0.032,
+     "radiusBottomM": 0.032
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.06,
+     "radiusTopM": 0.042,
+     "radiusBottomM": 0.038
+    },
+    "position": [
+     0,
+     0.79,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.35,
+      0.02,
+      0.35
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.85,
+     0
+    ]
+   }
+  ]
+ },
+ "willstudio-wm1-single-wall-mount-pendant": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.03,
+      0.32,
+      0.32
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.08,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.42,
+      0.12,
+      0.05
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.23,
+     0.2,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.55,
+     "radiusTopM": 0.045,
+     "radiusBottomM": 0.045
+    },
+    "position": [
+     0.44,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.05,
+       0
+      ],
+      [
+       0.05,
+       0.012
+      ],
+      [
+       0.028,
+       0.028
+      ],
+      [
+       0,
+       0.035
+      ]
+     ]
+    },
+    "position": [
+     0.44,
+     0.55,
+     0
+    ]
+   }
+  ]
+ },
+ "willstudio-wm2-single-wall-tenon-mount-w-finial": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.03,
+      0.3,
+      0.3
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.42,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.4,
+      0.11,
+      0.05
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.22,
+     0.48,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.5,
+     "radiusTopM": 0.048,
+     "radiusBottomM": 0.048
+    },
+    "position": [
+     0.42,
+     0.35,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0,
+       -0.3
+      ],
+      [
+       0.025,
+       -0.27
+      ],
+      [
+       0.01,
+       -0.235
+      ],
+      [
+       0.032,
+       -0.12
+      ],
+      [
+       0.095,
+       -0.05
+      ],
+      [
+       0.04,
+       -0.02
+      ],
+      [
+       0.048,
+       0
+      ]
+     ]
+    },
+    "position": [
+     0.42,
+     0.35,
+     0
+    ]
+   }
+  ]
+ },
+ "willstudio-dwx-flood-spot": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.05,
+     "radiusTopM": 0.035,
+     "radiusBottomM": 0.055
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.02,
+      0.3,
+      0.05
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.17,
+     0.03,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.02,
+      0.3,
+      0.05
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.17,
+     0.03,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0,
+       -0.15
+      ],
+      [
+       0.1,
+       -0.12
+      ],
+      [
+       0.15,
+       -0.05
+      ],
+      [
+       0.16,
+       0.03
+      ],
+      [
+       0.13,
+       0.1
+      ],
+      [
+       0.08,
+       0.13
+      ],
+      [
+       0,
+       0.14
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0.2,
+     0
+    ]
+   }
+  ]
+ },
+ "willstudio-rxb-sxb-bollard": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.72,
+     "radiusTopM": 0.088,
+     "radiusBottomM": 0.092
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.04,
+     "radiusTopM": 0.09,
+     "radiusBottomM": 0.095
+    },
+    "position": [
+     0,
+     0.72,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.16,
+     "radiusTopM": 0.07,
+     "radiusBottomM": 0.07
+    },
+    "position": [
+     0,
+     0.76,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.088,
+       0
+      ],
+      [
+       0.09,
+       0.03
+      ],
+      [
+       0.084,
+       0.08
+      ],
+      [
+       0.06,
+       0.13
+      ],
+      [
+       0.032,
+       0.155
+      ],
+      [
+       0,
+       0.165
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0.92,
+     0
+    ]
+   }
+  ]
+ },
+ "drx-post-top": {
+  "kind": "lathe",
+  "profile": [
+   [
+    0.03,
+    0
+   ],
+   [
+    0.042,
+    0.012
+   ],
+   [
+    0.042,
+    0.17
+   ],
+   [
+    0.07,
+    0.21
+   ],
+   [
+    0.29,
+    0.42
+   ],
+   [
+    0.315,
+    0.45
+   ],
+   [
+    0.3,
+    0.485
+   ],
+   [
+    0.19,
+    0.52
+   ],
+   [
+    0.08,
+    0.545
+   ],
+   [
+    0,
+    0.55
+   ]
+  ]
+ },
+ "tex-post-top": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.16,
+     "radiusTopM": 0.03,
+     "radiusBottomM": 0.04
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.44,
+      0.03,
+      0.03
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.08,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.03,
+      0.14,
+      0.03
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0.205,
+     0.08,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      0.03,
+      0.14,
+      0.03
+     ],
+     "direction": "up"
+    },
+    "position": [
+     -0.205,
+     0.08,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.13,
+       0
+      ],
+      [
+       0.19,
+       0.015
+      ],
+      [
+       0.205,
+       0.04
+      ],
+      [
+       0.215,
+       0.06
+      ],
+      [
+       0.215,
+       0.18
+      ],
+      [
+       0.205,
+       0.21
+      ],
+      [
+       0.19,
+       0.22
+      ],
+      [
+       0,
+       0.22
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0.16,
+     0
+    ]
+   }
+  ]
+ },
+ "mvx-coach": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "baseCover",
+     "heightM": 0.1,
+     "radiusTopM": 0.03,
+     "radiusBottomM": 0.038
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.17,
+     "radiusBottomM": 0.06,
+     "heightM": 0.08,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.1,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.22,
+     "radiusBottomM": 0.15,
+     "heightM": 0.24,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.18,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "prism",
+     "radiusTopM": 0.03,
+     "radiusBottomM": 0.34,
+     "heightM": 0.14,
+     "sides": 4
+    },
+    "position": [
+     0,
+     0.42,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "lathe",
+     "profile": [
+      [
+       0.035,
+       0
+      ],
+      [
+       0.02,
+       0.02
+      ],
+      [
+       0.008,
+       0.09
+      ],
+      [
+       0.02,
+       0.11
+      ],
+      [
+       0.015,
+       0.125
+      ],
+      [
+       0,
+       0.13
+      ]
+     ]
+    },
+    "position": [
+     0,
+     0.56,
+     0
+    ]
+   }
+  ]
+ },
+ "gvx-pendant": {
+  "kind": "lathe",
+  "profile": [
+   [
+    0,
+    -0.4
+   ],
+   [
+    0.245,
+    -0.4
+   ],
+   [
+    0.26,
+    -0.395
+   ],
+   [
+    0.26,
+    -0.33
+   ],
+   [
+    0.24,
+    -0.28
+   ],
+   [
+    0.18,
+    -0.2
+   ],
+   [
+    0.1,
+    -0.15
+   ],
+   [
+    0.06,
+    -0.13
+   ],
+   [
+    0.085,
+    -0.1
+   ],
+   [
+    0.05,
+    -0.065
+   ],
+   [
+    0.02,
+    -0.05
+   ],
+   [
+    0.02,
+    0
+   ]
+  ]
+ },
+ "willsport-sports-large-area-brackets-arms": {
+  "kind": "group",
+  "children": [
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.14,
+     "radiusTopM": 0.032,
+     "radiusBottomM": 0.032
+    },
+    "position": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "box",
+     "sizeM": [
+      1.3,
+      0.09,
+      0.09
+     ],
+     "direction": "up"
+    },
+    "position": [
+     0,
+     0.14,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.2,
+     "radiusTopM": 0.024,
+     "radiusBottomM": 0.024
+    },
+    "position": [
+     0.52,
+     0.23,
+     0
+    ]
+   },
+   {
+    "spec": {
+     "kind": "pole",
+     "heightM": 0.2,
+     "radiusTopM": 0.024,
+     "radiusBottomM": 0.024
+    },
+    "position": [
+     -0.52,
+     0.23,
+     0
+    ]
+   }
+  ]
+ },
+ "willsport-wrestling-dual-light-packages": {
+  "kind": "lathe",
+  "profile": [
+   [
+    0.3,
+    0
+   ],
+   [
+    0.305,
+    0.05
+   ],
+   [
+    0.3,
+    0.11
+   ],
+   [
+    0.25,
+    0.22
+   ],
+   [
+    0.17,
+    0.3
+   ],
+   [
+    0.12,
+    0.34
+   ],
+   [
+    0.115,
+    0.56
+   ],
+   [
+    0.1,
+    0.585
+   ],
+   [
+    0,
+    0.59
+   ]
+  ]
+ }
+}

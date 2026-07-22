@@ -1,0 +1,659 @@
+{
+  "rig": {
+    "version": 1,
+    "pxPerMeter": 180,
+    "azimuthDeg": 35,
+    "elevationDeg": 6,
+    "worldToImage": [
+      [
+        147.44736797201853,
+        0,
+        -103.24375854318828
+      ],
+      [
+        10.791911422496156,
+        -179.0139411662892,
+        15.412446786975323
+      ]
+    ],
+    "pxPerMeterY": 179.0139411662892
+  },
+  "parts": {
+    "sports-poles-cross-arms": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/sports-poles-cross-arms--hero--forest-green.webp",
+              "width": 77,
+              "height": 1928,
+              "anchor": [
+                38.5,
+                1918.04
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/sports-poles-cross-arms--hero--gloss-white.webp",
+              "width": 77,
+              "height": 1928,
+              "anchor": [
+                38.5,
+                1918.04
+              ]
+            },
+            "matte-black": {
+              "file": "renders/sports-poles-cross-arms--hero--matte-black.webp",
+              "width": 77,
+              "height": 1928,
+              "anchor": [
+                38.5,
+                1918.04
+              ]
+            },
+            "silver": {
+              "file": "renders/sports-poles-cross-arms--hero--silver.webp",
+              "width": 77,
+              "height": 1928,
+              "anchor": [
+                38.5,
+                1918.04
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/sports-poles-cross-arms--hero--statuary-bronze.webp",
+              "width": 77,
+              "height": 1928,
+              "anchor": [
+                38.5,
+                1918.04
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-ebx-slim-high-bay": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-ebx-slim-high-bay--hero--forest-green.webp",
+              "width": 139,
+              "height": 35,
+              "anchor": [
+                69.5,
+                22.61
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-ebx-slim-high-bay--hero--gloss-white.webp",
+              "width": 139,
+              "height": 35,
+              "anchor": [
+                69.5,
+                22.61
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-ebx-slim-high-bay--hero--matte-black.webp",
+              "width": 139,
+              "height": 35,
+              "anchor": [
+                69.5,
+                22.61
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-ebx-slim-high-bay--hero--silver.webp",
+              "width": 139,
+              "height": 35,
+              "anchor": [
+                69.5,
+                22.61
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-ebx-slim-high-bay--hero--statuary-bronze.webp",
+              "width": 139,
+              "height": 35,
+              "anchor": [
+                69.5,
+                22.61
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-gtx-high-output-area": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-gtx-high-output-area--hero--forest-green.webp",
+              "width": 153,
+              "height": 69,
+              "anchor": [
+                76.5,
+                55.77
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-gtx-high-output-area--hero--gloss-white.webp",
+              "width": 153,
+              "height": 69,
+              "anchor": [
+                76.5,
+                55.77
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-gtx-high-output-area--hero--matte-black.webp",
+              "width": 153,
+              "height": 69,
+              "anchor": [
+                76.5,
+                55.77
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-gtx-high-output-area--hero--silver.webp",
+              "width": 153,
+              "height": 69,
+              "anchor": [
+                76.5,
+                55.77
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-gtx-high-output-area--hero--statuary-bronze.webp",
+              "width": 153,
+              "height": 69,
+              "anchor": [
+                76.5,
+                55.77
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-hdx-area-flood-sports": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-hdx-area-flood-sports--hero--forest-green.webp",
+              "width": 77,
+              "height": 88,
+              "anchor": [
+                38.5,
+                80.8
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-hdx-area-flood-sports--hero--gloss-white.webp",
+              "width": 77,
+              "height": 88,
+              "anchor": [
+                38.5,
+                80.8
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-hdx-area-flood-sports--hero--matte-black.webp",
+              "width": 77,
+              "height": 88,
+              "anchor": [
+                38.5,
+                80.8
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-hdx-area-flood-sports--hero--silver.webp",
+              "width": 77,
+              "height": 88,
+              "anchor": [
+                38.5,
+                80.8
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-hdx-area-flood-sports--hero--statuary-bronze.webp",
+              "width": 77,
+              "height": 88,
+              "anchor": [
+                38.5,
+                80.8
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-hdx-high-bay-sports": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-hdx-high-bay-sports--hero--forest-green.webp",
+              "width": 133,
+              "height": 72,
+              "anchor": [
+                66.5,
+                60.06
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-hdx-high-bay-sports--hero--gloss-white.webp",
+              "width": 133,
+              "height": 72,
+              "anchor": [
+                66.5,
+                60.06
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-hdx-high-bay-sports--hero--matte-black.webp",
+              "width": 133,
+              "height": 72,
+              "anchor": [
+                66.5,
+                60.06
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-hdx-high-bay-sports--hero--silver.webp",
+              "width": 133,
+              "height": 72,
+              "anchor": [
+                66.5,
+                60.06
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-hdx-high-bay-sports--hero--statuary-bronze.webp",
+              "width": 133,
+              "height": 72,
+              "anchor": [
+                66.5,
+                60.06
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-hsx-sportslighter": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-hsx-sportslighter--hero--forest-green.webp",
+              "width": 110,
+              "height": 84,
+              "anchor": [
+                55,
+                74.62
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-hsx-sportslighter--hero--gloss-white.webp",
+              "width": 110,
+              "height": 84,
+              "anchor": [
+                55,
+                74.62
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-hsx-sportslighter--hero--matte-black.webp",
+              "width": 110,
+              "height": 84,
+              "anchor": [
+                55,
+                74.62
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-hsx-sportslighter--hero--silver.webp",
+              "width": 110,
+              "height": 84,
+              "anchor": [
+                55,
+                74.62
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-hsx-sportslighter--hero--statuary-bronze.webp",
+              "width": 110,
+              "height": 84,
+              "anchor": [
+                55,
+                74.62
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-integrated-crossarm": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-integrated-crossarm--hero--forest-green.webp",
+              "width": 162,
+              "height": 55,
+              "anchor": [
+                17.97,
+                47.36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-integrated-crossarm--hero--gloss-white.webp",
+              "width": 162,
+              "height": 55,
+              "anchor": [
+                17.97,
+                47.36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-integrated-crossarm--hero--matte-black.webp",
+              "width": 162,
+              "height": 55,
+              "anchor": [
+                17.97,
+                47.36
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-integrated-crossarm--hero--silver.webp",
+              "width": 162,
+              "height": 55,
+              "anchor": [
+                17.97,
+                47.36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-integrated-crossarm--hero--statuary-bronze.webp",
+              "width": 162,
+              "height": 55,
+              "anchor": [
+                17.97,
+                47.36
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-kbx-lighting-system": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-kbx-lighting-system--hero--forest-green.webp",
+              "width": 170,
+              "height": 79,
+              "anchor": [
+                85,
+                72.04
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-kbx-lighting-system--hero--gloss-white.webp",
+              "width": 170,
+              "height": 79,
+              "anchor": [
+                85,
+                72.04
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-kbx-lighting-system--hero--matte-black.webp",
+              "width": 170,
+              "height": 79,
+              "anchor": [
+                85,
+                72.04
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-kbx-lighting-system--hero--silver.webp",
+              "width": 170,
+              "height": 79,
+              "anchor": [
+                85,
+                72.04
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-kbx-lighting-system--hero--statuary-bronze.webp",
+              "width": 170,
+              "height": 79,
+              "anchor": [
+                85,
+                72.04
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-pdx-sports-large-area-power-distribution-controls-hub": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-pdx-sports-large-area-power-distribution-controls-hub--hero--forest-green.webp",
+              "width": 109,
+              "height": 114,
+              "anchor": [
+                49.95,
+                111.97
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-pdx-sports-large-area-power-distribution-controls-hub--hero--gloss-white.webp",
+              "width": 109,
+              "height": 114,
+              "anchor": [
+                49.95,
+                111.97
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-pdx-sports-large-area-power-distribution-controls-hub--hero--matte-black.webp",
+              "width": 109,
+              "height": 114,
+              "anchor": [
+                49.95,
+                111.97
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-pdx-sports-large-area-power-distribution-controls-hub--hero--silver.webp",
+              "width": 109,
+              "height": 114,
+              "anchor": [
+                49.95,
+                111.97
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-pdx-sports-large-area-power-distribution-controls-hub--hero--statuary-bronze.webp",
+              "width": 109,
+              "height": 114,
+              "anchor": [
+                49.95,
+                111.97
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-rpcx-sports-large-area-remote-power-control": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-rpcx-sports-large-area-remote-power-control--hero--forest-green.webp",
+              "width": 102,
+              "height": 264,
+              "anchor": [
+                51.1,
+                262.02
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-rpcx-sports-large-area-remote-power-control--hero--gloss-white.webp",
+              "width": 102,
+              "height": 264,
+              "anchor": [
+                51.1,
+                262.02
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-rpcx-sports-large-area-remote-power-control--hero--matte-black.webp",
+              "width": 102,
+              "height": 264,
+              "anchor": [
+                51.1,
+                262.02
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-rpcx-sports-large-area-remote-power-control--hero--silver.webp",
+              "width": 102,
+              "height": 264,
+              "anchor": [
+                51.1,
+                262.02
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-rpcx-sports-large-area-remote-power-control--hero--statuary-bronze.webp",
+              "width": 102,
+              "height": 264,
+              "anchor": [
+                51.1,
+                262.02
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-sports-large-area-brackets-arms": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-sports-large-area-brackets-arms--hero--forest-green.webp",
+              "width": 213,
+              "height": 96,
+              "anchor": [
+                106.5,
+                88.99
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-sports-large-area-brackets-arms--hero--gloss-white.webp",
+              "width": 213,
+              "height": 96,
+              "anchor": [
+                106.5,
+                88.99
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-sports-large-area-brackets-arms--hero--matte-black.webp",
+              "width": 213,
+              "height": 96,
+              "anchor": [
+                106.5,
+                88.99
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-sports-large-area-brackets-arms--hero--silver.webp",
+              "width": 213,
+              "height": 96,
+              "anchor": [
+                106.5,
+                88.99
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-sports-large-area-brackets-arms--hero--statuary-bronze.webp",
+              "width": 213,
+              "height": 96,
+              "anchor": [
+                106.5,
+                88.99
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willsport-wrestling-dual-light-packages": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "forest-green": {
+              "file": "renders/willsport-wrestling-dual-light-packages--hero--forest-green.webp",
+              "width": 123,
+              "height": 125,
+              "anchor": [
+                61.5,
+                112.81
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willsport-wrestling-dual-light-packages--hero--gloss-white.webp",
+              "width": 123,
+              "height": 125,
+              "anchor": [
+                61.5,
+                112.81
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willsport-wrestling-dual-light-packages--hero--matte-black.webp",
+              "width": 123,
+              "height": 125,
+              "anchor": [
+                61.5,
+                112.81
+              ]
+            },
+            "silver": {
+              "file": "renders/willsport-wrestling-dual-light-packages--hero--silver.webp",
+              "width": 123,
+              "height": 125,
+              "anchor": [
+                61.5,
+                112.81
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willsport-wrestling-dual-light-packages--hero--statuary-bronze.webp",
+              "width": 123,
+              "height": 125,
+              "anchor": [
+                61.5,
+                112.81
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

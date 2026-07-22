@@ -3,15 +3,19 @@ import type { CatalogPart } from '../types'
 
 interface Props {
   part: CatalogPart
+  /** Show a "Preview render coming" chip — used when the render pipeline has
+   * no image yet for this part (manifest unavailable or no render asset). */
+  renderComing?: boolean
 }
 
 /**
- * Photo-card fallback for tier-3 (standalone/no-3D) products.
+ * Photo-card fallback for tier-3 (standalone/no-3D) products, and for tier-2
+ * parts whose render manifest entry isn't available yet.
  * Shows the product photo (with a silver placeholder on error), name,
  * family/line, category chip, dropShip badge, and a productUrl link.
  * Never renders a 3D canvas.
  */
-export function PhotoCard({ part }: Props) {
+export function PhotoCard({ part, renderComing }: Props) {
   const [imgError, setImgError] = useState(false)
 
   return (
@@ -38,6 +42,9 @@ export function PhotoCard({ part }: Props) {
           <span className="photo-card-category">{part.category}</span>
           {part.dropShip && (
             <span className="photo-card-badge-external">External product</span>
+          )}
+          {renderComing && (
+            <span className="photo-card-badge-render-coming">Preview render coming</span>
           )}
         </div>
 

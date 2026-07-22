@@ -1192,6 +1192,18 @@ body {
   border: 1px solid var(--border);
 }
 
+.photo-card-badge-render-coming {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--yellow-soft);
+  color: var(--will-gray);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  border: 1px solid var(--will-yellow);
+}
+
 .photo-card-name {
   margin: 0;
   font-size: 22px;
@@ -1240,4 +1252,401 @@ body {
     border-top: 1px solid var(--border);
     overflow-y: visible;
   }
+}
+
+/* ── Brand showroom: product list in the left panel ─────────────────────── */
+
+.brand-list {
+  flex-shrink: 0;
+  padding: 0 16px 16px;
+  overflow-y: auto;
+}
+
+.brand-list-section {
+  margin-top: 14px;
+}
+
+.brand-list-category {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #58595b;
+  margin: 0 0 6px;
+}
+
+.brand-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid var(--will-silver);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.brand-list-item:hover {
+  border-color: var(--will-gray);
+}
+
+.brand-list-item.active {
+  border-color: var(--will-yellow);
+  background: #fffaf0;
+}
+
+.brand-list-thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--will-silver);
+  background: #ffffff;
+}
+
+.brand-list-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.brand-list-name {
+  flex: 1;
+  font-size: 12.5px;
+  color: var(--will-gray);
+  line-height: 1.3;
+}
+
+.brand-list-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #7f6717;
+  background: #fff7dc;
+  border: 1px solid #e8d998;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.brand-list-empty {
+  color: #58595b;
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+/* ── Product viewer: photo + identity cards over the 3D canvas ──────────── */
+
+.product-viewer-canvas {
+  position: relative;
+}
+
+.product-viewer-id-card {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--will-silver);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 300px;
+}
+
+.product-viewer-id-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--will-gray);
+}
+
+.product-viewer-id-family {
+  font-size: 12px;
+  color: #58595b;
+}
+
+.product-viewer-id-card a {
+  font-size: 12px;
+  color: var(--will-gray);
+  text-decoration: underline;
+  margin-top: 4px;
+}
+
+.product-viewer-photo {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--will-silver);
+  border-radius: 8px;
+  padding: 8px;
+  width: 132px;
+  text-decoration: none;
+}
+
+.product-viewer-photo img {
+  width: 116px;
+  height: 116px;
+  object-fit: contain;
+}
+
+.product-viewer-photo span {
+  font-size: 11px;
+  color: #58595b;
+}
+
+/* ---- standalone single-image render (ProductViewer) ---- */
+
+.product-viewer-loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.standalone-render {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--will-silver);
+  touch-action: none;
+}
+
+.standalone-render-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  transition: transform 0.05s linear;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- image-compositing viewer ---- */
+
+.composite-loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.composite-viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--will-silver);
+  cursor: grab;
+  /* Same reasoning as the R3F viewport: keep the browser from intercepting
+     pointer/wheel gestures before the compositor's own handlers see them. */
+  touch-action: none;
+  user-select: none;
+}
+
+.composite-viewer:active {
+  cursor: grabbing;
+}
+
+.composite-viewer.night {
+  background: #111318;
+}
+
+.composite-stage {
+  position: relative;
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+.composite-layer {
+  position: absolute;
+  pointer-events: none;
+  transition: filter 0.2s ease;
+}
+
+.composite-viewer.night .composite-layer {
+  filter: brightness(0.42) saturate(0.8);
+}
+
+/* Soft ground-shadow ellipse under the assembly, centered on the pole's
+   ground line (layout.origin). */
+.composite-ground-shadow {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(66, 65, 61, 0.35) 0%, rgba(66, 65, 61, 0) 72%);
+  pointer-events: none;
+}
+
+/* Night: warm ground pool under the fixture's light. */
+.composite-light-pool {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 217, 160, 0.32) 0%, rgba(255, 217, 160, 0) 75%);
+  pointer-events: none;
+}
+
+/* Night: the fixture's ambient glow — sits under the fixture layer so the
+   housing itself occludes the hottest part of the gradient, same as the
+   PNG export in lib/snapshot.ts. */
+.composite-light-glow {
+  position: absolute;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 217, 160, 0.55) 0%, rgba(255, 217, 160, 0) 70%);
+  pointer-events: none;
+}
+
+/* Night: the visible emissive bulb — sits above every layer so it always reads. */
+.composite-light-dot {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffd9a0;
+  box-shadow: 0 0 8px 2px rgba(255, 217, 160, 0.8);
+  pointer-events: none;
+}
+
+.composite-scale-figure {
+  position: absolute;
+  z-index: 6;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.composite-zoom {
+  position: absolute;
+  /* Sits above App.tsx's existing bottom-right viewport-controls bar
+     (day/night + human-scale toggles), which stays a sibling of this
+     component. */
+  bottom: 64px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.composite-zoom button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--will-gray);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.composite-zoom button:hover {
+  border-color: var(--will-gray);
+}
+
+/* ---- Render fallback ("coming soon") card ---- */
+
+.composite-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.composite-fallback-icon {
+  font-size: 28px;
+  color: var(--will-silver);
+}
+
+.composite-fallback-label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.composite-fallback-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.composite-fallback-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 96px;
+}
+
+.composite-fallback-thumb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.composite-fallback-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.composite-fallback-thumb-letter {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+.composite-fallback-name {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.3;
 }

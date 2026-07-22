@@ -1,34 +1,46 @@
-import { Suspense, useRef, useState, useMemo, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
-import type { CatalogPart, Catalog } from '../types'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import type { CatalogPart, Catalog, PoleConfig } from '../types'
 import { PhotoCard } from './PhotoCard'
-import { PlaceholderPart } from './PlaceholderPart'
 import { OutputTray } from './OutputTray'
-import type { PoleConfig } from '../types'
+import { useConfigurator } from '../store'
+import { HERO_ANGLE, resolveRenderAsset, type CompositeLayout, type RenderAsset } from '../lib/composite'
+import { useRenderManifest, renderUrl } from '../lib/renders'
+import { compositeToBlob } from '../lib/snapshot'
 
 interface Props {
   part: CatalogPart
   catalog: Catalog
 }
 
-/** Day HDRI used in the slim single-part canvas. */
-const DAY_HDRI = import.meta.env.BASE_URL + 'hdri/abandoned_parking_2k.hdr'
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 4
+/** Exponential step per wheel tick / button click — matches CompositeViewer's feel. */
+const WHEEL_SENSITIVITY = 0.0015
+const BUTTON_ZOOM_STEP = 1.25
+
+function clampZoom(z: number): number {
+  return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z))
+}
 
 /**
- * Finish chip row — shown only when the part has at least one finish option.
+ * Finish chip row — shown only when more than one finish has a render asset
+ * for this part (gated by the caller on the manifest, not the raw catalog
+ * finish list). Chips are restricted to the finishes that actually have a
+ * render variant.
  */
 function FinishChips({
   catalog,
+  availableFinishIds,
   selectedFinish,
   onSelect,
 }: {
   catalog: Catalog
+  availableFinishIds: string[]
   selectedFinish: string
   onSelect: (id: string) => void
 }) {
-  const finishes = catalog.finishes
+  const finishes = catalog.finishes.filter((f) => availableFinishIds.includes(f.id))
   if (finishes.length === 0) return null
 
   return (
@@ -51,103 +63,85 @@ function FinishChips({
 }
 
 /**
- * Slim 3D canvas for a single part (tier 1 or 2 with a placeholder or GLB).
- * Uses MeshPhysicalMaterial from the selected finish. Day environment only.
- * No post-processing stack (keep it lightweight vs the full builder scene).
+ * Single pre-rendered image for a standalone product, with wheel + button
+ * zoom (same feel/clamp range as CompositeViewer). No pan — one image never
+ * needs it.
  */
-function SinglePartCanvas({
-  part,
-  catalog,
-  selectedFinish,
-}: {
-  part: CatalogPart
-  catalog: Catalog
-  selectedFinish: string
-}) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const finishDef = catalog.finishes.find((f) => f.id === selectedFinish) ?? catalog.finishes[0]
+function StandaloneRender({ asset }: { asset: RenderAsset }) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const [zoom, setZoom] = useState(1)
 
-  const material = useMemo(
-    () =>
-      new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(finishDef?.hex ?? '#888888'),
-        roughness: finishDef?.roughness ?? 0.6,
-        metalness: finishDef?.metalness ?? 0.2,
-        clearcoat: finishDef?.clearcoat ?? 0,
-        clearcoatRoughness: finishDef?.clearcoatRoughness ?? 0.5,
-        envMapIntensity: finishDef?.envMapIntensity ?? 1,
-      }),
-    [finishDef],
-  )
-  useEffect(() => () => material.dispose(), [material])
+  useEffect(() => {
+    setZoom(1)
+  }, [asset.file])
+
+  // Native (non-passive) wheel listener so preventDefault reliably stops page
+  // scroll — same reasoning as CompositeViewer.
+  useEffect(() => {
+    const el = wrapperRef.current
+    if (!el) return
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      setZoom((z) => clampZoom(z * Math.exp(-e.deltaY * WHEEL_SENSITIVITY)))
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [])
+
+  const zoomIn = () => setZoom((z) => clampZoom(z * BUTTON_ZOOM_STEP))
+  const zoomOut = () => setZoom((z) => clampZoom(z / BUTTON_ZOOM_STEP))
+  const resetView = () => setZoom(1)
 
   return (
-    <Canvas
-      ref={canvasRef}
-      dpr={[1, 1.5]}
-      camera={{ position: [1.5, 0.8, 2.5], fov: 42 }}
-      gl={{
-        antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.1,
-        preserveDrawingBuffer: true,
-      }}
-      style={{ width: '100%', height: '100%' }}
-    >
-      <color attach="background" args={['#e6e7e8']} />
-
-      <directionalLight
-        castShadow
-        position={[8, 12, 6]}
-        color="#fff5e6"
-        intensity={1.5}
-        shadow-mapSize={[1024, 1024]}
+    <div ref={wrapperRef} className="standalone-render">
+      <img
+        className="standalone-render-image"
+        src={renderUrl(asset.file)}
+        alt=""
+        draggable={false}
+        style={{ transform: `scale(${zoom})` }}
       />
-
-      <Suspense fallback={null}>
-        <Environment
-          files={DAY_HDRI}
-          background
-          ground={{ height: 3, radius: 20, scale: 40 }}
-          environmentIntensity={1}
-          backgroundIntensity={1}
-        />
-      </Suspense>
-
-      {part.placeholder && (
-        <group>
-          <PlaceholderPart spec={part.placeholder} material={material} />
-        </group>
-      )}
-
-      <ContactShadows opacity={0.5} scale={6} blur={2} far={3} frames={30} />
-
-      <OrbitControls
-        makeDefault
-        enablePan={false}
-        enableDamping
-        dampingFactor={0.08}
-        autoRotate
-        autoRotateSpeed={0.5}
-        maxPolarAngle={Math.PI / 2 - 0.03}
-        minDistance={0.5}
-        maxDistance={8}
-      />
-    </Canvas>
+      <div className="composite-zoom">
+        <button type="button" onClick={zoomOut} title="Zoom out" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" onClick={resetView} title="Reset view" aria-label="Reset view">
+          ⤢
+        </button>
+        <button type="button" onClick={zoomIn} title="Zoom in" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+    </div>
   )
 }
 
 /**
- * Standalone product viewer: branches on whether the part has 3D capability.
+ * Standalone product viewer — a single pre-rendered image from the render
+ * manifest instead of a live 3D canvas.
  *
- * - Part has `placeholder` (tier 2) → slim 3D canvas + finish chips + OutputTray ['pdf']
- * - No `placeholder` (tier 3)       → PhotoCard + OutputTray ['pdf'] (no PNG card)
+ * - Manifest loading            → placeholder
+ * - Manifest unavailable, or no render asset for this part/finish → PhotoCard
+ *   fallback (labeled "Preview render coming"), OutputTray without the PNG card
+ * - Render available            → StandaloneRender + id-card/photo overlays +
+ *   finish chips (gated on available render variants) + OutputTray ['pdf']
  */
 export function ProductViewer({ part, catalog }: Props) {
-  const defaultFinish = part.finishes.length > 0 ? part.finishes[0] : ''
+  const manifest = useRenderManifest()
+  const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
+
+  const manifestFinishes = manifest?.parts[part.id]?.angles[HERO_ANGLE]?.finishes
+  const renderFinishIds = useMemo(
+    () => (manifestFinishes ? Object.keys(manifestFinishes) : []),
+    [manifestFinishes],
+  )
+  const showFinishChips = renderFinishIds.length > 1
+
+  const defaultFinish = part.finishes[0] ?? catalog.finishes[0]?.id ?? ''
   const [selectedFinish, setSelectedFinish] = useState(defaultFinish)
   const [configId] = useState(() => crypto.randomUUID())
-  const has3D = Boolean(part.placeholder)
+
+  const asset = manifest ? resolveRenderAsset(manifest, part.id, selectedFinish) : undefined
 
   // Synthetic standalone config for the OutputTray / geometry service
   const standaloneConfig = useMemo<PoleConfig>(
@@ -164,37 +158,76 @@ export function ProductViewer({ part, catalog }: Props) {
     [configId, part.id, selectedFinish],
   )
 
+  // Register a minimal single-layer snapshot so the Product Render (PNG)
+  // card and herocard/spec renderPng reuse the same tested compositeToBlob
+  // path as the assembly viewer, instead of new untested canvas code.
+  useEffect(() => {
+    if (!asset || !manifest) return
+    const layout: CompositeLayout = {
+      layers: [{ partId: part.id, asset, left: 0, top: 0, z: 1 }],
+      width: asset.width,
+      height: asset.height,
+      origin: asset.anchor,
+      missing: [],
+    }
+    registerSnapshot(() =>
+      compositeToBlob(layout, { night: false, pxPerMeterY: manifest.rig.pxPerMeterY, showScale: false }),
+    )
+    return () => registerSnapshot(null)
+  }, [asset, manifest, part.id, registerSnapshot])
+
+  let mainContent: ReactNode
+  if (manifest === undefined) {
+    mainContent = <div className="product-viewer-loading">Loading render…</div>
+  } else if (!asset) {
+    mainContent = <PhotoCard part={part} renderComing />
+  } else {
+    mainContent = (
+      <>
+        <div className="product-viewer-canvas">
+          <StandaloneRender asset={asset} />
+          <div className="product-viewer-id-card">
+            <span className="product-viewer-id-name">{part.name}</span>
+            <span className="product-viewer-id-family">{part.category}</span>
+            <a href={part.productUrl} target="_blank" rel="noreferrer">
+              Product page ↗
+            </a>
+          </div>
+          {part.photo && (
+            <a
+              className="product-viewer-photo"
+              href={part.productUrl}
+              target="_blank"
+              rel="noreferrer"
+              title="Official product image"
+            >
+              <img src={part.photo} alt={part.name} loading="lazy" />
+              <span>Product photo</span>
+            </a>
+          )}
+        </div>
+        {showFinishChips && (
+          <FinishChips
+            catalog={catalog}
+            availableFinishIds={renderFinishIds}
+            selectedFinish={selectedFinish}
+            onSelect={setSelectedFinish}
+          />
+        )}
+      </>
+    )
+  }
+
   return (
     <div className="product-viewer">
-      <div className="product-viewer-main">
-        {has3D ? (
-          <>
-            <div className="product-viewer-canvas">
-              <SinglePartCanvas
-                part={part}
-                catalog={catalog}
-                selectedFinish={selectedFinish}
-              />
-            </div>
-            {part.finishes.length > 0 && (
-              <FinishChips
-                catalog={catalog}
-                selectedFinish={selectedFinish}
-                onSelect={setSelectedFinish}
-              />
-            )}
-          </>
-        ) : (
-          <PhotoCard part={part} />
-        )}
-      </div>
+      <div className="product-viewer-main">{mainContent}</div>
 
       <div className="product-viewer-tray">
         <OutputTray
           catalog={catalog}
           config={standaloneConfig}
           formats={['pdf']}
-          showPngCard={has3D}
+          showPngCard={Boolean(asset)}
         />
       </div>
     </div>

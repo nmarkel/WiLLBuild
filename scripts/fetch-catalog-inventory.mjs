@@ -65,8 +65,8 @@ const LINE_COLLECTION_MAP = {
   architectural:              { line: 'WiLLstudio', category: 'fixture',   specificity: 10 },
   'decorative-light-poles':   { line: 'WiLLstudio', category: 'pole',      specificity: 10 },
   'decorative-brackets-arms': { line: 'WiLLstudio', category: 'arm',       specificity: 10 },
-  'fiberglass-light-poles':   { line: 'WiLLstudio', category: 'pole',      specificity: 10 }, // no brand prefix; WiLLstudio context
-  'light-pole-accessories':   { line: 'WiLLstudio', category: 'accessory', specificity: 9  },
+  'fiberglass-light-poles':   { line: 'NAFCO', category: 'pole',           specificity: 10 }, // pages/products lists fiberglass poles under NAFCO
+  'light-pole-accessories':   { line: 'NAFCO', category: 'accessory',      specificity: 9  }, // pages/products lists pole accessories under NAFCO
   // ── NAFCO ───────────────────────────────────────────────────────── spec:10 ──
   'light-poles-arms':         { line: 'NAFCO', category: 'pole',           specificity: 10 }, // poles & arms
   'site-area':                { line: 'NAFCO', category: 'fixture',        specificity: 10 },
@@ -84,6 +84,85 @@ const LINE_COLLECTION_MAP = {
   // ── WiLLcloud ───────────────────────────────────────────────────── spec:10 ──
   'willcloud-lighting-controls': { line: 'WiLLcloud', category: 'controls', specificity: 10 },
   'controls-accessories':     { line: 'WiLLcloud', category: 'controls',   specificity: 9  },
+};
+
+/**
+ * ── Official site taxonomy ────────────────────────────────────────────────────
+ * Mirror of https://willbrands.com/pages/products (fetched 2026-07-20): each
+ * brand line lists its official product categories in page order. An entry
+ * points at either a single product handle (`product`) or a Shopify collection
+ * handle (`collection`) whose members all belong to that category.
+ *
+ * `category` becomes the display category on catalog parts (CatalogNav pills,
+ * PhotoCard chips), replacing the machine slug — which is preserved separately
+ * as `categorySlug` for classification and family derivation.
+ *
+ * Resolution order per product:
+ *   1. exact product-handle entry
+ *   2. title brand prefix fixes the line; first same-line collection entry
+ *      (page order) supplies the category
+ *   3. first matching collection entry (page order) supplies line + category
+ *   4. legacy heuristics (LINE_COLLECTION_MAP + title keywords), category
+ *      label humanized via FALLBACK_CATEGORY_LABEL
+ */
+const SITE_TAXONOMY = [
+  // ── NAFCO® Commercial ──
+  { line: 'NAFCO', category: 'CHX Cobrahead',                      product: 'nafco-chx-cobrahead' },
+  { line: 'NAFCO', category: 'SHX Shoebox',                        product: 'nafco-shx-shoebox' },
+  { line: 'NAFCO', category: 'SLX Slim Area',                      product: 'slx' },
+  { line: 'NAFCO', category: 'WCX Wall Mount',                     product: 'nafco-wcx-wall-mount' },
+  { line: 'NAFCO', category: 'Light Poles - Aluminum',             collection: 'aluminum-light-poles', slug: 'pole' },
+  { line: 'NAFCO', category: 'Light Poles - Steel',                collection: 'steel-light-poles', slug: 'pole' },
+  { line: 'NAFCO', category: 'Light Poles - Fiberglass',           collection: 'fiberglass-light-poles', slug: 'pole' },
+  { line: 'NAFCO', category: 'Brackets + Arms',                    collection: 'brackets-arms', slug: 'arm' },
+  { line: 'NAFCO', category: 'NTX Prewired Pole Lighting',         product: 'nafco-ntx-pole-slim-area-light' },
+  { line: 'NAFCO', category: 'Pre-Cast Concrete Light Pole Bases', product: 'nafco-pre-cast-concrete-light-pole-bases' },
+  { line: 'NAFCO', category: 'Light Pole Accessories',             collection: 'light-pole-accessories', slug: 'accessory' },
+  // ── WiLLsport® Sports & Large-Area ──
+  { line: 'WiLLsport', category: 'KBX Lighting System',                  product: 'willsport-kbx-lighting-system' },
+  { line: 'WiLLsport', category: 'HSX Sportslighter',                    product: 'willsport-hsx-sportslighter' },
+  { line: 'WiLLsport', category: 'GTX High-Output Area',                 product: 'willsport-gtx-high-output-area' },
+  { line: 'WiLLsport', category: 'HDX High Bay',                         product: 'willsport-hdx-high-bay-sports' },
+  { line: 'WiLLsport', category: 'HDX Area / Flood / Sports',            product: 'willsport-hdx-area-flood-sports' },
+  { line: 'WiLLsport', category: 'EBX Slim High Bay',                    product: 'willsport-ebx-slim-high-bay' },
+  { line: 'WiLLsport', category: 'Sports Poles + Crossarms',             product: 'sports-poles-cross-arms' },
+  { line: 'WiLLsport', category: 'Sports Poles + Crossarms',             collection: 'light-poles-crossarms', slug: 'pole' },
+  { line: 'WiLLsport', category: 'Sports & Large Area Brackets',         product: 'willsport-sports-large-area-brackets-arms' },
+  { line: 'WiLLsport', category: 'PDX Power Distribution & Controls Hub', product: 'willsport-pdx-sports-large-area-power-distribution-controls-hub' },
+  { line: 'WiLLsport', category: 'RPCX Remote Power Control',            product: 'willsport-rpcx-sports-large-area-remote-power-control' },
+  { line: 'WiLLsport', category: 'Wrestling Dual Light Packages',        product: 'willsport-wrestling-dual-light-packages' },
+  // ── WiLLstudio® Architectural & Decorative ──
+  { line: 'WiLLstudio', category: 'RXB / SXB Bollard',          product: 'willstudio-rxb-sxb-bollard' },
+  { line: 'WiLLstudio', category: 'DRX Post Top & Area',        product: 'willstudio-drx-post-top-area' },
+  { line: 'WiLLstudio', category: 'GVX Pendant',                product: 'willstudio-gvx-pendant' },
+  { line: 'WiLLstudio', category: 'MVX Coach',                  product: 'willstudio-mvx-coach' },
+  { line: 'WiLLstudio', category: 'TEX Post Top & Area',        product: 'willstudio-tex-post-top-area' },
+  { line: 'WiLLstudio', category: 'DWX Flood & Spot',           product: 'willstudio-dwx-flood-spot' },
+  { line: 'WiLLstudio', category: 'Decorative Light Poles',     collection: 'decorative-light-poles', slug: 'pole' },
+  { line: 'WiLLstudio', category: 'Decorative Brackets & Arms', collection: 'decorative-brackets-arms', slug: 'arm' },
+  { line: 'WiLLstudio', category: 'Decorative Base Covers',     product: 'willstudio-decorative-base-covers' },
+  // ── WILLev™ Charging Site Infrastructure ──
+  { line: 'WiLLev', category: 'EVSE L2 Charging Pedestals',    product: 'willev-evse-charging-pedestals' },
+  { line: 'WiLLev', category: 'NTX Prewired Pole Lighting',    product: 'willev-ntx-pole-slim-area-light' },
+  // ── WiLLcloud® Software & Controls ──
+  { line: 'WiLLcloud', category: 'GFD Sports & Entertainment Controls',     product: 'gfd-wireless-controls' },
+  { line: 'WiLLcloud', category: 'WiLLcloud+ Lighting Management Platform', product: 'willcloud-plus' },
+];
+
+const TAXONOMY_BY_PRODUCT = new Map(
+  SITE_TAXONOMY.filter(e => e.product).map(e => [e.product, e]),
+);
+
+/** Human label for a machine category slug when no site-taxonomy entry applies. */
+const FALLBACK_CATEGORY_LABEL = {
+  fixture: 'Fixtures',
+  arm: 'Brackets & Arms',
+  pole: 'Poles',
+  'base-cover': 'Base Covers',
+  accessory: 'Accessories',
+  controls: 'Controls',
+  'ev-charging': 'EV Charging',
+  other: 'Other',
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -128,6 +207,46 @@ function titleBrandPrefix(title) {
  * This handles cases like "Aluminum Light Pole Base Covers" landing in the
  * `light-pole-accessories` collection (category='accessory') — the title wins.
  */
+function assignTaxonomy(handle, title, collectionHandles) {
+  // Machine slug via the legacy heuristics — still drives productClass and family.
+  const legacy = assignLine(title, collectionHandles);
+  const categorySlug = legacy.category;
+  const brand = titleBrandPrefix(title);
+
+  // 1. Exact product-handle entry on the products page
+  const exact = TAXONOMY_BY_PRODUCT.get(handle);
+  if (exact) return { line: exact.line, category: exact.category, categorySlug };
+
+  // 2/3. Collection entries in page order; when a product sits in several
+  // taxonomy collections, prefer the one whose slug hint matches the
+  // product's machine type (a bullhorn arm in both decorative-light-poles and
+  // decorative-brackets-arms belongs under the arms category).
+  const colEntries = SITE_TAXONOMY.filter(
+    e => e.collection && collectionHandles.includes(e.collection),
+  );
+  const pick = entries =>
+    entries.find(e => !e.slug || e.slug === categorySlug) ?? entries[0] ?? null;
+  if (brand) {
+    const sameLine = pick(colEntries.filter(e => e.line === brand));
+    return {
+      line: brand,
+      category: sameLine ? sameLine.category : FALLBACK_CATEGORY_LABEL[categorySlug] ?? categorySlug,
+      categorySlug,
+    };
+  }
+  const best = pick(colEntries);
+  if (best) {
+    return { line: best.line, category: best.category, categorySlug };
+  }
+
+  // 4. Legacy fallback with a humanized label
+  return {
+    line: legacy.line,
+    category: FALLBACK_CATEGORY_LABEL[categorySlug] ?? categorySlug,
+    categorySlug,
+  };
+}
+
 function assignLine(title, collectionHandles) {
   const brand = titleBrandPrefix(title);
 
@@ -298,6 +417,28 @@ async function loadFromCache(cacheDir) {
   return { allProducts, collectionProducts };
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** GET with polite pacing + retry on 429/5xx (honors Retry-After, up to 6 attempts). */
+async function fetchJson(url) {
+  for (let attempt = 1; ; attempt++) {
+    console.log(`  GET ${url}`);
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+        Accept: 'application/json',
+      },
+    });
+    if ((res.status === 429 || res.status >= 500) && attempt < 6) {
+      const wait = Number(res.headers.get('retry-after')) * 1000 || attempt * 15000;
+      console.log(`  HTTP ${res.status} — waiting ${wait / 1000}s (attempt ${attempt}/6)`);
+      await sleep(wait);
+      continue;
+    }
+    return res;
+  }
+}
+
 async function loadFromNetwork() {
   console.log('Fetching from network...');
 
@@ -305,13 +446,13 @@ async function loadFromNetwork() {
   const allProducts = [];
   for (let page = 1; page <= 20; page++) {
     const url = `${BASE_URL}/products.json?limit=250&page=${page}`;
-    console.log(`  GET ${url}`);
-    const res = await fetch(url);
+    const res = await fetchJson(url);
     if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
     const data = await res.json();
     const prods = data.products || [];
     if (prods.length === 0) break;
     allProducts.push(...prods);
+    await sleep(2000);
   }
   console.log(`  Total raw products: ${allProducts.length}`);
 
@@ -319,8 +460,7 @@ async function loadFromNetwork() {
   const collectionProducts = {};
   for (const handle of Object.keys(LINE_COLLECTION_MAP)) {
     const url = `${BASE_URL}/collections/${handle}/products.json?limit=250`;
-    console.log(`  GET ${url}`);
-    const res = await fetch(url);
+    const res = await fetchJson(url);
     if (!res.ok) {
       console.warn(`  WARNING: HTTP ${res.status} for collection ${handle}`);
       collectionProducts[handle] = [];
@@ -328,6 +468,7 @@ async function loadFromNetwork() {
     }
     const data = await res.json();
     collectionProducts[handle] = data.products || [];
+    await sleep(2000);
   }
 
   return { allProducts, collectionProducts };
@@ -382,9 +523,9 @@ async function main() {
       if (isNonProduct(p.tags)) continue;
 
       const collectionHandles = [...(handleToCollections[handle] || [colHandle])];
-      const { line, category } = assignLine(p.title, collectionHandles);
+      const { line, category, categorySlug } = assignTaxonomy(handle, p.title, collectionHandles);
       const dropShip = isDropShip(p.title, collectionHandles);
-      const productClass = classifyProduct(p.title, line, category);
+      const productClass = classifyProduct(p.title, line, categorySlug);
 
       const firstImage = (p.images && p.images.length > 0) ? p.images[0].src : null;
       const variantCount = (p.variants || []).length;
@@ -401,6 +542,7 @@ async function main() {
         title: p.title,
         line,
         category,
+        categorySlug,
         productClass,
         dropShip,
         productUrl: `${BASE_URL}/products/${handle}`,
@@ -433,18 +575,28 @@ async function main() {
   console.log(`  ${'TOTAL'.padEnd(14)} ${String(inventory.length).padStart(3)} products`);
   console.log('─────────────────────────────────────────────────\n');
 
+  // Ordered official categories per line (page order, deduped) — consumed by
+  // merge-inventory.mjs to write catalog.json's `categories` nav-ordering map.
+  const taxonomy = {};
+  for (const e of SITE_TAXONOMY) {
+    if (!taxonomy[e.line]) taxonomy[e.line] = [];
+    if (!taxonomy[e.line].includes(e.category)) taxonomy[e.line].push(e.category);
+  }
+
   // Write output
   mkdirSync('docs', { recursive: true });
   const output = {
     generated: new Date().toISOString(),
     source: cacheDir ? `cache:${cacheDir}` : BASE_URL,
     heuristics: {
-      lineAssignment: 'Title brand prefix (WiLLstudio®/NAFCO®/WiLLsport®/WiLLev™/WiLLcloud™) takes priority; highest-specificity collection handle is the fallback (nafco-site-area-copy is catch-all, specificity=1).',
+      category: 'Official category from the pages/products site taxonomy (exact product handle, else collection membership in page order); categorySlug keeps the machine slug for classification. Unmatched products get a humanized slug label.',
+      lineAssignment: 'Title brand prefix (WiLLstudio®/NAFCO®/WiLLsport®/WiLLev™/WiLLcloud™) takes priority; then the pages/products taxonomy entry; highest-specificity collection handle is the fallback (nafco-site-area-copy is catch-all, specificity=1).',
       dropShip: 'Products without a WiLL/NAFCO brand prefix in the title are marked dropShip:true (third-party or generic accessories). Exception: all products in tesla-ntx-order-form are WiLL-sold EV hardware → dropShip:false.',
       productClass: 'assembly-part = WiLLstudio arms/poles/base-covers + pole-top fixtures that mount on a WiLLstudio pole system. WiLLstudio standalone luminaires (bollard, wall mount, ceiling, flood, spot) are standalone. All other products are standalone.',
     },
     totalProducts: inventory.length,
     perLineCounts: lineCounts,
+    taxonomy,
     products: inventory,
   };
 

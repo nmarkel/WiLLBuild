@@ -18,6 +18,7 @@ from __future__ import annotations
 from build123d import (
     Align,
     Axis,
+    Box,
     BuildLine,
     BuildPart,
     BuildSketch,
@@ -59,8 +60,11 @@ def _tapered_cylinder(radius_bottom_m: float, radius_top_m: float, height_m: flo
 
 
 def build_pole(p: dict):
-    """Tapered aluminium pole from placeholder radii/height."""
+    """Tapered pole from placeholder radii/height; group poles (shaft + base
+    details from the photo-refined specs) build as a union of children."""
     ph = p["placeholder"]
+    if ph["kind"] == "group":
+        return build_fixture_group(ph["children"])
     return _tapered_cylinder(ph["radiusBottomM"], ph["radiusTopM"], ph["heightM"])
 
 
@@ -185,6 +189,10 @@ def _build_group_child(spec: dict):
         return _build_prism(spec)
     if kind == "cone":
         return _build_cone(spec)
+    if kind == "box":
+        return _build_box(spec)
+    if kind == "lathe":
+        return build_fixture_lathe(spec["profile"])
     raise ValueError(f"unknown group child kind: {kind!r}")
 
 
@@ -200,14 +208,24 @@ def build_fixture_group(children: list[dict]):
     return solid
 
 
+def _build_box(spec: dict):
+    """Rectangular fixture housing; origin at the base center (viewer y-up -> CAD z-up)."""
+    w, h, d = (v * M for v in spec["sizeM"])
+    with BuildPart() as bp:
+        Box(w, d, h, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    return bp.part
+
+
 def build_fixture(p: dict):
-    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union."""
+    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union, box -> housing."""
     ph = p["placeholder"]
     kind = ph["kind"]
     if kind == "lathe":
         return build_fixture_lathe(ph["profile"])
     if kind == "group":
         return build_fixture_group(ph["children"])
+    if kind == "box":
+        return _build_box(ph)
     raise ValueError(f"unknown fixture kind: {kind!r}")
 
 

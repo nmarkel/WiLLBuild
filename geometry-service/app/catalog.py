@@ -125,6 +125,10 @@ def validate_config(catalog: dict, cfg: PoleConfig) -> None:
         ("pole", cfg.pole),
         ("baseCover", cfg.baseCover),
     ]:
+        # Base cover is optional: brand builders without base covers (NAFCO,
+        # WiLLsport) send ''. The socket checks below guard on None already.
+        if field == "baseCover" and part_id == "":
+            continue
         try:
             p = part(catalog, part_id)
             # Assert the resolved part's slot matches its config field.

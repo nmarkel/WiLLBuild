@@ -3,10 +3,14 @@ import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
 import { defaultConfig, repairConfig } from './lib/compat'
 import { parseDescription } from './lib/parse'
 import { configToParams, paramsToPartialConfig, paramsToViewMode } from './lib/url'
-import { builderPath, productPath, parseRoute } from './lib/routes'
+import { brandHomePath, builderPath, productPath, parseRoute } from './lib/routes'
 
 export type SceneMode = 'day' | 'night'
-export type ViewMode = { kind: 'builder' } | { kind: 'product'; productId: string }
+export type ViewMode =
+  | { kind: 'builder' }
+  | { kind: 'product'; productId: string }
+  /** Brand landing (Tesla-style product grid) — non-WiLLstudio brands. */
+  | { kind: 'home' }
 
 interface ConfiguratorState {
   catalog: Catalog | null
@@ -24,11 +28,13 @@ interface ConfiguratorState {
   applyDescription: (text: string) => string[]
   toggleScale: () => void
   toggleMode: () => void
-  /** Navigate to a standalone product view. */
+  /** Navigate to a standalone product view (switches brand to the product's line). */
   openProduct: (id: string) => void
   /** Return to the builder; restores config URL params. */
   openBuilder: () => void
-  /** High-res capture registered by SnapshotRig (mounted inside the R3F Canvas); null until mounted. */
+  /** Return to the current brand's landing (builder for WiLLstudio, product grid otherwise). */
+  openHome: () => void
+  /** High-res capture registered by the mounted viewer (CompositeViewer/ProductViewer); null until mounted. */
   snapshot: (() => Promise<Blob | null>) | null
   registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
 }
@@ -61,11 +67,13 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     const initialBrand = routeResult.brand
     const fromUrl = paramsToPartialConfig(searchParams)
     const config = fromUrl
-      ? repairConfig(catalog, { ...defaultConfig(catalog), ...fromUrl })
-      : defaultConfig(catalog)
+      ? repairConfig(catalog, { ...defaultConfig(catalog, initialBrand), ...fromUrl, brand: initialBrand })
+      : defaultConfig(catalog, initialBrand)
     // Sync URL to match the resolved view
     if (initialView.kind === 'product') {
       syncProductUrl(initialBrand, initialView.productId)
+    } else if (initialView.kind === 'home') {
+      window.history.replaceState(null, '', brandHomePath(initialBrand))
     } else {
       syncUrl(initialBrand, config)
     }
@@ -100,15 +108,29 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   toggleMode: () => set((s) => ({ mode: s.mode === 'day' ? 'night' : 'day' })),
 
   openProduct: (id) => {
-    const { brand } = get()
-    syncProductUrl(brand, id)
-    set({ view: { kind: 'product', productId: id } })
+    const { catalog, brand } = get()
+    // A product view belongs to the product's own brand line — keeps URLs canonical
+    const partLine = catalog?.parts.find((p) => p.id === id)?.line
+    const nextBrand: ProductLine = partLine && partLine !== 'Other' ? partLine : brand
+    syncProductUrl(nextBrand, id)
+    set({ brand: nextBrand, view: { kind: 'product', productId: id } })
   },
 
   openBuilder: () => {
+    const { config } = get()
+    if (config) syncUrl('WiLLstudio', config)
+    set({ brand: 'WiLLstudio', view: { kind: 'builder' } })
+  },
+
+  openHome: () => {
     const { config, brand } = get()
-    if (config) syncUrl(brand, config)
-    set({ view: { kind: 'builder' } })
+    if (brand === 'WiLLstudio') {
+      if (config) syncUrl(brand, config)
+      set({ view: { kind: 'builder' } })
+      return
+    }
+    window.history.replaceState(null, '', brandHomePath(brand))
+    set({ view: { kind: 'home' } })
   },
 
   snapshot: null,

@@ -115,14 +115,30 @@ def _trapezoid_silhouette(
 # ---------------------------------------------------------------------------
 
 def _draw_pole(msp, pole: dict, arm_y_m: float | None) -> None:
-    """Draw pole trapezoid silhouette."""
+    """Draw pole trapezoid silhouette. Group poles (photo-refined shaft + base
+    details) draw their tallest pole/prism child as the shaft."""
     ph = pole["placeholder"]
+    if ph.get("kind") == "group":
+        shaft = max(
+            (c for c in ph["children"] if c["spec"].get("kind") in ("pole", "prism")),
+            key=lambda c: c["spec"].get("heightM", 0.0),
+            default=None,
+        )
+        if shaft is None:
+            return
+        sp = shaft["spec"]
+        y0 = shaft["position"][1]
+        pts = _trapezoid_silhouette(y0, y0 + sp["heightM"], sp["radiusBottomM"], sp["radiusTopM"])
+        _add_closed_poly(msp, pts, GUNMETAL)
+        return
     pts = _trapezoid_silhouette(0.0, ph["heightM"], ph["radiusBottomM"], ph["radiusTopM"])
     _add_closed_poly(msp, pts, GUNMETAL)
 
 
-def _draw_base_cover(msp, bc: dict) -> None:
-    """Draw base cover trapezoid silhouette (at Z=0)."""
+def _draw_base_cover(msp, bc: dict | None) -> None:
+    """Draw base cover trapezoid silhouette (at Z=0); no-op when absent."""
+    if bc is None or bc["placeholder"].get("kind") not in ("baseCover", "pole"):
+        return
     ph = bc["placeholder"]
     pts = _trapezoid_silhouette(0.0, ph["heightM"], ph["radiusBottomM"], ph["radiusTopM"])
     _add_closed_poly(msp, pts, GUNMETAL)
@@ -227,6 +243,24 @@ def _draw_fixture_group(msp, fixture: dict, fx_world_y_m: float) -> None:
                 (r * M, child_y * M),
                 (0, (child_y + h) * M),
             ]
+        elif kind == "box":
+            w, h, _d = spec["sizeM"]
+            y0 = child_y if spec.get("direction") == "up" else child_y - h
+            all_pts += [
+                ((pos[0] - w / 2) * M, y0 * M),
+                ((pos[0] + w / 2) * M, y0 * M),
+                ((pos[0] - w / 2) * M, (y0 + h) * M),
+                ((pos[0] + w / 2) * M, (y0 + h) * M),
+            ]
+        elif kind == "lathe":
+            r = max(pt[0] for pt in spec["profile"])
+            ys_l = [pt[1] for pt in spec["profile"]]
+            all_pts += [
+                (-r * M, (child_y + min(ys_l)) * M),
+                (r * M, (child_y + min(ys_l)) * M),
+                (-r * M, (child_y + max(ys_l)) * M),
+                (r * M, (child_y + max(ys_l)) * M),
+            ]
     if not all_pts:
         return
     xs = [p[0] for p in all_pts]
@@ -253,7 +287,7 @@ def _draw_silhouette(msp, ctx: GenContext) -> None:
         raise KeyError(f"Unknown part: {part_id!r}")
 
     pole = _part(cfg.pole)
-    bc = _part(cfg.baseCover)
+    bc = _part(cfg.baseCover) if cfg.baseCover else None  # base cover is optional
     arm = _part(cfg.arm)
     fixture = _part(cfg.fixture)
 
