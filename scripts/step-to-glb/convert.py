@@ -94,6 +94,14 @@ def _normalize(pos_mm: np.ndarray, origin: str) -> np.ndarray:
         cz = (pos[:,2].min() + pos[:,2].max()) / 2
         ymax = pos[:,1].max()
         pos = pos - np.array([cx, ymax, cz])
+    elif origin == "mount":
+        # Trust the CAD's native X/Z origin (e.g. a side-mount bracket whose
+        # pole-gripping collar is modeled on the native axis) and only floor Y
+        # so the part sits on its mount socket. Do NOT re-center X/Z on the
+        # bbox — that would shove an asymmetric part (long reach in one axis)
+        # off the mount axis.
+        ymin = pos[:,1].min()
+        pos = pos - np.array([0.0, ymin, 0.0])
     return pos
 
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
