@@ -4,6 +4,11 @@ geometry-service/out/
 geometry-service/**/__pycache__/
 geometry-service/**/*.pyc
 
+# step-to-glb offline converter
+scripts/step-to-glb/**/__pycache__/
+scripts/step-to-glb/**/*.pyc
+.pytest_cache/
+
 # Logs
 logs
 *.log
