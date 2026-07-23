@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 /**
  * Offline render-rig page (plain three.js, no React/R3F). Renders each catalog
@@ -7,6 +8,23 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
  * per-part / per-finish layer shares one world→image projection. Puppeteer
  * (generate.mjs) drives window.renderPart / window.getRig and reads back WebP.
  */
+
+const realModels = new Map<string, THREE.Group>()
+const gltfLoader = new GLTFLoader()
+
+/** Decode a base64 GLB to an ArrayBuffer (browser). */
+function b64ToArrayBuffer(b64: string): ArrayBuffer {
+  const bin = atob(b64)
+  const bytes = new Uint8Array(bin.length)
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+  return bytes.buffer
+}
+
+async function loadRealModel(partId: string, base64: string): Promise<void> {
+  const buf = b64ToArrayBuffer(base64)
+  const gltf = await gltfLoader.parseAsync(buf, '')
+  realModels.set(partId, gltf.scene)
+}
 
 // ---- Rig constants (shared across every part → layer coherence) -------------
 const PX_PER_M = 180
@@ -163,6 +181,24 @@ function makeMaterial(f: FinishDef): THREE.MeshPhysicalMaterial {
   })
 }
 
+/** Clone a cached real model and apply the finish: whole-part for monolithic;
+ *  only `will-body` primitives for the color-aware fixture (keep authored colors). */
+function instantiateRealModel(partId: string, finish: FinishDef): THREE.Object3D {
+  const src = realModels.get(partId)!
+  const root = src.clone(true)
+  const finishMat = makeMaterial(finish)
+  root.traverse((o) => {
+    const m = o as THREE.Mesh
+    if (!m.isMesh) return
+    const matName = (m.material as THREE.Material)?.name ?? ''
+    if (matName === 'will-body' || matName === '') {
+      m.material = finishMat
+    }
+    // 'will-fixed-*' keep their GLTF-imported material (authored color)
+  })
+  return root
+}
+
 function disposeObject(obj: THREE.Object3D) {
   obj.traverse((o) => {
     const m = o as THREE.Mesh
@@ -190,12 +226,14 @@ interface RenderResult {
 
 function renderPart(partId: string, finishId: string): RenderResult {
   const part = catalog.parts.find((p) => p.id === partId)
-  if (!part || !part.placeholder) throw new Error(`no placeholder for part ${partId}`)
   const finish = catalog.finishes.find((f) => f.id === finishId)
   if (!finish) throw new Error(`no finish ${finishId}`)
 
+  const useReal = realModels.has(partId)
+  if (!useReal && (!part || !part.placeholder)) throw new Error(`no placeholder for part ${partId}`)
+
   const material = makeMaterial(finish)
-  const object = specToObject(part.placeholder, material)
+  const object = useReal ? instantiateRealModel(partId, finish) : specToObject(part!.placeholder!, material)
   scene.add(object)
 
   // Frame: view-space extents of the content bounding box.
@@ -279,7 +317,7 @@ function renderPart(partId: string, finishId: string): RenderResult {
 
   scene.remove(object)
   disposeObject(object)
-  material.dispose()
+  if (!useReal) material.dispose()
 
   if (maxX < 0) {
     return { empty: true, dataUrl: '', width: 0, height: 0, anchorX: 0, anchorY: 0 }
@@ -369,6 +407,7 @@ declare global {
     rigReady: boolean
     renderPart: typeof renderPart
     getRig: typeof getRig
+    loadRealModel: typeof loadRealModel
   }
 }
 
@@ -376,6 +415,7 @@ loadCatalog()
   .then(() => {
     window.renderPart = renderPart
     window.getRig = getRig
+    window.loadRealModel = loadRealModel
     window.rigReady = true
     document.getElementById('status')!.textContent = 'rig ready'
   })
