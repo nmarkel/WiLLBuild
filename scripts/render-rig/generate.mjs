@@ -51,7 +51,7 @@ async function main() {
     realParts = JSON.parse(await readFile(REALPARTS_PATH, 'utf8'))
   } catch { /* no real parts mapped */ }
 
-  let parts = catalog.parts.filter((p) => p.placeholder)
+  let parts = catalog.parts.filter((p) => p.placeholder || realParts[p.id])
   if (line) parts = parts.filter((p) => p.line === line)
   if (partFilter) parts = parts.filter((p) => partFilter.includes(p.id))
 
@@ -99,12 +99,18 @@ async function main() {
 
     for (const part of parts) {
       const realRel = realParts[part.id]
+      let realLoaded = false
       if (realRel) {
         const glbPath = resolve(__dirname, realRel)
         if (existsSync(glbPath)) {
           const b64 = (await readFile(glbPath)).toString('base64')
-          await page.evaluate((pid, data) => window.loadRealModel(pid, data), part.id, b64)
-          console.log(`  loaded real geometry for ${part.id} (${(b64.length/1e6).toFixed(1)}MB b64)`)
+          try {
+            await page.evaluate((pid, data) => window.loadRealModel(pid, data), part.id, b64)
+            console.log(`  loaded real geometry for ${part.id} (${(b64.length/1e6).toFixed(1)}MB b64)`)
+            realLoaded = true
+          } catch (err) {
+            console.error(`  FAILED to load real GLB for ${part.id}: ${err.message} — using placeholder`)
+          }
         } else {
           console.error(`  MISSING GLB for ${part.id}: ${glbPath} — using placeholder`)
         }
@@ -142,7 +148,7 @@ async function main() {
       for (const k of Object.keys(finishes).sort()) sortedFinishes[k] = finishes[k]
       manifestParts[part.id] = { angles: { hero: { finishes: sortedFinishes } } }
       const n = Object.keys(finishes).length
-      const kind = realParts[part.id] ? 'real' : part.placeholder.kind
+      const kind = realLoaded ? 'real' : part.placeholder ? part.placeholder.kind : 'placeholder'
       console.log(`  ${part.id}: ${n}/${finishIds.length} finishes  (${kind})`)
     }
 
