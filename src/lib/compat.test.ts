@@ -186,7 +186,7 @@ describe('attachSocket', () => {
   it('finds the socket position for a fixture on its arm', () => {
     const arm = partById(catalog, 'sh1-shepherds-hook')!
     const fixture = partById(catalog, 'gvx-pendant')!
-    expect(attachSocket(fixture, arm)?.position).toEqual([0.63, 0.45, 0])
+    expect(attachSocket(fixture, arm)?.position).toEqual([0, 0.729, -0.513])
   })
 
   it('lets a post top sit directly on the pole via the direct mount adapter', () => {
