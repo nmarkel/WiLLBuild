@@ -10,6 +10,7 @@
 import { createServer } from 'vite'
 import puppeteer from 'puppeteer'
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
@@ -19,6 +20,7 @@ const REPO_ROOT = resolve(__dirname, '../..')
 const PUBLIC_DIR = resolve(REPO_ROOT, 'public')
 const CATALOG_PATH = resolve(PUBLIC_DIR, 'catalog.json')
 const OUT_DIR = resolve(PUBLIC_DIR, 'renders')
+const REALPARTS_PATH = resolve(__dirname, 'real-parts.json')
 
 // ProductLine → manifest-shard slug (mirrors the app's brand slugs).
 const BRAND_SLUGS = {
@@ -43,6 +45,11 @@ async function main() {
 
   const catalog = JSON.parse(await readFile(CATALOG_PATH, 'utf8'))
   const finishIds = catalog.finishes.map((f) => f.id)
+
+  let realParts = {}
+  try {
+    realParts = JSON.parse(await readFile(REALPARTS_PATH, 'utf8'))
+  } catch { /* no real parts mapped */ }
 
   let parts = catalog.parts.filter((p) => p.placeholder)
   if (line) parts = parts.filter((p) => p.line === line)
@@ -91,6 +98,17 @@ async function main() {
     const rig = await page.evaluate(() => window.getRig())
 
     for (const part of parts) {
+      const realRel = realParts[part.id]
+      if (realRel) {
+        const glbPath = resolve(__dirname, realRel)
+        if (existsSync(glbPath)) {
+          const b64 = (await readFile(glbPath)).toString('base64')
+          await page.evaluate((pid, data) => window.loadRealModel(pid, data), part.id, b64)
+          console.log(`  loaded real geometry for ${part.id} (${(b64.length/1e6).toFixed(1)}MB b64)`)
+        } else {
+          console.error(`  MISSING GLB for ${part.id}: ${glbPath} — using placeholder`)
+        }
+      }
       const finishes = {}
       for (const finishId of finishIds) {
         let result
@@ -124,7 +142,8 @@ async function main() {
       for (const k of Object.keys(finishes).sort()) sortedFinishes[k] = finishes[k]
       manifestParts[part.id] = { angles: { hero: { finishes: sortedFinishes } } }
       const n = Object.keys(finishes).length
-      console.log(`  ${part.id}: ${n}/${finishIds.length} finishes  (${part.placeholder.kind})`)
+      const kind = realParts[part.id] ? 'real' : part.placeholder.kind
+      console.log(`  ${part.id}: ${n}/${finishIds.length} finishes  (${kind})`)
     }
 
     const sortedParts = {}
