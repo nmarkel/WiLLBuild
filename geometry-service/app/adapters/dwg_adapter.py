@@ -25,8 +25,10 @@ adapter to produce it before converting.
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 from .base import Adapter, GenContext
@@ -36,17 +38,52 @@ _ODA_MACOS_PATH = Path(
     "/Applications/ODAFileConverter.app/Contents/MacOS/ODAFileConverter"
 )
 
+# Well-known linux install locations.  The ODA File Converter .deb installs the
+# launcher to /usr/bin/ODAFileConverter; the Dockerfile also supports a manual
+# install under /opt/oda.  ODA_PATH env var overrides everything (set it in the
+# container if the binary lands somewhere non-standard).
+_ODA_LINUX_PATHS = [
+    Path("/usr/bin/ODAFileConverter"),
+    Path("/opt/oda/ODAFileConverter"),
+    Path("/opt/ODAFileConverter/ODAFileConverter"),
+]
+
 _ODA_WARNING = "DWG skipped: ODA File Converter not installed"
 
 
 def _find_oda() -> Path | None:
-    """Return the ODA File Converter executable Path, or None if not found."""
+    """Return the ODA File Converter executable Path, or None if not found.
+
+    Search order: ODA_PATH env var → PATH → macOS bundle → well-known linux
+    install locations (Dockerfile installs the binary onto PATH as
+    ``ODAFileConverter`` so ``shutil.which`` normally finds it first).
+    """
+    env_path = os.environ.get("ODA_PATH")
+    if env_path and Path(env_path).exists():
+        return Path(env_path)
     on_path = shutil.which("ODAFileConverter")
     if on_path:
         return Path(on_path)
     if _ODA_MACOS_PATH.exists():
         return _ODA_MACOS_PATH
+    for candidate in _ODA_LINUX_PATHS:
+        if candidate.exists():
+            return candidate
     return None
+
+
+def _wrap_headless(cmd: list[str]) -> list[str]:
+    """On linux, wrap the ODA GUI binary in ``xvfb-run`` for headless operation.
+
+    ODA File Converter is a Qt GUI application that needs an X display even for
+    CLI conversions.  On a headless container we front it with a virtual
+    framebuffer.  If ``xvfb-run`` is not available (e.g. macOS, which has a
+    real display), the command is returned unchanged.
+    """
+    if sys.platform.startswith("linux") and shutil.which("xvfb-run"):
+        # -a picks a free display number; -s configures the virtual screen.
+        return ["xvfb-run", "-a", "-s", "-screen 0 1280x1024x24", *cmd]
+    return cmd
 
 
 class DwgAdapter:
@@ -95,10 +132,10 @@ class DwgAdapter:
         ]
 
         result = subprocess.run(
-            cmd,
+            _wrap_headless(cmd),
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=120,
         )
 
         if result.returncode != 0:

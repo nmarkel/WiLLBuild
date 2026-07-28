@@ -67,11 +67,23 @@ class StepAdapter:
 # Header patching
 # ---------------------------------------------------------------------------
 
-# Pattern: FILE_DESCRIPTION((<any quoted strings>),'2;1');
-# We capture just enough to safely replace the description tuple while
-# keeping the implementation level ('2;1') unchanged.
+# Pattern: FILE_DESCRIPTION((<any quoted strings>),'<level>');
+#
+# This must tolerate BOTH the OpenCASCADE/build123d form —
+#
+#     FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
+#
+# and the SolidWorks AP214 form, which adds whitespace after the keyword and
+# around tokens, splits across lines, and uses implementation level '1':
+#
+#     FILE_DESCRIPTION (( 'STEP AP214' ),
+#         '1' );
+#
+# We capture the implementation level so it can be PRESERVED verbatim in the
+# rewritten header — forcing '2;1' onto a SolidWorks '1' file would be an
+# invalid implementation-level swap.
 _FD_PATTERN = re.compile(
-    r"^FILE_DESCRIPTION\(.*?\),'2;1'\);",
+    r"^FILE_DESCRIPTION\s*\(.*?\),\s*'(?P<level>2;1|1)'\s*\)\s*;",
     re.MULTILINE | re.DOTALL,
 )
 
@@ -82,20 +94,23 @@ def _label_step_header(path: Path, config_id: str, rev: int) -> None:
     The DISCLAIMER contains only ASCII hyphens and alphanumerics — no
     apostrophes — so it embeds safely in a STEP single-quoted string.
     configId values are UUIDs (hex + hyphens) and also need no escaping.
+
+    The original implementation level (``'2;1'`` for OpenCASCADE/build123d,
+    ``'1'`` for SolidWorks) is captured and re-emitted unchanged.
     """
     text = path.read_text(encoding="ascii")
 
-    label_line = (
-        f"FILE_DESCRIPTION("
-        f"('WiLL concept model config {config_id} rev {rev}',"
-        f"'{DISCLAIMER}'),"
-        f"'2;1');"
-    )
+    def _replace(m: re.Match) -> str:
+        level = m.group("level")
+        return (
+            f"FILE_DESCRIPTION("
+            f"('WiLL concept model config {config_id} rev {rev}',"
+            f"'{DISCLAIMER}'),"
+            f"'{level}');"
+        )
 
-    # FILE_DESCRIPTION line is guaranteed to be a single ASCII line.
     # Replace only the first occurrence (the STEP header always has exactly one).
-    # Use the compiled _FD_PATTERN (which includes MULTILINE | DOTALL) to ensure
-    # the DOTALL intent applies for potential multi-line edge cases.
-    new_text = _FD_PATTERN.sub(label_line, text, count=1)
+    # MULTILINE | DOTALL let the pattern span the multi-line SolidWorks form.
+    new_text = _FD_PATTERN.sub(_replace, text, count=1)
 
     path.write_text(new_text, encoding="ascii")

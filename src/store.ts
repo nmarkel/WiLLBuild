@@ -2,10 +2,18 @@ import { create } from 'zustand'
 import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
 import { defaultConfig, repairConfig } from './lib/compat'
 import { parseDescription } from './lib/parse'
-import { configToParams, paramsToPartialConfig, paramsToViewMode } from './lib/url'
+import {
+  configToParams,
+  paramsToPartialConfig,
+  paramsToViewMode,
+  paramsToScene,
+  DEFAULT_SCENE,
+} from './lib/url'
+import type { Scene } from './lib/url'
 import { brandHomePath, builderPath, productPath, parseRoute } from './lib/routes'
 
 export type SceneMode = 'day' | 'night'
+export type { Scene } from './lib/url'
 export type ViewMode =
   | { kind: 'builder' }
   | { kind: 'product'; productId: string }
@@ -18,6 +26,12 @@ interface ConfiguratorState {
   showScale: boolean
   /** Day/night preset. Night is a conceptual preview, not a photometric simulation. */
   mode: SceneMode
+  /**
+   * Viewer daytime backdrop preset (Park/Street/Courtyard). A separate axis
+   * from `mode` and from `config` — it decorates the viewer only and survives
+   * config changes because it lives here, not in `config`.
+   */
+  scene: Scene
   /** Current view mode: builder (3D wizard) or product (standalone product page). */
   view: ViewMode
   /** Active brand — drives routing and catalog scoping. */
@@ -28,6 +42,8 @@ interface ConfiguratorState {
   applyDescription: (text: string) => string[]
   toggleScale: () => void
   toggleMode: () => void
+  /** Choose a viewer backdrop scene; persists to state + (non-default) the URL. */
+  setScene: (scene: Scene) => void
   /** Navigate to a standalone product view (switches brand to the product's line). */
   openProduct: (id: string) => void
   /** Return to the builder; restores config URL params. */
@@ -39,8 +55,12 @@ interface ConfiguratorState {
   registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
 }
 
-function syncUrl(brand: ProductLine, config: PoleConfig) {
-  window.history.replaceState(null, '', `${builderPath(brand)}?${configToParams(config)}`)
+function syncUrl(brand: ProductLine, config: PoleConfig, scene: Scene) {
+  window.history.replaceState(
+    null,
+    '',
+    `${builderPath(brand)}?${configToParams(config, scene)}`,
+  )
 }
 
 function syncProductUrl(brand: ProductLine, productId: string) {
@@ -52,6 +72,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   config: null,
   showScale: false,
   mode: 'day',
+  scene: DEFAULT_SCENE,
   view: { kind: 'builder' },
   brand: 'WiLLstudio',
 
@@ -69,36 +90,37 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     const config = fromUrl
       ? repairConfig(catalog, { ...defaultConfig(catalog, initialBrand), ...fromUrl, brand: initialBrand })
       : defaultConfig(catalog, initialBrand)
+    const scene = paramsToScene(searchParams)
     // Sync URL to match the resolved view
     if (initialView.kind === 'product') {
       syncProductUrl(initialBrand, initialView.productId)
     } else if (initialView.kind === 'home') {
       window.history.replaceState(null, '', brandHomePath(initialBrand))
     } else {
-      syncUrl(initialBrand, config)
+      syncUrl(initialBrand, config, scene)
     }
-    set({ catalog, config, view: initialView, brand: initialBrand })
+    set({ catalog, config, view: initialView, brand: initialBrand, scene })
   },
 
   select: (slot, id) => {
-    const { catalog, config, view, brand } = get()
+    const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config || config[slot] === id) return
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
     const next = repairConfig(catalog, { ...config, [slot]: id, rev: config.rev + 1 })
-    syncUrl(brand, next)
+    syncUrl(brand, next, scene)
     set({ config: next })
   },
 
   applyDescription: (text) => {
-    const { catalog, config, view, brand } = get()
+    const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config) return []
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return []
     const { matched, matchedTerms } = parseDescription(catalog, text)
     if (matchedTerms.length === 0) return []
     const next = repairConfig(catalog, { ...config, ...matched, rev: config.rev + 1 })
-    syncUrl(brand, next)
+    syncUrl(brand, next, scene)
     set({ config: next })
     return matchedTerms
   },
@@ -106,6 +128,16 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   toggleScale: () => set((s) => ({ showScale: !s.showScale })),
 
   toggleMode: () => set((s) => ({ mode: s.mode === 'day' ? 'night' : 'day' })),
+
+  setScene: (scene) => {
+    const { catalog, config, view, brand } = get()
+    set({ scene })
+    // Keep the share URL in sync while building (product view uses a bare
+    // product path and carries no scene param).
+    if (catalog && config && view.kind === 'builder') {
+      syncUrl(brand, config, scene)
+    }
+  },
 
   openProduct: (id) => {
     const { catalog, brand } = get()
@@ -117,15 +149,15 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   },
 
   openBuilder: () => {
-    const { config } = get()
-    if (config) syncUrl('WiLLstudio', config)
+    const { config, scene } = get()
+    if (config) syncUrl('WiLLstudio', config, scene)
     set({ brand: 'WiLLstudio', view: { kind: 'builder' } })
   },
 
   openHome: () => {
-    const { config, brand } = get()
+    const { config, brand, scene } = get()
     if (brand === 'WiLLstudio') {
-      if (config) syncUrl(brand, config)
+      if (config) syncUrl(brand, config, scene)
       set({ view: { kind: 'builder' } })
       return
     }

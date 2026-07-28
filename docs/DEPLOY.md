@@ -101,7 +101,13 @@ always included automatically by the service — no env change needed for local 
 ## Step 4 — Update the Frontend (Cloudflare Pages/Workers)
 
 The frontend reads `VITE_GEOMETRY_URL` at **build time** to construct the
-geometry service URL. The default (`http://localhost:8000`) is dev-only.
+geometry service URL. The default (`http://localhost:8000`) is dev-only. A
+documented template lives at `.env.production.example` in the repo root — copy it
+to `.env.production` and fill in the real fly.io URL before `npm run build`.
+
+The frontend uses the async job endpoints (`POST /jobs`, `GET /jobs/{jobId}`)
+for CAD downloads, plus `GET /files/{name}`, `GET /health`, and the legacy
+`POST /generate` — all relative to `VITE_GEOMETRY_URL`.
 
 After deploying the geometry service, rebuild and redeploy the frontend with:
 
@@ -133,20 +139,56 @@ the geometry service instead of falling back to degraded mode.
 
 ## Known Limitations / Out of Scope This Pass
 
-### DWG output (ODA File Converter)
+### DWG output (ODA File Converter) — Phase 0.7: now the DEFAULT 2D deliverable
 
-DWG export requires the **ODA File Converter** binary which is not shipped in
-the Docker image. Requests that include `"dwg"` in `formats` will receive a
-warning in the response and the DXF file will be returned instead. The download
-tray treats this gracefully.
+DWG is the preferred 2D deliverable; DXF is the fallback. DWG export requires
+the proprietary **ODA File Converter** binary. It is a **FREE download but
+requires an ODA account**, so it is NOT on apt/Homebrew and cannot be fetched
+anonymously at Docker build time. Server behaviour:
 
-Adding ODA to the image requires:
-1. Downloading `ODAFileConverter_QT5_lnxX64_8.3dll_24.8.0.snap` (or similar)
-2. Installing it in the Dockerfile via `apt`/manual extraction
-3. Updating `geometry-service/app/adapters/dwg_adapter.py` to point at the
-   installed binary path
+- **ODA present** → `dwg` is registered, `/health`'s `adapters` map reports
+  `"dwg": true`, and a request for `dwg` returns both the `.dwg` and its `.dxf`
+  (DXF stays available as the fallback file).
+- **ODA absent** → `dwg` is not registered, `/health` omits it, and a request
+  for `dwg` still returns 200 with the DXF plus the warning
+  `"DWG skipped: ODA File Converter not installed"`. The frontend download tray
+  already prefers `dwg` when `/health` advertises it and degrades gracefully
+  otherwise.
 
-This is deferred to a future pass.
+The Dockerfile bakes in everything ODA needs on debian-slim **except the binary
+itself** (xvfb for headless, Qt5 runtime, X11/xcb libs, fontconfig,
+hicolor-icon-theme). `dwg_adapter.py` wraps the ODA CLI in `xvfb-run` on linux
+and `_find_oda()` checks, in order: `$ODA_PATH` → `PATH` → the macOS bundle →
+`/usr/bin/ODAFileConverter` and other well-known linux paths.
+
+**Runbook — enabling real DWG (steps 1-2 need a human; 3-4 are the automated build):**
+
+1. **[HUMAN]** Create a free ODA account at <https://www.opendesign.com> and
+   download the Linux **ODA File Converter** `.deb` (e.g.
+   `ODAFileConverter_QT5_lnxX64_8.3dll_25.12.deb`). Host it somewhere the build
+   can `curl` it (a private bucket, a release asset, or an internal URL). The
+   URL is account-gated, so **do not commit it**.
+2. **[HUMAN]** Note the download URL → this is `ODA_URL`.
+3. **[AUTOMATED]** Build/deploy passing the URL as a build-arg:
+   ```bash
+   # From repo root:
+   fly deploy --config geometry-service/fly.toml \
+       --build-arg ODA_URL="https://.../ODAFileConverter_QT5_lnxX64_25.12.deb"
+   ```
+   (Local test build: `docker build -f geometry-service/Dockerfile \
+   --build-arg ODA_URL="..." -t willbuild-geometry .`)
+4. **[AUTOMATED]** The Dockerfile downloads + `dpkg -i` installs it onto PATH as
+   `ODAFileConverter`. If it lands elsewhere, set `ODA_PATH` (env or
+   `fly secrets set ODA_PATH=/path/to/ODAFileConverter`).
+
+If `ODA_URL` is omitted the image builds fine **without** DWG (DXF fallback) —
+no build failure.
+
+**Verify:** `curl https://<app>.fly.dev/health` → `adapters` map contains
+`"dwg": true`. Then request a DWG (see the async section below) and confirm a
+`.dwg` file is returned. NOTE: whether a produced `.dwg` actually **opens in a
+CAD viewer** is a **human check** — ODA is not installed in the dev/test
+environment, so that end-to-end path is unverified here.
 
 ### RFA / Autodesk Platform Services (APS)
 
@@ -163,3 +205,61 @@ file). To enable real Revit Family file generation via APS:
    | `APS_ACTIVITY_ID` | Design Automation activity ID   |
 
 3. Redeploy. When all three vars are present the adapter flips from mock to real.
+
+---
+
+## Async generation (`/jobs`) + caching — Phase 0.7
+
+The synchronous `POST /generate` contract is unchanged. Phase 0.7 adds an
+**additive** async job layer so the frontend can generate CAD without blocking
+the UI and can show progress:
+
+| Endpoint            | Request                              | Response |
+|---------------------|--------------------------------------|----------|
+| `POST /jobs`        | `{config, formats[], renderPng?}`    | `200 {jobId, configHash, status:"pending"\|"done", cached:bool}` — validates config exactly like `/generate` (422 with string `detail` on invalid; same standalone-only-pdf rule). If every requested format is already on disk for this config it returns `status:"done", cached:true` immediately; otherwise `status:"pending"` and background generation starts. |
+| `GET /jobs/{jobId}` | —                                    | `200 {jobId, status:"pending"\|"running"\|"done"\|"error", progress:0..100, stage, files:[{format,filename,url,sizeBytes}], warnings:[], error}` — `files` populated only when `done`; `404` if the jobId is unknown. |
+| `GET /files/{name}` | —                                    | The actual bytes (unchanged; path-traversal guarded). |
+
+Implementation notes for operators:
+
+- Generation runs on a process-local single-worker thread pool (build123d/OCCT
+  is not concurrency-safe), so jobs are serialised but never block the event
+  loop. This matches the single-worker uvicorn `CMD` in the Dockerfile.
+- **Cache** is disk-based and keyed by the deterministic output filename
+  (`WiLL_<configHash>_<configId8>.<ext>`). Because the pipeline is byte
+  deterministic, a repeat request for the same config finds its files and skips
+  the adapters entirely.
+- The `out/` directory is **ephemeral** on fly.io (no volume mounted). With
+  `auto_stop_machines`, a stopped machine loses its cache — this is acceptable
+  for a concept service (regeneration is a few seconds). Mount a fly volume at
+  `/app/out` if you want the cache to survive restarts.
+
+**Weight:** the customer deliverable is produced entirely by the parametric kit
+— there is **no** real-engineering-STEP passthrough in the download path (the
+~87 MB figure from the Phase 0.6 spike was the raw SolidWorks STEP loaded
+directly, never wired into `/generate`). Measured GVX sizes: STEP ~0.97 MB, IFC
+~4.2 MB (largest), DXF ~0.03 MB, PDF ~0.003 MB, bundle ~0.27 MB — all well under
+the ≤10 MB/file target, enforced by `tests/test_weight.py`.
+
+**Verify async + cache after deploy:**
+
+```bash
+APP=https://<app>.fly.dev
+CFG='{"config":{"configId":"deploy-check","pole":"alum-pole-20","baseCover":"bc-fluted","arm":"sh1-shepherds-hook","fixture":"gvx-pendant","finish":"matte-black","rev":1},"formats":["step","dxf"]}'
+# 1. submit
+JOB=$(curl -s -X POST $APP/jobs -H 'content-type: application/json' -d "$CFG" | tee /dev/stderr | python -c 'import sys,json;print(json.load(sys.stdin)["jobId"])')
+# 2. poll until done
+curl -s $APP/jobs/$JOB | python -m json.tool
+# 3. resubmit identical → expect "cached": true
+curl -s -X POST $APP/jobs -H 'content-type: application/json' -d "$CFG" | python -m json.tool
+```
+
+| Check                                             | Status |
+|---------------------------------------------------|--------|
+| `/health`, `/generate`, `/files/{name}` live      | automated in CI |
+| async `/jobs` lifecycle pending→done              | automated (`tests/test_jobs.py`) |
+| cache hit on repeat request                       | automated (`tests/test_jobs.py`) |
+| every GVX deliverable ≤ 10 MB                     | automated (`tests/test_weight.py`) |
+| `/health` reports `dwg:true`                      | **needs human** — requires ODA installed in the image |
+| produced `.dwg` opens in a CAD viewer             | **needs human** — ODA not installed in dev/test |
+| `fly deploy` succeeds & app reachable             | **needs human** — flyctl auth is a manual step |
