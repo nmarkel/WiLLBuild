@@ -10,6 +10,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
  */
 
 const realModels = new Map<string, THREE.Group>()
+/** Yaw (radians about +Y) applied to a real GLB so its reach matches the
+ *  catalog's +X convention — real CAD parts arrive on arbitrary native axes. */
+const realRotations = new Map<string, number>()
 const gltfLoader = new GLTFLoader()
 
 /** Decode a base64 GLB to an ArrayBuffer (browser). */
@@ -20,10 +23,15 @@ function b64ToArrayBuffer(b64: string): ArrayBuffer {
   return bytes.buffer
 }
 
-async function loadRealModel(partId: string, base64: string): Promise<void> {
+async function loadRealModel(
+  partId: string,
+  base64: string,
+  rotateYDeg = 0,
+): Promise<void> {
   const buf = b64ToArrayBuffer(base64)
   const gltf = await gltfLoader.parseAsync(buf, '')
   realModels.set(partId, gltf.scene)
+  realRotations.set(partId, (rotateYDeg * Math.PI) / 180)
 }
 
 // ---- Rig constants (shared across every part → layer coherence) -------------
@@ -196,6 +204,10 @@ function instantiateRealModel(partId: string, finish: FinishDef): THREE.Object3D
     }
     // 'will-fixed-*' keep their GLTF-imported material (authored color)
   })
+  // Yaw about the origin (Y axis) to align the reach with the +X convention.
+  // Rotating through the origin keeps the part's origin — and its pole-gripping
+  // collar at X≈0,Z≈0 — fixed, so only the reach swings around.
+  root.rotation.y = realRotations.get(partId) ?? 0
   return root
 }
 

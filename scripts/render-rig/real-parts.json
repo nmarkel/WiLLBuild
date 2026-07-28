@@ -1,6 +1,9 @@
 {
   "alum-pole-12": "real-assets/glb/alum-pole-12.glb",
   "bc-round": "real-assets/glb/bc-round.glb",
-  "sh1-shepherds-hook": "real-assets/glb/sh1-shepherds-hook.glb",
+  "sh1-shepherds-hook": {
+    "glb": "real-assets/glb/sh1-shepherds-hook.glb",
+    "rotateY": -90
+  },
   "gvx-pendant": "real-assets/glb/gvx-pendant.glb"
 }

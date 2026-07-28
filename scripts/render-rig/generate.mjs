@@ -98,15 +98,22 @@ async function main() {
     const rig = await page.evaluate(() => window.getRig())
 
     for (const part of parts) {
-      const realRel = realParts[part.id]
+      const realEntry = realParts[part.id]
+      const realRel = typeof realEntry === 'string' ? realEntry : realEntry?.glb
+      const rotateY = typeof realEntry === 'object' ? (realEntry.rotateY ?? 0) : 0
       let realLoaded = false
       if (realRel) {
         const glbPath = resolve(__dirname, realRel)
         if (existsSync(glbPath)) {
           const b64 = (await readFile(glbPath)).toString('base64')
           try {
-            await page.evaluate((pid, data) => window.loadRealModel(pid, data), part.id, b64)
-            console.log(`  loaded real geometry for ${part.id} (${(b64.length/1e6).toFixed(1)}MB b64)`)
+            await page.evaluate(
+              (pid, data, rot) => window.loadRealModel(pid, data, rot),
+              part.id,
+              b64,
+              rotateY,
+            )
+            console.log(`  loaded real geometry for ${part.id} (${(b64.length / 1e6).toFixed(1)}MB b64)`)
             realLoaded = true
           } catch (err) {
             console.error(`  FAILED to load real GLB for ${part.id}: ${err.message} — using placeholder`)

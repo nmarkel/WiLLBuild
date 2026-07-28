@@ -3205,47 +3205,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--hero--forest-green.webp",
-              "width": 77,
-              "height": 169,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                15.18,
-                161.27
+                15.98,
+                155.23
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--hero--gloss-white.webp",
-              "width": 77,
-              "height": 169,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                15.18,
-                161.27
+                15.98,
+                155.23
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--hero--matte-black.webp",
-              "width": 77,
-              "height": 169,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                15.18,
-                161.27
+                15.98,
+                155.23
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--hero--silver.webp",
-              "width": 77,
-              "height": 169,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                15.18,
-                161.27
+                15.98,
+                155.23
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--hero--statuary-bronze.webp",
-              "width": 77,
-              "height": 169,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                15.18,
-                161.27
+                15.98,
+                155.23
               ]
             }
           }
