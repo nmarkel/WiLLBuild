@@ -9,12 +9,24 @@ primary_region = "ord"
 [build]
   # Build context is the repo root so public/catalog.json is reachable.
   dockerfile = "geometry-service/Dockerfile"
+  # ODA File Converter (real DWG output) is a FREE but account-gated download,
+  # so its URL is NOT committed here.  Pass it at deploy time instead:
+  #   fly deploy --config geometry-service/fly.toml \
+  #       --build-arg ODA_URL="https://.../ODAFileConverter_QT5_lnxX64_...deb"
+  # When omitted the image builds without DWG and falls back to DXF.
+  # (Uncomment + fill ONLY if you accept committing the URL:)
+  # [build.args]
+  #   ODA_URL = "https://.../ODAFileConverter_QT5_lnxX64_25.12.deb"
 
 [env]
-  # Frontend origin that is allowed to call this service.
-  # After deploying the frontend, update this to the real Cloudflare URL.
+  # Frontend origin that is allowed to call this service.  ALLOWED_ORIGINS is
+  # env-driven (comma-separated); merged with localhost dev defaults in
+  # app/main.py::_allowed_origins.  Set it to the LIVE frontend origin below;
+  # override without redeploying via: fly secrets set ALLOWED_ORIGINS="..."
   ALLOWED_ORIGINS = "https://willbuild.nmarkel.workers.dev"
   CATALOG_PATH    = "/app/catalog.json"
+  # Qt platform plugin for the headless ODA File Converter (see Dockerfile).
+  QT_QPA_PLATFORM = "xcb"
 
 [[http_service]]
   internal_port       = 8080

@@ -186,7 +186,10 @@ describe('attachSocket', () => {
   it('finds the socket position for a fixture on its arm', () => {
     const arm = partById(catalog, 'sh1-shepherds-hook')!
     const fixture = partById(catalog, 'gvx-pendant')!
-    expect(attachSocket(fixture, arm)?.position).toEqual([0, 0.729, -0.513])
+    // Real-geometry SH1 socket (catalog.json is the source of truth; updated in
+    // cf6c563 "real SH1 shepherd's-hook fixture alignment"). The test expectation
+    // had lagged that committed catalog change — reconciled here.
+    expect(attachSocket(fixture, arm)?.position).toEqual([0.483, 0.514, 0])
   })
 
   it('lets a post top sit directly on the pole via the direct mount adapter', () => {

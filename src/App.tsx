@@ -9,9 +9,10 @@ import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
 import { BrandProductList, firstBrandProduct } from './components/BrandProductList'
+import { ScenePicker } from './components/ScenePicker'
 
 export default function App() {
-  const { catalog, config, showScale, mode, view, brand, loadCatalog, toggleScale, toggleMode, openHome } =
+  const { catalog, config, showScale, mode, scene, view, brand, loadCatalog, toggleScale, toggleMode, openHome } =
     useConfigurator()
 
   useEffect(() => {
@@ -105,11 +106,12 @@ export default function App() {
         <OutputTray catalog={catalog} config={config} />
       </aside>
       <main className="viewport">
-        <CompositeViewer catalog={catalog} config={config} showScale={showScale} mode={mode} />
+        <CompositeViewer catalog={catalog} config={config} showScale={showScale} mode={mode} scene={scene} />
         {mode === 'night' && (
           <div className="night-disclaimer">Conceptual night preview — not a photometric simulation</div>
         )}
         <div className="viewport-controls">
+          {mode === 'day' && <ScenePicker />}
           <button
             className="scale-toggle"
             onClick={toggleMode}

@@ -9,10 +9,74 @@ const MARGIN_FRAC = 0.06
 const HUMAN_HEIGHT_M = 1.83
 const HUMAN_WORLD_X_M = 1.4
 
+/**
+ * Night fixture-light sizing, in real meters (converted to pixels via the
+ * rig's pxPerMeterY). The illumination cue is a downward spotlight CONE onto a
+ * warm ground POOL — NOT a big self-lit disc. The lens is a small emissive
+ * element with a small soft bloom; the pool does the lighting work.
+ * Shared by the live viewer (CompositeViewer + index.css) and this PNG export
+ * so both read identically.
+ */
+export const LENS_DIAMETER_M = 0.16 // believable small lens, sized to the real lens
+export const BLOOM_DIAMETER_M = 0.55 // small soft glow around the lens (used sparingly)
+export const POOL_RX_M = 1.7 // ground pool half-width (bright center, soft falloff)
+export const POOL_RY_M = 0.5 // pool half-depth — flattened ellipse read as ground
+
+/** Warm ~2700–3000K palette — warm white/amber, never saturated cartoon yellow. */
+export const WARM_LENS = 'rgba(255, 240, 214, 1)'
+export const WARM_BLOOM_IN = 'rgba(255, 232, 198, 0.7)'
+export const WARM_BLOOM_OUT = 'rgba(255, 232, 198, 0)'
+export const WARM_POOL_IN = 'rgba(255, 214, 158, 0.5)'
+export const WARM_POOL_OUT = 'rgba(255, 196, 130, 0)'
+export const WARM_BEAM_TOP = 'rgba(255, 226, 182, 0.22)'
+export const WARM_BEAM_BOTTOM = 'rgba(255, 212, 152, 0.02)'
+
 export interface FitScale {
   scale: number
   offsetX: number
   offsetY: number
+}
+
+/**
+ * Pure geometry of the night spotlight, in the SAME coordinate space as its
+ * inputs (i.e. `lightPx`/`groundY` in stage pixels → all outputs in stage
+ * pixels). The live viewer consumes these directly; the PNG export maps them
+ * through its own fit scale. Keeping it pure makes the make-or-break sizing
+ * (small lens, wide ground pool, tapering beam) unit-testable.
+ */
+export interface NightLight {
+  lens: { x: number; y: number; d: number }
+  bloom: { x: number; y: number; d: number }
+  pool: { x: number; y: number; rx: number; ry: number }
+  /** Downward cone bounding box + apex half-width as a % of that box's width. */
+  beam: { left: number; top: number; width: number; height: number; apexHalfPct: number }
+}
+
+export function nightLight(
+  lightPx: [number, number],
+  groundY: number,
+  pxPerMeterY: number,
+): NightLight {
+  const [lx, ly] = lightPx
+  const lensD = LENS_DIAMETER_M * pxPerMeterY
+  const bloomD = BLOOM_DIAMETER_M * pxPerMeterY
+  const poolRx = POOL_RX_M * pxPerMeterY
+  const poolRy = POOL_RY_M * pxPerMeterY
+  const apexHalf = (LENS_DIAMETER_M / 2) * pxPerMeterY
+  const beamWidth = poolRx * 2
+  const beamHeight = Math.max(0, groundY - ly)
+  return {
+    lens: { x: lx, y: ly, d: lensD },
+    bloom: { x: lx, y: ly, d: bloomD },
+    pool: { x: lx, y: groundY, rx: poolRx, ry: poolRy },
+    beam: {
+      left: lx - poolRx,
+      top: ly,
+      width: beamWidth,
+      height: beamHeight,
+      apexHalfPct: beamWidth > 0 ? (apexHalf / beamWidth) * 100 : 0,
+    },
+  }
 }
 
 /**
@@ -77,26 +141,53 @@ export async function compositeToBlob(
       offsetY + y * scale,
     ]
 
-    if (opts.night && layout.lightPx) {
-      const [lx, ly] = toCanvas(layout.lightPx[0], layout.lightPx[1])
-      const glowR = 220 * scale + 60
-      const glow = ctx.createRadialGradient(lx, ly, 0, lx, ly, glowR)
-      glow.addColorStop(0, 'rgba(255, 207, 46, 0.35)')
-      glow.addColorStop(1, 'rgba(255, 207, 46, 0)')
-      ctx.fillStyle = glow
-      ctx.fillRect(lx - glowR, ly - glowR, glowR * 2, glowR * 2)
+    // Night light: the warm ground POOL + downward spotlight cone are drawn
+    // BEFORE the layers (so the pole/fixture occlude them, reading as light in
+    // the scene rather than a sticker on top). No self-lit lens "ball" at the
+    // head — the illumination comes entirely from the pool + cone. This is a
+    // conceptual LOOK, not a photometric result — the disclaimer stays in the UI.
+    const light =
+      opts.night && layout.lightPx
+        ? nightLight(layout.lightPx, layout.origin[1], opts.pxPerMeterY)
+        : null
 
-      // Warm ground pool below the fixture, at the assembly's ground line.
-      const [, groundY] = toCanvas(layout.lightPx[0], layout.origin[1])
-      const poolRX = 160 * scale + 40
-      const poolRY = poolRX * 0.32
-      const pool = ctx.createRadialGradient(lx, groundY, 0, lx, groundY, poolRX)
-      pool.addColorStop(0, 'rgba(255, 207, 46, 0.28)')
-      pool.addColorStop(1, 'rgba(255, 207, 46, 0)')
+    if (light) {
+      // 1. Warm ground pool — the primary illumination cue, brightest at
+      //    center with soft radial falloff.
+      const [px, py] = toCanvas(light.pool.x, light.pool.y)
+      const poolRX = light.pool.rx * scale
+      const poolRY = light.pool.ry * scale
+      const pool = ctx.createRadialGradient(px, py, 0, px, py, poolRX)
+      pool.addColorStop(0, WARM_POOL_IN)
+      pool.addColorStop(1, WARM_POOL_OUT)
+      ctx.save()
       ctx.fillStyle = pool
       ctx.beginPath()
-      ctx.ellipse(lx, groundY, poolRX, poolRY, 0, 0, Math.PI * 2)
+      ctx.ellipse(px, py, poolRX, poolRY, 0, 0, Math.PI * 2)
       ctx.fill()
+      ctx.restore()
+
+      // 2. Downward spotlight cone: narrow at the lens, widening to the pool.
+      if (light.beam.height > 0) {
+        const { left, top, width, height, apexHalfPct } = light.beam
+        const apexL = toCanvas(left + (width * (50 - apexHalfPct)) / 100, top)
+        const apexR = toCanvas(left + (width * (50 + apexHalfPct)) / 100, top)
+        const baseL = toCanvas(left, top + height)
+        const baseR = toCanvas(left + width, top + height)
+        const beam = ctx.createLinearGradient(0, apexL[1], 0, baseL[1])
+        beam.addColorStop(0, WARM_BEAM_TOP)
+        beam.addColorStop(1, WARM_BEAM_BOTTOM)
+        ctx.save()
+        ctx.fillStyle = beam
+        ctx.beginPath()
+        ctx.moveTo(apexL[0], apexL[1])
+        ctx.lineTo(apexR[0], apexR[1])
+        ctx.lineTo(baseR[0], baseR[1])
+        ctx.lineTo(baseL[0], baseL[1])
+        ctx.closePath()
+        ctx.fill()
+        ctx.restore()
+      }
     }
 
     // Soft ground-shadow ellipse under the assembly.

@@ -35,3 +35,20 @@ class GenerateResponse(BaseModel):
     configHash: str
     files: list[FileEntry]
     warnings: list[str]
+
+
+class JobSubmitResponse(BaseModel):
+    jobId: str
+    configHash: str
+    status: Literal["pending", "done"]
+    cached: bool
+
+
+class JobStatusResponse(BaseModel):
+    jobId: str
+    status: Literal["pending", "running", "done", "error"]
+    progress: float
+    stage: str
+    files: list[FileEntry]
+    warnings: list[str]
+    error: str | None = None

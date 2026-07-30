@@ -728,6 +728,36 @@ body {
   border-color: var(--will-gray);
 }
 
+/* Viewer backdrop scene picker — small chips alongside the day/night +
+   human-scale controls. Selected chip uses the WiLL palette: yellow bg with
+   gunmetal text (never blue). Reuses .scale-toggle chrome. */
+.scene-picker {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+}
+
+.scene-chip {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 6px 12px;
+}
+
+.scene-chip.active {
+  background: var(--will-yellow);
+  color: var(--will-gray);
+  border-color: var(--will-yellow);
+  font-weight: 500;
+}
+
+.scene-chip.active:hover {
+  border-color: var(--will-dark-yellow);
+}
+
 /* ---- Catalog Nav ---- */
 
 .catalog-nav-collapsed {
@@ -1475,10 +1505,48 @@ body {
   background: #111318;
 }
 
+/* Blank scene — no backdrop photo; a clean studio sweep shows through instead.
+   Soft white-to-silver so the product reads as a catalog/studio shot (day);
+   a subtle dark gradient at night so the warm ground pool + cone still read. */
+.composite-viewer.blank {
+  background: radial-gradient(ellipse 120% 100% at 50% 32%, #ffffff 0%, var(--will-silver) 68%, #d5d6d8 100%);
+}
+
+.composite-viewer.night.blank {
+  background: radial-gradient(ellipse 110% 95% at 50% 28%, #1b1e26 0%, #0d0f13 100%);
+}
+
+/* Selectable daytime backdrop. Stretched to fill the viewport (object-fit:
+   fill) so each scene SVG's baked ground line stays at the shared horizon
+   fraction (0.72) regardless of viewport aspect — that is what lets the
+   pinned product foot land on the ground in every scene. Sits behind the
+   stage; the product is NOT relit per scene, only the backdrop swaps. */
+.composite-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Night dims the selected daytime scene toward neutral dark so the warm
+   fixture pool reads. Night stays a conceptual look (labeled in the UI). */
+.composite-viewer.night .composite-backdrop {
+  filter: brightness(0.28) saturate(0.6) contrast(0.95);
+}
+
+/* transform-origin is top-left so the JS pin (screen = translate + scale·local)
+   can place the product's ground line exactly on the shared horizon. */
 .composite-stage {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   flex-shrink: 0;
-  transform-origin: center center;
+  transform-origin: 0 0;
+  z-index: 1;
 }
 
 .composite-layer {
@@ -1502,38 +1570,35 @@ body {
   pointer-events: none;
 }
 
-/* Night: warm ground pool under the fixture's light. */
+/* Night: the PRIMARY illumination cue — a warm ground pool directly under the
+   pole, brightest at center with soft radial falloff. Warm ~2700–3000K
+   (warm white/amber), not a saturated cartoon yellow. Warm values kept in
+   sync with lib/snapshot.ts (WARM_POOL_*). */
 .composite-light-pool {
   position: absolute;
   z-index: 0;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255, 217, 160, 0.32) 0%, rgba(255, 217, 160, 0) 75%);
+  background: radial-gradient(ellipse at center, rgba(255, 214, 158, 0.5) 0%, rgba(255, 196, 130, 0) 72%);
+  mix-blend-mode: screen;
   pointer-events: none;
 }
 
-/* Night: the fixture's ambient glow — sits under the fixture layer so the
-   housing itself occludes the hottest part of the gradient, same as the
-   PNG export in lib/snapshot.ts. */
-.composite-light-glow {
+/* Night: downward spotlight cone from the lens to the pool. Narrow at the top
+   (clip-path apex set inline), widening to the pool; warm gradient fades
+   toward the ground where the pool takes over. Sits under the layers so the
+   pole occludes it, reading as light in the scene rather than a sticker. */
+.composite-light-beam {
   position: absolute;
   z-index: 0;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(255, 217, 160, 0.55) 0%, rgba(255, 217, 160, 0) 70%);
+  background: linear-gradient(to bottom, rgba(255, 226, 182, 0.22) 0%, rgba(255, 212, 152, 0.02) 100%);
+  mix-blend-mode: screen;
   pointer-events: none;
 }
 
-/* Night: the visible emissive bulb — sits above every layer so it always reads. */
-.composite-light-dot {
-  position: absolute;
-  z-index: 5;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #ffd9a0;
-  box-shadow: 0 0 8px 2px rgba(255, 217, 160, 0.8);
-  pointer-events: none;
-}
+/* The self-lit lens "ball" (bloom halo + emissive dot) was removed — the night
+   illumination reads entirely from the warm ground pool + downward cone above,
+   so the fixture head no longer shows a glowing disc. */
 
 .composite-scale-figure {
   position: absolute;

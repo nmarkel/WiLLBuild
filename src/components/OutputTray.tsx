@@ -5,11 +5,13 @@ import { buildSummaryText } from '../lib/summary'
 import { useConfigurator } from '../store'
 import {
   availableFormats,
-  generateOutputs,
+  startJob,
+  pollJob,
   downloadGeneratedFile,
   GeometryError,
   type OutputFormat,
 } from '../lib/geometry'
+import './output-tray.css'
 
 interface Props {
   catalog: Catalog
@@ -27,6 +29,10 @@ type CardPhase = 'idle' | 'working' | 'done' | 'error'
 interface CardState {
   phase: CardPhase
   error?: string
+  /** 0..100 while working (from the job poll). */
+  progress?: number
+  /** Human-readable stage label while working. */
+  stage?: string
 }
 
 // ---- Deliverable definitions ----
@@ -228,6 +234,26 @@ function DeliverableCard({ def, available, state, availFormats, requestFormat, o
           <span />
         </span>
       )}
+      {isWorking && (
+        <span
+          className="deliverable-progress"
+          role="progressbar"
+          aria-valuenow={typeof state.progress === 'number' ? Math.round(state.progress) : undefined}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <span className="deliverable-progress-track">
+            <span
+              className="deliverable-progress-fill"
+              style={{ width: `${Math.max(0, Math.min(100, state.progress ?? 0))}%` }}
+            />
+          </span>
+          <span className="deliverable-progress-label">
+            {state.stage ? `${state.stage}` : 'Working…'}
+            {typeof state.progress === 'number' ? ` · ${Math.round(state.progress)}%` : ''}
+          </span>
+        </span>
+      )}
       {hasError && state.error && (
         <span className="deliverable-error">{state.error}</span>
       )}
@@ -275,10 +301,10 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
   const getCardState = (format: string): CardState =>
     cardStates[format] ?? { phase: 'idle' }
 
-  /** Carry out the actual generate + download sequence. */
+  /** Carry out the async generate + download sequence (startJob → poll → download). */
   const runDelivery = useCallback(
     async (format: OutputFormat, def: DeliverableDef) => {
-      setCardState(format, { phase: 'working' })
+      setCardState(format, { phase: 'working', progress: 0, stage: 'Starting…' })
       try {
         // Gather render PNG if needed
         let renderPng: string | undefined
@@ -290,7 +316,11 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
           }
         }
 
-        const response = await generateOutputs(config, [format], renderPng)
+        // Enqueue the job, then poll for progress until it finishes.
+        const start = await startJob(config, [format], renderPng)
+        const response = await pollJob(start.jobId, ({ progress, stage }) => {
+          setCardState(format, { phase: 'working', progress, stage })
+        })
 
         // Accumulate any new warnings
         if (response.warnings.length > 0) {
@@ -300,7 +330,7 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
           })
         }
 
-        // Treat an empty file list as a failure — the service returned 200 but
+        // Treat an empty file list as a failure — the job finished but
         // no adapter produced output (adapter error surfaced only in warnings).
         if (response.files.length === 0) {
           const detail =

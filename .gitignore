@@ -36,3 +36,6 @@ dist-ssr
 
 # Real-geometry render-rig inputs (offline only — large STEP/GLB, never shipped)
 scripts/render-rig/real-assets/
+
+# Large raw engineering CAD source zips (not app build inputs) — keep out of git
+geometry-service/*.zip

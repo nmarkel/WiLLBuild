@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { PoleConfig } from '../types'
-import { configToParams, paramsToPartialConfig, productToParams, paramsToViewMode } from './url'
+import {
+  configToParams,
+  paramsToPartialConfig,
+  productToParams,
+  paramsToViewMode,
+  paramsToScene,
+  DEFAULT_SCENE,
+} from './url'
 
 const config: PoleConfig = {
   configId: 'test',
@@ -72,6 +79,41 @@ describe('brand round-trip', () => {
     const partial = paramsToPartialConfig(params)
     expect(partial?.brand).toBe('NAFCO')
     expect(partial?.pole).toBe('alum-pole-14')
+  })
+})
+
+describe('scene <-> URL params', () => {
+  it('default scene (Park) is omitted from params', () => {
+    const params = configToParams(config, 'park')
+    expect(params.get('scene')).toBeNull()
+  })
+
+  it('scene param is absent when scene is not passed (backwards compatible)', () => {
+    expect(configToParams(config).get('scene')).toBeNull()
+  })
+
+  it('non-default scene is serialized', () => {
+    expect(configToParams(config, 'street').get('scene')).toBe('street')
+    expect(configToParams(config, 'courtyard').get('scene')).toBe('courtyard')
+  })
+
+  it('non-default scene round-trips through params', () => {
+    const params = configToParams(config, 'courtyard')
+    expect(paramsToScene(params)).toBe('courtyard')
+  })
+
+  it('absent scene param reads back as the default', () => {
+    expect(paramsToScene(configToParams(config))).toBe(DEFAULT_SCENE)
+    expect(paramsToScene(new URLSearchParams(''))).toBe('park')
+  })
+
+  it('unknown scene value falls back to the default (not trusted)', () => {
+    expect(paramsToScene(new URLSearchParams('?scene=evilstring'))).toBe(DEFAULT_SCENE)
+  })
+
+  it('scene param does not leak into the parsed config', () => {
+    const partial = paramsToPartialConfig(configToParams(config, 'street'))
+    expect(partial).not.toHaveProperty('scene')
   })
 })
 
