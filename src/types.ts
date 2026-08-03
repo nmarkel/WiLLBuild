@@ -160,7 +160,7 @@ export interface Catalog {
   /** True until the standard WiLLcoat palette is confirmed — surfaced in the UI. */
   finishesProvisional: boolean
   referenceAssemblies: ReferenceAssembly[]
-  /** Official category order per product line (willbrands.com/pages/products) — drives CatalogNav pill order. */
+  /** Official category order per product line (willbrands.com/pages/products) — drives brand-showroom category order. */
   categories?: Record<string, string[]>
 }
 

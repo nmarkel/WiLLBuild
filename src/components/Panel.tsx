@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
 import { allowedArmCounts, compatibleParts, partById } from '../lib/compat'
 import { useConfigurator } from '../store'
+import { BannerPicker } from './BannerPicker'
 
 /** Phase 0.8 (A1): labels for the radial arm-count selector. */
 const ARM_COUNT_LABELS: Record<number, { label: string; sub: string }> = {
@@ -92,6 +93,9 @@ export function Panel({ catalog, config }: Props) {
                 {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                     the chosen pole + arm actually support multiples (catalog rule). */}
                 {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
+                {/* Phase 0.9 (A2): banner-arm accessory mounts on the pole shaft,
+                    so its controls live inside the Pole step (no standalone section). */}
+                {step.key === 'pole' && <BannerPicker catalog={catalog} config={config} />}
               </div>
             )}
           </section>

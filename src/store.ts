@@ -52,8 +52,6 @@ interface ConfiguratorState {
   setScene: (scene: Scene) => void
   /** Navigate to a standalone product view (switches brand to the product's line). */
   openProduct: (id: string) => void
-  /** Return to the builder; restores config URL params. */
-  openBuilder: () => void
   /** Return to the current brand's landing (builder for WiLLstudio, product grid otherwise). */
   openHome: () => void
   /** High-res capture registered by the mounted viewer (CompositeViewer/ProductViewer); null until mounted. */
@@ -179,12 +177,6 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     const nextBrand: ProductLine = partLine && partLine !== 'Other' ? partLine : brand
     syncProductUrl(nextBrand, id)
     set({ brand: nextBrand, view: { kind: 'product', productId: id } })
-  },
-
-  openBuilder: () => {
-    const { config, scene } = get()
-    if (config) syncUrl('WiLLstudio', config, scene)
-    set({ brand: 'WiLLstudio', view: { kind: 'builder' } })
   },
 
   openHome: () => {

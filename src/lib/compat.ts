@@ -107,9 +107,16 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     if (!bannerPart || bannerPart.slot !== 'banner') next.banner = null
     else {
       const sides = bannerPart.arrangements ?? [1]
-      if (!sides.includes(next.banner.count)) {
-        next.banner = { ...next.banner, count: sides[0] ?? 1 }
-      }
+      let banner = next.banner
+      if (!sides.includes(banner.count)) banner = { ...banner, count: sides[0] ?? 1 }
+      // Phase 0.9: clamp the shaft height to the pole's usable range so a
+      // hand-crafted share link can't place the banner off the pole (mirrors
+      // BannerPicker's slider bounds: [4 ft, pole height − 2 ft]).
+      const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
+      const maxFt = Math.max(4, Math.round(poleFt - 2))
+      const clampedFt = Math.min(maxFt, Math.max(4, banner.heightFt))
+      if (clampedFt !== banner.heightFt) banner = { ...banner, heightFt: clampedFt }
+      next.banner = banner
     }
   }
   return next

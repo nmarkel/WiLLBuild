@@ -6,8 +6,6 @@ import { Summary } from './components/Summary'
 import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
 import { SpecOptions } from './components/SpecOptions'
-import { BannerPicker } from './components/BannerPicker'
-import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
 import { BrandProductList, firstBrandProduct } from './components/BrandProductList'
@@ -66,7 +64,6 @@ export default function App() {
             <span className="brand-sub">3D Pole Configurator</span>
           </header>
           <BrandSwitcher />
-          <CatalogNav catalog={catalog} activeBrand={brand} />
         </aside>
         <main className="viewport">
           <div className="product-viewer-shell">
@@ -101,10 +98,8 @@ export default function App() {
           <span className="brand-sub">3D Pole Configurator</span>
         </header>
         <BrandSwitcher />
-        <CatalogNav catalog={catalog} activeBrand={brand} />
         {brand === 'WiLLstudio' && <DescribeBox />}
         <Panel catalog={catalog} config={config} />
-        <BannerPicker catalog={catalog} config={config} />
         <SpecOptions catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
         <OutputTray catalog={catalog} config={config} />

@@ -412,3 +412,23 @@ describe('repairConfig — arm count clamping', () => {
     expect(repairConfig(catalog, cfg).armCount).toBe(1)
   })
 })
+
+describe('repairConfig — banner shaft-height clamping (Phase 0.9)', () => {
+  const bannerId = 'willstudio-ba1-banner-arm'
+
+  it('clamps an out-of-range height from a crafted share link down to the pole max', () => {
+    // 14 ft pole → usable max = round(14 - 2) = 12 ft; a 9999 ft link must clamp.
+    const cfg = config({ pole: 'alum-pole-14', banner: { armId: bannerId, count: 2, heightFt: 9999 } })
+    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(12)
+  })
+
+  it('clamps a below-floor height up to 4 ft', () => {
+    const cfg = config({ pole: 'alum-pole-14', banner: { armId: bannerId, count: 1, heightFt: 0 } })
+    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(4)
+  })
+
+  it('leaves an in-range height untouched', () => {
+    const cfg = config({ pole: 'alum-pole-20', banner: { armId: bannerId, count: 2, heightFt: 8 } })
+    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
+  })
+})

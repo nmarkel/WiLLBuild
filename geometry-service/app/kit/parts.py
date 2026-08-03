@@ -100,6 +100,45 @@ def _add_flutes(solid, ph: dict):
 # Arms: sweep a circle along a spline through placeholder.points
 # ---------------------------------------------------------------------------
 
+def _clean_arm_points(
+    cad: list[tuple[float, float, float]], tol: float = 1e-6
+) -> list[tuple[float, float, float]]:
+    """Drop consecutive coincident points and straight-run (collinear) interior
+    vertices from a CAD-mm point list.
+
+    ``FilletPolyline`` cannot fillet a 180-degree (collinear) vertex — the
+    filleted face carries no circular edge, so build123d raises ``IndexError``.
+    A collinear vertex also adds nothing to the swept tube, so removing it is a
+    no-op for the resulting geometry.  Arms whose points contain no collinear
+    run (every currently-working arm) are returned unchanged, so their swept
+    output is byte-identical to the pre-fix behaviour.
+    """
+    out: list[tuple[float, float, float]] = []
+    for q in cad:
+        if not out or any(abs(q[i] - out[-1][i]) > tol for i in range(3)):
+            out.append((q[0], q[1], q[2]))
+    i = 1
+    while len(out) >= 3 and i < len(out) - 1:
+        a, b, c = out[i - 1], out[i], out[i + 1]
+        u = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+        v = (c[0] - b[0], c[1] - b[1], c[2] - b[2])
+        cross = (
+            u[1] * v[2] - u[2] * v[1],
+            u[2] * v[0] - u[0] * v[2],
+            u[0] * v[1] - u[1] * v[0],
+        )
+        cross_mag = (cross[0] ** 2 + cross[1] ** 2 + cross[2] ** 2) ** 0.5
+        nu = (u[0] ** 2 + u[1] ** 2 + u[2] ** 2) ** 0.5
+        nv = (v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** 0.5
+        dot = u[0] * v[0] + u[1] * v[1] + u[2] * v[2]
+        # Collinear AND same-direction (not a hairpin reversal) -> drop b.
+        if nu > tol and nv > tol and cross_mag < tol * nu * nv and dot > 0:
+            out.pop(i)
+        else:
+            i += 1
+    return out
+
+
 def build_arm(p: dict):
     """Sweep a circular section along the polyline of ``placeholder.points``.
 
@@ -110,6 +149,16 @@ def build_arm(p: dict):
     (1.5x the tube radius).  This keeps the tube inside its control-point
     envelope, matches the socket geometry, and stays robust.
 
+    Robustness (Phase 0.9): some NAFCO arm point lists contain collinear runs
+    (e.g. a straight cross-arm ``[0,0,0],[0.35,0,0],[0.7,0,0]``) or hairpin
+    "bullhorn/spoke" paths that retrace toward the pole.  ``FilletPolyline``
+    raises on those (``IndexError`` at a 180-degree vertex; ``ValueError``
+    "Fillet algorithm failed" where the corner fillet cannot fit).  We first
+    drop collinear/coincident vertices (a geometric no-op that keeps every
+    working arm byte-identical) and, if the fillet still fails or the path has
+    fewer than three distinct points, fall back to a plain ``Polyline`` sweep —
+    always a valid concept-level tube instead of a crashed request.
+
     The direct-mount pseudo-arm is a small tenon adapter cylinder (kind 'pole').
     """
     ph = p["placeholder"]
@@ -117,16 +166,28 @@ def build_arm(p: dict):
         return _tapered_cylinder(ph["radiusBottomM"], ph["radiusTopM"], ph["heightM"])
 
     r = ph["radiusM"] * M
-    cad = [viewer_to_cad(pt) for pt in ph["points"]]
+    cad = _clean_arm_points([viewer_to_cad(pt) for pt in ph["points"]])
     # tangent at the start for the sweep-section orientation
     d = (cad[1][0] - cad[0][0], cad[1][1] - cad[0][1], cad[1][2] - cad[0][2])
-    with BuildPart() as bp:
-        with BuildLine() as ln:
-            FilletPolyline(*cad, radius=r * 1.5)
-        with BuildSketch(Plane(origin=cad[0], z_dir=d)):
-            Circle(r)
-        sweep(path=ln.line)
-    return bp.part
+
+    def _sweep_along(make_path) -> "object":
+        with BuildPart() as bp:
+            with BuildLine() as ln:
+                make_path()
+            with BuildSketch(Plane(origin=cad[0], z_dir=d)):
+                Circle(r)
+            sweep(path=ln.line)
+        return bp.part
+
+    # Fewer than 3 distinct points -> no interior vertex to fillet: straight sweep.
+    if len(cad) < 3:
+        return _sweep_along(lambda: Polyline(*cad))
+    try:
+        return _sweep_along(lambda: FilletPolyline(*cad, radius=r * 1.5))
+    except (IndexError, ValueError):
+        # Fillet cannot fit (collinear-after-clean is impossible here, so this is
+        # a hairpin/retrace path): fall back to sharp-cornered Polyline sweep.
+        return _sweep_along(lambda: Polyline(*cad))
 
 
 # ---------------------------------------------------------------------------

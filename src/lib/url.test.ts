@@ -79,6 +79,37 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
   })
 })
 
+describe('spec options <-> URL params (Phase 0.8 D)', () => {
+  it('omits absent / empty spec options', () => {
+    expect(configToParams(config).get('opts')).toBeNull()
+    expect(configToParams({ ...config, specOptions: {} }).get('opts')).toBeNull()
+  })
+
+  it('round-trips selected spec options', () => {
+    const specOptions = { color: 'BK', mounting: 'ARM' }
+    const params = configToParams({ ...config, specOptions })
+    expect(paramsToPartialConfig(params)?.specOptions).toEqual(specOptions)
+  })
+
+  it('serializes spec options deterministically (keys sorted)', () => {
+    // Same map, different insertion order -> identical string (share-link stability).
+    const a = configToParams({ ...config, specOptions: { mounting: 'ARM', color: 'BK' } })
+    const b = configToParams({ ...config, specOptions: { color: 'BK', mounting: 'ARM' } })
+    expect(a.get('opts')).toBe('color:BK,mounting:ARM')
+    expect(a.get('opts')).toBe(b.get('opts'))
+  })
+
+  it('ignores a malformed opts param (no valid key:code pairs)', () => {
+    expect(paramsToPartialConfig(new URLSearchParams('?opts=garbage'))?.specOptions).toBeUndefined()
+    expect(paramsToPartialConfig(new URLSearchParams('?opts='))?.specOptions).toBeUndefined()
+  })
+
+  it('keeps only well-formed pairs from a partially-malformed opts param', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,junk,mounting:ARM'))
+    expect(partial?.specOptions).toEqual({ color: 'BK', mounting: 'ARM' })
+  })
+})
+
 describe('brand round-trip', () => {
   it('default brand (WiLLstudio) is omitted from params', () => {
     const params = configToParams({ ...config, brand: 'WiLLstudio' })

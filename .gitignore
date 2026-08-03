@@ -1,13 +1,13 @@
-# Geometry service
-geometry-service/.venv/
-geometry-service/out/
-geometry-service/**/__pycache__/
-geometry-service/**/*.pyc
-
-# step-to-glb offline converter
-scripts/step-to-glb/**/__pycache__/
-scripts/step-to-glb/**/*.pyc
+# Python bytecode, venvs, and test caches (broad — covers geometry-service,
+# scripts/spec-parse, scripts/step-to-glb, render-rig, etc.)
+__pycache__/
+*.pyc
+.venv/
+venv/
 .pytest_cache/
+
+# Geometry service generated CAD/BIM output
+geometry-service/out/
 
 # Logs
 logs
@@ -22,6 +22,14 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Test coverage output (vitest --coverage)
+coverage/
+
+# Env files — real values never committed; keep the tracked *.example templates
+.env
+.env.*
+!.env.*.example
 
 # Editor directories and files
 .vscode/*
