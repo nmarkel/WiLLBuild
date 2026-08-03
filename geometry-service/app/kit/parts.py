@@ -233,6 +233,20 @@ def build_fixture(p: dict):
 # Dispatch
 # ---------------------------------------------------------------------------
 
+def build_banner(p: dict):
+    """Banner arm: a mid-shaft bracket set (placeholder PANEL only, no artwork).
+
+    The placeholder is a ``kind: "group"`` of box children (two horizontal
+    brackets + one thin vertical panel).  Origin is the shaft mount point at the
+    banner's vertical centre, matching the frontend — children are positioned
+    relative to it.  Reuses the same group/box builder the fixtures use.
+    """
+    ph = p["placeholder"]
+    if ph["kind"] == "group":
+        return build_fixture_group(ph["children"])
+    raise ValueError(f"unsupported banner placeholder kind: {ph['kind']!r}")
+
+
 def build_part(p: dict):
     """Build any catalog part, dispatching on its slot."""
     slot = p["slot"]
@@ -244,4 +258,6 @@ def build_part(p: dict):
         return build_arm(p)
     if slot == "fixture":
         return build_fixture(p)
+    if slot == "banner":
+        return build_banner(p)
     raise ValueError(f"unknown slot: {slot!r}")

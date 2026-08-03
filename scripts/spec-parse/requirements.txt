@@ -1,0 +1,10 @@
+# WiLLBuild Phase 0.8 Workstream D — spec-sheet ordering-matrix parser.
+# Install into a DEDICATED venv (scripts/spec-parse/.venv), NOT geometry-service/.venv:
+#   python3 -m venv scripts/spec-parse/.venv
+#   scripts/spec-parse/.venv/bin/pip install -r scripts/spec-parse/requirements.txt
+#
+# parse_specs.py uses only pymupdf (fitz). pdfplumber is installed as a
+# secondary table-extraction option / cross-check tool for hand-verifying
+# tricky sheets; it is not imported by parse_specs.py today.
+pymupdf==1.28.0
+pdfplumber==0.11.10

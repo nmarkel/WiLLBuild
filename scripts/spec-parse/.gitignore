@@ -1,0 +1,6 @@
+# Python venv (recreate from requirements.txt)
+.venv/
+
+# Downloaded spec-sheet PDFs (large; re-fetched from docs.willbrands.com on demand).
+# GVX alone is ~3.2MB. Do not commit the cache.
+cache/

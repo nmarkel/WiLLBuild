@@ -355,6 +355,146 @@ body {
   vertical-align: -1px;
 }
 
+/* ---- Arm-count / arrangement selector (Phase 0.8 A1) ---- */
+
+.arm-count {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.arm-count-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-text, #58595b);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.arm-count-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  gap: 6px;
+}
+
+.arm-count-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.arm-count-chip.selected {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.arm-count-name {
+  font-weight: 500;
+}
+
+.arm-count-sub {
+  font-size: 11px;
+  color: var(--muted-text, #58595b);
+}
+
+/* ---- Banner picker + spec options (Phase 0.8 C/D) ---- */
+
+.banner-picker,
+.spec-options {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.banner-picker h3,
+.spec-options h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.spec-options-note {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted-text, #58595b);
+}
+
+.spec-options-note.subtle {
+  margin-top: 8px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.spec-option {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.spec-option-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.spec-option select,
+.banner-height input[type='range'] {
+  width: 100%;
+}
+
+.spec-option select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+
+.banner-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.banner-controls {
+  margin-top: 10px;
+}
+
+.banner-arm-choice {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.banner-height {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text);
+}
+
 /* ---- Summary ---- */
 
 .summary {

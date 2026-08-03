@@ -16,12 +16,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from build123d import Location, Part
+from build123d import Location, Part, Rotation
 
 from app.catalog import part
 from app.models import PoleConfig
 
 from .parts import build_part, viewer_to_cad
+
+
+def _arm_azimuths(count: int) -> list[float]:
+    """Even-spaced azimuths (degrees) for ``count`` radial arms.
+
+    Matches the frontend ``armAzimuths``: ``[i*360/n for i in range(n)]``.
+    Position 0 deg is the single-arm reference direction, so azimuths[0] is
+    always 0 — arm 0 is placed unrotated and is byte-identical to the pre-0.8
+    single-arm output.
+    """
+    n = max(1, int(count))
+    return [i * 360.0 / n for i in range(n)]
 
 
 @dataclass
@@ -95,27 +107,75 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
         bc_solid = _place(build_part(base_cover), bc_origin)
         placed.append((base_cover["id"], bc_solid))
 
-    # --- Arm at the pole socket matching the arm mount ---
+    # --- Arm(s) + fixture(s): N arms mounted radially around the pole top ---
+    #
+    # The arm mounts at the pole socket, which lies ON the pole's vertical axis
+    # (CAD X=Y=0, +Z up).  For arm i at azimuth θ = i*360/armCount we rotate the
+    # placed arm (and its fixture) about the CAD +Z axis — the pole axis — so the
+    # mount point is rotation-invariant.  Viewer +Y maps to CAD +Z, so a viewer
+    # Y-rotation is a CAD Z-rotation with the SAME angle and sign.
+    #
+    # Sign: the frontend rotateY(offset, θ) gives (in viewer axes)
+    #   x' = x·cosθ + z·sinθ,  z' = -x·sinθ + z·cosθ.
+    # Mapping viewer→CAD (x,y,z)->(x,z,y) turns that into a CAD +Z rotation of
+    #   cx' = cx·cosθ + cy·sinθ,  cy' = -cx·sinθ + cy·cosθ,
+    # which is build123d ``Rotation(0, 0, -θ)`` (right-handed Rz(-θ)).  arm 0
+    # (θ=0) is left unrotated, so armCount=1 stays byte-identical to pre-0.8.
     arm_hit = _socket_for_mount(pole, arm.get("mount"))
     arm_origin = viewer_to_cad(arm_hit[1]["position"]) if arm_hit else (0.0, 0.0, 0.0)
-    arm_local = build_part(arm)
-    arm_solid = _place(arm_local, arm_origin)
-    placed.append((arm["id"], arm_solid))
 
-    # --- Fixture at the arm socket matching the fixture mount ---
     fx_hit = _socket_for_mount(arm, fixture.get("mount"))
     if fx_hit is None:
         # No matching arm socket: mount directly at the arm origin.
         fx_socket_local = (0.0, 0.0, 0.0)
     else:
         fx_socket_local = viewer_to_cad(fx_hit[1]["position"])
+    # Fixture world position of the unrotated (θ=0) arm; Z is azimuth-invariant.
     fx_world = (
         arm_origin[0] + fx_socket_local[0],
         arm_origin[1] + fx_socket_local[1],
         arm_origin[2] + fx_socket_local[2],
     )
-    fx_solid = _place(build_part(fixture), fx_world)
-    placed.append((fixture["id"], fx_solid))
+
+    azimuths = _arm_azimuths(cfg.armCount)
+    single = len(azimuths) == 1
+    arm_solids: list[Part] = []
+    for i, deg in enumerate(azimuths):
+        rot = None if deg == 0 else Rotation(0.0, 0.0, -deg)
+
+        arm_solid = _place(build_part(arm), arm_origin)
+        if rot is not None:
+            arm_solid = rot * arm_solid
+        arm_solids.append(arm_solid)
+        placed.append((arm["id"] if single else f"{arm['id']}#{i}", arm_solid))
+
+        fx_solid = _place(build_part(fixture), fx_world)
+        if rot is not None:
+            fx_solid = rot * fx_solid
+        placed.append((fixture["id"] if single else f"{fixture['id']}#{i}", fx_solid))
+
+    # --- Banner arm (optional, Phase 0.8 C) ---
+    # A mid-shaft bracket set mounted on the pole axis at a parametric shaft
+    # height, repeated on `count` radial sides with the SAME azimuth set and
+    # Rz(-θ) rotation as the arms above (viewer +Y up → CAD +Z up, so the shaft
+    # height is the CAD +Z coordinate).  The banner origin is its shaft mount
+    # point, so it lies on the pole axis and rotation about +Z keeps it there.
+    banner_solids: list[Part] = []
+    if cfg.banner is not None:
+        try:
+            banner = part(catalog, cfg.banner.armId)
+        except KeyError:
+            banner = None
+        if banner is not None:
+            height_mm = cfg.banner.heightFt * 304.8  # ft → mm (0.3048 m × 1000)
+            banner_origin = (0.0, 0.0, height_mm)
+            for i, deg in enumerate(_arm_azimuths(cfg.banner.count)):
+                rot = None if deg == 0 else Rotation(0.0, 0.0, -deg)
+                b_solid = _place(build_part(banner), banner_origin)
+                if rot is not None:
+                    b_solid = rot * b_solid
+                banner_solids.append(b_solid)
+                placed.append((f"{banner['id']}#{i}", b_solid))
 
     # --- Fuse ---
     fused = pole_solid
@@ -123,7 +183,7 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
         fused = fused + s
 
     dims = _compute_dims(
-        catalog, cfg, fused, arm_solid, arm_origin, fx_world, fixture, pole
+        catalog, cfg, fused, arm_solids, fx_world, fixture, pole, banner_solids
     )
     return BuiltAssembly(solid=fused, parts=placed, dims=dims)
 
@@ -132,11 +192,11 @@ def _compute_dims(
     catalog: dict,
     cfg: PoleConfig,
     fused: Part,
-    arm_solid: Part,
-    arm_origin: tuple[float, float, float],
+    arm_solids: list[Part],
     fx_world: tuple[float, float, float],
     fixture: dict,
     pole: dict,
+    banner_solids: list[Part] | None = None,
 ) -> AssemblyDims:
     """Derive AssemblyDims (mm) from the built geometry + catalog data."""
     bb = fused.bounding_box()
@@ -144,9 +204,35 @@ def _compute_dims(
 
     pole_top = pole["sockets"]["top"]["position"][1] * 1000.0
 
-    # arm_reach: max horizontal (X) extent of the arm solid.
-    arm_bb = arm_solid.bounding_box()
-    arm_reach = max(abs(arm_bb.max.X), abs(arm_bb.min.X))
+    # arm_reach: max horizontal distance from the pole axis.
+    # Single arm (byte-identical to pre-0.8): max |X| of the single arm bbox.
+    # Radial arms extend on multiple horizontal axes, so we take the widest
+    # |X|/|Y| bbox extent across ALL placed arms (each is the same reach, just
+    # rotated, so this recovers the same magnitude while staying correct if the
+    # arm geometry is asymmetric).
+    arm_bb = arm_solids[0].bounding_box()
+    if len(arm_solids) == 1:
+        arm_reach = max(abs(arm_bb.max.X), abs(arm_bb.min.X))
+    else:
+        arm_reach = 0.0
+        for s in arm_solids:
+            sbb = s.bounding_box()
+            arm_reach = max(
+                arm_reach,
+                abs(sbb.max.X), abs(sbb.min.X),
+                abs(sbb.max.Y), abs(sbb.min.Y),
+            )
+
+    # A mid-shaft banner set can extend the horizontal reach; fold its widest
+    # |X|/|Y| extent in (only when present, so no-banner output is unchanged).
+    if banner_solids:
+        for s in banner_solids:
+            sbb = s.bounding_box()
+            arm_reach = max(
+                arm_reach,
+                abs(sbb.max.X), abs(sbb.min.X),
+                abs(sbb.max.Y), abs(sbb.min.Y),
+            )
 
     # mounting_height: fixture light/attach height above ground (world Z of the
     # fixture's lightOffset when present, else the fixture mount point).

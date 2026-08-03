@@ -48,6 +48,9 @@ class RfaAdapter:
             "category": "Lighting Fixtures",
             "family_name": f"WiLL Pole Assembly {ctx.cfg.configId}",
             "finish": ctx.cfg.finish,
+            "arm_count": ctx.cfg.armCount,
+            "banner_count": ctx.cfg.banner.count if ctx.cfg.banner else 0,
+            "banner_arm": ctx.cfg.banner.armId if ctx.cfg.banner else "",
             "revision": ctx.cfg.rev,
         }
 

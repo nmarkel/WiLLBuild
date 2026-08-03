@@ -1,7 +1,15 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
-import { compatibleParts, partById } from '../lib/compat'
+import { allowedArmCounts, compatibleParts, partById } from '../lib/compat'
 import { useConfigurator } from '../store'
+
+/** Phase 0.8 (A1): labels for the radial arm-count selector. */
+const ARM_COUNT_LABELS: Record<number, { label: string; sub: string }> = {
+  1: { label: 'Single', sub: '1 arm' },
+  2: { label: 'Twin', sub: '2 arms · 180°' },
+  3: { label: 'Triple', sub: '3 arms · 120°' },
+  4: { label: 'Quad', sub: '4 arms · 90°' },
+}
 
 interface Props {
   catalog: Catalog
@@ -20,6 +28,7 @@ const STEPS: { key: Slot | 'finish'; label: string }[] = [
 
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
+  const setArmCount = useConfigurator((s) => s.setArmCount)
   const [openStep, setOpenStep] = useState<Slot | 'finish'>('fixture')
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
@@ -80,11 +89,54 @@ export function Panel({ catalog, config }: Props) {
                         <span className="option-family">{part.family}</span>
                       </button>
                     ))}
+                {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
+                    the chosen pole + arm actually support multiples (catalog rule). */}
+                {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
               </div>
             )}
           </section>
         )
       })}
+    </div>
+  )
+}
+
+/**
+ * Phase 0.8 (A1/A2): choose how many arms mount radially around the pole top.
+ * The available options come straight from catalog rules (allowedArmCounts) so
+ * only real, mountable layouts appear; hidden entirely when only single is valid.
+ */
+function ArmCountSelector({
+  catalog,
+  config,
+  onSelect,
+}: {
+  catalog: Catalog
+  config: PoleConfig
+  onSelect: (count: number) => void
+}) {
+  const counts = allowedArmCounts(catalog, config)
+  if (counts.length <= 1) return null
+  const current = config.armCount ?? 1
+  return (
+    <div className="arm-count">
+      <p className="arm-count-label">Arms</p>
+      <div className="arm-count-options">
+        {counts.map((n) => {
+          const meta = ARM_COUNT_LABELS[n] ?? { label: `${n}`, sub: `${n} arms` }
+          return (
+            <button
+              key={n}
+              className={`arm-count-chip ${current === n ? 'selected' : ''}`}
+              onClick={() => onSelect(n)}
+              title={`${meta.label} — ${meta.sub}`}
+            >
+              <span className="arm-count-name">{meta.label}</span>
+              <span className="arm-count-sub">{meta.sub}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

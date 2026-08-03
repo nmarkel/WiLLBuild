@@ -247,6 +247,47 @@ def _draw_components_table(
     return pdf.get_y()
 
 
+def _draw_labeled_line(
+    pdf: FPDF,
+    label: str,
+    value: str,
+    left: float,
+    top: float,
+    width: float,
+) -> float:
+    """Draw one 'label: value' row (bold label + regular value); return Y after."""
+    pdf.set_xy(left, top)
+    pdf.set_font("Helvetica", "B", 8)
+    _set_text(pdf, _GUNMETAL)
+    pdf.cell(28.0, 5.5, _latin1(label), new_x=XPos.RIGHT, new_y=YPos.TOP)
+    pdf.set_font("Helvetica", "", 8)
+    pdf.cell(width - 28.0, 5.5, _latin1(value), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln()
+    return pdf.get_y()
+
+
+def _draw_arm_arrangement(
+    pdf: FPDF,
+    summary: dict,
+    left: float,
+    top: float,
+    width: float,
+) -> float:
+    """Draw 'Arm arrangement' and/or 'Banner arm' rows when present; else no-op.
+
+    Returns the Y after the last line drawn (== ``top`` when nothing is drawn,
+    so single-arm, no-banner layouts are byte-identical to pre-0.8 output).
+    """
+    y = top
+    arrangement = summary.get("arm_arrangement")
+    if arrangement:
+        y = _draw_labeled_line(pdf, "Arm arrangement:", str(arrangement), left, y, width)
+    banner = summary.get("banner")
+    if banner:
+        y = _draw_labeled_line(pdf, "Banner arm:", str(banner), left, y, width)
+    return y
+
+
 def _draw_dims_block(
     pdf: FPDF,
     dims: dict,
@@ -423,13 +464,18 @@ def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
         width=left_w,
     )
 
+    # --- Left: arm arrangement (only when >1 arm; no-op → position unchanged) ---
+    y_after_arr = _draw_arm_arrangement(
+        pdf, ctx.summary, left=left_x, top=y_after_table, width=left_w
+    )
+
     # --- Left: compact dims row ---
     dims = ctx.summary.get("dims", {})
     _draw_dims_block(
         pdf,
         dims,
         left=left_x,
-        top=y_after_table + 2.0,
+        top=y_after_arr + 2.0,
         width=left_w,
     )
 
@@ -534,13 +580,18 @@ def render_spec(
         width=left_w,
     )
 
+    # --- Left column: arm arrangement (only when >1 arm; no-op keeps layout) ---
+    y_after_arr = _draw_arm_arrangement(
+        pdf, ctx.summary, left=left_x, top=y_after_table, width=left_w
+    )
+
     # --- Left column: dimensions ---
     dims = ctx.summary.get("dims", {})
     y_after_dims = _draw_dims_block(
         pdf,
         dims,
         left=left_x,
-        top=y_after_table + 4.0,
+        top=y_after_arr + 4.0,
         width=left_w,
     )
 

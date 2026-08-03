@@ -38,6 +38,12 @@ interface ConfiguratorState {
   brand: ProductLine
   loadCatalog: () => Promise<void>
   select: (slot: Slot | 'finish', id: string) => void
+  /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
+  setArmCount: (count: number) => void
+  /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
+  setBanner: (banner: import('./types').BannerConfig | null) => void
+  /** Phase 0.8 (D): pick a spec-sheet ordering-matrix option (by SpecOption.key). */
+  setSpecOption: (key: string, code: string) => void
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
@@ -108,6 +114,33 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
     const next = repairConfig(catalog, { ...config, [slot]: id, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setArmCount: (count) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || (config.armCount ?? 1) === count) return
+    if (view.kind === 'product') return
+    const next = repairConfig(catalog, { ...config, armCount: count, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setBanner: (banner) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config) return
+    if (view.kind === 'product') return
+    const next = repairConfig(catalog, { ...config, banner, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setSpecOption: (key, code) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const specOptions = { ...(config.specOptions ?? {}), [key]: code }
+    const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

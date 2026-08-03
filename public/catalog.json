@@ -155,7 +155,525 @@
         0,
         0.38,
         0
-      ]
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WD",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "DRX",
+              "label": "Medium Housing",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CH",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "lumen-output",
+          "label": "Lumen Output (Model Nominal Lumens)",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "6,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "80",
+              "label": "10,800",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "115",
+              "label": "15,300",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "155",
+              "label": "19,600",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CW",
+              "label": "Custom & Amber",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "color-temp",
+          "label": "Color Temp",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "30",
+              "label": "3000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PCA",
+              "label": "PC Amber (590 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TA",
+              "label": "True Amber (593 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CT",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "voltage",
+          "label": "Voltage",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": null,
+              "code": "MV",
+              "label": "120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HV",
+              "label": "277-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CV",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "distribution",
+          "label": "Distribution",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "1S",
+              "label": "Type I Short",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "2M",
+              "label": "Type II Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3M",
+              "label": "Type III Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3W",
+              "label": "Type III Wide",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4M",
+              "label": "Type IV Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5W",
+              "label": "150° Type V Square",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5M",
+              "label": "90° Type V Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5N",
+              "label": "70° Type V Narrow",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CD",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "mounting",
+          "label": "Mounting",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "3T",
+              "label": "3.0\" OD Tenon/Pole Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PM",
+              "label": "Pendant Mount",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SMS",
+              "label": "Side Mount (Square Pole or Wall)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SMR",
+              "label": "Side Mount (Round Pole)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SF",
+              "label": "2.38\" OD Slipfitter",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CM",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WHP3NP",
+              "label": "2’ Cord w/o Plug, Stripped",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP7NP",
+              "label": "6’ Cord w/o Plug, Stripped",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP11NP",
+              "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SRG27710",
+              "label": "10kA Surge Suppressor (Field Replaceable), 120-277V Pigtail (Requires N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG48010",
+              "label": "10kA Surge Suppressor (Field Replaceable), 347-480V Pigtail (Requires N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC1",
+              "label": "Button Photocontrol, 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC3",
+              "label": "Button Photocontrol, 347V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC4",
+              "label": "Button Photocontrol, 480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "N5P",
+              "label": "NEMA 5pin Twist-Lock Receptacle",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MPS",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Remote Mount Only) Factory)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 10,
+          "values": [
+            {
+              "buildable": null,
+              "code": "TLPC1",
+              "label": "Twist-Lock Photocell, 120-277V (Not Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TLPC4",
+              "label": "Twist-Lock Photocell, 347/480V (Not Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "238-DRX",
+              "label": "2.38\" OD Tenon/Pole Fit Adapter",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HSS-DRX",
+              "label": "House Side Shield",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HSS-DRX-WF",
+              "label": "House Side Shield (Wildlife Friendly)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AFW",
+              "label": "Area/Flood Light Wall Bracket (Not Installed) (Requires SMS Mount)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFX",
+              "label": "Wireless DMX Lighting Control System (Consult",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFM",
+              "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-drx-area-post-top.pdf",
+        "sourcePage": 7,
+        "parseStatus": "partial",
+        "gaps": [
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "tex-post-top",
@@ -297,7 +815,516 @@
         0,
         0.19,
         0
-      ]
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WD",
+              "label": "WiLLstudio® Housing",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "lumen-output",
+          "label": "Lumen Output (Model Design Nominal Lumens)",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "TEX",
+              "label": "Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "5,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CH",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "70",
+              "label": "9,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "80",
+              "label": "10,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "115",
+              "label": "15,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "155",
+              "label": "19,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CW",
+              "label": "Custom & Amber",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "color-temp",
+          "label": "Color Temp",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "30",
+              "label": "3000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PCA",
+              "label": "PC Amber (590 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TA",
+              "label": "True Amber (593 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CT",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "voltage",
+          "label": "Voltage",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "MV",
+              "label": "120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HV",
+              "label": "277-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CV",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "distribution",
+          "label": "Distribution",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": null,
+              "code": "1S",
+              "label": "Type I Short",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "2M",
+              "label": "Type II Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3M",
+              "label": "Type III Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3W",
+              "label": "Type III Wide",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4M",
+              "label": "Type IV Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5W",
+              "label": "150° Type V Square",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5M",
+              "label": "90° Type V Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5N",
+              "label": "70° Type V Narrow",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CD",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "mounting",
+          "label": "Mounting",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "3T",
+              "label": "3.0\" OD Tenon/Pole Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SMS",
+              "label": "Side Mount (Square Pole or Wall)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SMR",
+              "label": "Side Mount (Round Pole)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CM",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color-finish-color-spider-mount",
+          "label": "Finish Color Finish Color (Housing) (Spider Mount &",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match Match",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SRG27710",
+              "label": "10kA Surge Suppressor (Field Replaceable), 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG48010",
+              "label": "10kA Surge Suppressor (Field Replaceable), 347-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "N5P",
+              "label": "NEMA 5pin Twist-Lock Receptacle",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MPS",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Remote Mount Only) Installed)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "TLPC1",
+              "label": "Twist-Lock Photocell, 120-277V (Not Installed) (Requires N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TLPC4",
+              "label": "Twist-Lock Photocell, 347/480V (Not Installed) (Requires N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HSS-TEX",
+              "label": "House Side Shield",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AFW",
+              "label": "Area/Flood Light Wall Bracket (Black Finish) (Not",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFX",
+              "label": "Wireless DMX Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFM",
+              "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-tex-area-post-top.pdf",
+        "sourcePage": 7,
+        "parseStatus": "partial",
+        "gaps": [
+          "Column 'finish-color-finish-color-spider-mount' header repeats token(s) ['color', 'finish']; adjacent columns were likely merged (20 values). Needs human review."
+        ]
+      }
     },
     {
       "id": "mvx-coach",
@@ -426,7 +1453,532 @@
         0,
         0.22,
         0
-      ]
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WD",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "MVX",
+              "label": "Medium Housing",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CH",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "lumen-output",
+          "label": "Lumen Output (Model Nominal Lumens)",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "5,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "80",
+              "label": "9,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "115",
+              "label": "12,800",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "155",
+              "label": "16,400",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CW",
+              "label": "Custom & Amber",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "color-temp",
+          "label": "Color Temp",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "30",
+              "label": "3000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PCA",
+              "label": "PC Amber (590 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TA",
+              "label": "True Amber (593 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CT",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "voltage",
+          "label": "Voltage",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": null,
+              "code": "MV",
+              "label": "120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HV",
+              "label": "277-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CV",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "distribution",
+          "label": "Distribution",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "1S",
+              "label": "Type I Short",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "2M",
+              "label": "Type II Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3M",
+              "label": "Type III Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3W",
+              "label": "Type III Wide",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4M",
+              "label": "Type IV Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5W",
+              "label": "150° Type V Square",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5M",
+              "label": "90° Type V Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5N",
+              "label": "70° Type V Narrow",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CD",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "mounting",
+          "label": "Mounting",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "3T",
+              "label": "3.0\" OD Tenon/Pole Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PM",
+              "label": "Pendant Mount",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CM",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CL-MVX-3T",
+              "label": "MVX Clear Lens",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL-MVX-PM",
+              "label": "MVX Clear Lens",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DL-MVX-3T",
+              "label": "MVX Frosted Lens (Requires 3T Mount)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DL-MVX-PM",
+              "label": "MVX Frosted Lens (Requires PM Mount)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CF",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WHP3NP",
+              "label": "2’ Cord w/o Plug, Stripped Pigtail (Requires 3T Mount) N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP7NP",
+              "label": "6’ Cord w/o Plug, Stripped Pigtail (Requires PM Mount) N5P Receptacle)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP11NP",
+              "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG27710",
+              "label": "10kA Surge Suppressor (Field Replaceable), 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG48010",
+              "label": "10kA Surge Suppressor (Field Replaceable), 347-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC1",
+              "label": "Button Photocontrol, 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC3",
+              "label": "Button Photocontrol, 347V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC4",
+              "label": "Button Photocontrol, 480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "N5P",
+              "label": "NEMA 5pin Twist-Lock Receptacle (Not Available With FT Finial Top)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MPS",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Available On PM Mount Only) (Not Available With FB Finial Bottom)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 10,
+          "values": [
+            {
+              "buildable": null,
+              "code": "TLPC1",
+              "label": "Twist-Lock Photocell, 120-277V (Not Installed) (Requires",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TLPC4",
+              "label": "Twist-Lock Photocell, 347/480V (Not Installed) (Requires",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BLP-MVX",
+              "label": "Back Light Lens Panel (Match Fixture Finish)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFX",
+              "label": "Wireless DMX Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFM",
+              "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FT",
+              "label": "Decorative Finial Top (Available With 3T Mount Only)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FB",
+              "label": "Decorative Finial Bottom (Available On PM Mount Only)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-mvx-post-top.pdf",
+        "sourcePage": 8,
+        "parseStatus": "partial",
+        "gaps": [
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "gvx-pendant",
@@ -511,7 +2063,466 @@
         0,
         -0.33,
         0
-      ]
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WD",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "GVX",
+              "label": "Medium Housing",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CW",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "lumen-output",
+          "label": "Lumen Output (Model Nominal Lumens)",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "6,000",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "80",
+              "label": "10,800",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "115",
+              "label": "15,200",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "155",
+              "label": "19,600",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CW",
+              "label": "Custom, Amber & RGB",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "color-temp",
+          "label": "Color Temp",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "30",
+              "label": "3000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5000K, 70 CRI",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PCA",
+              "label": "PC Amber (590 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "TA",
+              "label": "True Amber (593 nm)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CT",
+              "label": "Custom & RGB",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "voltage",
+          "label": "Voltage",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": null,
+              "code": "MV",
+              "label": "120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HV",
+              "label": "277-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CV",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "distribution",
+          "label": "Distribution",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "1S",
+              "label": "Type I Short",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "2M",
+              "label": "Type II Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3M",
+              "label": "Type III Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "3W",
+              "label": "Type III Wide",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4M",
+              "label": "Type IV Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5W",
+              "label": "150° Type V Square",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5M",
+              "label": "90° Type V Medium",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5N",
+              "label": "70° Type V Narrow",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CD",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "mounting",
+          "label": "Mounting",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "PM",
+              "label": "Pendant Mount",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CM",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WHP3NP",
+              "label": "2’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP7NP",
+              "label": "6’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP11NP",
+              "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WHP15NP",
+              "label": "14’ Cord w/o Plug, Stripped Pigtail",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG27710",
+              "label": "10kA Surge Suppressor (Field Replaceable), 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SRG48010",
+              "label": "10kA Surge Suppressor (Field Replaceable), 347-480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC1",
+              "label": "Button Photocontrol, 120-277V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC3",
+              "label": "Button Photocontrol, 347V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BPC4",
+              "label": "Button Photocontrol, 480V",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MPS",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, Maximum Coverage Of 100’ Diameter From 40’ Mounting Height",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "90D",
+              "label": "90° Optics Rotation",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "HSS-GVX",
+              "label": "House Side Shield (Not Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFX",
+              "label": "Wireless DMX Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GFM",
+              "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-gvx-pendant.pdf",
+        "sourcePage": 7,
+        "parseStatus": "ok",
+        "gaps": []
+      }
     },
     {
       "id": "sh1-shepherds-hook",
@@ -585,7 +2596,13 @@
         "radiusM": 0.028
       },
       "thumbnail": "thumbnails/sh1-shepherds-hook.png",
-      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": "upsweep",
@@ -662,7 +2679,13 @@
         ]
       },
       "thumbnail": "thumbnails/upsweep.jpg",
-      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": "pa1-pendant-arm",
@@ -728,7 +2751,13 @@
         "radiusM": 0.025
       },
       "thumbnail": "thumbnails/pa1-pendant-arm.png",
-      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": "pm1-pendant-arm",
@@ -790,7 +2819,13 @@
         "radiusM": 0.025
       },
       "thumbnail": "thumbnails/pm1-pendant-arm.png",
-      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms"
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": "direct-mount",
@@ -884,7 +2919,895 @@
         "radiusBottomM": 0.07
       },
       "thumbnail": "thumbnails/alum-pole.png",
-      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "RSAA",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "8",
+              "label": "8' Poles Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RSAD",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "10",
+              "label": "10' Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "12",
+              "label": "12'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "14",
+              "label": "14'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "15",
+              "label": "15'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "16",
+              "label": "16'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "18",
+              "label": "18'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "20",
+              "label": "20'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "length-pole-base-pole-top-wall-od-od-thickness",
+          "label": "Length Pole Base Pole Top Wall OD OD Thickness",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "0.125\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D",
+              "label": "0.188\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "E",
+              "label": "0.250\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "anchor-bolts-base-type-finish-type",
+          "label": "Anchor Bolts Base Type Finish Type",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "AB",
+              "label": "Includes",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SB",
+              "label": "Standard",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FP",
+              "label": "Finish",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LAB",
+              "label": "Less Anchor",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CB",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AN",
+              "label": "Anodized Bolts Base",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WG",
+              "label": "Wood",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom Grain System",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black Anchor Bolts Base Painted Drilling",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA",
+              "label": "Bronze Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BKA",
+              "label": "Black Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SA",
+              "label": "Satin Silver Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "fixture-mounting",
+          "label": "Fixture Mounting",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "PC",
+              "label": "Cap Only, No Side",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PL",
+              "label": "Open Top, No Cap",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PF",
+              "label": "Flush Arm Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D1",
+              "label": "Drill Single",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D2",
+              "label": "Drill 2@180",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D3",
+              "label": "Drill 3@120",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D4",
+              "label": "Drill 4@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D5",
+              "label": "Drill 2@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D6",
+              "label": "Drill 3@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P1",
+              "label": "4” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P2",
+              "label": "2.38” OD x 4” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P3",
+              "label": "3.50” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P4",
+              "label": "4” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P5",
+              "label": "2.88” OD x 4” Long",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P6",
+              "label": "2.88” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P7",
+              "label": "2.38” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PQ",
+              "label": "2.38” OD x 12” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PD",
+              "label": "3” OD x 3” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P9",
+              "label": "Custom Size Tenon",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SPL",
+              "label": "Special Cut Length (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BCSPCL",
+              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDA",
+              "label": "Internal Vibration Dampener, Factory Installed",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHUR-4/5/6",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHRR-4/5/6",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FSTR",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL1",
+              "label": "Small Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4R",
+              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL2",
+              "label": "Medium Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5R",
+              "label": "5\" OD Round Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL3",
+              "label": "Large Clamshell Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC1",
+              "label": "Spun Base Collar",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom (1pc Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC2",
+              "label": "Spun Base Collar (Split Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CPL-P-12",
+              "label": "1/2\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-34",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-1",
+              "label": "1\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-12",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-34",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL",
+              "label": "Custom Coupling (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "6R",
+              "label": "6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray CLE",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DG",
+              "label": "Dark Green SC1 SC2",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "STAMP",
+              "label": "Engineering Services, Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "STAMPCA",
+              "label": "Engineering Services, CA Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE063",
+              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE075",
+              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE100",
+              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDF",
+              "label": "Internal Vibration Dampener, Field Installable",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA24",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA30",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FH",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PH",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-rsax-deco-poles.pdf",
+        "sourcePage": 11,
+        "parseStatus": "partial",
+        "gaps": [
+          "Column 'length-pole-base-pole-top-wall-od-od-thickness' header repeats token(s) ['od', 'pole']; adjacent columns were likely merged (12 values). Needs human review.",
+          "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "alum-pole-14",
@@ -935,7 +3858,895 @@
         "radiusBottomM": 0.075
       },
       "thumbnail": "thumbnails/alum-pole.png",
-      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "RSAA",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "8",
+              "label": "8' Poles Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RSAD",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "10",
+              "label": "10' Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "12",
+              "label": "12'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "14",
+              "label": "14'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "15",
+              "label": "15'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "16",
+              "label": "16'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "18",
+              "label": "18'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "20",
+              "label": "20'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "length-pole-base-pole-top-wall-od-od-thickness",
+          "label": "Length Pole Base Pole Top Wall OD OD Thickness",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "0.125\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D",
+              "label": "0.188\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "E",
+              "label": "0.250\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "anchor-bolts-base-type-finish-type",
+          "label": "Anchor Bolts Base Type Finish Type",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "AB",
+              "label": "Includes",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SB",
+              "label": "Standard",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FP",
+              "label": "Finish",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LAB",
+              "label": "Less Anchor",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CB",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AN",
+              "label": "Anodized Bolts Base",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WG",
+              "label": "Wood",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom Grain System",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black Anchor Bolts Base Painted Drilling",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA",
+              "label": "Bronze Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BKA",
+              "label": "Black Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SA",
+              "label": "Satin Silver Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "fixture-mounting",
+          "label": "Fixture Mounting",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "PC",
+              "label": "Cap Only, No Side",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PL",
+              "label": "Open Top, No Cap",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PF",
+              "label": "Flush Arm Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D1",
+              "label": "Drill Single",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D2",
+              "label": "Drill 2@180",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D3",
+              "label": "Drill 3@120",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D4",
+              "label": "Drill 4@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D5",
+              "label": "Drill 2@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D6",
+              "label": "Drill 3@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P1",
+              "label": "4” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P2",
+              "label": "2.38” OD x 4” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P3",
+              "label": "3.50” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P4",
+              "label": "4” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P5",
+              "label": "2.88” OD x 4” Long",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P6",
+              "label": "2.88” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P7",
+              "label": "2.38” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PQ",
+              "label": "2.38” OD x 12” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PD",
+              "label": "3” OD x 3” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P9",
+              "label": "Custom Size Tenon",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SPL",
+              "label": "Special Cut Length (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BCSPCL",
+              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDA",
+              "label": "Internal Vibration Dampener, Factory Installed",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHUR-4/5/6",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHRR-4/5/6",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FSTR",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL1",
+              "label": "Small Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4R",
+              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL2",
+              "label": "Medium Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5R",
+              "label": "5\" OD Round Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL3",
+              "label": "Large Clamshell Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC1",
+              "label": "Spun Base Collar",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom (1pc Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC2",
+              "label": "Spun Base Collar (Split Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CPL-P-12",
+              "label": "1/2\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-34",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-1",
+              "label": "1\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-12",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-34",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL",
+              "label": "Custom Coupling (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "6R",
+              "label": "6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray CLE",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DG",
+              "label": "Dark Green SC1 SC2",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "STAMP",
+              "label": "Engineering Services, Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "STAMPCA",
+              "label": "Engineering Services, CA Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE063",
+              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE075",
+              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE100",
+              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDF",
+              "label": "Internal Vibration Dampener, Field Installable",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA24",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA30",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FH",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PH",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-rsax-deco-poles.pdf",
+        "sourcePage": 11,
+        "parseStatus": "partial",
+        "gaps": [
+          "Column 'length-pole-base-pole-top-wall-od-od-thickness' header repeats token(s) ['od', 'pole']; adjacent columns were likely merged (12 values). Needs human review.",
+          "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "alum-pole-16",
@@ -986,7 +4797,895 @@
         "radiusBottomM": 0.08
       },
       "thumbnail": "thumbnails/alum-pole.png",
-      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "RSAA",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "8",
+              "label": "8' Poles Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RSAD",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "10",
+              "label": "10' Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "12",
+              "label": "12'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "14",
+              "label": "14'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "15",
+              "label": "15'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "16",
+              "label": "16'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "18",
+              "label": "18'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "20",
+              "label": "20'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "length-pole-base-pole-top-wall-od-od-thickness",
+          "label": "Length Pole Base Pole Top Wall OD OD Thickness",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "0.125\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D",
+              "label": "0.188\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "E",
+              "label": "0.250\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "anchor-bolts-base-type-finish-type",
+          "label": "Anchor Bolts Base Type Finish Type",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "AB",
+              "label": "Includes",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SB",
+              "label": "Standard",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FP",
+              "label": "Finish",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LAB",
+              "label": "Less Anchor",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CB",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AN",
+              "label": "Anodized Bolts Base",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WG",
+              "label": "Wood",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom Grain System",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black Anchor Bolts Base Painted Drilling",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA",
+              "label": "Bronze Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BKA",
+              "label": "Black Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SA",
+              "label": "Satin Silver Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "fixture-mounting",
+          "label": "Fixture Mounting",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "PC",
+              "label": "Cap Only, No Side",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PL",
+              "label": "Open Top, No Cap",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PF",
+              "label": "Flush Arm Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D1",
+              "label": "Drill Single",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D2",
+              "label": "Drill 2@180",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D3",
+              "label": "Drill 3@120",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D4",
+              "label": "Drill 4@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D5",
+              "label": "Drill 2@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D6",
+              "label": "Drill 3@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P1",
+              "label": "4” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P2",
+              "label": "2.38” OD x 4” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P3",
+              "label": "3.50” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P4",
+              "label": "4” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P5",
+              "label": "2.88” OD x 4” Long",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P6",
+              "label": "2.88” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P7",
+              "label": "2.38” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PQ",
+              "label": "2.38” OD x 12” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PD",
+              "label": "3” OD x 3” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P9",
+              "label": "Custom Size Tenon",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SPL",
+              "label": "Special Cut Length (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BCSPCL",
+              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDA",
+              "label": "Internal Vibration Dampener, Factory Installed",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHUR-4/5/6",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHRR-4/5/6",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FSTR",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL1",
+              "label": "Small Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4R",
+              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL2",
+              "label": "Medium Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5R",
+              "label": "5\" OD Round Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL3",
+              "label": "Large Clamshell Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC1",
+              "label": "Spun Base Collar",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom (1pc Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC2",
+              "label": "Spun Base Collar (Split Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CPL-P-12",
+              "label": "1/2\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-34",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-1",
+              "label": "1\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-12",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-34",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL",
+              "label": "Custom Coupling (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "6R",
+              "label": "6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray CLE",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DG",
+              "label": "Dark Green SC1 SC2",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "STAMP",
+              "label": "Engineering Services, Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "STAMPCA",
+              "label": "Engineering Services, CA Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE063",
+              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE075",
+              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE100",
+              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDF",
+              "label": "Internal Vibration Dampener, Field Installable",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA24",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA30",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FH",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PH",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-rsax-deco-poles.pdf",
+        "sourcePage": 11,
+        "parseStatus": "partial",
+        "gaps": [
+          "Column 'length-pole-base-pole-top-wall-od-od-thickness' header repeats token(s) ['od', 'pole']; adjacent columns were likely merged (12 values). Needs human review.",
+          "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "alum-pole-20",
@@ -1037,7 +5736,895 @@
         "radiusBottomM": 0.09
       },
       "thumbnail": "thumbnails/alum-pole.png",
-      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles"
+      "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "options": [
+        {
+          "group": "ordering",
+          "key": "product-family",
+          "label": "Product Family",
+          "orderPosition": 0,
+          "values": [
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "design",
+          "label": "Design",
+          "orderPosition": 1,
+          "values": [
+            {
+              "buildable": null,
+              "code": "RSAA",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "8",
+              "label": "8' Poles Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RSAD",
+              "label": "Round Straight",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "10",
+              "label": "10' Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "12",
+              "label": "12'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "14",
+              "label": "14'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "15",
+              "label": "15'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "16",
+              "label": "16'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "18",
+              "label": "18'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "20",
+              "label": "20'",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "length-pole-base-pole-top-wall-od-od-thickness",
+          "label": "Length Pole Base Pole Top Wall OD OD Thickness",
+          "orderPosition": 2,
+          "values": [
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "40",
+              "label": "4\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "0.125\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "50",
+              "label": "5\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D",
+              "label": "0.188\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "60",
+              "label": "6\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "E",
+              "label": "0.250\"",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "anchor-bolts-base-type-finish-type",
+          "label": "Anchor Bolts Base Type Finish Type",
+          "orderPosition": 3,
+          "values": [
+            {
+              "buildable": null,
+              "code": "AB",
+              "label": "Includes",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SB",
+              "label": "Standard",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FP",
+              "label": "Finish",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LAB",
+              "label": "Less Anchor",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CB",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "AN",
+              "label": "Anodized Bolts Base",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WG",
+              "label": "Wood",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom Grain System",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "finish-color",
+          "label": "Finish Color",
+          "orderPosition": 4,
+          "values": [
+            {
+              "buildable": true,
+              "code": "BK",
+              "label": "Black Anchor Bolts Base Painted Drilling",
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": true,
+              "code": "DG",
+              "label": "Dark Green",
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA",
+              "label": "Bronze Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BKA",
+              "label": "Black Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SA",
+              "label": "Satin Silver Anodized",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "ordering",
+          "key": "fixture-mounting",
+          "label": "Fixture Mounting",
+          "orderPosition": 5,
+          "values": [
+            {
+              "buildable": null,
+              "code": "PC",
+              "label": "Cap Only, No Side",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PL",
+              "label": "Open Top, No Cap",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PF",
+              "label": "Flush Arm Fit",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D1",
+              "label": "Drill Single",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D2",
+              "label": "Drill 2@180",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D3",
+              "label": "Drill 3@120",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D4",
+              "label": "Drill 4@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D5",
+              "label": "Drill 2@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "D6",
+              "label": "Drill 3@90",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P1",
+              "label": "4” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P2",
+              "label": "2.38” OD x 4” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P3",
+              "label": "3.50” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P4",
+              "label": "4” OD x 6” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P5",
+              "label": "2.88” OD x 4” Long",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P6",
+              "label": "2.88” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P7",
+              "label": "2.38” OD x 5” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PQ",
+              "label": "2.38” OD x 12” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PD",
+              "label": "3” OD x 3” Long Tenon",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "P9",
+              "label": "Custom Size Tenon",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options",
+          "label": "Options",
+          "orderPosition": 6,
+          "values": [
+            {
+              "buildable": null,
+              "code": "SPL",
+              "label": "Special Cut Length (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BCSPCL",
+              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDA",
+              "label": "Internal Vibration Dampener, Factory Installed",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHUR-4/5/6",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "HHRR-4/5/6",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FSTR",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL1",
+              "label": "Small Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "4R",
+              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL2",
+              "label": "Medium Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "5R",
+              "label": "5\" OD Round Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CL3",
+              "label": "Large Clamshell Cast Base Cover Light Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC1",
+              "label": "Spun Base Collar",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom (1pc Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SC2",
+              "label": "Spun Base Collar (Split Design)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "options-2",
+          "label": "Options",
+          "orderPosition": 7,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CPL-P-12",
+              "label": "1/2\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-34",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-P-1",
+              "label": "1\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-12",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL-S-34",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CPL",
+              "label": "Custom Coupling (Please Specify)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BK",
+              "label": "Black",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "MB",
+              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "6R",
+              "label": "6\" OD Round CL1 CL2 CL3",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DB",
+              "label": "Dark Bronze",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "WH",
+              "label": "White",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "LG",
+              "label": "Light Gray CLE",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "SG",
+              "label": "Slate Gray",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DG",
+              "label": "Dark Green SC1 SC2",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "DP",
+              "label": "Dark Platinum",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "C",
+              "label": "Custom",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "group": "options-accessories",
+          "key": "accessories",
+          "label": "Accessories",
+          "orderPosition": 8,
+          "values": [
+            {
+              "buildable": null,
+              "code": "STAMP",
+              "label": "Engineering Services, Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "STAMPCA",
+              "label": "Engineering Services, CA Signed & Sealed Calcs",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE063",
+              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE075",
+              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PRE100",
+              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "VDF",
+              "label": "Internal Vibration Dampener, Field Installable",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA24",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "BA30",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "FH",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "buildable": null,
+              "code": "PH",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-rsax-deco-poles.pdf",
+        "sourcePage": 11,
+        "parseStatus": "partial",
+        "gaps": [
+          "Column 'length-pole-base-pole-top-wall-od-od-thickness' header repeats token(s) ['od', 'pole']; adjacent columns were likely merged (12 values). Needs human review.",
+          "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
+          "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
+        ]
+      }
     },
     {
       "id": "bc-fluted",
@@ -6277,6 +11864,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -6818,6 +12411,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7021,6 +12620,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7077,6 +12682,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7134,6 +12745,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7190,6 +12807,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7246,6 +12869,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7302,6 +12931,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7366,6 +13001,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7541,6 +13182,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7616,6 +13263,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7862,6 +13515,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7931,6 +13590,12 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
       ]
     },
     {
@@ -7992,6 +13657,100 @@
         "forest-green",
         "gloss-white",
         "silver"
+      ],
+      "arrangements": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "willstudio-ba1-banner-arm",
+      "slot": "banner",
+      "name": "BA1 Banner Arm",
+      "family": "BA1",
+      "line": "WiLLstudio",
+      "category": "Banner Arms",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft-band",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "forest-green",
+        "gloss-white",
+        "silver"
+      ],
+      "keywords": [
+        "banner",
+        "banner arm",
+        "banner bracket",
+        "street banner",
+        "banner hardware"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.04,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.25,
+              0.62,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.04,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.25,
+              -0.66,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                1.25,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.3,
+              -0.625,
+              0
+            ]
+          }
+        ]
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
+      "arrangements": [
+        1,
+        2,
+        4
       ]
     },
     {
@@ -8342,7 +14101,8 @@
       "DWX Flood & Spot",
       "Decorative Light Poles",
       "Decorative Brackets & Arms",
-      "Decorative Base Covers"
+      "Decorative Base Covers",
+      "Banner Arms"
     ],
     "WiLLev": [
       "EVSE L2 Charging Pedestals",

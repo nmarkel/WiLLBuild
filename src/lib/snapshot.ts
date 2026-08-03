@@ -146,12 +146,13 @@ export async function compositeToBlob(
     // the scene rather than a sticker on top). No self-lit lens "ball" at the
     // head — the illumination comes entirely from the pool + cone. This is a
     // conceptual LOOK, not a photometric result — the disclaimer stays in the UI.
-    const light =
-      opts.night && layout.lightPx
-        ? nightLight(layout.lightPx, layout.origin[1], opts.pxPerMeterY)
-        : null
+    // One glow per fixture so twin/triple/quad poles light from every arm.
+    const lightPoints = layout.lightPxs ?? (layout.lightPx ? [layout.lightPx] : [])
+    const lights = opts.night
+      ? lightPoints.map((p) => nightLight(p, layout.origin[1], opts.pxPerMeterY))
+      : []
 
-    if (light) {
+    for (const light of lights) {
       // 1. Warm ground pool — the primary illumination cue, brightest at
       //    center with soft radial falloff.
       const [px, py] = toCanvas(light.pool.x, light.pool.y)

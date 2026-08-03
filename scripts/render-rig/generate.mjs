@@ -122,41 +122,63 @@ async function main() {
           console.error(`  MISSING GLB for ${part.id}: ${glbPath} — using placeholder`)
         }
       }
-      const finishes = {}
-      for (const finishId of finishIds) {
-        let result
-        try {
-          result = await page.evaluate(
-            (pid, fid) => window.renderPart(pid, fid),
-            part.id,
-            finishId,
-          )
-        } catch (err) {
-          console.error(`  FAIL ${part.id} / ${finishId}: ${err.message}`)
-          failures++
-          continue
+      // Phase 0.8 (A/B): arms and fixtures are radial attachments, so they get
+      // one render per discrete mount azimuth (0°=hero + the twin/triple/quad
+      // angles). Everything else (poles, base covers, standalone) is single-view.
+      // The union of angles across single/twin/triple/quad is bounded — 6 total.
+      const isRadial = part.slot === 'arm' || part.slot === 'fixture' || part.slot === 'banner'
+      const ANGLES = isRadial
+        ? [
+            { key: 'hero', yaw: 0 },
+            { key: 'az90', yaw: 90 },
+            { key: 'az120', yaw: 120 },
+            { key: 'az180', yaw: 180 },
+            { key: 'az240', yaw: 240 },
+            { key: 'az270', yaw: 270 },
+          ]
+        : [{ key: 'hero', yaw: 0 }]
+
+      const angles = {}
+      let totalRenders = 0
+      for (const { key, yaw } of ANGLES) {
+        const finishes = {}
+        for (const finishId of finishIds) {
+          let result
+          try {
+            result = await page.evaluate(
+              (pid, fid, y) => window.renderPart(pid, fid, y),
+              part.id,
+              finishId,
+              yaw,
+            )
+          } catch (err) {
+            console.error(`  FAIL ${part.id} / ${key} / ${finishId}: ${err.message}`)
+            failures++
+            continue
+          }
+          if (result.empty || !result.dataUrl) {
+            console.error(`  EMPTY ${part.id} / ${key} / ${finishId} (blank readback)`)
+            failures++
+            continue
+          }
+          const fileName = `${part.id}--${key}--${finishId}.webp`
+          const base64 = result.dataUrl.replace(/^data:image\/webp;base64,/, '')
+          await writeFile(resolve(OUT_DIR, fileName), Buffer.from(base64, 'base64'))
+          finishes[finishId] = {
+            file: `renders/${fileName}`,
+            width: result.width,
+            height: result.height,
+            anchor: [Math.round(result.anchorX * 100) / 100, Math.round(result.anchorY * 100) / 100],
+          }
+          totalRenders++
         }
-        if (result.empty || !result.dataUrl) {
-          console.error(`  EMPTY ${part.id} / ${finishId} (blank readback)`)
-          failures++
-          continue
-        }
-        const fileName = `${part.id}--hero--${finishId}.webp`
-        const base64 = result.dataUrl.replace(/^data:image\/webp;base64,/, '')
-        await writeFile(resolve(OUT_DIR, fileName), Buffer.from(base64, 'base64'))
-        finishes[finishId] = {
-          file: `renders/${fileName}`,
-          width: result.width,
-          height: result.height,
-          anchor: [Math.round(result.anchorX * 100) / 100, Math.round(result.anchorY * 100) / 100],
-        }
+        const sortedFinishes = {}
+        for (const k of Object.keys(finishes).sort()) sortedFinishes[k] = finishes[k]
+        angles[key] = { finishes: sortedFinishes }
       }
-      const sortedFinishes = {}
-      for (const k of Object.keys(finishes).sort()) sortedFinishes[k] = finishes[k]
-      manifestParts[part.id] = { angles: { hero: { finishes: sortedFinishes } } }
-      const n = Object.keys(finishes).length
+      manifestParts[part.id] = { angles }
       const kind = realLoaded ? 'real' : part.placeholder ? part.placeholder.kind : 'placeholder'
-      console.log(`  ${part.id}: ${n}/${finishIds.length} finishes  (${kind})`)
+      console.log(`  ${part.id}: ${totalRenders} renders across ${ANGLES.length} angle(s)  (${kind})`)
     }
 
     const sortedParts = {}

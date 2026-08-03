@@ -236,7 +236,7 @@ interface RenderResult {
   anchorY: number
 }
 
-function renderPart(partId: string, finishId: string): RenderResult {
+function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult {
   const part = catalog.parts.find((p) => p.id === partId)
   const finish = catalog.finishes.find((f) => f.id === finishId)
   if (!finish) throw new Error(`no finish ${finishId}`)
@@ -246,6 +246,11 @@ function renderPart(partId: string, finishId: string): RenderResult {
 
   const material = makeMaterial(finish)
   const object = useReal ? instantiateRealModel(partId, finish) : specToObject(part!.placeholder!, material)
+  // Phase 0.8 (A): radial azimuth for multi-arm position renders. The part
+  // origin is its on-axis mount point, so rotating the root about +Y swings the
+  // reach while keeping the mount (and the projected origin/anchor) fixed. For
+  // real models this composes on top of the authored base rotateY.
+  if (yawDeg) object.rotation.y += (yawDeg * Math.PI) / 180
   scene.add(object)
 
   // Frame: view-space extents of the content bounding box.

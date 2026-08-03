@@ -433,3 +433,125 @@ class TestGenerateRenderPngBase64:
         body = resp.json()
         # Check for renderPng ignored warning
         assert any("renderPng ignored" in w for w in body.get("warnings", []))
+
+
+# ---------------------------------------------------------------------------
+# Multi-arm (radial armCount) — Phase 0.8
+# ---------------------------------------------------------------------------
+
+
+class TestMultiArmGenerate:
+    """POST /generate with a twin config produces distinct, non-empty output."""
+
+    def _twin_cfg(self) -> dict:
+        return dict(
+            configId="twin-http-0001",
+            pole="alum-pole-20",
+            baseCover="bc-fluted",
+            arm="sh1-shepherds-hook",
+            fixture="gvx-pendant",
+            finish="matte-black",
+            rev=1,
+            armCount=2,
+        )
+
+    def _single_cfg(self) -> dict:
+        c = self._twin_cfg()
+        c["armCount"] = 1
+        return c
+
+    def test_twin_generate_returns_200_with_files(self) -> None:
+        from app.adapters import REGISTRY
+
+        # Guard formats whose engine may be absent in this environment.
+        formats = [f for f in ("step", "ifc", "pdf") if f in REGISTRY]
+        assert "pdf" in formats  # pdf/ifc are hard deps; must be present
+        resp = client.post(
+            "/generate",
+            json={"config": self._twin_cfg(), "formats": formats, "renderPng": None},
+        )
+        assert resp.status_code == 200, resp.text
+        body = resp.json()
+        assert len(body["files"]) == len(formats)
+        for entry in body["files"]:
+            assert entry["sizeBytes"] > 0
+
+    def test_twin_confighash_differs_from_single(self) -> None:
+        assert config_hash(PoleConfig(**self._twin_cfg())) != config_hash(
+            PoleConfig(**self._single_cfg())
+        )
+
+    def test_armcount_out_of_range_returns_422(self) -> None:
+        cfg = self._twin_cfg()
+        cfg["armCount"] = 5
+        resp = client.post(
+            "/generate",
+            json={"config": cfg, "formats": ["pdf"], "renderPng": None},
+        )
+        assert resp.status_code == 422
+        assert "armCount" in resp.json()["detail"]
+
+    def test_absent_armcount_defaults_to_single(self) -> None:
+        cfg = self._single_cfg()
+        del cfg["armCount"]
+        resp = client.post(
+            "/generate",
+            json={"config": cfg, "formats": ["pdf"], "renderPng": None},
+        )
+        assert resp.status_code == 200, resp.text
+        # Absent armCount hashes the same as an explicit armCount=1.
+        assert config_hash(PoleConfig(**cfg)) == config_hash(
+            PoleConfig(**self._single_cfg())
+        )
+
+
+class TestBannerGenerate:
+    """POST /generate with a banner accessory config → 200, distinct hash."""
+
+    def _banner_cfg(self, with_banner: bool = True) -> dict:
+        cfg = dict(
+            configId="banner-http-0001",
+            pole="alum-pole-20",
+            baseCover="bc-fluted",
+            arm="sh1-shepherds-hook",
+            fixture="gvx-pendant",
+            finish="matte-black",
+            rev=1,
+        )
+        if with_banner:
+            cfg["banner"] = {
+                "armId": "willstudio-ba1-banner-arm",
+                "count": 2,
+                "heightFt": 8,
+            }
+        return cfg
+
+    def test_banner_generate_returns_200_with_files(self) -> None:
+        from app.adapters import REGISTRY
+
+        formats = [f for f in ("step", "ifc", "pdf") if f in REGISTRY]
+        assert "pdf" in formats
+        resp = client.post(
+            "/generate",
+            json={"config": self._banner_cfg(), "formats": formats, "renderPng": None},
+        )
+        assert resp.status_code == 200, resp.text
+        body = resp.json()
+        assert len(body["files"]) == len(formats)
+        for entry in body["files"]:
+            assert entry["sizeBytes"] > 0
+
+    def test_banner_confighash_differs_from_no_banner(self) -> None:
+        assert config_hash(PoleConfig(**self._banner_cfg(True))) != config_hash(
+            PoleConfig(**self._banner_cfg(False))
+        )
+
+    def test_unsupported_banner_count_returns_422(self) -> None:
+        cfg = self._banner_cfg()
+        cfg["banner"]["count"] = 3  # not in arrangements [1, 2, 4]
+        resp = client.post(
+            "/generate",
+            json={"config": cfg, "formats": ["pdf"], "renderPng": None},
+        )
+        assert resp.status_code == 422
+        assert "banner" in resp.json()["detail"]

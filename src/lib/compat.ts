@@ -49,6 +49,33 @@ export function attachSocket(part: CatalogPart, host: CatalogPart) {
 }
 
 /**
+ * Phase 0.8 (A1): even-spaced azimuths (degrees, about the pole's vertical axis)
+ * for a radial arm arrangement. 1→[0]; 2→[0,180]; 3→[0,120,240]; 4→[0,90,180,270].
+ * Position 0° is the single-arm reference direction, so armCount=1 is unchanged.
+ */
+export function armAzimuths(count: number): number[] {
+  const n = Math.max(1, Math.floor(count))
+  return Array.from({ length: n }, (_, i) => (i * 360) / n)
+}
+
+/**
+ * Phase 0.8 (A2): the arm counts a config may choose, driven purely by catalog
+ * rules — the intersection of the pole's and the arm's `arrangements` lists
+ * (absent → single only). This is how the UI offers only real, mountable
+ * layouts; no component hardcodes which poles/arms support multiples.
+ */
+export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[] {
+  const pole = partById(catalog, config.pole)
+  const arm = partById(catalog, config.arm)
+  if (!pole || !arm) return [1]
+  const poleSet = pole.arrangements ?? [1]
+  const armSet = arm.arrangements ?? [1]
+  const allowed = poleSet.filter((n) => armSet.includes(n) && n >= 1 && n <= 4)
+  // Always allow single; keep sorted + unique.
+  return [...new Set([1, ...allowed])].sort((a, b) => a - b)
+}
+
+/**
  * Walk slots fixture-first and replace any selection that is no longer
  * compatible by the first compatible option, so the assembly is never broken.
  */
@@ -69,6 +96,21 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
     next.finish = catalog.finishes[0].id
+  }
+  // Phase 0.8 (A2): clamp the arm count to what the repaired pole+arm allow.
+  const allowed = allowedArmCounts(catalog, next)
+  const count = next.armCount ?? 1
+  next.armCount = allowed.includes(count) ? count : 1
+  // Phase 0.8 (C): drop a banner selection that is no longer a valid part.
+  if (next.banner) {
+    const bannerPart = partById(catalog, next.banner.armId)
+    if (!bannerPart || bannerPart.slot !== 'banner') next.banner = null
+    else {
+      const sides = bannerPart.arrangements ?? [1]
+      if (!sides.includes(next.banner.count)) {
+        next.banner = { ...next.banner, count: sides[0] ?? 1 }
+      }
+    }
   }
   return next
 }
@@ -99,5 +141,7 @@ export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio
     fixture: partsForSlot(catalog, 'fixture', brand)[0]?.id ?? '',
     finish: catalog.finishes[0].id,
     rev: 1,
+    armCount: 1,
+    banner: null,
   })
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { attachSocket, compatibleParts, defaultConfig, isAssemblyPart, partById, repairConfig } from './compat'
+import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, isAssemblyPart, partById, repairConfig } from './compat'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -15,6 +15,7 @@ function config(overrides: Partial<PoleConfig>): PoleConfig {
     fixture: 'gvx-pendant',
     finish: 'matte-black',
     rev: 1,
+    armCount: 1,
     ...overrides,
   }
 }
@@ -366,5 +367,48 @@ describe('mount-type rules (H3b)', () => {
   it('repairConfig moves a post-top off an arm onto the direct mount', () => {
     const cfg = { ...base, fixture: 'drx-post-top', arm: 'upsweep' }
     expect(repairConfig(catalog, cfg).arm).toBe('direct-mount')
+  })
+})
+
+// ---- Phase 0.8 (A1/A2): radial arm arrangements ----
+
+describe('armAzimuths', () => {
+  it('gives even-spaced azimuths for each count', () => {
+    expect(armAzimuths(1)).toEqual([0])
+    expect(armAzimuths(2)).toEqual([0, 180])
+    expect(armAzimuths(3)).toEqual([0, 120, 240])
+    expect(armAzimuths(4)).toEqual([0, 90, 180, 270])
+  })
+})
+
+describe('allowedArmCounts', () => {
+  it('intersects the pole and arm arrangement lists', () => {
+    // alum-pole-14 and sh1-shepherds-hook are both annotated [1,2,3,4].
+    expect(allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'sh1-shepherds-hook' }))).toEqual([
+      1, 2, 3, 4,
+    ])
+  })
+
+  it('falls back to single-only for an arm with no arrangements (e.g. direct mount)', () => {
+    expect(allowedArmCounts(catalog, config({ arm: 'direct-mount' }))).toEqual([1])
+  })
+
+  it('always includes single and stays within 1..4', () => {
+    const counts = allowedArmCounts(catalog, config({}))
+    expect(counts).toContain(1)
+    for (const n of counts) expect(n >= 1 && n <= 4).toBe(true)
+  })
+})
+
+describe('repairConfig — arm count clamping', () => {
+  it('keeps a valid multi-arm count', () => {
+    expect(repairConfig(catalog, config({ armCount: 3 })).armCount).toBe(3)
+  })
+
+  it('resets an unsupported count to single', () => {
+    // direct-mount only supports single; a twin request must clamp back to 1.
+    // (Use a fixture the direct mount can actually host so the arm survives repair.)
+    const cfg = config({ fixture: 'drx-post-top', arm: 'direct-mount', armCount: 4 })
+    expect(repairConfig(catalog, cfg).armCount).toBe(1)
   })
 })

@@ -43,6 +43,42 @@ describe('config <-> URL params', () => {
   })
 })
 
+describe('arm count <-> URL params (Phase 0.8 A4)', () => {
+  it('omits the single-arm default from the URL', () => {
+    expect(configToParams({ ...config, armCount: 1 }).get('arms')).toBeNull()
+    expect(configToParams(config).get('arms')).toBeNull()
+  })
+
+  it('round-trips a multi-arm count', () => {
+    const params = configToParams({ ...config, armCount: 3 })
+    expect(params.get('arms')).toBe('3')
+    expect(paramsToPartialConfig(params)?.armCount).toBe(3)
+  })
+
+  it('ignores out-of-range arm counts', () => {
+    expect(paramsToPartialConfig(new URLSearchParams('?arms=9'))?.armCount).toBeUndefined()
+    expect(paramsToPartialConfig(new URLSearchParams('?arms=abc'))?.armCount).toBeUndefined()
+  })
+})
+
+describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
+  it('omits an absent banner', () => {
+    expect(configToParams(config).get('banner')).toBeNull()
+    expect(configToParams({ ...config, banner: null }).get('banner')).toBeNull()
+  })
+
+  it('round-trips a banner accessory', () => {
+    const banner = { armId: 'ba1-banner-arm', count: 2, heightFt: 8 }
+    const params = configToParams({ ...config, banner })
+    expect(params.get('banner')).toBe('ba1-banner-arm~2~8')
+    expect(paramsToPartialConfig(params)?.banner).toEqual(banner)
+  })
+
+  it('ignores a malformed banner param', () => {
+    expect(paramsToPartialConfig(new URLSearchParams('?banner=~~'))?.banner).toBeUndefined()
+  })
+})
+
 describe('brand round-trip', () => {
   it('default brand (WiLLstudio) is omitted from params', () => {
     const params = configToParams({ ...config, brand: 'WiLLstudio' })

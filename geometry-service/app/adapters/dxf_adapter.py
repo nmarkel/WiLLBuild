@@ -60,6 +60,19 @@ class DxfAdapter:
         if ctx.assembly is None:
             raise RuntimeError("DxfAdapter requires ctx.assembly")
 
+        # Radial-attachment decision (Phase 0.8): the direct route re-derives a
+        # 2D silhouette from the SINGLE cfg.arm/cfg.fixture ids and draws exactly
+        # one arm — it cannot render radial arms (armCount>1) or the mid-shaft
+        # banner set.  Rather than re-implement the radial rotation math in 2D
+        # (duplicating the kit's Rz placement), delegate those assemblies to the
+        # projection route, which draws every part in ctx.assembly.parts — the N
+        # rotated arms/fixtures/banners the kit fused.  Plain single-arm,
+        # no-banner assemblies stay on the default direct route → byte-identical.
+        if getattr(ctx.cfg, "armCount", 1) > 1 or getattr(ctx.cfg, "banner", None):
+            from .dxf_projection_adapter import DxfProjectionAdapter
+
+            return DxfProjectionAdapter().generate(ctx)
+
         doc = ezdxf.new(dxfversion="R2010")
         msp = doc.modelspace()
 

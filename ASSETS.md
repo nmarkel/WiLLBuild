@@ -25,6 +25,26 @@ HDRI/image-based lighting is unforgiving — it exposes geometry quality directl
 - **No faceting on curved pole surfaces** — turned/revolved parts need sufficient radial segments so cylinders and tapers read as smooth under environment lighting.
 - **UVs suitable for AO baking** — non-overlapping, sensibly packed UVs so ambient occlusion can be baked per part.
 
+## Geometry sourcing — Cole's STEP (Phase 0.8, Workstream B — locked 2026-07-28)
+
+**All real product geometry comes from Cole exporting STEP from the existing SolidWorks models — never AI-generated 3D.** Text/image→3D (ChatGPT + Claude) was evaluated and is unusable for precise luminaires; the accurate geometry already exists in CAD. AI's role for *new* products (Mode 3 / Phase 2) is a concept **image** that Cole turns into CAD — not geometry generation.
+
+Both tracks consume the same source: the offline render rig (`scripts/render-rig/`) bakes the viewer's WebP layers, and the geometry-service (`geometry-service/`) emits the STEP/DWG/IFC/RFA downloads — both from the one canonical part geometry. So multi-arm makes "render from real geometry" non-optional: the same CAD that powers the downloads generates the multi-arm position renders. Cole's ask stays "give geometry," not "hand-shoot every arm at every angle in every finish."
+
+Blender's remaining job is **converting** real CAD → web GLB (decimate, sockets, finish material slot) — not authoring. Real GLBs already flow through this path for `alum-pole-12`, `bc-round`, `sh1-shepherds-hook`, `gvx-pendant` (see `scripts/render-rig/real-parts.json`); every other part renders from its photo-informed placeholder solid until its STEP lands, and Cole's renders drop into the same `public/renders/manifest.json` slots with no app change.
+
+## Multi-arm & banner position renders (Phase 0.8, Workstream A/B)
+
+Radial attachments (arms, fixtures, banner arms) can't be faked by pasting one flat PNG — each mount azimuth is a different view. The rig renders each such part once per **discrete mount azimuth** by rotating the part about the vertical (+Y) axis under the fixed camera (`renderPart(partId, finishId, yawDeg)` in `page/main.ts`), and stores each under an `az<deg>` manifest angle key (0° reuses `hero`). The consumer (`src/lib/composite.ts`) picks the per-azimuth render for each radial position and z-orders it by camera depth (arms reaching away from the camera draw behind the pole).
+
+The azimuth set is exactly the union across single / twin@180° / triple@120° / quad@90° = **{0, 90, 120, 180, 240, 270}** — 6 angles. This keeps the asset set **bounded and pre-bakeable**, not a per-config explosion:
+
+- **17 radial parts** (12 arms + 4 fixtures + 1 banner arm, WiLLstudio) × 6 angles × 5 finishes = **510** renders
+- **89 single-view parts** × 5 finishes = **445** renders
+- **955 WebP total** in `public/renders/` (was 525 at Phase 0.5)
+
+Regenerate with `npm run render-rig -- --line WiLLstudio` then `npm run render-manifest`.
+
 ## Status
 
-No real GLBs yet — all parts currently render as parametric placeholder primitives defined by each part's `placeholder` spec in the catalog (see M1 milestone: first real GLB through the pipeline).
+Real GLBs exist for `alum-pole-12`, `bc-round`, `sh1-shepherds-hook`, `gvx-pendant`; all other parts render from parametric placeholder solids until their STEP arrives (drops into the same manifest slots — the app never blocks on assets).

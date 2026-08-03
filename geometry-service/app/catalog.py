@@ -113,7 +113,34 @@ def validate_config(catalog: dict, cfg: PoleConfig) -> None:
             raise ValueError("; ".join(problems))
         return
 
+    # --- armCount must be 1-4 (radial arm arrangement, Phase 0.8) ---
+    if cfg.armCount not in (1, 2, 3, 4):
+        problems.append(f"armCount must be 1-4, got {cfg.armCount!r}")
+
+    # --- banner accessory (optional, Phase 0.8 C): armId must be a real banner
+    # part and count must be one of that part's supported arrangements. ---
+    if cfg.banner is not None:
+        try:
+            banner_part = part(catalog, cfg.banner.armId)
+            if banner_part.get("slot") != "banner":
+                problems.append(
+                    f"banner armId {cfg.banner.armId!r} is a "
+                    f"{banner_part.get('slot')!r}, not a banner"
+                )
+            else:
+                arrangements = banner_part.get("arrangements", [])
+                if cfg.banner.count not in arrangements:
+                    problems.append(
+                        f"banner count {cfg.banner.count} not in supported "
+                        f"arrangements {arrangements}"
+                    )
+        except KeyError:
+            problems.append(f"Unknown banner armId: {cfg.banner.armId!r}")
+
     # --- Full assembly path ---
+    # All radial arms carry the SAME arm + fixture part, so the single-arm
+    # socket-compat checks below (arm hosts fixture, pole hosts arm) cover every
+    # arm in the arrangement — no per-arm re-validation needed.
     fixture_part: dict | None = None
     arm_part: dict | None = None
     pole_part: dict | None = None

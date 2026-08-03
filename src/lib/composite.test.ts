@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest'
 import type { Catalog, PoleConfig } from '../types'
 import {
   HERO_ANGLE,
+  angleKeyForAzimuth,
+  armDepthProxy,
   projectOffset,
   resolveRenderAsset,
   resolveAssemblyLayout,
+  rotateY,
   pointInLayout,
   type RenderManifest,
 } from './composite'
@@ -164,5 +167,102 @@ describe('resolveAssemblyLayout', () => {
     expect(l.missing).toEqual([])
     expect(l.layers.map((x) => x.partId)).toEqual(['pole'])
     expect(l.lightPx).toBeUndefined()
+  })
+
+  it('armCount=1 is identical to omitting armCount (no regression)', () => {
+    const withCount = resolveAssemblyLayout(catalog, manifest, { ...config, armCount: 1 })
+    const without = resolveAssemblyLayout(catalog, manifest, config)
+    expect(withCount).toEqual(without)
+  })
+})
+
+// ---- Phase 0.8 (A): radial multi-arm helpers + fan-out ----
+
+describe('angleKeyForAzimuth', () => {
+  it('maps 0°/360° to the hero angle and others to az<deg> keys', () => {
+    expect(angleKeyForAzimuth(0)).toBe(HERO_ANGLE)
+    expect(angleKeyForAzimuth(360)).toBe(HERO_ANGLE)
+    expect(angleKeyForAzimuth(180)).toBe('az180')
+    expect(angleKeyForAzimuth(90)).toBe('az90')
+    expect(angleKeyForAzimuth(-90)).toBe('az270')
+  })
+})
+
+describe('rotateY', () => {
+  it('rotates a reach offset about the vertical axis (matches the rig)', () => {
+    const [x, y, z] = rotateY([1, 0.5, 0], 180)
+    expect(x).toBeCloseTo(-1, 6)
+    expect(y).toBe(0.5)
+    expect(z).toBeCloseTo(0, 6)
+    // 90° swings +X reach onto the -Z axis (three.js Y-rotation convention).
+    const q = rotateY([1, 0, 0], 90)
+    expect(q[0]).toBeCloseTo(0, 6)
+    expect(q[2]).toBeCloseTo(-1, 6)
+  })
+})
+
+describe('armDepthProxy', () => {
+  const rig35 = { ...rig, azimuthDeg: 35 }
+  it('is positive for arms reaching toward the camera, negative for away', () => {
+    expect(armDepthProxy(rig35, 0)).toBeGreaterThan(0) // front (single-arm ref)
+    expect(armDepthProxy(rig35, 180)).toBeLessThan(0) // twin partner behind
+    expect(armDepthProxy(rig35, 90)).toBeLessThan(0)
+    expect(armDepthProxy(rig35, 270)).toBeGreaterThan(0)
+  })
+})
+
+describe('resolveAssemblyLayout — multi-arm', () => {
+  // Add az180 renders for the arm + fixture so a twin composites with 0 missing.
+  const armAz = asset('renders/arm-az180.webp', 120, 80, [110, 78])
+  const fixAz = asset('renders/fix-az180.webp', 90, 70, [45, 5])
+  const twinManifest: RenderManifest = {
+    rig: { ...rig, azimuthDeg: 35 },
+    parts: {
+      pole: manifest.parts.pole,
+      base: manifest.parts.base,
+      arm: { angles: { [HERO_ANGLE]: { finishes: { black: asset('renders/arm.webp', 120, 80, [10, 78]) } }, az180: { finishes: { black: armAz } } } },
+      fix: { angles: { [HERO_ANGLE]: { finishes: { black: asset('renders/fix.webp', 90, 70, [45, 5]) } }, az180: { finishes: { black: fixAz } } } },
+    },
+  }
+  const twin: PoleConfig = { ...config, armCount: 2 }
+
+  it('emits one arm + one fixture layer per radial position, with unique ids', () => {
+    const layout = resolveAssemblyLayout(catalog, twinManifest, twin)
+    expect(layout.missing).toEqual([])
+    const ids = layout.layers.map((l) => l.partId).sort()
+    expect(ids).toEqual(['arm#0', 'arm#1', 'base', 'fix#0', 'fix#1', 'pole'])
+  })
+
+  it('draws the away-facing arm behind the pole and the toward-facing arm in front', () => {
+    const layout = resolveAssemblyLayout(catalog, twinManifest, twin)
+    const z = Object.fromEntries(layout.layers.map((l) => [l.partId, l.z]))
+    // arm#0 = 0° (toward camera → in front), arm#1 = 180° (away → behind).
+    expect(z['arm#1']).toBeLessThan(z['pole'])
+    expect(z['arm#0']).toBeGreaterThan(z['pole'])
+    // Each fixture rides just above its own arm.
+    expect(z['fix#0']).toBeGreaterThan(z['arm#0'])
+    expect(z['fix#1']).toBeGreaterThan(z['arm#1'])
+  })
+
+  it('selects the per-azimuth render (az180 for the twin partner)', () => {
+    const layout = resolveAssemblyLayout(catalog, twinManifest, twin)
+    const arm1 = layout.layers.find((l) => l.partId === 'arm#1')!
+    expect(arm1.asset.file).toBe('renders/arm-az180.webp')
+  })
+
+  it('emits one night light per fixture (both twin arms light up)', () => {
+    const layout = resolveAssemblyLayout(catalog, twinManifest, twin)
+    expect(layout.lightPxs).toHaveLength(2)
+    // The two lights sit on opposite sides of the pole (mirrored x about origin).
+    const [a, b] = layout.lightPxs!
+    expect(Math.sign(a[0] - layout.origin[0])).toBe(-Math.sign(b[0] - layout.origin[0]))
+    // Back-compat: lightPx is the primary (first) light.
+    expect(layout.lightPx).toEqual(layout.lightPxs![0])
+  })
+
+  it('reports the real part id (once) when a radial azimuth render is missing', () => {
+    // Manifest with only hero (no az180) → twin partner has no render.
+    const layout = resolveAssemblyLayout(catalog, manifest, twin)
+    expect(layout.missing.sort()).toEqual(['arm', 'fix'])
   })
 })

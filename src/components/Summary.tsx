@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import { configStatus, partById } from '../lib/compat'
-import { buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
+import { armArrangementLabel, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
 import { shareUrl } from '../lib/url'
 
 interface Props {
@@ -46,6 +46,21 @@ export function Summary({ catalog, config }: Props) {
             </li>
           )
         })}
+        {(config.armCount ?? 1) > 1 && (
+          <li>
+            <span className="summary-label">Arms</span>
+            <span>{armArrangementLabel(config.armCount ?? 1)}</span>
+          </li>
+        )}
+        {config.banner && (
+          <li>
+            <span className="summary-label">Banner Arm</span>
+            <span>
+              {partById(catalog, config.banner.armId)?.name ?? config.banner.armId} · {config.banner.count}-side @{' '}
+              {config.banner.heightFt} ft
+            </span>
+          </li>
+        )}
         <li>
           <span className="summary-label">Finish</span>
           <span>

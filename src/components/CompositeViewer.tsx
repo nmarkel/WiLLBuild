@@ -100,7 +100,7 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
 
   // Physical-assembly key (excludes finish) — matches Scene.tsx's CameraRig
   // convention: a finish swap shouldn't reset the view, only a part change.
-  const assemblyKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}`
+  const assemblyKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.armCount ?? 1}-${config.banner?.armId ?? ''}:${config.banner?.count ?? ''}:${config.banner?.heightFt ?? ''}`
 
   useEffect(() => {
     setZoom(1)
@@ -223,8 +223,9 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   // illumination cues — deliberately NO self-lit lens "ball" at the head. Same
   // geometry the PNG snapshot draws. Conceptual look only, not a photometric
   // simulation (see the disclaimer in App.tsx).
-  const light =
-    night && layout.lightPx ? nightLight(layout.lightPx, layout.origin[1], pxPerMeterY) : null
+  // One glow per fixture — twin/triple/quad light from every arm, not just one.
+  const lightPoints = layout.lightPxs ?? (layout.lightPx ? [layout.lightPx] : [])
+  const lights = night ? lightPoints.map((p) => nightLight(p, layout.origin[1], pxPerMeterY)) : []
 
   // Pin the product's ground line (layout.origin) to the shared horizon so its
   // base + contact shadow land on every backdrop's ground plane. transform-
@@ -279,25 +280,26 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
           style={{ left: layout.origin[0], top: layout.origin[1], width: shadowWidthPx, height: shadowHeightPx }}
         />
 
-        {light && (
-          <div
-            className="composite-light-pool"
-            style={{ left: light.pool.x, top: light.pool.y, width: light.pool.rx * 2, height: light.pool.ry * 2 }}
-          />
-        )}
-
-        {light && light.beam.height > 0 && (
-          <div
-            className="composite-light-beam"
-            style={{
-              left: light.beam.left,
-              top: light.beam.top,
-              width: light.beam.width,
-              height: light.beam.height,
-              clipPath: `polygon(${50 - light.beam.apexHalfPct}% 0, ${50 + light.beam.apexHalfPct}% 0, 100% 100%, 0 100%)`,
-            }}
-          />
-        )}
+        {lights.map((light, i) => (
+          <div key={`pool-${i}`}>
+            <div
+              className="composite-light-pool"
+              style={{ left: light.pool.x, top: light.pool.y, width: light.pool.rx * 2, height: light.pool.ry * 2 }}
+            />
+            {light.beam.height > 0 && (
+              <div
+                className="composite-light-beam"
+                style={{
+                  left: light.beam.left,
+                  top: light.beam.top,
+                  width: light.beam.width,
+                  height: light.beam.height,
+                  clipPath: `polygon(${50 - light.beam.apexHalfPct}% 0, ${50 + light.beam.apexHalfPct}% 0, 100% 100%, 0 100%)`,
+                }}
+              />
+            )}
+          </div>
+        ))}
 
         {layout.layers.map((layer, i) => (
           <img

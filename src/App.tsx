@@ -5,6 +5,8 @@ import { Panel } from './components/Panel'
 import { Summary } from './components/Summary'
 import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
+import { SpecOptions } from './components/SpecOptions'
+import { BannerPicker } from './components/BannerPicker'
 import { CatalogNav } from './components/CatalogNav'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
@@ -102,6 +104,8 @@ export default function App() {
         <CatalogNav catalog={catalog} activeBrand={brand} />
         {brand === 'WiLLstudio' && <DescribeBox />}
         <Panel catalog={catalog} config={config} />
+        <BannerPicker catalog={catalog} config={config} />
+        <SpecOptions catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
         <OutputTray catalog={catalog} config={config} />
       </aside>

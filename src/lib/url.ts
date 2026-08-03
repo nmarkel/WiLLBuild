@@ -37,6 +37,25 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   if (config.brand !== DEFAULT_BRAND) {
     params.set('brand', config.brand)
   }
+  // Phase 0.8 (A4): arm count — omit the single-arm default to keep URLs clean.
+  if (config.armCount && config.armCount > 1) {
+    params.set('arms', String(config.armCount))
+  }
+  // Phase 0.8 (C/A4): banner accessory encoded as `armId~count~heightFt`.
+  if (config.banner) {
+    params.set(
+      'banner',
+      `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}`,
+    )
+  }
+  // Phase 0.8 (D): selected spec-sheet options as `key:code,key:code`.
+  if (config.specOptions && Object.keys(config.specOptions).length > 0) {
+    const opts = Object.entries(config.specOptions)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v}`)
+      .join(',')
+    params.set('opts', opts)
+  }
   if (scene !== DEFAULT_SCENE) {
     params.set('scene', scene)
   }
@@ -68,6 +87,39 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
   if (brandValue && (VALID_BRANDS as readonly string[]).includes(brandValue)) {
     partial.brand = brandValue as ProductLine
     found = true
+  }
+  // Phase 0.8 (A4): arm count — whitelist to 1..4; repairConfig clamps further.
+  const armsValue = params.get('arms')
+  if (armsValue) {
+    const n = Number(armsValue)
+    if (Number.isInteger(n) && n >= 1 && n <= 4) {
+      partial.armCount = n
+      found = true
+    }
+  }
+  // Phase 0.8 (C/A4): banner `armId~count~heightFt`; repairConfig validates the part.
+  const bannerValue = params.get('banner')
+  if (bannerValue) {
+    const [armId, countStr, heightStr] = bannerValue.split('~')
+    const count = Number(countStr)
+    const heightFt = Number(heightStr)
+    if (armId && Number.isFinite(count) && Number.isFinite(heightFt)) {
+      partial.banner = { armId, count, heightFt }
+      found = true
+    }
+  }
+  // Phase 0.8 (D): spec options `key:code,key:code`.
+  const optsValue = params.get('opts')
+  if (optsValue) {
+    const specOptions: Record<string, string> = {}
+    for (const pair of optsValue.split(',')) {
+      const [k, v] = pair.split(':')
+      if (k && v) specOptions[k] = v
+    }
+    if (Object.keys(specOptions).length > 0) {
+      partial.specOptions = specOptions
+      found = true
+    }
   }
   return found ? partial : null
 }

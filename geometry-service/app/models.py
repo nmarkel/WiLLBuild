@@ -7,6 +7,18 @@ from typing import Literal
 from pydantic import BaseModel
 
 
+class BannerConfig(BaseModel):
+    """Mid-shaft banner-arm accessory (Phase 0.8).
+
+    Carried on the config so requests don't 422, but IGNORED by the geometry
+    pipeline in this pass — a later message extends the kit/adapters for it.
+    """
+
+    armId: str
+    count: int
+    heightFt: float
+
+
 class PoleConfig(BaseModel):
     configId: str
     brand: str = "WiLLstudio"
@@ -16,6 +28,11 @@ class PoleConfig(BaseModel):
     fixture: str
     finish: str
     rev: int
+    # Phase 0.8: N arms mounted radially around the pole top. 1|2|3|4.
+    # Absent/1 → byte-identical to the pre-0.8 single-arm output.
+    armCount: int = 1
+    # Phase 0.8 banner accessory — accepted but ignored this pass (see BannerConfig).
+    banner: BannerConfig | None = None
 
 
 class GenerateRequest(BaseModel):

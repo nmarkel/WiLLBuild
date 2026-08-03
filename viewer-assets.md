@@ -136,6 +136,7 @@ Cole's SolidWorks render-rig outputs will replace these files **in place** — s
 | Decorative Upsweep (`upsweep`) | assembly | hero | 5/5 | rendered (interim rig) |
 | Washington Decorative Aluminum Anchor Base Light Poles (`washington-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
 | Williamsburg Decorative Aluminum Anchor Base Light Poles (`williamsburg-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
+| BA1 Banner Arm (`willstudio-ba1-banner-arm`) | assembly | hero | 5/5 | rendered (interim rig) |
 | WiLLstudio® CR2 Decorative Crossarm (`willstudio-cr2-decorative-crossarm`) | assembly | hero | 5/5 | rendered (interim rig) |
 | WiLLstudio® DWX Flood & Spot (`willstudio-dwx-flood-spot`) | standalone | hero | 5/5 | rendered (interim rig) |
 | WiLLstudio® FR2 Decorative Crossarm (`willstudio-fr2-decorative-crossarm`) | assembly | hero | 5/5 | rendered (interim rig) |
@@ -148,7 +149,7 @@ Cole's SolidWorks render-rig outputs will replace these files **in place** — s
 | WiLLstudio® WM1 Single Wall Mount Pendant (`willstudio-wm1-single-wall-mount-pendant`) | standalone | hero | 5/5 | rendered (interim rig) |
 | WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial (`willstudio-wm2-single-wall-tenon-mount-w-finial`) | standalone | hero | 5/5 | rendered (interim rig) |
 
-**WiLLstudio totals:** 35 rendered, 0 fallback, 35 total.
+**WiLLstudio totals:** 36 rendered, 0 fallback, 36 total.
 
 ## Overall totals
 
@@ -158,6 +159,6 @@ Cole's SolidWorks render-rig outputs will replace these files **in place** — s
 | WiLLcloud | 1 | 0 | 1 |
 | WiLLev | 7 | 0 | 7 |
 | WiLLsport | 12 | 0 | 12 |
-| WiLLstudio | 35 | 0 | 35 |
-| **All brands** | **105** | **0** | **105** |
+| WiLLstudio | 36 | 0 | 36 |
+| **All brands** | **106** | **0** | **106** |
 

@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { attachSocket, partById } from './compat'
+import { armAzimuths, attachSocket, partById } from './compat'
 
 /** One rendered layer/product image produced by the render rig. */
 export interface RenderAsset {
@@ -26,10 +26,50 @@ export interface RenderManifest {
 
 export const HERO_ANGLE = 'hero'
 
+/**
+ * Phase 0.8 (A): the non-hero azimuths (degrees) a radial arm/fixture must be
+ * rendered at, beyond 0° (= hero). These are exactly the angles that appear
+ * across twin(180)/triple(120,240)/quad(90,180,270), so the position render set
+ * is bounded — the render rig bakes one silhouette per azimuth per finish.
+ */
+export const MULTI_ARM_AZIMUTHS = [90, 120, 180, 240, 270] as const
+
+/** Manifest angle key for a radial azimuth: 0° reuses the existing hero render. */
+export function angleKeyForAzimuth(deg: number): string {
+  const d = ((deg % 360) + 360) % 360
+  return d === 0 ? HERO_ANGLE : `az${d}`
+}
+
+/** Feet → meters, for banner shaft heights (viewer world is meters, +Y up). */
+export const FT_TO_M = 0.3048
+
+/** Rotate a world offset (meters) about the vertical (+Y) axis — matches the rig's `object.rotation.y`. */
+export function rotateY(
+  offset: readonly [number, number, number],
+  deg: number,
+): [number, number, number] {
+  const r = (deg * Math.PI) / 180
+  const c = Math.cos(r)
+  const s = Math.sin(r)
+  const [x, y, z] = offset
+  return [x * c + z * s, y, -x * s + z * c]
+}
+
+/**
+ * Camera-space depth proxy for an arm reaching at azimuth `deg`, under the rig's
+ * fixed view. Positive → the reach points toward the camera (draw the arm in
+ * FRONT of the pole); negative → away (draw BEHIND). Only the sign and relative
+ * ordering matter, so the constant cos(elevation) factor is dropped.
+ */
+export function armDepthProxy(rig: RenderManifest['rig'], deg: number): number {
+  return Math.sin(((rig.azimuthDeg - deg) * Math.PI) / 180)
+}
+
 /** Draw order for assembly layers (base cover covers the pole root, fixture tops the arm). */
 export const SLOT_Z = { pole: 1, baseCover: 2, arm: 3, fixture: 4 } as const
 
 export interface PlacedLayer {
+  /** Unique layer id (real part id for single instances; `${id}#${i}` per radial arm). */
   partId: string
   asset: RenderAsset
   left: number
@@ -45,8 +85,14 @@ export interface CompositeLayout {
   origin: [number, number]
   /** Part ids in the config that have no render asset (→ fallback UI). */
   missing: string[]
-  /** Pixel position of the fixture's light source (night glow), when known. */
+  /** Pixel position of the primary fixture's light source (night glow), when known. */
   lightPx?: [number, number]
+  /**
+   * Every fixture's light-source pixel position (one per radial arm). Night mode
+   * draws a glow/pool at each so a twin/triple/quad pole lights from all arms,
+   * not just the first. `lightPx` is `lightPxs[0]` (kept for back-compat).
+   */
+  lightPxs?: [number, number][]
 }
 
 /** Project a world-space offset (meters, +Y up) to a pixel offset via the rig map. */
@@ -101,58 +147,116 @@ export function resolveAssemblyLayout(
   const arm = partById(catalog, config.arm)
   const fixture = partById(catalog, config.fixture)
 
-  const placements: { part: CatalogPart; world: [number, number, number]; z: number }[] = []
-  let lightWorld: [number, number, number] | undefined
+  // A placement carries a unique layer id, the real part (for missing-render
+  // reporting), the render angle key, and the world offset. armCount=1 produces
+  // exactly the pre-0.8 single-arm placements (hero angle, real part ids).
+  interface Placement {
+    layerId: string
+    part: CatalogPart
+    angle: string
+    world: [number, number, number]
+    z: number
+  }
+  const placements: Placement[] = []
+  const lightWorlds: [number, number, number][] = []
 
   if (pole) {
-    placements.push({ part: pole, world: [0, 0, 0], z: SLOT_Z.pole })
+    placements.push({ layerId: pole.id, part: pole, angle: HERO_ANGLE, world: [0, 0, 0], z: SLOT_Z.pole })
     if (baseCover) {
       const s = attachSocket(baseCover, pole)
-      if (s) placements.push({ part: baseCover, world: s.position, z: SLOT_Z.baseCover })
+      if (s)
+        placements.push({ layerId: baseCover.id, part: baseCover, angle: HERO_ANGLE, world: s.position, z: SLOT_Z.baseCover })
     }
     if (arm) {
       const armSocket = attachSocket(arm, pole)
       if (armSocket) {
-        placements.push({ part: arm, world: armSocket.position, z: SLOT_Z.arm })
-        if (fixture) {
-          const fixSocket = attachSocket(fixture, arm)
-          if (fixSocket) {
+        const count = Math.max(1, Math.floor(config.armCount ?? 1))
+        const azimuths = armAzimuths(count)
+        const fixSocket = fixture ? attachSocket(fixture, arm) : undefined
+        azimuths.forEach((deg, i) => {
+          const single = count === 1
+          const angle = angleKeyForAzimuth(deg)
+          // The arm mounts on the pole's vertical axis, so its origin is
+          // rotation-invariant; the reach is baked into the per-azimuth render.
+          const armWorld: [number, number, number] = [...armSocket.position]
+          // Single-arm keeps the historic fixed z-order; radial arms z-sort by
+          // camera depth so ones reaching behind the pole draw first.
+          const armZ = single ? SLOT_Z.arm : SLOT_Z.pole + armDepthProxy(manifest.rig, deg)
+          placements.push({
+            layerId: single ? arm.id : `${arm.id}#${i}`,
+            part: arm,
+            angle,
+            world: armWorld,
+            z: armZ,
+          })
+          if (fixture && fixSocket) {
+            const rot = rotateY(fixSocket.position, deg)
             const world: [number, number, number] = [
-              armSocket.position[0] + fixSocket.position[0],
-              armSocket.position[1] + fixSocket.position[1],
-              armSocket.position[2] + fixSocket.position[2],
+              armWorld[0] + rot[0],
+              armWorld[1] + rot[1],
+              armWorld[2] + rot[2],
             ]
-            placements.push({ part: fixture, world, z: SLOT_Z.fixture })
+            placements.push({
+              layerId: single ? fixture.id : `${fixture.id}#${i}`,
+              part: fixture,
+              angle,
+              world,
+              z: single ? SLOT_Z.fixture : armZ + 0.001,
+            })
+            // Each radial fixture emits its own night glow (twin/triple/quad
+            // all light up, not just the first arm).
             if (fixture.lightOffset) {
-              lightWorld = [
+              lightWorlds.push([
                 world[0] + fixture.lightOffset[0],
                 world[1] + fixture.lightOffset[1],
                 world[2] + fixture.lightOffset[2],
-              ]
+              ])
             }
           }
-        }
+        })
+      }
+    }
+    // Phase 0.8 (C): banner-arm accessory — a mid-shaft bracket set repeated on
+    // `count` radial sides. Same positional machinery as arms (per-azimuth
+    // renders + camera-depth z-order), only at a parametric shaft height rather
+    // than the pole-top socket. The banner arm mounts on the pole axis and its
+    // reach + placeholder panel are baked into the per-azimuth render.
+    if (config.banner) {
+      const bannerPart = partById(catalog, config.banner.armId)
+      if (bannerPart) {
+        const heightM = config.banner.heightFt * FT_TO_M
+        const sides = armAzimuths(Math.max(1, Math.floor(config.banner.count)))
+        sides.forEach((deg, i) => {
+          placements.push({
+            layerId: `${bannerPart.id}#${i}`,
+            part: bannerPart,
+            angle: angleKeyForAzimuth(deg),
+            world: [0, heightM, 0],
+            z: SLOT_Z.pole + armDepthProxy(manifest.rig, deg),
+          })
+        })
       }
     }
   }
 
-  const missing: string[] = []
+  const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
-  for (const { part, world, z } of placements) {
-    const asset = resolveRenderAsset(manifest, part.id, config.finish)
+  for (const { layerId, part, angle, world, z } of placements) {
+    const asset = resolveRenderAsset(manifest, part.id, config.finish, angle)
     if (!asset) {
-      missing.push(part.id)
+      missingSet.add(part.id)
       continue
     }
     const p = projectOffset(manifest, world)
     raw.push({
-      partId: part.id,
+      partId: layerId,
       asset,
       left: p[0] - asset.anchor[0],
       top: p[1] - asset.anchor[1],
       z,
     })
   }
+  const missing = [...missingSet]
 
   if (raw.length === 0) {
     return { layers: [], width: 0, height: 0, origin: [0, 0], missing }
@@ -175,6 +279,10 @@ export function resolveAssemblyLayout(
     origin,
     missing,
   }
-  if (lightWorld && !missing.length) layout.lightPx = pointInLayout(layout, manifest, lightWorld)
+  if (lightWorlds.length && !missing.length) {
+    const lightPxs = lightWorlds.map((w) => pointInLayout(layout, manifest, w))
+    layout.lightPxs = lightPxs
+    layout.lightPx = lightPxs[0]
+  }
   return layout
 }

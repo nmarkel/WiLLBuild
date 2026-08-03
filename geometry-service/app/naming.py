@@ -12,13 +12,27 @@ DISCLAIMER = "Concept starter model - not final engineered or manufacturing-rele
 
 def config_hash(cfg: PoleConfig) -> str:
     """Return the first 8 hex chars of the SHA-256 over the canonical JSON of
-    {pole, baseCover, arm, fixture, finish} with sorted keys and no whitespace.
+    {pole, baseCover, arm, fixture, finish, armCount} with sorted keys and no
+    whitespace.
 
     configId and rev are intentionally excluded so the same geometry always
     produces the same hash regardless of config identity or revision number.
+
+    ``armCount`` MUST be in the canonical dict: two different radial-arm
+    arrangements (e.g. single vs twin) produce different geometry, so they must
+    hash to different filenames — otherwise the on-disk cache serves the wrong
+    file.  ``armCount=1`` (or an absent field defaulting to 1) is included as
+    the integer 1, which is stable across old single-arm requests.
+
+    ``banner`` (mid-shaft banner-arm accessory) is likewise part of the
+    geometry, so it joins the whitelist as its serialised dict (``armId``,
+    ``count``, ``heightFt``) when present, else ``None`` — a config with a
+    banner hashes distinctly from the same config without one.
     """
     canonical: dict = {
         "arm": cfg.arm,
+        "armCount": cfg.armCount,
+        "banner": cfg.banner.model_dump() if cfg.banner is not None else None,
         "baseCover": cfg.baseCover,
         "finish": cfg.finish,
         "fixture": cfg.fixture,

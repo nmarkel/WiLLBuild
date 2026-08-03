@@ -137,7 +137,37 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
                 }
             )
     summary["parts"] = parts_list
+
+    # Arm arrangement (Phase 0.8) — only surfaced when >1 arm so single-arm
+    # spec sheets / hero cards are byte-identical to pre-0.8 output. Label text
+    # mirrors the frontend src/lib/summary.ts armArrangementLabel.
+    arm_count = getattr(req.config, "armCount", 1) or 1
+    if arm_count > 1:
+        summary["arm_count"] = arm_count
+        summary["arm_arrangement"] = _ARM_ARRANGEMENT_LABELS.get(
+            arm_count, f"{arm_count} arms"
+        )
+
+    # Banner arm (Phase 0.8 C) — one summary line matching src/lib/summary.ts:
+    # "Banner arm: <name> - <count>-side @ <heightFt> ft". Only when present, so
+    # no-banner spec sheets / hero cards are byte-identical.
+    banner = getattr(req.config, "banner", None)
+    if banner is not None:
+        banner_part = part_map.get(banner.armId)
+        banner_name = banner_part.get("name", banner.armId) if banner_part else banner.armId
+        h = banner.heightFt
+        h_txt = str(int(h)) if float(h).is_integer() else str(h)
+        summary["banner"] = f"{banner_name} - {banner.count}-side @ {h_txt} ft"
     return summary
+
+
+# Arm-arrangement labels — mirror src/lib/summary.ts armArrangementLabel.
+_ARM_ARRANGEMENT_LABELS: dict[int, str] = {
+    1: "Single",
+    2: "Twin (180 deg)",
+    3: "Triple (120 deg)",
+    4: "Quad (90 deg)",
+}
 
 
 def _decode_render_png(req: GenerateRequest) -> tuple[bytes | None, str | None]:
