@@ -31,7 +31,13 @@ export function buildPartNumber(
     if (selected) {
       segments.push(selected)
     } else if (opt.key.startsWith('finish-color')) {
-      segments.push(opt.values.find((v) => v.mapsTo === finishId)?.code ?? '_')
+      // The sheet's own code when it lists this finish, else the palette code
+      // (covers sheets whose finish column predates a newly added color).
+      segments.push(
+        opt.values.find((v) => v.mapsTo === finishId)?.code ??
+          catalog.finishes.find((f) => f.id === finishId)?.code ??
+          '_',
+      )
     } else if (opt.values.length === 1) {
       segments.push(opt.values[0].code)
     } else if (opt.values.some((v) => v.code === part.family)) {
@@ -74,7 +80,10 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
   for (const r of SUMMARY_ROWS) {
     const part = partById(catalog, config[r.key])
     const finish = catalog.finishes.find((f) => f.id === finishFor(config, r.key))
-    partLines.push(`${r.label}: ${part ? `${part.name}${finish ? ` — ${finish.name}` : ''}` : '—'}`)
+    // Custom RAL carries the picked color so the quote knows what to match.
+    const ralHex = finish?.id === 'custom-ral' ? config.finishRal?.[r.key] : undefined
+    const finishName = finish ? `${finish.name}${ralHex ? ` (${ralHex.toUpperCase()})` : ''}` : ''
+    partLines.push(`${r.label}: ${part ? `${part.name}${finishName ? ` — ${finishName}` : ''}` : '—'}`)
     const partNumber = buildPartNumber(catalog, config, r.key)
     if (partNumber) partLines.push(`  Part No: ${partNumber}`)
     const chosen = config.specOptions?.[r.key]

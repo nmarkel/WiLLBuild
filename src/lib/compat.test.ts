@@ -665,3 +665,30 @@ describe('default spec options — WHP7NP cord (Phase 1.0)', () => {
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
   })
 })
+
+describe('custom RAL color (Phase 1.1)', () => {
+  it('repairConfig keeps a well-formed hex on a custom-ral slot', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({ finishes: { pole: 'custom-ral' }, finishRal: { pole: '#1A2B3C' } }),
+    )
+    expect(repaired.finishRal).toEqual({ pole: '#1a2b3c' })
+  })
+
+  it('repairConfig drops malformed hexes and colors on non-RAL slots', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        finishes: { pole: 'custom-ral' },
+        finishRal: { pole: 'green', fixture: '#123456' },
+      }),
+    )
+    expect(repaired.finishRal).toBeUndefined()
+  })
+
+  it('the ten-color WiLLcoat palette is in the catalog with order codes', () => {
+    expect(catalog.finishes.map((f) => f.code)).toEqual([
+      'BK', 'DB', 'WH', 'NA', 'LG', 'SG', 'DG', 'DP', 'GM', 'RAL',
+    ])
+  })
+})

@@ -65,6 +65,15 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (fins) params.set('fins', fins)
   }
+  // Phase 1.1: custom RAL colors as `slot:rrggbb` (hex without the #).
+  if (config.finishRal) {
+    const rals = Object.entries(config.finishRal)
+      .filter(([, v]) => v)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v.replace('#', '')}`)
+      .join(',')
+    if (rals) params.set('ral', rals)
+  }
   // Phase 0.8 (D), reshaped 1.0: spec options as `slot.key:code,slot.key:code`;
   // multi-select columns join their codes with `+` (`fixture.options:WHP3NP+N5P`).
   if (config.specOptions) {
@@ -142,6 +151,22 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
     }
     if (Object.keys(finishes).length > 0) {
       partial.finishes = finishes
+      found = true
+    }
+  }
+  // Phase 1.1: custom RAL colors `slot:rrggbb`; repairConfig validates the hex
+  // and drops entries whose slot finish isn't custom-ral.
+  const ralValue = params.get('ral')
+  if (ralValue) {
+    const finishRal: Partial<Record<Slot, string>> = {}
+    for (const pair of ralValue.split(',')) {
+      const [slot, hex] = pair.split(':')
+      if (slot && hex && isOptionSlot(slot) && /^[0-9a-fA-F]{6}$/.test(hex)) {
+        finishRal[slot] = `#${hex.toLowerCase()}`
+      }
+    }
+    if (Object.keys(finishRal).length > 0) {
+      partial.finishRal = finishRal
       found = true
     }
   }

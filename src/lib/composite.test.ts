@@ -46,7 +46,7 @@ const manifest: RenderManifest = {
 const catalog: Catalog = {
   finishes: [
     // Only ids matter to the compositor
-    { id: 'black', name: 'Black', hex: '#000', roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, envMapIntensity: 1, keywords: [] },
+    { id: 'black', name: 'Black', code: 'BK', hex: '#000', roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, envMapIntensity: 1, keywords: [] },
   ],
   finishesProvisional: false,
   referenceAssemblies: [],

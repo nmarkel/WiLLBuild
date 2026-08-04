@@ -260,3 +260,17 @@ describe('multi-select spec options <-> URL params (Phase 1.0)', () => {
     expect(configToParams({ ...config, specOptions: { fixture: { options: [] } } }).get('opts')).toBeNull()
   })
 })
+
+describe('custom RAL color <-> URL params (Phase 1.1)', () => {
+  it('round-trips per-slot RAL hexes without the #', () => {
+    const finishRal = { pole: '#1a2b3c', fixture: '#aabbcc' }
+    const params = configToParams({ ...config, finishRal })
+    expect(params.get('ral')).toBe('fixture:aabbcc,pole:1a2b3c')
+    expect(paramsToPartialConfig(params)?.finishRal).toEqual(finishRal)
+  })
+
+  it('drops malformed ral pairs', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?ral=pole:xyz,fixture:112233'))
+    expect(partial?.finishRal).toEqual({ fixture: '#112233' })
+  })
+})

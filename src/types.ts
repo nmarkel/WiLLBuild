@@ -133,6 +133,8 @@ export function isAssemblyPart(
 export interface FinishDef {
   id: string
   name: string
+  /** Spec-sheet order code (BK, DB, WH, NA, LG, SG, DG, DP, GM, RAL). */
+  code: string
   hex: string
   roughness: number
   metalness: number
@@ -201,6 +203,13 @@ export interface PoleConfig {
    * part that hasn't been individually overridden.
    */
   finishes?: Partial<Record<Slot, string>>
+  /**
+   * Phase 1.1: when a slot's finish is `custom-ral`, the customer's picked
+   * color as a #rrggbb hex, keyed by slot. Feeds the swatch + quote text; the
+   * render itself stays the neutral custom-ral layer until real RAL-tinted
+   * assets exist.
+   */
+  finishRal?: Partial<Record<Slot, string>>
   rev: number
   /**
    * Phase 0.8 (A1): how many arms are mounted radially around the pole top.

@@ -40,6 +40,8 @@ interface ConfiguratorState {
   select: (slot: Slot, id: string) => void
   /** Phase 1.0: set one part's finish (per-slot override on the base finish). */
   setFinish: (slot: Slot, id: string) => void
+  /** Phase 1.1: set one part's custom RAL color (#rrggbb) — only meaningful when its finish is custom-ral. */
+  setFinishRal: (slot: Slot, hex: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
   setArmCount: (count: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
@@ -152,6 +154,16 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if ((config.finishes?.[slot] ?? config.finish) === id) return
     const finishes = { ...(config.finishes ?? {}), [slot]: id }
     const next = repairConfig(catalog, { ...config, finishes, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setFinishRal: (slot, hex) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    if (config.finishRal?.[slot] === hex) return
+    const finishRal = { ...(config.finishRal ?? {}), [slot]: hex }
+    const next = repairConfig(catalog, { ...config, finishRal, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

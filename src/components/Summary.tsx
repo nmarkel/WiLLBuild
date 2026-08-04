@@ -42,7 +42,11 @@ export function Summary({ catalog, config }: Props) {
                 <span className="summary-part">
                   <span>
                     {finish && (
-                      <span className="swatch inline" style={{ background: finish.hex }} title={finish.name} />
+                      <span
+                        className="swatch inline"
+                        style={{ background: config.finishRal?.[r.key] ?? finish.hex }}
+                        title={finish.name}
+                      />
                     )}
                     <a href={part.productUrl} target="_blank" rel="noreferrer">
                       {part.name}

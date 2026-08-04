@@ -28,16 +28,16 @@ describe('buildSummaryText', () => {
 
   it('includes all parts, each with its own finish (Phase 1.0)', () => {
     const summary = buildSummaryText(catalog, config({}))
-    expect(summary).toContain('Fixture: GVX Pendant — Matte Black')
-    expect(summary).toContain('Arm: SH1 Shepherds Hook — Matte Black')
-    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Matte Black')
-    expect(summary).toContain('Base Cover: Fluted Base Cover — Matte Black')
+    expect(summary).toContain('Fixture: GVX Pendant — Black')
+    expect(summary).toContain('Arm: SH1 Shepherds Hook — Black')
+    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Black')
+    expect(summary).toContain('Base Cover: Fluted Base Cover — Black')
   })
 
   it('a per-slot finish override shows on that part only', () => {
     const summary = buildSummaryText(catalog, config({ finishes: { pole: 'silver' } }))
-    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Silver')
-    expect(summary).toContain('Fixture: GVX Pendant — Matte Black')
+    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Nat Alum Silver')
+    expect(summary).toContain('Fixture: GVX Pendant — Black')
   })
 
   it('indents a part’s spec-sheet choices under the part', () => {
@@ -120,5 +120,20 @@ describe('buildPartNumber (Phase 1.0)', () => {
   it('is included in the summary text as a Part No line', () => {
     const summary = buildSummaryText(catalog, config({}))
     expect(summary).toContain('  Part No: WD-GVX-_-_-_-_-BK')
+  })
+})
+
+describe('custom RAL in summary + part number (Phase 1.1)', () => {
+  it('quote text carries the picked RAL hex', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ finishes: { pole: 'custom-ral' }, finishRal: { pole: '#1a2b3c' } }),
+    )
+    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Custom RAL Match (#1A2B3C)')
+  })
+
+  it('part number uses the palette code for finishes newer than the parsed sheet', () => {
+    const pn = buildPartNumber(catalog, config({ finishes: { fixture: 'custom-ral' } }), 'fixture')
+    expect(pn).toBe('WD-GVX-_-_-_-_-RAL')
   })
 })

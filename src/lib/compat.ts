@@ -211,6 +211,18 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     }
     next.finishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
+  // Phase 1.1: custom RAL colors — keep only well-formed hex values on slots
+  // whose finish actually is custom-ral.
+  if (next.finishRal) {
+    const cleaned: Partial<Record<Slot, string>> = {}
+    for (const slot of SLOT_ORDER) {
+      const hex = next.finishRal[slot]
+      if (hex && /^#[0-9a-fA-F]{6}$/.test(hex) && finishFor(next, slot) === 'custom-ral') {
+        cleaned[slot] = hex.toLowerCase()
+      }
+    }
+    next.finishRal = Object.keys(cleaned).length > 0 ? cleaned : undefined
+  }
   // Phase 1.0: prune spec options to the columns + codes the currently selected
   // part's ordering table actually offers (a part swap drops stale choices).
   // Ordering columns normalize to a single string; options & accessories to a

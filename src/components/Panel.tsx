@@ -71,7 +71,12 @@ export function Panel({ catalog, config }: Props) {
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">
-                {finish && <span className="swatch inline" style={{ background: finish.hex }} />}
+                {finish && (
+                  <span
+                    className="swatch inline"
+                    style={{ background: config.finishRal?.[step.key] ?? finish.hex }}
+                  />
+                )}
                 {part?.name ?? '—'}
               </span>
             </button>
@@ -138,32 +143,52 @@ function StepFinish({
   part: CatalogPart | undefined
 }) {
   const setFinish = useConfigurator((s) => s.setFinish)
+  const setFinishRal = useConfigurator((s) => s.setFinishRal)
   const current = finishFor(config, slot)
+  const ralHex = config.finishRal?.[slot]
   // Offer the finishes this part comes in; an empty list means unrestricted.
+  // Custom RAL is always offered — it's a match-anything order code.
   const offered =
     part && part.finishes.length > 0
-      ? catalog.finishes.filter((f) => part.finishes.includes(f.id))
+      ? catalog.finishes.filter((f) => f.id === 'custom-ral' || part.finishes.includes(f.id))
       : catalog.finishes
   if (offered.length === 0) return null
   return (
     <div className="step-group">
       <p className="step-group-title">Finish</p>
-      {catalog.finishesProvisional && (
-        <p className="finish-note">Standard WiLLcoat palette pending confirmation — colors shown are provisional.</p>
-      )}
       <div className="options finishes">
-        {offered.map((f) => (
-          <button
-            key={f.id}
-            className={`finish-chip ${current === f.id ? 'selected' : ''}`}
-            onClick={() => setFinish(slot, f.id)}
-            title={f.name}
-          >
-            <span className="swatch" style={{ background: f.hex }} />
-            <span>{f.name}</span>
-          </button>
-        ))}
+        {offered.map((f) => {
+          const isRal = f.id === 'custom-ral'
+          return (
+            <button
+              key={f.id}
+              className={`finish-chip ${current === f.id ? 'selected' : ''}`}
+              onClick={() => setFinish(slot, f.id)}
+              title={f.name}
+            >
+              {isRal && !ralHex ? (
+                <span className="swatch ral-rainbow" />
+              ) : (
+                <span className="swatch" style={{ background: isRal ? ralHex : f.hex }} />
+              )}
+              <span>{f.name}</span>
+            </button>
+          )
+        })}
       </div>
+      {current === 'custom-ral' && (
+        <label className="ral-picker">
+          <input
+            type="color"
+            value={ralHex ?? '#b0b0b3'}
+            onChange={(e) => setFinishRal(slot, e.target.value)}
+          />
+          <span>
+            Pick your RAL match color{ralHex ? ` — ${ralHex.toUpperCase()}` : ''}. We’ll match the
+            closest RAL shade with your quote.
+          </span>
+        </label>
+      )}
     </div>
   )
 }
