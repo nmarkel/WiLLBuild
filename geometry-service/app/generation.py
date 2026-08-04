@@ -30,6 +30,7 @@ from .catalog import is_standalone_config, load_catalog, validate_config
 from .kit.assembly import build_assembly
 from .models import GenerateRequest
 from .naming import base_name, config_hash
+from .partnumber import part_number_text, resolve_assembly_part_numbers
 
 # ---------------------------------------------------------------------------
 # Geometric formats — when any of these are requested, build assembly once.
@@ -115,6 +116,12 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
     )
     summary["finish_ral"] = finish_obj.get("ral", "") if finish_obj else ""
 
+    # Phase 0.10 (Workstream 0): each component's WiLL part number — the primary
+    # deliverable.  Resolved from the same catalog ordering data the frontend
+    # uses (app/partnumber.py mirrors src/lib/partNumber.ts), so the sheet always
+    # shows the number the customer saw.
+    numbers = {n.part_id: n for n in resolve_assembly_part_numbers(catalog, req.config)}
+
     parts_list = []
     part_map = {p["id"]: p for p in catalog.get("parts", [])}
     for slot_field, slot_name in [
@@ -128,15 +135,21 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             continue
         part_obj = part_map.get(part_id)
         if part_obj:
+            number = numbers.get(part_id)
             parts_list.append(
                 {
                     "slot": slot_name,
                     "id": part_id,
                     "name": part_obj.get("name", part_id),
                     "productUrl": part_obj.get("productUrl", ""),
+                    # '' when this product has no published ordering matrix — the
+                    # sheet prints a dash rather than a fabricated code.
+                    "partNumber": number.code if number and not number.unavailable else "",
+                    "partNumberComplete": bool(number and number.complete),
                 }
             )
     summary["parts"] = parts_list
+    summary["part_numbers"] = [part_number_text(n) for n in numbers.values()]
 
     # Arm arrangement (Phase 0.8) — only surfaced when >1 arm so single-arm
     # spec sheets / hero cards are byte-identical to pre-0.8 output. Label text
@@ -148,25 +161,79 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             arm_count, f"{arm_count} arms"
         )
 
-    # Banner arm (Phase 0.8 C) — one summary line matching src/lib/summary.ts:
-    # "Banner arm: <name> - <count>-side @ <heightFt> ft". Only when present, so
-    # no-banner spec sheets / hero cards are byte-identical.
+    # Banner arm (Phase 0.8 C / 0.10 C) — one summary line mirroring
+    # bannerSummaryLine in src/lib/banner.ts: the banner is defined by its two
+    # mounting bars, so the line LABELS the banner height and both bar heights
+    # above grade.  Only emitted when a banner is present, so no-banner spec
+    # sheets / hero cards are byte-identical to earlier output.
     banner = getattr(req.config, "banner", None)
     if banner is not None:
         banner_part = part_map.get(banner.armId)
         banner_name = banner_part.get("name", banner.armId) if banner_part else banner.armId
-        h = banner.heightFt
-        h_txt = str(int(h)) if float(h).is_integer() else str(h)
-        summary["banner"] = f"{banner_name} - {banner.count}-side @ {h_txt} ft"
+        sides = "opposite pair" if banner.count == 2 else f"{banner.count}-side"
+        geom = _banner_geometry(banner_part, banner.heightFt) if banner_part else None
+        if geom is None:
+            h = banner.heightFt
+            h_txt = str(int(h)) if float(h).is_integer() else str(h)
+            summary["banner"] = f"{banner_name} - {sides} @ {h_txt} ft"
+        else:
+            panel_mm, top_mm, bottom_mm = geom
+            summary["banner"] = (
+                f"{banner_name} - {sides}, banner height {round(panel_mm / 25.4)} in "
+                f"(top bar {_ft_in(top_mm)} / bottom bar {_ft_in(bottom_mm)} above grade)"
+            )
     return summary
 
 
+def _ft_in(mm: float) -> str:
+    """Millimetres -> ``9'-2"`` (mirrors formatFtIn in src/lib/banner.ts)."""
+    total_inches = mm / 25.4
+    feet = int(total_inches // 12)
+    inches = round(total_inches % 12)
+    if inches == 12:
+        feet += 1
+        inches = 0
+    return f"{feet}'-{inches}\""
+
+
+def _banner_geometry(banner_part: dict, height_ft: float) -> tuple[float, float, float] | None:
+    """(panel height, top-bar height, bottom-bar height) in mm, above grade.
+
+    Derived from the banner arm's placeholder geometry exactly like
+    ``bannerGeometry`` in src/lib/banner.ts: the tallest box child is the panel,
+    the others are the two mounting bars.
+    """
+    placeholder = banner_part.get("placeholder") or {}
+    if placeholder.get("kind") != "group":
+        return None
+    boxes = [c for c in placeholder.get("children", []) if c.get("spec", {}).get("kind") == "box"]
+    if not boxes:
+        return None
+
+    def height_of(child: dict) -> float:
+        return child["spec"]["sizeM"][1]
+
+    def center_y(child: dict) -> float:
+        return child["position"][1] + height_of(child) / 2
+
+    panel = max(boxes, key=height_of)
+    bars = [c for c in boxes if c is not panel]
+    mount_mm = height_ft * 304.8  # ft -> mm
+    bar_ys = [center_y(c) for c in bars]
+    panel_y = center_y(panel)
+    panel_h = height_of(panel)
+    top_m = max(bar_ys) if bar_ys else panel_y + panel_h / 2
+    bottom_m = min(bar_ys) if bar_ys else panel_y - panel_h / 2
+    return panel_h * 1000.0, mount_mm + top_m * 1000.0, mount_mm + bottom_m * 1000.0
+
+
 # Arm-arrangement labels — mirror src/lib/summary.ts armArrangementLabel.
+# Phase 0.10: arms mount on a 90-degree drilled tenon, so a triple is 3@90.
 _ARM_ARRANGEMENT_LABELS: dict[int, str] = {
     1: "Single",
-    2: "Twin (180 deg)",
-    3: "Triple (120 deg)",
-    4: "Quad (90 deg)",
+    2: "Twin (2 @ 180 deg)",
+    3: "Triple (3 @ 90 deg)",
+    4: "Quad (4 @ 90 deg)",
 }
 
 

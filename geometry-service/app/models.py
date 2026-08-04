@@ -19,6 +19,18 @@ class BannerConfig(BaseModel):
     heightFt: float
 
 
+class PartSelections(BaseModel):
+    """Phase 0.10: one part's ordering-matrix selections.
+
+    ``codes`` are single-select ordering columns (Design, Voltage, …); ``addOns``
+    is the multi-select Options/Accessories field.  These drive the part NUMBER,
+    not the geometry — see app/partnumber.py.
+    """
+
+    codes: dict[str, str] = {}
+    addOns: list[str] = []
+
+
 class PoleConfig(BaseModel):
     configId: str
     brand: str = "WiLLstudio"
@@ -33,6 +45,10 @@ class PoleConfig(BaseModel):
     armCount: int = 1
     # Phase 0.8 banner accessory — accepted but ignored this pass (see BannerConfig).
     banner: BannerConfig | None = None
+    # Phase 0.10 (Workstream 0): per-part ordering selections, keyed by part id.
+    # They resolve each component's WiLL part number, which is printed on the
+    # spec sheet + concept card.
+    partOptions: dict[str, PartSelections] | None = None
 
 
 class GenerateRequest(BaseModel):

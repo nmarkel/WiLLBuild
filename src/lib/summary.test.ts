@@ -61,3 +61,56 @@ describe('buildSummaryText', () => {
     expect(parsed!.finish).toBe(testConfig.finish)
   })
 })
+
+// ---- Phase 0.10 (Workstream 0): the part number leads the summary ----
+
+describe('buildSummaryText — part numbers', () => {
+  const SS = 'willstudio-side-shepherds-hook-pole-top-brackets'
+
+  it('leads with the part-number block', () => {
+    const summary = buildSummaryText(catalog, config({}))
+    expect(summary.startsWith('Part numbers:')).toBe(true)
+  })
+
+  it('includes each component’s resolved number', () => {
+    const summary = buildSummaryText(catalog, config({ arm: SS, armCount: 2 }))
+    expect(summary).toContain('Arm: WP-SS2-40F-BK')
+  })
+
+  it('says a number is incomplete rather than pretending it is spec-able', () => {
+    const summary = buildSummaryText(catalog, config({}))
+    expect(summary).toMatch(/Fixture: WD-.*choices to complete/)
+  })
+
+  it('labels banner height and both bar distances', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt: 8 } }),
+    )
+    expect(summary).toContain('banner height 49 in')
+    expect(summary).toMatch(/top bar \d+'-\d+"/)
+    expect(summary).toMatch(/bottom bar \d+'-\d+"/)
+  })
+
+  it('reports the triple arrangement as 3 @ 90°', () => {
+    const summary = buildSummaryText(catalog, config({ arm: SS, armCount: 3 }))
+    expect(summary).toContain('Arm arrangement: Triple (3 @ 90°)')
+  })
+
+  it('lists per-part option selections with their labels', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ partOptions: { 'gvx-pendant': { codes: { voltage: 'MV' }, addOns: ['HSS-GVX'] } } }),
+    )
+    expect(summary).toContain('Voltage: MV — 120-277V')
+    expect(summary).toContain('Options: HSS-GVX')
+  })
+
+  it('never prints the retired "quote only" flag (Round 4)', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ partOptions: { 'gvx-pendant': { codes: { voltage: 'MV' } } } }),
+    )
+    expect(summary.toLowerCase()).not.toContain('quote only')
+  })
+})

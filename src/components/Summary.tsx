@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
+import { bannerGeometry, formatFtIn, formatIn } from '../lib/banner'
 import { configStatus, partById } from '../lib/compat'
 import { armArrangementLabel, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
 import { shareUrl } from '../lib/url'
@@ -55,10 +56,7 @@ export function Summary({ catalog, config }: Props) {
         {config.banner && (
           <li>
             <span className="summary-label">Banner Arm</span>
-            <span>
-              {partById(catalog, config.banner.armId)?.name ?? config.banner.armId} · {config.banner.count}-side @{' '}
-              {config.banner.heightFt} ft
-            </span>
+            <span>{bannerRowText(catalog, config)}</span>
           </li>
         )}
         <li>
@@ -81,5 +79,22 @@ export function Summary({ catalog, config }: Props) {
         Config ID: {config.configId.slice(0, 8)}
       </p>
     </div>
+  )
+}
+
+/**
+ * Phase 0.10 (C): the banner row labels its height and both bar distances —
+ * the two bars are what actually define a banner.
+ */
+function bannerRowText(catalog: Catalog, config: PoleConfig): string {
+  const banner = config.banner!
+  const part = partById(catalog, banner.armId)
+  if (!part) return `${banner.armId} · ${banner.count}-side @ ${banner.heightFt} ft`
+  const geom = bannerGeometry(part, banner.heightFt)
+  const sides = banner.count === 2 ? 'opposite pair' : `${banner.count}-side`
+  if (!geom) return `${part.name} · ${sides} @ ${banner.heightFt} ft`
+  return (
+    `${part.name} · ${sides} · ${formatIn(geom.panelHeightM)} high · ` +
+    `bars ${formatFtIn(geom.bottomBarM)}–${formatFtIn(geom.topBarM)}`
   )
 }

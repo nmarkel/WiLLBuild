@@ -60,7 +60,12 @@ async function main() {
     process.exit(1)
   }
 
-  const slug = partFilter ? 'all' : line ? (BRAND_SLUGS[line] ?? line.toLowerCase()) : 'all'
+  // A full run (no --parts) REPLACES its shard.  A partial re-render splices the
+  // rendered parts into the shard each part already belongs to — writing them to
+  // a separate `manifest-all.json` used to lose the race in merge-manifests.mjs,
+  // which merges shards alphabetically, so `all` was overwritten by `studio`.
+  const slugFor = (part) => BRAND_SLUGS[part.line] ?? part.line.toLowerCase()
+  const fullRunSlug = line ? (BRAND_SLUGS[line] ?? line.toLowerCase()) : 'all'
   await mkdir(OUT_DIR, { recursive: true })
 
   const server = await createServer({
@@ -122,18 +127,19 @@ async function main() {
           console.error(`  MISSING GLB for ${part.id}: ${glbPath} — using placeholder`)
         }
       }
-      // Phase 0.8 (A/B): arms and fixtures are radial attachments, so they get
-      // one render per discrete mount azimuth (0°=hero + the twin/triple/quad
-      // angles). Everything else (poles, base covers, standalone) is single-view.
-      // The union of angles across single/twin/triple/quad is bounded — 6 total.
+      // Phase 0.8 (A/B) + 0.10 (A): arms and fixtures are radial attachments, so
+      // they get one render per discrete mount azimuth (0°=hero + the
+      // twin/triple/quad angles). Everything else (poles, base covers,
+      // standalone) is single-view. Arms mount on a 90° DRILLED TENON per the
+      // ordering matrix — triple is 3@90, not 3@120 — so the union of angles
+      // across single/twin/triple/quad is bounded at 4 total (0/90/180/270).
+      // Keep in sync with MULTI_ARM_AZIMUTHS + armAzimuths on the app side.
       const isRadial = part.slot === 'arm' || part.slot === 'fixture' || part.slot === 'banner'
       const ANGLES = isRadial
         ? [
             { key: 'hero', yaw: 0 },
             { key: 'az90', yaw: 90 },
-            { key: 'az120', yaw: 120 },
             { key: 'az180', yaw: 180 },
-            { key: 'az240', yaw: 240 },
             { key: 'az270', yaw: 270 },
           ]
         : [{ key: 'hero', yaw: 0 }]
@@ -181,13 +187,33 @@ async function main() {
       console.log(`  ${part.id}: ${totalRenders} renders across ${ANGLES.length} angle(s)  (${kind})`)
     }
 
-    const sortedParts = {}
-    for (const k of Object.keys(manifestParts).sort()) sortedParts[k] = manifestParts[k]
+    // Group the freshly rendered parts by the shard they belong to.
+    const byShard = new Map()
+    for (const part of parts) {
+      const entry = manifestParts[part.id]
+      if (!entry) continue
+      const shard = partFilter ? slugFor(part) : fullRunSlug
+      if (!byShard.has(shard)) byShard.set(shard, {})
+      byShard.get(shard)[part.id] = entry
+    }
 
-    const manifest = { rig, parts: sortedParts }
-    const manifestPath = resolve(OUT_DIR, `manifest-${slug}.json`)
-    await writeFile(manifestPath, JSON.stringify(manifest, null, 2) + '\n')
-    console.log(`wrote ${manifestPath}`)
+    for (const [shard, entries] of byShard) {
+      const manifestPath = resolve(OUT_DIR, `manifest-${shard}.json`)
+      let existing = {}
+      if (partFilter) {
+        // Partial re-render: keep every other part already in this shard.
+        try {
+          existing = JSON.parse(await readFile(manifestPath, 'utf8')).parts ?? {}
+        } catch { /* first render for this shard */ }
+      }
+      const merged = { ...existing, ...entries }
+      const sortedParts = {}
+      for (const k of Object.keys(merged).sort()) sortedParts[k] = merged[k]
+      await writeFile(manifestPath, JSON.stringify({ rig, parts: sortedParts }, null, 2) + '\n')
+      console.log(
+        `wrote ${manifestPath} (${Object.keys(entries).length} rendered, ${Object.keys(sortedParts).length} total)`,
+      )
+    }
   } finally {
     await browser.close()
     await server.close()

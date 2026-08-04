@@ -14,7 +14,8 @@
       "ral": "RAL 9005",
       "keywords": [
         "black"
-      ]
+      ],
+      "code": "BK"
     },
     {
       "id": "statuary-bronze",
@@ -29,7 +30,8 @@
       "keywords": [
         "bronze",
         "brown"
-      ]
+      ],
+      "code": "DB"
     },
     {
       "id": "forest-green",
@@ -43,7 +45,8 @@
       "ral": "RAL 6009",
       "keywords": [
         "green"
-      ]
+      ],
+      "code": "DG"
     },
     {
       "id": "gloss-white",
@@ -57,7 +60,8 @@
       "ral": "RAL 9016",
       "keywords": [
         "white"
-      ]
+      ],
+      "code": "WH"
     },
     {
       "id": "silver",
@@ -73,7 +77,8 @@
         "silver",
         "gray",
         "grey"
-      ]
+      ],
+      "code": "NA"
     }
   ],
   "parts": [
@@ -2598,11 +2603,37 @@
       "thumbnail": "thumbnails/sh1-shepherds-hook.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+        1
+      ],
+      "ordering": {
+        "familyKey": "arm-shepherds-hook",
+        "familyLabel": "Shepherds Hook",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "SH1",
+            "armCount": 1,
+            "label": "Single shepherds hook"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "upsweep",
@@ -2682,10 +2713,53 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
         1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "ordering": {
+        "familyKey": "arm-upsweep-no-gusset",
+        "familyLabel": "Upsweep Arm (No Gusset)",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "BR12",
+            "armCount": 1,
+            "label": "Single, 24\" arm"
+          },
+          {
+            "code": "BR13",
+            "armCount": 1,
+            "label": "Single, 36\" arm"
+          },
+          {
+            "code": "BR22",
+            "armCount": 2,
+            "label": "2 @ 180 deg, 24\" arm"
+          },
+          {
+            "code": "BR23",
+            "armCount": 2,
+            "label": "2 @ 180 deg, 36\" arm"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet",
+        "note": "ASSUMPTION TO CONFIRM: the curated 'Decorative Upsweep' wizard arm is mapped to the sheet's Upsweep Arm (No Gusset) BR family; the HSX catalog product takes the Deco Upsweep HS codes. Second digit = arm count, third = arm length."
+      }
     },
     {
       "id": "pa1-pendant-arm",
@@ -2753,11 +2827,37 @@
       "thumbnail": "thumbnails/pa1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+        1
+      ],
+      "ordering": {
+        "familyKey": "arm-pendant-gusset",
+        "familyLabel": "Pendant Arm (w/ Gusset)",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "PA1",
+            "armCount": 1,
+            "label": "Single, gusseted"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "pm1-pendant-arm",
@@ -2821,11 +2921,37 @@
       "thumbnail": "thumbnails/pm1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+        1
+      ],
+      "ordering": {
+        "familyKey": "arm-pendant",
+        "familyLabel": "Pendant Arm",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "PM1",
+            "armCount": 1,
+            "label": "Single"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "direct-mount",
@@ -12087,7 +12213,22 @@
         "forest-green",
         "gloss-white",
         "silver"
-      ]
+      ],
+      "ordering": {
+        "familyKey": "base-cover-aluminum",
+        "familyLabel": "Aluminum Base Cover",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "CL2",
+            "label": "Two-piece aluminum base cover"
+          }
+        ],
+        "fit": "poleOd",
+        "fitFrom": "hostPoleShaftOd",
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet",
+        "note": "From the base-cover ordering block on the decorative-pole sheet (Ex: WP-CL2-50-BK): Product Family / Design / Pole Fit / Finish Color / Accessories. The curated fluted + round wizard covers are deliberately left without a design code — their style codes are not on the supplied sheet."
+      }
     },
     {
       "id": "aluminum-transformer-bases",
@@ -13183,11 +13324,37 @@
         "silver"
       ],
       "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "ordering": {
+        "familyKey": "arm-crossarm",
+        "familyLabel": "Crossarm",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "CR2",
+            "armCount": 2,
+            "label": "Fixed 2 @ 180 deg"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-dwx-flood-spot",
@@ -13364,11 +13531,37 @@
         "silver"
       ],
       "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "ordering": {
+        "familyKey": "arm-crossarm-finial",
+        "familyLabel": "Crossarm w/ Finial",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "FR2",
+            "armCount": 2,
+            "label": "Fixed 2 @ 180 deg, finial"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-hsx-decorative-upsweep-arms",
@@ -13446,10 +13639,42 @@
       ],
       "arrangements": [
         1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "ordering": {
+        "familyKey": "arm-deco-upsweep",
+        "familyLabel": "Deco Upsweep",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "HS1",
+            "armCount": 1,
+            "label": "Single"
+          },
+          {
+            "code": "HS2",
+            "armCount": 2,
+            "label": "2 @ 180 deg"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-pendant-ceiling-mounts",
@@ -13635,8 +13860,8 @@
         "fixture": {
           "type": "pendant",
           "position": [
-            0.6,
-            0.42,
+            0.622,
+            0.676,
             0
           ]
         }
@@ -13701,7 +13926,51 @@
         2,
         3,
         4
-      ]
+      ],
+      "ordering": {
+        "familyKey": "arm-side-shepherds-hook",
+        "familyLabel": "Side Shepherds Hook",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "SS1",
+            "armCount": 1,
+            "label": "Single"
+          },
+          {
+            "code": "SS2",
+            "armCount": 2,
+            "label": "2 @ 180 deg"
+          },
+          {
+            "code": "SS3",
+            "armCount": 3,
+            "label": "3 @ 90 deg"
+          },
+          {
+            "code": "SS4",
+            "armCount": 4,
+            "label": "4 @ 90 deg"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-supported-decorative-arms",
@@ -13773,10 +14042,42 @@
       ],
       "arrangements": [
         1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "ordering": {
+        "familyKey": "arm-supported-decorative",
+        "familyLabel": "Supported Decorative Arm",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "SD1",
+            "armCount": 1,
+            "label": "Single"
+          },
+          {
+            "code": "SD2",
+            "armCount": 2,
+            "label": "2 @ 180 deg"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-suspension-arm-pole-top-brackets",
@@ -13793,8 +14094,8 @@
         "fixture": {
           "type": "pendant",
           "position": [
-            0.7,
-            0.14,
+            0.61,
+            0.143,
             0
           ]
         }
@@ -13843,7 +14144,51 @@
         2,
         3,
         4
-      ]
+      ],
+      "ordering": {
+        "familyKey": "arm-suspension",
+        "familyLabel": "Suspension Arm",
+        "family": "WP",
+        "designs": [
+          {
+            "code": "AR1",
+            "armCount": 1,
+            "label": "Single"
+          },
+          {
+            "code": "AR2",
+            "armCount": 2,
+            "label": "2 @ 180 deg"
+          },
+          {
+            "code": "AR3",
+            "armCount": 3,
+            "label": "3 @ 90 deg"
+          },
+          {
+            "code": "AR4",
+            "armCount": 4,
+            "label": "4 @ 90 deg"
+          }
+        ],
+        "fit": "poleFlush",
+        "fitFrom": "hostPoleShaftOd",
+        "options": [
+          {
+            "code": "CF1",
+            "label": "Center Shepherds Hook Decorative Feature"
+          },
+          {
+            "code": "CF2",
+            "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+          },
+          {
+            "code": "CF3",
+            "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+          }
+        ],
+        "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet"
+      }
     },
     {
       "id": "willstudio-ba1-banner-arm",
@@ -13887,7 +14232,7 @@
             },
             "position": [
               0.25,
-              0.62,
+              0.605,
               0
             ]
           },
@@ -13903,7 +14248,7 @@
             },
             "position": [
               0.25,
-              -0.66,
+              -0.645,
               0
             ]
           },
@@ -13929,8 +14274,7 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
         1,
-        2,
-        4
+        2
       ]
     },
     {
@@ -14017,8 +14361,7 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
         1,
-        2,
-        4
+        2
       ]
     },
     {
@@ -14105,8 +14448,7 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
         1,
-        2,
-        4
+        2
       ]
     },
     {
@@ -14475,5 +14817,88 @@
       "GFD Sports & Entertainment Controls",
       "WiLLcloud+ Lighting Management Platform"
     ]
+  },
+  "ordering": {
+    "structure": "[Product Family]-[Design]-[Pole/Tenon Fit]-[Finish][-Options]",
+    "example": "WP-AR2-50F-BK",
+    "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) — decoded from the WiLLstudio decorative-arms ordering sheet",
+    "provenance": "Transcribed from the ordering-matrix reference note (the arms sheet Tyler supplied on 2026-08-03) — the ONLY hand-transcribed ordering data in the repo. Fixture + decorative-pole numbers are built from the machine-parsed spec sheets instead (docs/spec-options.json). Parts with neither source resolve to no part number rather than a fabricated one.",
+    "fitCodes": {
+      "tenon": [
+        {
+          "code": "24E",
+          "odIn": 2.375,
+          "label": "2.38\" OD tenon (external fit)"
+        },
+        {
+          "code": "30E",
+          "odIn": 3,
+          "label": "3\" OD tenon (external fit)"
+        },
+        {
+          "code": "35E",
+          "odIn": 3.5,
+          "label": "3.5\" OD tenon (external fit)"
+        },
+        {
+          "code": "40E",
+          "odIn": 4,
+          "label": "4\" OD tenon (external fit)"
+        }
+      ],
+      "poleFlush": [
+        {
+          "code": "40F",
+          "odIn": 4,
+          "label": "4\" OD round light pole (flush fit)"
+        },
+        {
+          "code": "50F",
+          "odIn": 5,
+          "label": "5\" OD round light pole (flush fit)"
+        },
+        {
+          "code": "60F",
+          "odIn": 6,
+          "label": "6\" OD round light pole (flush fit)"
+        }
+      ],
+      "poleOd": [
+        {
+          "code": "40",
+          "odIn": 4,
+          "label": "4\" OD pole fit"
+        },
+        {
+          "code": "50",
+          "odIn": 5,
+          "label": "5\" OD pole fit"
+        },
+        {
+          "code": "60",
+          "odIn": 6,
+          "label": "6\" OD pole fit"
+        }
+      ],
+      "plate": [
+        {
+          "code": "WM",
+          "odIn": null,
+          "label": "Wall-mount flat plate"
+        },
+        {
+          "code": "OC",
+          "odIn": null,
+          "label": "Overhead/ceiling flat plate"
+        }
+      ]
+    },
+    "socketOdIn": {
+      "tenon-3in": 3,
+      "tenon-2-3/8": 2.375
+    },
+    "socketOdNote": "Nominal OD (inches) of the host socket an arm slips over — drives the Pole/Tenon Fit segment. Sockets absent from this map (nafco-tenon, sport-pole-top, pendant, arm-mount) have no published fit vocabulary, so the fit segment stays unresolved instead of guessed.",
+    "fitToleranceIn": 0.5,
+    "fitToleranceNote": "A derived OD must land within this many inches of a code's nominal OD, else the fit segment stays unresolved. 'hostPoleShaftOd' reads the host pole's shaft OD from its placeholder radiusTopM (the shaft above the decorative base flare), so a 4\" nominal shaft resolves to the 4\" fit code."
   }
 }

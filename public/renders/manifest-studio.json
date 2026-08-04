@@ -331,55 +331,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az120--forest-green.webp",
-              "width": 34,
-              "height": 78,
-              "anchor": [
-                12.29,
-                71.48
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az120--gloss-white.webp",
-              "width": 34,
-              "height": 78,
-              "anchor": [
-                12.29,
-                71.48
-              ]
-            },
-            "matte-black": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az120--matte-black.webp",
-              "width": 34,
-              "height": 78,
-              "anchor": [
-                12.29,
-                71.48
-              ]
-            },
-            "silver": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az120--silver.webp",
-              "width": 34,
-              "height": 78,
-              "anchor": [
-                12.29,
-                71.48
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az120--statuary-bronze.webp",
-              "width": 34,
-              "height": 78,
-              "anchor": [
-                12.29,
-                71.48
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -425,55 +376,6 @@
               "anchor": [
                 102.23,
                 66.59
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az240--forest-green.webp",
-              "width": 126,
-              "height": 62,
-              "anchor": [
-                111.94,
-                55.47
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az240--gloss-white.webp",
-              "width": 126,
-              "height": 62,
-              "anchor": [
-                111.94,
-                55.47
-              ]
-            },
-            "matte-black": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az240--matte-black.webp",
-              "width": 126,
-              "height": 62,
-              "anchor": [
-                111.94,
-                55.47
-              ]
-            },
-            "silver": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az240--silver.webp",
-              "width": 126,
-              "height": 62,
-              "anchor": [
-                111.94,
-                55.47
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/aluminum-decorative-bullhorn-brackets-round-pole-mount--az240--statuary-bronze.webp",
-              "width": 126,
-              "height": 62,
-              "anchor": [
-                111.94,
-                55.47
               ]
             }
           }
@@ -535,47 +437,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/aluminum-light-pole-base-covers--hero--forest-green.webp",
-              "width": 74,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                37,
-                71.33
+                45.5,
+                108.16
               ]
             },
             "gloss-white": {
               "file": "renders/aluminum-light-pole-base-covers--hero--gloss-white.webp",
-              "width": 74,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                37,
-                71.33
+                45.5,
+                108.16
               ]
             },
             "matte-black": {
               "file": "renders/aluminum-light-pole-base-covers--hero--matte-black.webp",
-              "width": 74,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                37,
-                71.33
+                45.5,
+                108.16
               ]
             },
             "silver": {
               "file": "renders/aluminum-light-pole-base-covers--hero--silver.webp",
-              "width": 74,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                37,
-                71.33
+                45.5,
+                108.16
               ]
             },
             "statuary-bronze": {
               "file": "renders/aluminum-light-pole-base-covers--hero--statuary-bronze.webp",
-              "width": 74,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                37,
-                71.33
+                45.5,
+                108.16
               ]
             }
           }
@@ -588,47 +490,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/bc-fluted--hero--forest-green.webp",
-              "width": 81,
-              "height": 99,
+              "width": 91,
+              "height": 166,
               "anchor": [
-                41,
-                88.78
+                45.5,
+                156
               ]
             },
             "gloss-white": {
               "file": "renders/bc-fluted--hero--gloss-white.webp",
-              "width": 81,
-              "height": 99,
+              "width": 91,
+              "height": 166,
               "anchor": [
-                41,
-                88.78
+                45.5,
+                156
               ]
             },
             "matte-black": {
               "file": "renders/bc-fluted--hero--matte-black.webp",
-              "width": 81,
-              "height": 99,
+              "width": 91,
+              "height": 166,
               "anchor": [
-                41,
-                88.78
+                45.5,
+                156
               ]
             },
             "silver": {
               "file": "renders/bc-fluted--hero--silver.webp",
-              "width": 81,
-              "height": 99,
+              "width": 91,
+              "height": 166,
               "anchor": [
-                41,
-                88.78
+                45.5,
+                156
               ]
             },
             "statuary-bronze": {
               "file": "renders/bc-fluted--hero--statuary-bronze.webp",
-              "width": 81,
-              "height": 99,
+              "width": 91,
+              "height": 166,
               "anchor": [
-                41,
-                88.78
+                45.5,
+                156
               ]
             }
           }
@@ -642,46 +544,46 @@
             "forest-green": {
               "file": "renders/bc-round--hero--forest-green.webp",
               "width": 91,
-              "height": 119,
+              "height": 66,
               "anchor": [
                 45.5,
-                108.16
+                55.99
               ]
             },
             "gloss-white": {
               "file": "renders/bc-round--hero--gloss-white.webp",
               "width": 91,
-              "height": 119,
+              "height": 66,
               "anchor": [
                 45.5,
-                108.16
+                55.99
               ]
             },
             "matte-black": {
               "file": "renders/bc-round--hero--matte-black.webp",
               "width": 91,
-              "height": 119,
+              "height": 66,
               "anchor": [
                 45.5,
-                108.16
+                55.99
               ]
             },
             "silver": {
               "file": "renders/bc-round--hero--silver.webp",
               "width": 91,
-              "height": 119,
+              "height": 66,
               "anchor": [
                 45.5,
-                108.16
+                55.99
               ]
             },
             "statuary-bronze": {
               "file": "renders/bc-round--hero--statuary-bronze.webp",
               "width": 91,
-              "height": 119,
+              "height": 66,
               "anchor": [
                 45.5,
-                108.16
+                55.99
               ]
             }
           }
@@ -788,55 +690,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/direct-mount--az120--forest-green.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/direct-mount--az120--gloss-white.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "matte-black": {
-              "file": "renders/direct-mount--az120--matte-black.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "silver": {
-              "file": "renders/direct-mount--az120--silver.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/direct-mount--az120--statuary-bronze.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -882,55 +735,6 @@
               "anchor": [
                 13.5,
                 21.66
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/direct-mount--az240--forest-green.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/direct-mount--az240--gloss-white.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "matte-black": {
-              "file": "renders/direct-mount--az240--matte-black.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "silver": {
-              "file": "renders/direct-mount--az240--silver.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/direct-mount--az240--statuary-bronze.webp",
-              "width": 26,
-              "height": 28,
-              "anchor": [
-                13,
-                21.16
               ]
             }
           }
@@ -992,47 +796,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/drx-post-top--hero--forest-green.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "gloss-white": {
               "file": "renders/drx-post-top--hero--gloss-white.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "matte-black": {
               "file": "renders/drx-post-top--hero--matte-black.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "silver": {
               "file": "renders/drx-post-top--hero--silver.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "statuary-bronze": {
               "file": "renders/drx-post-top--hero--statuary-bronze.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             }
           }
@@ -1041,96 +845,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/drx-post-top--az90--forest-green.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "gloss-white": {
               "file": "renders/drx-post-top--az90--gloss-white.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "matte-black": {
               "file": "renders/drx-post-top--az90--matte-black.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "silver": {
               "file": "renders/drx-post-top--az90--silver.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "statuary-bronze": {
               "file": "renders/drx-post-top--az90--statuary-bronze.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/drx-post-top--az120--forest-green.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/drx-post-top--az120--gloss-white.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "matte-black": {
-              "file": "renders/drx-post-top--az120--matte-black.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "silver": {
-              "file": "renders/drx-post-top--az120--silver.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/drx-post-top--az120--statuary-bronze.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
+                52,
+                193
               ]
             }
           }
@@ -1139,96 +894,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/drx-post-top--az180--forest-green.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "gloss-white": {
               "file": "renders/drx-post-top--az180--gloss-white.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "matte-black": {
               "file": "renders/drx-post-top--az180--matte-black.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "silver": {
               "file": "renders/drx-post-top--az180--silver.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
+                52,
+                192
               ]
             },
             "statuary-bronze": {
               "file": "renders/drx-post-top--az180--statuary-bronze.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 199,
               "anchor": [
-                63,
-                105.73
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/drx-post-top--az240--forest-green.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/drx-post-top--az240--gloss-white.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "matte-black": {
-              "file": "renders/drx-post-top--az240--matte-black.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "silver": {
-              "file": "renders/drx-post-top--az240--silver.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/drx-post-top--az240--statuary-bronze.webp",
-              "width": 126,
-              "height": 112,
-              "anchor": [
-                63,
-                105.23
+                52,
+                192
               ]
             }
           }
@@ -1237,47 +943,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/drx-post-top--az270--forest-green.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "gloss-white": {
               "file": "renders/drx-post-top--az270--gloss-white.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "matte-black": {
               "file": "renders/drx-post-top--az270--matte-black.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "silver": {
               "file": "renders/drx-post-top--az270--silver.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             },
             "statuary-bronze": {
               "file": "renders/drx-post-top--az270--statuary-bronze.webp",
-              "width": 126,
-              "height": 113,
+              "width": 104,
+              "height": 200,
               "anchor": [
-                63,
-                105.73
+                52,
+                193
               ]
             }
           }
@@ -1384,55 +1090,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/gvx-pendant--az120--forest-green.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/gvx-pendant--az120--gloss-white.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "matte-black": {
-              "file": "renders/gvx-pendant--az120--matte-black.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "silver": {
-              "file": "renders/gvx-pendant--az120--silver.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/gvx-pendant--az120--statuary-bronze.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -1478,55 +1135,6 @@
               "anchor": [
                 49.5,
                 6.52
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/gvx-pendant--az240--forest-green.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/gvx-pendant--az240--gloss-white.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "matte-black": {
-              "file": "renders/gvx-pendant--az240--matte-black.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "silver": {
-              "file": "renders/gvx-pendant--az240--silver.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/gvx-pendant--az240--statuary-bronze.webp",
-              "width": 99,
-              "height": 101,
-              "anchor": [
-                49.5,
-                7.02
               ]
             }
           }
@@ -1641,47 +1249,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/mvx-coach--hero--forest-green.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 148,
               "anchor": [
-                66,
-                130.26
+                64,
+                140.33
               ]
             },
             "gloss-white": {
               "file": "renders/mvx-coach--hero--gloss-white.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 148,
               "anchor": [
-                66,
-                130.26
+                64,
+                140.33
               ]
             },
             "matte-black": {
               "file": "renders/mvx-coach--hero--matte-black.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 148,
               "anchor": [
-                66,
-                130.26
+                64,
+                140.33
               ]
             },
             "silver": {
               "file": "renders/mvx-coach--hero--silver.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 148,
               "anchor": [
-                66,
-                130.26
+                64,
+                140.33
               ]
             },
             "statuary-bronze": {
               "file": "renders/mvx-coach--hero--statuary-bronze.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 148,
               "anchor": [
-                66,
-                130.26
+                64,
+                140.33
               ]
             }
           }
@@ -1690,96 +1298,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/mvx-coach--az90--forest-green.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                60,
+                140.83
               ]
             },
             "gloss-white": {
               "file": "renders/mvx-coach--az90--gloss-white.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                60,
+                140.83
               ]
             },
             "matte-black": {
               "file": "renders/mvx-coach--az90--matte-black.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                60,
+                140.83
               ]
             },
             "silver": {
               "file": "renders/mvx-coach--az90--silver.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                60,
+                140.83
               ]
             },
             "statuary-bronze": {
               "file": "renders/mvx-coach--az90--statuary-bronze.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/mvx-coach--az120--forest-green.webp",
-              "width": 107,
-              "height": 137,
-              "anchor": [
-                53.5,
-                129.76
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/mvx-coach--az120--gloss-white.webp",
-              "width": 107,
-              "height": 137,
-              "anchor": [
-                53.5,
-                129.76
-              ]
-            },
-            "matte-black": {
-              "file": "renders/mvx-coach--az120--matte-black.webp",
-              "width": 107,
-              "height": 137,
-              "anchor": [
-                53.5,
-                129.76
-              ]
-            },
-            "silver": {
-              "file": "renders/mvx-coach--az120--silver.webp",
-              "width": 107,
-              "height": 137,
-              "anchor": [
-                53.5,
-                129.76
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/mvx-coach--az120--statuary-bronze.webp",
-              "width": 107,
-              "height": 137,
-              "anchor": [
-                53.5,
-                129.76
+                60,
+                140.83
               ]
             }
           }
@@ -1788,96 +1347,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/mvx-coach--az180--forest-green.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                56,
+                142.33
               ]
             },
             "gloss-white": {
               "file": "renders/mvx-coach--az180--gloss-white.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                56,
+                142.33
               ]
             },
             "matte-black": {
               "file": "renders/mvx-coach--az180--matte-black.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                56,
+                142.33
               ]
             },
             "silver": {
               "file": "renders/mvx-coach--az180--silver.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
+                56,
+                142.33
               ]
             },
             "statuary-bronze": {
               "file": "renders/mvx-coach--az180--statuary-bronze.webp",
-              "width": 132,
-              "height": 137,
+              "width": 120,
+              "height": 149,
               "anchor": [
-                66,
-                130.26
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/mvx-coach--az240--forest-green.webp",
-              "width": 127,
-              "height": 137,
-              "anchor": [
-                63.5,
-                129.76
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/mvx-coach--az240--gloss-white.webp",
-              "width": 127,
-              "height": 137,
-              "anchor": [
-                63.5,
-                129.76
-              ]
-            },
-            "matte-black": {
-              "file": "renders/mvx-coach--az240--matte-black.webp",
-              "width": 127,
-              "height": 137,
-              "anchor": [
-                63.5,
-                129.76
-              ]
-            },
-            "silver": {
-              "file": "renders/mvx-coach--az240--silver.webp",
-              "width": 127,
-              "height": 137,
-              "anchor": [
-                63.5,
-                129.76
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/mvx-coach--az240--statuary-bronze.webp",
-              "width": 127,
-              "height": 137,
-              "anchor": [
-                63.5,
-                129.76
+                56,
+                142.33
               ]
             }
           }
@@ -1886,47 +1396,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/mvx-coach--az270--forest-green.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 148,
               "anchor": [
                 66,
-                130.26
+                141.83
               ]
             },
             "gloss-white": {
               "file": "renders/mvx-coach--az270--gloss-white.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 148,
               "anchor": [
                 66,
-                130.26
+                141.83
               ]
             },
             "matte-black": {
               "file": "renders/mvx-coach--az270--matte-black.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 148,
               "anchor": [
                 66,
-                130.26
+                141.83
               ]
             },
             "silver": {
               "file": "renders/mvx-coach--az270--silver.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 148,
               "anchor": [
                 66,
-                130.26
+                141.83
               ]
             },
             "statuary-bronze": {
               "file": "renders/mvx-coach--az270--statuary-bronze.webp",
-              "width": 132,
-              "height": 137,
+              "width": 126,
+              "height": 148,
               "anchor": [
                 66,
-                130.26
+                141.83
               ]
             }
           }
@@ -2033,55 +1543,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/pa1-pendant-arm--az120--forest-green.webp",
-              "width": 32,
-              "height": 56,
-              "anchor": [
-                10.76,
-                42.68
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/pa1-pendant-arm--az120--gloss-white.webp",
-              "width": 32,
-              "height": 56,
-              "anchor": [
-                10.76,
-                42.68
-              ]
-            },
-            "matte-black": {
-              "file": "renders/pa1-pendant-arm--az120--matte-black.webp",
-              "width": 32,
-              "height": 56,
-              "anchor": [
-                10.76,
-                42.68
-              ]
-            },
-            "silver": {
-              "file": "renders/pa1-pendant-arm--az120--silver.webp",
-              "width": 32,
-              "height": 56,
-              "anchor": [
-                10.76,
-                42.68
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/pa1-pendant-arm--az120--statuary-bronze.webp",
-              "width": 32,
-              "height": 56,
-              "anchor": [
-                10.76,
-                42.68
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -2127,55 +1588,6 @@
               "anchor": [
                 110.71,
                 40.03
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/pa1-pendant-arm--az240--forest-green.webp",
-              "width": 134,
-              "height": 67,
-              "anchor": [
-                121.45,
-                36.77
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/pa1-pendant-arm--az240--gloss-white.webp",
-              "width": 134,
-              "height": 67,
-              "anchor": [
-                121.45,
-                36.77
-              ]
-            },
-            "matte-black": {
-              "file": "renders/pa1-pendant-arm--az240--matte-black.webp",
-              "width": 134,
-              "height": 67,
-              "anchor": [
-                121.45,
-                36.77
-              ]
-            },
-            "silver": {
-              "file": "renders/pa1-pendant-arm--az240--silver.webp",
-              "width": 134,
-              "height": 67,
-              "anchor": [
-                121.45,
-                36.77
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/pa1-pendant-arm--az240--statuary-bronze.webp",
-              "width": 134,
-              "height": 67,
-              "anchor": [
-                121.45,
-                36.77
               ]
             }
           }
@@ -2331,55 +1743,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/pm1-pendant-arm--az120--forest-green.webp",
-              "width": 33,
-              "height": 64,
-              "anchor": [
-                11.41,
-                56.73
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/pm1-pendant-arm--az120--gloss-white.webp",
-              "width": 33,
-              "height": 64,
-              "anchor": [
-                11.41,
-                56.73
-              ]
-            },
-            "matte-black": {
-              "file": "renders/pm1-pendant-arm--az120--matte-black.webp",
-              "width": 33,
-              "height": 64,
-              "anchor": [
-                11.41,
-                56.73
-              ]
-            },
-            "silver": {
-              "file": "renders/pm1-pendant-arm--az120--silver.webp",
-              "width": 33,
-              "height": 64,
-              "anchor": [
-                11.41,
-                56.73
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/pm1-pendant-arm--az120--statuary-bronze.webp",
-              "width": 33,
-              "height": 64,
-              "anchor": [
-                11.41,
-                56.73
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -2425,55 +1788,6 @@
               "anchor": [
                 109.34,
                 52.15
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/pm1-pendant-arm--az240--forest-green.webp",
-              "width": 133,
-              "height": 53,
-              "anchor": [
-                119.43,
-                46.07
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/pm1-pendant-arm--az240--gloss-white.webp",
-              "width": 133,
-              "height": 53,
-              "anchor": [
-                119.43,
-                46.07
-              ]
-            },
-            "matte-black": {
-              "file": "renders/pm1-pendant-arm--az240--matte-black.webp",
-              "width": 133,
-              "height": 53,
-              "anchor": [
-                119.43,
-                46.07
-              ]
-            },
-            "silver": {
-              "file": "renders/pm1-pendant-arm--az240--silver.webp",
-              "width": 133,
-              "height": 53,
-              "anchor": [
-                119.43,
-                46.07
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/pm1-pendant-arm--az240--statuary-bronze.webp",
-              "width": 133,
-              "height": 53,
-              "anchor": [
-                119.43,
-                46.07
               ]
             }
           }
@@ -2841,55 +2155,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/sh1-shepherds-hook--az120--forest-green.webp",
-              "width": 35,
-              "height": 170,
-              "anchor": [
-                15.88,
-                163.04
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/sh1-shepherds-hook--az120--gloss-white.webp",
-              "width": 35,
-              "height": 170,
-              "anchor": [
-                15.88,
-                163.04
-              ]
-            },
-            "matte-black": {
-              "file": "renders/sh1-shepherds-hook--az120--matte-black.webp",
-              "width": 35,
-              "height": 170,
-              "anchor": [
-                15.88,
-                163.04
-              ]
-            },
-            "silver": {
-              "file": "renders/sh1-shepherds-hook--az120--silver.webp",
-              "width": 35,
-              "height": 170,
-              "anchor": [
-                15.88,
-                163.04
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/sh1-shepherds-hook--az120--statuary-bronze.webp",
-              "width": 35,
-              "height": 170,
-              "anchor": [
-                15.88,
-                163.04
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -2935,55 +2200,6 @@
               "anchor": [
                 83.02,
                 160.21
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/sh1-shepherds-hook--az240--forest-green.webp",
-              "width": 106,
-              "height": 163,
-              "anchor": [
-                90.13,
-                155.88
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/sh1-shepherds-hook--az240--gloss-white.webp",
-              "width": 106,
-              "height": 163,
-              "anchor": [
-                90.13,
-                155.88
-              ]
-            },
-            "matte-black": {
-              "file": "renders/sh1-shepherds-hook--az240--matte-black.webp",
-              "width": 106,
-              "height": 163,
-              "anchor": [
-                90.13,
-                155.88
-              ]
-            },
-            "silver": {
-              "file": "renders/sh1-shepherds-hook--az240--silver.webp",
-              "width": 106,
-              "height": 163,
-              "anchor": [
-                90.13,
-                155.88
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/sh1-shepherds-hook--az240--statuary-bronze.webp",
-              "width": 106,
-              "height": 163,
-              "anchor": [
-                90.13,
-                155.88
               ]
             }
           }
@@ -3045,47 +2261,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/tex-post-top--hero--forest-green.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 131,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                124.25
               ]
             },
             "gloss-white": {
               "file": "renders/tex-post-top--hero--gloss-white.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 131,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                124.25
               ]
             },
             "matte-black": {
               "file": "renders/tex-post-top--hero--matte-black.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 131,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                124.25
               ]
             },
             "silver": {
               "file": "renders/tex-post-top--hero--silver.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 131,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                124.25
               ]
             },
             "statuary-bronze": {
               "file": "renders/tex-post-top--hero--statuary-bronze.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 131,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                124.25
               ]
             }
           }
@@ -3095,95 +2311,46 @@
             "forest-green": {
               "file": "renders/tex-post-top--az90--forest-green.webp",
               "width": 91,
-              "height": 85,
+              "height": 132,
               "anchor": [
                 45.5,
-                78.01
+                125.25
               ]
             },
             "gloss-white": {
               "file": "renders/tex-post-top--az90--gloss-white.webp",
               "width": 91,
-              "height": 85,
+              "height": 132,
               "anchor": [
                 45.5,
-                78.01
+                125.25
               ]
             },
             "matte-black": {
               "file": "renders/tex-post-top--az90--matte-black.webp",
               "width": 91,
-              "height": 85,
+              "height": 132,
               "anchor": [
                 45.5,
-                78.01
+                125.25
               ]
             },
             "silver": {
               "file": "renders/tex-post-top--az90--silver.webp",
               "width": 91,
-              "height": 85,
+              "height": 132,
               "anchor": [
                 45.5,
-                78.01
+                125.25
               ]
             },
             "statuary-bronze": {
               "file": "renders/tex-post-top--az90--statuary-bronze.webp",
               "width": 91,
-              "height": 85,
+              "height": 132,
               "anchor": [
                 45.5,
-                78.01
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/tex-post-top--az120--forest-green.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/tex-post-top--az120--gloss-white.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "matte-black": {
-              "file": "renders/tex-post-top--az120--matte-black.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "silver": {
-              "file": "renders/tex-post-top--az120--silver.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/tex-post-top--az120--statuary-bronze.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
+                125.25
               ]
             }
           }
@@ -3192,96 +2359,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/tex-post-top--az180--forest-green.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 136,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                129.25
               ]
             },
             "gloss-white": {
               "file": "renders/tex-post-top--az180--gloss-white.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 136,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                129.25
               ]
             },
             "matte-black": {
               "file": "renders/tex-post-top--az180--matte-black.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 136,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                129.25
               ]
             },
             "silver": {
               "file": "renders/tex-post-top--az180--silver.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 136,
               "anchor": [
-                45,
-                78.01
+                45.5,
+                129.25
               ]
             },
             "statuary-bronze": {
               "file": "renders/tex-post-top--az180--statuary-bronze.webp",
-              "width": 90,
-              "height": 85,
+              "width": 91,
+              "height": 136,
               "anchor": [
-                45,
-                78.01
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/tex-post-top--az240--forest-green.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/tex-post-top--az240--gloss-white.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "matte-black": {
-              "file": "renders/tex-post-top--az240--matte-black.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "silver": {
-              "file": "renders/tex-post-top--az240--silver.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/tex-post-top--az240--statuary-bronze.webp",
-              "width": 90,
-              "height": 85,
-              "anchor": [
-                45,
-                78.01
+                45.5,
+                129.25
               ]
             }
           }
@@ -3291,46 +2409,46 @@
             "forest-green": {
               "file": "renders/tex-post-top--az270--forest-green.webp",
               "width": 91,
-              "height": 85,
+              "height": 136,
               "anchor": [
                 45.5,
-                78.01
+                129.25
               ]
             },
             "gloss-white": {
               "file": "renders/tex-post-top--az270--gloss-white.webp",
               "width": 91,
-              "height": 85,
+              "height": 136,
               "anchor": [
                 45.5,
-                78.01
+                129.25
               ]
             },
             "matte-black": {
               "file": "renders/tex-post-top--az270--matte-black.webp",
               "width": 91,
-              "height": 85,
+              "height": 136,
               "anchor": [
                 45.5,
-                78.01
+                129.25
               ]
             },
             "silver": {
               "file": "renders/tex-post-top--az270--silver.webp",
               "width": 91,
-              "height": 85,
+              "height": 136,
               "anchor": [
                 45.5,
-                78.01
+                129.25
               ]
             },
             "statuary-bronze": {
               "file": "renders/tex-post-top--az270--statuary-bronze.webp",
               "width": 91,
-              "height": 85,
+              "height": 136,
               "anchor": [
                 45.5,
-                78.01
+                129.25
               ]
             }
           }
@@ -3437,55 +2555,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/upsweep--az120--forest-green.webp",
-              "width": 31,
-              "height": 106,
-              "anchor": [
-                11.35,
-                94.67
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/upsweep--az120--gloss-white.webp",
-              "width": 31,
-              "height": 106,
-              "anchor": [
-                11.35,
-                94.67
-              ]
-            },
-            "matte-black": {
-              "file": "renders/upsweep--az120--matte-black.webp",
-              "width": 31,
-              "height": 106,
-              "anchor": [
-                11.35,
-                94.67
-              ]
-            },
-            "silver": {
-              "file": "renders/upsweep--az120--silver.webp",
-              "width": 31,
-              "height": 106,
-              "anchor": [
-                11.35,
-                94.67
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/upsweep--az120--statuary-bronze.webp",
-              "width": 31,
-              "height": 106,
-              "anchor": [
-                11.35,
-                94.67
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -3531,55 +2600,6 @@
               "anchor": [
                 85.96,
                 91.06
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/upsweep--az240--forest-green.webp",
-              "width": 102,
-              "height": 93,
-              "anchor": [
-                93.6,
-                81.61
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/upsweep--az240--gloss-white.webp",
-              "width": 102,
-              "height": 93,
-              "anchor": [
-                93.6,
-                81.61
-              ]
-            },
-            "matte-black": {
-              "file": "renders/upsweep--az240--matte-black.webp",
-              "width": 102,
-              "height": 93,
-              "anchor": [
-                93.6,
-                81.61
-              ]
-            },
-            "silver": {
-              "file": "renders/upsweep--az240--silver.webp",
-              "width": 102,
-              "height": 93,
-              "anchor": [
-                93.6,
-                81.61
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/upsweep--az240--statuary-bronze.webp",
-              "width": 102,
-              "height": 93,
-              "anchor": [
-                93.6,
-                81.61
               ]
             }
           }
@@ -3747,47 +2767,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-ba1-banner-arm--hero--forest-green.webp",
-              "width": 97,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                8.45,
-                124.53
+                18.31,
+                135.64
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-ba1-banner-arm--hero--gloss-white.webp",
-              "width": 97,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                8.45,
-                124.53
+                18.31,
+                135.64
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-ba1-banner-arm--hero--matte-black.webp",
-              "width": 97,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                8.45,
-                124.53
+                18.31,
+                135.64
               ]
             },
             "silver": {
               "file": "renders/willstudio-ba1-banner-arm--hero--silver.webp",
-              "width": 97,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                8.45,
-                124.53
+                18.31,
+                135.64
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-ba1-banner-arm--hero--statuary-bronze.webp",
-              "width": 97,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                8.45,
-                124.53
+                18.31,
+                135.64
               ]
             }
           }
@@ -3796,96 +2816,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-ba1-banner-arm--az90--forest-green.webp",
-              "width": 74,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                9.11,
-                132.24
+                17.11,
+                137.51
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-ba1-banner-arm--az90--gloss-white.webp",
-              "width": 74,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                9.11,
-                132.24
+                17.11,
+                137.51
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-ba1-banner-arm--az90--matte-black.webp",
-              "width": 74,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                9.11,
-                132.24
+                17.11,
+                137.51
               ]
             },
             "silver": {
               "file": "renders/willstudio-ba1-banner-arm--az90--silver.webp",
-              "width": 74,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                9.11,
-                132.24
+                17.11,
+                137.51
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-ba1-banner-arm--az90--statuary-bronze.webp",
-              "width": 74,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                9.11,
-                132.24
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-ba1-banner-arm--az120--forest-green.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-ba1-banner-arm--az120--gloss-white.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-ba1-banner-arm--az120--matte-black.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-ba1-banner-arm--az120--silver.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-ba1-banner-arm--az120--statuary-bronze.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
+                17.11,
+                137.51
               ]
             }
           }
@@ -3894,96 +2865,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-ba1-banner-arm--az180--forest-green.webp",
-              "width": 98,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                89.55,
-                130.47
+                124.69,
+                137.36
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-ba1-banner-arm--az180--gloss-white.webp",
-              "width": 98,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                89.55,
-                130.47
+                124.69,
+                137.36
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-ba1-banner-arm--az180--matte-black.webp",
-              "width": 98,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                89.55,
-                130.47
+                124.69,
+                137.36
               ]
             },
             "silver": {
               "file": "renders/willstudio-ba1-banner-arm--az180--silver.webp",
-              "width": 98,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                89.55,
-                130.47
+                124.69,
+                137.36
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-ba1-banner-arm--az180--statuary-bronze.webp",
-              "width": 98,
-              "height": 255,
+              "width": 143,
+              "height": 273,
               "anchor": [
-                89.55,
-                130.47
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-ba1-banner-arm--az240--forest-green.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-ba1-banner-arm--az240--gloss-white.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-ba1-banner-arm--az240--matte-black.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-ba1-banner-arm--az240--silver.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-ba1-banner-arm--az240--statuary-bronze.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
+                124.69,
+                137.36
               ]
             }
           }
@@ -3992,47 +2914,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-ba1-banner-arm--az270--forest-green.webp",
-              "width": 75,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                65.89,
-                124.76
+                89.89,
+                135.49
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-ba1-banner-arm--az270--gloss-white.webp",
-              "width": 75,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                65.89,
-                124.76
+                89.89,
+                135.49
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-ba1-banner-arm--az270--matte-black.webp",
-              "width": 75,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                65.89,
-                124.76
+                89.89,
+                135.49
               ]
             },
             "silver": {
               "file": "renders/willstudio-ba1-banner-arm--az270--silver.webp",
-              "width": 75,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                65.89,
-                124.76
+                89.89,
+                135.49
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-ba1-banner-arm--az270--statuary-bronze.webp",
-              "width": 75,
-              "height": 257,
+              "width": 107,
+              "height": 273,
               "anchor": [
-                65.89,
-                124.76
+                89.89,
+                135.49
               ]
             }
           }
@@ -4139,55 +3061,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az120--forest-green.webp",
-              "width": 32,
-              "height": 77,
-              "anchor": [
-                11.69,
-                70.51
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az120--gloss-white.webp",
-              "width": 32,
-              "height": 77,
-              "anchor": [
-                11.69,
-                70.51
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az120--matte-black.webp",
-              "width": 32,
-              "height": 77,
-              "anchor": [
-                11.69,
-                70.51
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az120--silver.webp",
-              "width": 32,
-              "height": 77,
-              "anchor": [
-                11.69,
-                70.51
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az120--statuary-bronze.webp",
-              "width": 32,
-              "height": 77,
-              "anchor": [
-                11.69,
-                70.51
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -4233,55 +3106,6 @@
               "anchor": [
                 94.55,
                 66.82
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az240--forest-green.webp",
-              "width": 118,
-              "height": 63,
-              "anchor": [
-                103.86,
-                56.17
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az240--gloss-white.webp",
-              "width": 118,
-              "height": 63,
-              "anchor": [
-                103.86,
-                56.17
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az240--matte-black.webp",
-              "width": 118,
-              "height": 63,
-              "anchor": [
-                103.86,
-                56.17
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az240--silver.webp",
-              "width": 118,
-              "height": 63,
-              "anchor": [
-                103.86,
-                56.17
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-cr2-decorative-crossarm--az240--statuary-bronze.webp",
-              "width": 118,
-              "height": 63,
-              "anchor": [
-                103.86,
-                56.17
               ]
             }
           }
@@ -4343,47 +3167,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-dwx-flood-spot--hero--forest-green.webp",
-              "width": 71,
-              "height": 75,
+              "width": 96,
+              "height": 113,
               "anchor": [
-                35.5,
-                67.43
+                46,
+                106.02
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-dwx-flood-spot--hero--gloss-white.webp",
-              "width": 71,
-              "height": 75,
+              "width": 96,
+              "height": 113,
               "anchor": [
-                35.5,
-                67.43
+                46,
+                106.02
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-dwx-flood-spot--hero--matte-black.webp",
-              "width": 71,
-              "height": 75,
+              "width": 96,
+              "height": 113,
               "anchor": [
-                35.5,
-                67.43
+                46,
+                106.02
               ]
             },
             "silver": {
               "file": "renders/willstudio-dwx-flood-spot--hero--silver.webp",
-              "width": 71,
-              "height": 75,
+              "width": 96,
+              "height": 113,
               "anchor": [
-                35.5,
-                67.43
+                46,
+                106.02
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-dwx-flood-spot--hero--statuary-bronze.webp",
-              "width": 71,
-              "height": 75,
+              "width": 96,
+              "height": 113,
               "anchor": [
-                35.5,
-                67.43
+                46,
+                106.02
               ]
             }
           }
@@ -4490,55 +3314,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az120--forest-green.webp",
-              "width": 33,
-              "height": 80,
-              "anchor": [
-                12.14,
-                72.66
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az120--gloss-white.webp",
-              "width": 33,
-              "height": 80,
-              "anchor": [
-                12.14,
-                72.66
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az120--matte-black.webp",
-              "width": 33,
-              "height": 80,
-              "anchor": [
-                12.14,
-                72.66
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az120--silver.webp",
-              "width": 33,
-              "height": 80,
-              "anchor": [
-                12.14,
-                72.66
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az120--statuary-bronze.webp",
-              "width": 33,
-              "height": 80,
-              "anchor": [
-                12.14,
-                72.66
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -4584,55 +3359,6 @@
               "anchor": [
                 104.71,
                 67.7
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az240--forest-green.webp",
-              "width": 128,
-              "height": 62,
-              "anchor": [
-                114.57,
-                55.39
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az240--gloss-white.webp",
-              "width": 128,
-              "height": 62,
-              "anchor": [
-                114.57,
-                55.39
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az240--matte-black.webp",
-              "width": 128,
-              "height": 62,
-              "anchor": [
-                114.57,
-                55.39
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az240--silver.webp",
-              "width": 128,
-              "height": 62,
-              "anchor": [
-                114.57,
-                55.39
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-fr2-decorative-crossarm--az240--statuary-bronze.webp",
-              "width": 128,
-              "height": 62,
-              "anchor": [
-                114.57,
-                55.39
               ]
             }
           }
@@ -4788,55 +3514,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az120--forest-green.webp",
-              "width": 31,
-              "height": 113,
-              "anchor": [
-                11.34,
-                101.77
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az120--gloss-white.webp",
-              "width": 31,
-              "height": 113,
-              "anchor": [
-                11.34,
-                101.77
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az120--matte-black.webp",
-              "width": 31,
-              "height": 113,
-              "anchor": [
-                11.34,
-                101.77
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az120--silver.webp",
-              "width": 31,
-              "height": 113,
-              "anchor": [
-                11.34,
-                101.77
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az120--statuary-bronze.webp",
-              "width": 31,
-              "height": 113,
-              "anchor": [
-                11.34,
-                101.77
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -4882,55 +3559,6 @@
               "anchor": [
                 86.07,
                 98.16
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az240--forest-green.webp",
-              "width": 102,
-              "height": 100,
-              "anchor": [
-                93.72,
-                88.7
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az240--gloss-white.webp",
-              "width": 102,
-              "height": 100,
-              "anchor": [
-                93.72,
-                88.7
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az240--matte-black.webp",
-              "width": 102,
-              "height": 100,
-              "anchor": [
-                93.72,
-                88.7
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az240--silver.webp",
-              "width": 102,
-              "height": 100,
-              "anchor": [
-                93.72,
-                88.7
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-hsx-decorative-upsweep-arms--az240--statuary-bronze.webp",
-              "width": 102,
-              "height": 100,
-              "anchor": [
-                93.72,
-                88.7
               ]
             }
           }
@@ -5045,47 +3673,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-rxb-sxb-bollard--hero--forest-green.webp",
-              "width": 46,
-              "height": 208,
+              "width": 78,
+              "height": 206,
               "anchor": [
-                23,
-                200.12
+                43.5,
+                198.24
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-rxb-sxb-bollard--hero--gloss-white.webp",
-              "width": 46,
-              "height": 208,
+              "width": 78,
+              "height": 206,
               "anchor": [
-                23,
-                200.12
+                43.5,
+                198.24
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-rxb-sxb-bollard--hero--matte-black.webp",
-              "width": 46,
-              "height": 208,
+              "width": 78,
+              "height": 206,
               "anchor": [
-                23,
-                200.12
+                43.5,
+                198.24
               ]
             },
             "silver": {
               "file": "renders/willstudio-rxb-sxb-bollard--hero--silver.webp",
-              "width": 46,
-              "height": 208,
+              "width": 78,
+              "height": 206,
               "anchor": [
-                23,
-                200.12
+                43.5,
+                198.24
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-rxb-sxb-bollard--hero--statuary-bronze.webp",
-              "width": 46,
-              "height": 208,
+              "width": 78,
+              "height": 206,
               "anchor": [
-                23,
-                200.12
+                43.5,
+                198.24
               ]
             }
           }
@@ -5098,47 +3726,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--forest-green.webp",
-              "width": 115,
-              "height": 158,
+              "width": 119,
+              "height": 191,
               "anchor": [
-                14,
-                151.33
+                15.14,
+                184.06
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--gloss-white.webp",
-              "width": 115,
-              "height": 158,
+              "width": 119,
+              "height": 191,
               "anchor": [
-                14,
-                151.33
+                15.14,
+                184.06
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--matte-black.webp",
-              "width": 115,
-              "height": 158,
+              "width": 119,
+              "height": 191,
               "anchor": [
-                14,
-                151.33
+                15.14,
+                184.06
               ]
             },
             "silver": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--silver.webp",
-              "width": 115,
-              "height": 158,
+              "width": 119,
+              "height": 191,
               "anchor": [
-                14,
-                151.33
+                15.14,
+                184.06
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--hero--statuary-bronze.webp",
-              "width": 115,
-              "height": 158,
+              "width": 119,
+              "height": 191,
               "anchor": [
-                14,
-                151.33
+                15.14,
+                184.06
               ]
             }
           }
@@ -5147,96 +3775,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az90--forest-green.webp",
-              "width": 87,
-              "height": 166,
+              "width": 92,
+              "height": 201,
               "anchor": [
-                13.04,
-                159.56
+                15.94,
+                193.44
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az90--gloss-white.webp",
-              "width": 87,
-              "height": 166,
+              "width": 92,
+              "height": 201,
               "anchor": [
-                13.04,
-                159.56
+                15.94,
+                193.44
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az90--matte-black.webp",
-              "width": 87,
-              "height": 166,
+              "width": 92,
+              "height": 201,
               "anchor": [
-                13.04,
-                159.56
+                15.94,
+                193.44
               ]
             },
             "silver": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az90--silver.webp",
-              "width": 87,
-              "height": 166,
+              "width": 92,
+              "height": 201,
               "anchor": [
-                13.04,
-                159.56
+                15.94,
+                193.44
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az90--statuary-bronze.webp",
-              "width": 87,
-              "height": 166,
+              "width": 92,
+              "height": 201,
               "anchor": [
-                13.04,
-                159.56
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az120--forest-green.webp",
-              "width": 32,
-              "height": 167,
-              "anchor": [
-                11.37,
-                160.54
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az120--gloss-white.webp",
-              "width": 32,
-              "height": 167,
-              "anchor": [
-                11.37,
-                160.54
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az120--matte-black.webp",
-              "width": 32,
-              "height": 167,
-              "anchor": [
-                11.37,
-                160.54
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az120--silver.webp",
-              "width": 32,
-              "height": 167,
-              "anchor": [
-                11.37,
-                160.54
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az120--statuary-bronze.webp",
-              "width": 32,
-              "height": 167,
-              "anchor": [
-                11.37,
-                160.54
+                15.94,
+                193.44
               ]
             }
           }
@@ -5245,96 +3824,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az180--forest-green.webp",
-              "width": 115,
-              "height": 165,
+              "width": 119,
+              "height": 200,
               "anchor": [
-                101,
-                157.7
+                103.86,
+                192.55
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az180--gloss-white.webp",
-              "width": 115,
-              "height": 165,
+              "width": 119,
+              "height": 200,
               "anchor": [
-                101,
-                157.7
+                103.86,
+                192.55
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az180--matte-black.webp",
-              "width": 115,
-              "height": 165,
+              "width": 119,
+              "height": 200,
               "anchor": [
-                101,
-                157.7
+                103.86,
+                192.55
               ]
             },
             "silver": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az180--silver.webp",
-              "width": 115,
-              "height": 165,
+              "width": 119,
+              "height": 200,
               "anchor": [
-                101,
-                157.7
+                103.86,
+                192.55
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az180--statuary-bronze.webp",
-              "width": 115,
-              "height": 165,
+              "width": 119,
+              "height": 200,
               "anchor": [
-                101,
-                157.7
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az240--forest-green.webp",
-              "width": 125,
-              "height": 159,
-              "anchor": [
-                111.13,
-                151.67
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az240--gloss-white.webp",
-              "width": 125,
-              "height": 159,
-              "anchor": [
-                111.13,
-                151.67
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az240--matte-black.webp",
-              "width": 125,
-              "height": 159,
-              "anchor": [
-                111.13,
-                151.67
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az240--silver.webp",
-              "width": 125,
-              "height": 159,
-              "anchor": [
-                111.13,
-                151.67
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az240--statuary-bronze.webp",
-              "width": 125,
-              "height": 159,
-              "anchor": [
-                111.13,
-                151.67
+                103.86,
+                192.55
               ]
             }
           }
@@ -5343,47 +3873,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az270--forest-green.webp",
-              "width": 87,
-              "height": 156,
+              "width": 92,
+              "height": 190,
               "anchor": [
-                73.96,
-                149.47
+                76.06,
+                182.17
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az270--gloss-white.webp",
-              "width": 87,
-              "height": 156,
+              "width": 92,
+              "height": 190,
               "anchor": [
-                73.96,
-                149.47
+                76.06,
+                182.17
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az270--matte-black.webp",
-              "width": 87,
-              "height": 156,
+              "width": 92,
+              "height": 190,
               "anchor": [
-                73.96,
-                149.47
+                76.06,
+                182.17
               ]
             },
             "silver": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az270--silver.webp",
-              "width": 87,
-              "height": 156,
+              "width": 92,
+              "height": 190,
               "anchor": [
-                73.96,
-                149.47
+                76.06,
+                182.17
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-side-shepherds-hook-pole-top-brackets--az270--statuary-bronze.webp",
-              "width": 87,
-              "height": 156,
+              "width": 92,
+              "height": 190,
               "anchor": [
-                73.96,
-                149.47
+                76.06,
+                182.17
               ]
             }
           }
@@ -5490,55 +4020,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-supported-decorative-arms--az120--forest-green.webp",
-              "width": 34,
-              "height": 98,
-              "anchor": [
-                12.44,
-                91.27
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-supported-decorative-arms--az120--gloss-white.webp",
-              "width": 34,
-              "height": 98,
-              "anchor": [
-                12.44,
-                91.27
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-supported-decorative-arms--az120--matte-black.webp",
-              "width": 34,
-              "height": 98,
-              "anchor": [
-                12.44,
-                91.27
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-supported-decorative-arms--az120--silver.webp",
-              "width": 34,
-              "height": 98,
-              "anchor": [
-                12.44,
-                91.27
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-supported-decorative-arms--az120--statuary-bronze.webp",
-              "width": 34,
-              "height": 98,
-              "anchor": [
-                12.44,
-                91.27
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -5584,55 +4065,6 @@
               "anchor": [
                 99.89,
                 86.96
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-supported-decorative-arms--az240--forest-green.webp",
-              "width": 124,
-              "height": 83,
-              "anchor": [
-                109.45,
-                76.51
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-supported-decorative-arms--az240--gloss-white.webp",
-              "width": 124,
-              "height": 83,
-              "anchor": [
-                109.45,
-                76.51
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-supported-decorative-arms--az240--matte-black.webp",
-              "width": 124,
-              "height": 83,
-              "anchor": [
-                109.45,
-                76.51
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-supported-decorative-arms--az240--silver.webp",
-              "width": 124,
-              "height": 83,
-              "anchor": [
-                109.45,
-                76.51
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-supported-decorative-arms--az240--statuary-bronze.webp",
-              "width": 124,
-              "height": 83,
-              "anchor": [
-                109.45,
-                76.51
               ]
             }
           }
@@ -5694,47 +4126,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--forest-green.webp",
-              "width": 125,
-              "height": 48,
+              "width": 135,
+              "height": 114,
               "anchor": [
-                12.85,
-                40.66
+                15.95,
+                107.13
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--gloss-white.webp",
-              "width": 125,
-              "height": 48,
+              "width": 135,
+              "height": 114,
               "anchor": [
-                12.85,
-                40.66
+                15.95,
+                107.13
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--matte-black.webp",
-              "width": 125,
-              "height": 48,
+              "width": 135,
+              "height": 114,
               "anchor": [
-                12.85,
-                40.66
+                15.95,
+                107.13
               ]
             },
             "silver": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--silver.webp",
-              "width": 125,
-              "height": 48,
+              "width": 135,
+              "height": 114,
               "anchor": [
-                12.85,
-                40.66
+                15.95,
+                107.13
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--hero--statuary-bronze.webp",
-              "width": 125,
-              "height": 48,
+              "width": 135,
+              "height": 114,
               "anchor": [
-                12.85,
-                40.66
+                15.95,
+                107.13
               ]
             }
           }
@@ -5743,96 +4175,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az90--forest-green.webp",
-              "width": 95,
-              "height": 54,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                12.44,
-                46.81
+                15.25,
+                107.21
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az90--gloss-white.webp",
-              "width": 95,
-              "height": 54,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                12.44,
-                46.81
+                15.25,
+                107.21
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az90--matte-black.webp",
-              "width": 95,
-              "height": 54,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                12.44,
-                46.81
+                15.25,
+                107.21
               ]
             },
             "silver": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az90--silver.webp",
-              "width": 95,
-              "height": 54,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                12.44,
-                46.81
+                15.25,
+                107.21
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az90--statuary-bronze.webp",
-              "width": 95,
-              "height": 54,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                12.44,
-                46.81
-              ]
-            }
-          }
-        },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az120--forest-green.webp",
-              "width": 33,
-              "height": 56,
-              "anchor": [
-                11.32,
-                49.41
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az120--gloss-white.webp",
-              "width": 33,
-              "height": 56,
-              "anchor": [
-                11.32,
-                49.41
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az120--matte-black.webp",
-              "width": 33,
-              "height": 56,
-              "anchor": [
-                11.32,
-                49.41
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az120--silver.webp",
-              "width": 33,
-              "height": 56,
-              "anchor": [
-                11.32,
-                49.41
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az120--statuary-bronze.webp",
-              "width": 33,
-              "height": 56,
-              "anchor": [
-                11.32,
-                49.41
+                15.25,
+                107.21
               ]
             }
           }
@@ -5841,96 +4224,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az180--forest-green.webp",
-              "width": 125,
-              "height": 51,
+              "width": 135,
+              "height": 115,
               "anchor": [
-                112.15,
-                43.79
+                119.05,
+                107.61
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az180--gloss-white.webp",
-              "width": 125,
-              "height": 51,
+              "width": 135,
+              "height": 115,
               "anchor": [
-                112.15,
-                43.79
+                119.05,
+                107.61
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az180--matte-black.webp",
-              "width": 125,
-              "height": 51,
+              "width": 135,
+              "height": 115,
               "anchor": [
-                112.15,
-                43.79
+                119.05,
+                107.61
               ]
             },
             "silver": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az180--silver.webp",
-              "width": 125,
-              "height": 51,
+              "width": 135,
+              "height": 115,
               "anchor": [
-                112.15,
-                43.79
+                119.05,
+                107.61
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az180--statuary-bronze.webp",
-              "width": 125,
-              "height": 51,
+              "width": 135,
+              "height": 115,
               "anchor": [
-                112.15,
-                43.79
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az240--forest-green.webp",
-              "width": 136,
-              "height": 47,
-              "anchor": [
-                122.33,
-                40.6
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az240--gloss-white.webp",
-              "width": 136,
-              "height": 47,
-              "anchor": [
-                122.33,
-                40.6
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az240--matte-black.webp",
-              "width": 136,
-              "height": 47,
-              "anchor": [
-                122.33,
-                40.6
-              ]
-            },
-            "silver": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az240--silver.webp",
-              "width": 136,
-              "height": 47,
-              "anchor": [
-                122.33,
-                40.6
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willstudio-suspension-arm-pole-top-brackets--az240--statuary-bronze.webp",
-              "width": 136,
-              "height": 47,
-              "anchor": [
-                122.33,
-                40.6
+                119.05,
+                107.61
               ]
             }
           }
@@ -5939,47 +4273,47 @@
           "finishes": {
             "forest-green": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az270--forest-green.webp",
-              "width": 95,
-              "height": 46,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                82.56,
-                39.64
+                87.75,
+                107.53
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az270--gloss-white.webp",
-              "width": 95,
-              "height": 46,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                82.56,
-                39.64
+                87.75,
+                107.53
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az270--matte-black.webp",
-              "width": 95,
-              "height": 46,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                82.56,
-                39.64
+                87.75,
+                107.53
               ]
             },
             "silver": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az270--silver.webp",
-              "width": 95,
-              "height": 46,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                82.56,
-                39.64
+                87.75,
+                107.53
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-suspension-arm-pole-top-brackets--az270--statuary-bronze.webp",
-              "width": 95,
-              "height": 46,
+              "width": 103,
+              "height": 115,
               "anchor": [
-                82.56,
-                39.64
+                87.75,
+                107.53
               ]
             }
           }

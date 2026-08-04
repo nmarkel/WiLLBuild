@@ -372,37 +372,64 @@ describe('mount-type rules (H3b)', () => {
 
 // ---- Phase 0.8 (A1/A2): radial arm arrangements ----
 
-describe('armAzimuths', () => {
-  it('gives even-spaced azimuths for each count', () => {
+describe('armAzimuths (Phase 0.10: 90° drilled tenon)', () => {
+  it('places arms on the 90° drill pattern — triple is 3@90 with one leg empty', () => {
     expect(armAzimuths(1)).toEqual([0])
     expect(armAzimuths(2)).toEqual([0, 180])
-    expect(armAzimuths(3)).toEqual([0, 120, 240])
+    expect(armAzimuths(3)).toEqual([0, 90, 180])
     expect(armAzimuths(4)).toEqual([0, 90, 180, 270])
+  })
+
+  it('every azimuth is a multiple of 90 (the drilled-tenon vocabulary)', () => {
+    for (const count of [1, 2, 3, 4]) {
+      for (const deg of armAzimuths(count)) expect(deg % 90).toBe(0)
+    }
   })
 })
 
-describe('allowedArmCounts', () => {
+describe('allowedArmCounts (ordering-matrix driven)', () => {
+  const SS = 'willstudio-side-shepherds-hook-pole-top-brackets'
+
   it('intersects the pole and arm arrangement lists', () => {
-    // alum-pole-14 and sh1-shepherds-hook are both annotated [1,2,3,4].
-    expect(allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'sh1-shepherds-hook' }))).toEqual([
-      1, 2, 3, 4,
-    ])
+    // Side Shepherds Hook is SS1..SS4 on the matrix, poles carry 1..4.
+    expect(allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: SS }))).toEqual([1, 2, 3, 4])
   })
 
   it('falls back to single-only for an arm with no arrangements (e.g. direct mount)', () => {
     expect(allowedArmCounts(catalog, config({ arm: 'direct-mount' }))).toEqual([1])
   })
 
-  it('always includes single and stays within 1..4', () => {
-    const counts = allowedArmCounts(catalog, config({}))
-    expect(counts).toContain(1)
-    for (const n of counts) expect(n >= 1 && n <= 4).toBe(true)
+  it('SH1 shepherds hook is single-only (Round 4 correction)', () => {
+    expect(allowedArmCounts(catalog, config({ arm: 'sh1-shepherds-hook' }))).toEqual([1])
+  })
+
+  it('supported-decorative and deco-upsweep families stop at a pair', () => {
+    expect(allowedArmCounts(catalog, config({ arm: 'willstudio-supported-decorative-arms' }))).toEqual([1, 2])
+    expect(
+      allowedArmCounts(catalog, config({ fixture: 'mvx-coach', arm: 'willstudio-hsx-decorative-upsweep-arms' })),
+    ).toEqual([1, 2])
+  })
+
+  it('a crossarm is a FIXED pair — single is not offered', () => {
+    // CR2/FR2 exist only as 2@180 on the sheet, so "1 arm" would have no code.
+    for (const arm of ['willstudio-cr2-decorative-crossarm', 'willstudio-fr2-decorative-crossarm']) {
+      expect(allowedArmCounts(catalog, config({ fixture: 'drx-post-top', arm }))).toEqual([2])
+    }
+  })
+
+  it('stays within 1..4 for every catalog arm', () => {
+    for (const arm of catalog.parts.filter((p) => p.slot === 'arm')) {
+      const counts = allowedArmCounts(catalog, config({ arm: arm.id }))
+      expect(counts.length).toBeGreaterThan(0)
+      for (const n of counts) expect(n >= 1 && n <= 4).toBe(true)
+    }
   })
 })
 
 describe('repairConfig — arm count clamping', () => {
   it('keeps a valid multi-arm count', () => {
-    expect(repairConfig(catalog, config({ armCount: 3 })).armCount).toBe(3)
+    const cfg = config({ arm: 'willstudio-side-shepherds-hook-pole-top-brackets', armCount: 3 })
+    expect(repairConfig(catalog, cfg).armCount).toBe(3)
   })
 
   it('resets an unsupported count to single', () => {
@@ -410,6 +437,67 @@ describe('repairConfig — arm count clamping', () => {
     // (Use a fixture the direct mount can actually host so the arm survives repair.)
     const cfg = config({ fixture: 'drx-post-top', arm: 'direct-mount', armCount: 4 })
     expect(repairConfig(catalog, cfg).armCount).toBe(1)
+  })
+
+  it('clamps a triple SH1 from a crafted share link back to single', () => {
+    expect(repairConfig(catalog, config({ arm: 'sh1-shepherds-hook', armCount: 3 })).armCount).toBe(1)
+  })
+
+  it('clamps to the family minimum, not to 1, for a fixed-pair crossarm', () => {
+    const cfg = config({ fixture: 'drx-post-top', arm: 'willstudio-cr2-decorative-crossarm', armCount: 1 })
+    expect(repairConfig(catalog, cfg).armCount).toBe(2)
+  })
+})
+
+// ---- Phase 0.10 (B): base cover is an Option, so "none" is a real choice ----
+
+describe('repairConfig — optional base cover', () => {
+  it('keeps a deliberate "no base cover" empty', () => {
+    expect(repairConfig(catalog, config({ baseCover: '' })).baseCover).toBe('')
+  })
+
+  it('still repairs a base cover that is set but invalid', () => {
+    expect(repairConfig(catalog, config({ baseCover: 'nope' })).baseCover).toBe('bc-fluted')
+  })
+
+  it('defaultConfig still ships a base cover', () => {
+    expect(defaultConfig(catalog).baseCover).toBeTruthy()
+  })
+})
+
+// ---- Phase 0.10 (Workstream 0): per-part ordering selections ----
+
+describe('repairPartOptions', () => {
+  const SS = 'willstudio-side-shepherds-hook-pole-top-brackets'
+
+  it('folds a pre-0.10 fixture specOptions map into partOptions', () => {
+    const cfg = repairConfig(catalog, config({ specOptions: { 'lumen-output': '80' } }))
+    expect(cfg.specOptions).toBeUndefined()
+    expect(cfg.partOptions?.['gvx-pendant']?.codes).toEqual({ 'lumen-output': '80' })
+  })
+
+  it('drops codes that are not in the part’s matrix (tampered share link)', () => {
+    const cfg = repairConfig(
+      catalog,
+      config({ partOptions: { 'gvx-pendant': { codes: { 'lumen-output': 'HACK' }, addOns: ['NOPE'] } } }),
+    )
+    expect(cfg.partOptions).toBeUndefined()
+  })
+
+  it('keeps a valid design choice and add-on', () => {
+    const cfg = repairConfig(
+      catalog,
+      config({ arm: SS, partOptions: { [SS]: { codes: { design: 'SS2' }, addOns: ['CF1'] } } }),
+    )
+    expect(cfg.partOptions?.[SS]).toEqual({ codes: { design: 'SS2' }, addOns: ['CF1'] })
+  })
+
+  it('drops selections for parts no longer in the build', () => {
+    const cfg = repairConfig(
+      catalog,
+      config({ partOptions: { 'mvx-coach': { codes: { voltage: 'MV' } } } }),
+    )
+    expect(cfg.partOptions).toBeUndefined()
   })
 })
 

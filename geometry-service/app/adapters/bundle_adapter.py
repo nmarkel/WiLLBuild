@@ -153,6 +153,9 @@ def _build_readme_txt(ctx: GenContext) -> str:
     lines.append("  config.json    Machine-readable PoleConfig")
     lines.append("  summary.txt    Human-readable summary")
     lines.append("  README.txt     This file")
+    lines.append("  factory-cad/   Engineering's own STEP per component, named by")
+    lines.append("                 WiLL part number (only for components whose real")
+    lines.append("                 CAD is released; absent otherwise)")
     lines.append("")
     lines.append("Request a Quote")
     lines.append("-" * 30)
@@ -160,6 +163,40 @@ def _build_readme_txt(ctx: GenContext) -> str:
     lines.append("")
     lines.append("(c) WiLL Lighting Systems. All rights reserved.")
     return "\n".join(lines)
+
+
+def _factory_cad_entries(ctx: GenContext) -> list[tuple[str, bytes]]:
+    """Engineering's real STEP per configured component, as ``factory-cad/<PN>.step``.
+
+    Phase 0.10 ingest: where a component's real CAD is released, the honest best
+    deliverable is that file itself — named by the WiLL part number the customer
+    just configured, so ``WP-SS3-40F-BK.step`` in the zip IS Engineering's 3-arm
+    assembly.  Nothing is added when the real CAD is not present locally (any
+    deploy), and the STEP timestamp is normalised so the bundle stays
+    byte-deterministic.
+    """
+    try:
+        from app.partnumber import resolve_assembly_part_numbers
+        from app.realgeom import cluster_step_path, real_step_path
+    except Exception:  # noqa: BLE001
+        return []
+
+    entries: dict[str, bytes] = {}
+    for number in resolve_assembly_part_numbers(ctx.catalog, ctx.cfg):
+        # Only a COMPLETE number may name a file: `WD-?-?-…-BK-?.step` would ship a
+        # file labelled with a SKU that does not exist yet.
+        if number.unavailable or not number.complete:
+            continue
+        design = next((s.code for s in number.segments if s.source == "design"), None)
+        path = cluster_step_path(number.part_id, design) or real_step_path(number.part_id, design)
+        if path is None:
+            continue
+        safe = number.code.replace("/", "-")
+        try:
+            entries[f"factory-cad/{safe}.step"] = _normalize_step_bytes(path.read_bytes())
+        except OSError:
+            continue
+    return sorted(entries.items())
 
 
 def _normalize_step_bytes(data: bytes) -> bytes:
@@ -238,7 +275,8 @@ class BundleAdapter:
         step_bytes = _normalize_step_bytes(step_path.read_bytes())
 
         # --- Write zip in fixed canonical order ---
-        # Order: step, pdf, [render.png], config.json, summary.txt, README.txt
+        # Order: step, pdf, [render.png], config.json, summary.txt, README.txt,
+        #        factory-cad/* (sorted)
         with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
             _add_entry(zf, f"{ctx.base_name}.step", step_bytes)
             _add_entry(zf, f"{ctx.base_name}.pdf", pdf_path.read_bytes())
@@ -247,5 +285,7 @@ class BundleAdapter:
             _add_entry(zf, "config.json", config_json)
             _add_entry(zf, "summary.txt", summary_txt)
             _add_entry(zf, "README.txt", readme_txt)
+            for arcname, data in _factory_cad_entries(ctx):
+                _add_entry(zf, arcname, data)
 
         return [zip_path]

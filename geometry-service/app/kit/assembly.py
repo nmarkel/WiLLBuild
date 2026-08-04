@@ -24,16 +24,28 @@ from app.models import PoleConfig
 from .parts import build_part, viewer_to_cad
 
 
-def _arm_azimuths(count: int) -> list[float]:
-    """Even-spaced azimuths (degrees) for ``count`` radial arms.
+# Phase 0.10 (Workstream A): mount azimuths for a radial arm arrangement, per the
+# WiLLstudio ordering matrix — arms sit on a 90-degree DRILLED TENON, so a triple
+# is 3@90 with one leg empty, NOT the 120-degree spacing Phase 0.8 assumed.
+# Mirrors DRILLED_TENON_AZIMUTHS in src/lib/compat.ts — keep the two in sync.
+_DRILLED_TENON_AZIMUTHS: dict[int, list[float]] = {
+    1: [0.0],
+    2: [0.0, 180.0],
+    3: [0.0, 90.0, 180.0],
+    4: [0.0, 90.0, 180.0, 270.0],
+}
 
-    Matches the frontend ``armAzimuths``: ``[i*360/n for i in range(n)]``.
-    Position 0 deg is the single-arm reference direction, so azimuths[0] is
-    always 0 — arm 0 is placed unrotated and is byte-identical to the pre-0.8
-    single-arm output.
+
+def _arm_azimuths(count: int) -> list[float]:
+    """Mount azimuths (degrees) for ``count`` radial arms.
+
+    Matches the frontend ``armAzimuths``.  Position 0 deg is the single-arm
+    reference direction, so azimuths[0] is always 0 — arm 0 is placed unrotated
+    and is byte-identical to the pre-0.8 single-arm output.  Counts outside the
+    drilled-tenon vocabulary fall back to even spacing.
     """
     n = max(1, int(count))
-    return [i * 360.0 / n for i in range(n)]
+    return _DRILLED_TENON_AZIMUTHS.get(n) or [i * 360.0 / n for i in range(n)]
 
 
 @dataclass
@@ -94,17 +106,29 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
     arm = part(catalog, cfg.arm)
     fixture = part(catalog, cfg.fixture)
 
+    # Phase 0.10 ingest: a component's resolved Design code selects Engineering's
+    # real CAD for exactly that SKU when it is present locally (app/realgeom.py).
+    def _design(part_obj: dict | None) -> str | None:
+        if part_obj is None:
+            return None
+        try:
+            from app.partnumber import design_code_for
+
+            return design_code_for(catalog, cfg, part_obj["id"])
+        except Exception:  # noqa: BLE001 — part numbers must never break geometry
+            return None
+
     placed: list[tuple[str, Part]] = []
 
     # --- Pole at origin ---
-    pole_solid = _place(build_part(pole), (0.0, 0.0, 0.0))
+    pole_solid = _place(build_part(pole, _design(pole)), (0.0, 0.0, 0.0))
     placed.append((pole["id"], pole_solid))
 
     # --- Base cover (optional) at the pole socket matching its mount ---
     if base_cover is not None:
         bc_hit = _socket_for_mount(pole, base_cover.get("mount"))
         bc_origin = viewer_to_cad(bc_hit[1]["position"]) if bc_hit else (0.0, 0.0, 0.0)
-        bc_solid = _place(build_part(base_cover), bc_origin)
+        bc_solid = _place(build_part(base_cover, _design(base_cover)), bc_origin)
         placed.append((base_cover["id"], bc_solid))
 
     # --- Arm(s) + fixture(s): N arms mounted radially around the pole top ---
@@ -137,19 +161,21 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
         arm_origin[2] + fx_socket_local[2],
     )
 
+    arm_design = _design(arm)
+    fixture_design = _design(fixture)
     azimuths = _arm_azimuths(cfg.armCount)
     single = len(azimuths) == 1
     arm_solids: list[Part] = []
     for i, deg in enumerate(azimuths):
         rot = None if deg == 0 else Rotation(0.0, 0.0, -deg)
 
-        arm_solid = _place(build_part(arm), arm_origin)
+        arm_solid = _place(build_part(arm, arm_design), arm_origin)
         if rot is not None:
             arm_solid = rot * arm_solid
         arm_solids.append(arm_solid)
         placed.append((arm["id"] if single else f"{arm['id']}#{i}", arm_solid))
 
-        fx_solid = _place(build_part(fixture), fx_world)
+        fx_solid = _place(build_part(fixture, fixture_design), fx_world)
         if rot is not None:
             fx_solid = rot * fx_solid
         placed.append((fixture["id"] if single else f"{fixture['id']}#{i}", fx_solid))
@@ -171,7 +197,7 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
             banner_origin = (0.0, 0.0, height_mm)
             for i, deg in enumerate(_arm_azimuths(cfg.banner.count)):
                 rot = None if deg == 0 else Rotation(0.0, 0.0, -deg)
-                b_solid = _place(build_part(banner), banner_origin)
+                b_solid = _place(build_part(banner, _design(banner)), banner_origin)
                 if rot is not None:
                     b_solid = rot * b_solid
                 banner_solids.append(b_solid)

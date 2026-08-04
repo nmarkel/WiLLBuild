@@ -28,11 +28,19 @@ function isScene(v: string | null): v is Scene {
  * object); it is only written when it differs from the default, keeping share
  * URLs clean.
  */
+/**
+ * Phase 0.10 (B): the base cover is an Option, so "no base cover" is a real
+ * choice a share link has to carry — an omitted param means "unspecified" and
+ * would be filled back in from the default build.
+ */
+export const NO_BASE_COVER = 'none'
+
 export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE): URLSearchParams {
   const params = new URLSearchParams()
   for (const key of PART_KEYS) {
     if (config[key]) params.set(key, config[key])
   }
+  if (config.baseCover === '') params.set('baseCover', NO_BASE_COVER)
   // Only serialize brand when it differs from the default — keeps share URLs clean.
   if (config.brand !== DEFAULT_BRAND) {
     params.set('brand', config.brand)
@@ -48,13 +56,37 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}`,
     )
   }
-  // Phase 0.8 (D): selected spec-sheet options as `key:code,key:code`.
+  // Phase 0.8 (D): selected spec-sheet options as `key:code,key:code`. Only
+  // pre-0.10 configs carry this (repairConfig folds it into partOptions).
   if (config.specOptions && Object.keys(config.specOptions).length > 0) {
     const opts = Object.entries(config.specOptions)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
       .join(',')
     params.set('opts', opts)
+  }
+  // Phase 0.10 (Workstream 0/B): per-part ordering selections. Two flat, sorted
+  // lists so share links stay deterministic and diffable:
+  //   popts  = <partId>.<optionKey>=<code>,…   (single-select ordering columns)
+  //   addons = <partId>.<code>,…               (multi-select Options/Accessories)
+  // Part ids and option keys never contain '.', '=' or ',', so the split is safe.
+  if (config.partOptions) {
+    const codes: string[] = []
+    const addOns: string[] = []
+    for (const [partId, selections] of Object.entries(config.partOptions).sort(([a], [b]) =>
+      a.localeCompare(b),
+    )) {
+      for (const [key, code] of Object.entries(selections.codes ?? {}).sort(([a], [b]) =>
+        a.localeCompare(b),
+      )) {
+        codes.push(`${partId}.${key}=${code}`)
+      }
+      for (const code of [...(selections.addOns ?? [])].sort()) {
+        addOns.push(`${partId}.${code}`)
+      }
+    }
+    if (codes.length > 0) params.set('popts', codes.join(','))
+    if (addOns.length > 0) params.set('addons', addOns.join(','))
   }
   if (scene !== DEFAULT_SCENE) {
     params.set('scene', scene)
@@ -79,7 +111,8 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
   for (const key of PART_KEYS) {
     const value = params.get(key)
     if (value) {
-      partial[key] = value
+      // Phase 0.10 (B): an explicit "no base cover" choice.
+      partial[key] = key === 'baseCover' && value === NO_BASE_COVER ? '' : value
       found = true
     }
   }
@@ -120,6 +153,39 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       partial.specOptions = specOptions
       found = true
     }
+  }
+  // Phase 0.10: per-part selections. repairPartOptions validates every code
+  // against the part's real matrix, so junk here can never reach a part number.
+  const partOptions: Record<string, { codes?: Record<string, string>; addOns?: string[] }> = {}
+  const poptsValue = params.get('popts')
+  if (poptsValue) {
+    for (const entry of poptsValue.split(',')) {
+      const [lhs, code] = entry.split('=')
+      if (!lhs || !code) continue
+      const dot = lhs.indexOf('.')
+      if (dot <= 0) continue
+      const partId = lhs.slice(0, dot)
+      const key = lhs.slice(dot + 1)
+      if (!key) continue
+      const selections = (partOptions[partId] ??= {})
+      selections.codes = { ...(selections.codes ?? {}), [key]: code }
+    }
+  }
+  const addonsValue = params.get('addons')
+  if (addonsValue) {
+    for (const entry of addonsValue.split(',')) {
+      const dot = entry.indexOf('.')
+      if (dot <= 0) continue
+      const partId = entry.slice(0, dot)
+      const code = entry.slice(dot + 1)
+      if (!code) continue
+      const selections = (partOptions[partId] ??= {})
+      selections.addOns = [...(selections.addOns ?? []), code]
+    }
+  }
+  if (Object.keys(partOptions).length > 0) {
+    partial.partOptions = partOptions
+    found = true
   }
   return found ? partial : null
 }

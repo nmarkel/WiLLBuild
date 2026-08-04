@@ -94,6 +94,11 @@ from the PDF.** Convention applied by the parser:
   | `DB` | Dark Bronze | `statuary-bronze` | **inferred (nearest bronze)** |
   | `DG` | Dark Green | `forest-green` | **inferred (nearest green)** |
 
+**Phase 0.10 update:** the UI no longer shows a "quote" flag on option values (Tyler, 8/3 —
+Round 4 reversed 0.8's flagging). The `buildable` field stays in the data as the record of what
+is confirmed, but the configurator presents every sheet option plainly and the Options field is
+multi-select. See `docs/part-numbers.md`.
+
 The UI can gate `buildable !== true` behind "Request a quote". `DB→statuary-bronze`
 and `DG→forest-green` are best-guess equivalences and should be confirmed with
 Tyler/Cole (the exact WiLLcoat↔catalog finish correspondence is unconfirmed —

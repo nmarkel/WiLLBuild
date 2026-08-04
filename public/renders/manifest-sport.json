@@ -172,55 +172,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-ba1-banner-arm--az120--forest-green.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-ba1-banner-arm--az120--gloss-white.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-ba1-banner-arm--az120--matte-black.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-ba1-banner-arm--az120--silver.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-ba1-banner-arm--az120--statuary-bronze.webp",
-              "width": 28,
-              "height": 259,
-              "anchor": [
-                10,
-                134.11
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -266,55 +217,6 @@
               "anchor": [
                 89.55,
                 130.47
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-ba1-banner-arm--az240--forest-green.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-ba1-banner-arm--az240--gloss-white.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-ba1-banner-arm--az240--matte-black.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-ba1-banner-arm--az240--silver.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-ba1-banner-arm--az240--statuary-bronze.webp",
-              "width": 105,
-              "height": 254,
-              "anchor": [
-                96.91,
-                124.81
               ]
             }
           }
@@ -523,55 +425,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-gtx-high-output-area--az120--forest-green.webp",
-              "width": 109,
-              "height": 67,
-              "anchor": [
-                54.5,
-                54.77
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-gtx-high-output-area--az120--gloss-white.webp",
-              "width": 109,
-              "height": 67,
-              "anchor": [
-                54.5,
-                54.77
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-gtx-high-output-area--az120--matte-black.webp",
-              "width": 109,
-              "height": 67,
-              "anchor": [
-                54.5,
-                54.77
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-gtx-high-output-area--az120--silver.webp",
-              "width": 109,
-              "height": 67,
-              "anchor": [
-                54.5,
-                54.77
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-gtx-high-output-area--az120--statuary-bronze.webp",
-              "width": 109,
-              "height": 67,
-              "anchor": [
-                54.5,
-                54.77
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -616,55 +469,6 @@
               "height": 69,
               "anchor": [
                 76.5,
-                55.77
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-gtx-high-output-area--az240--forest-green.webp",
-              "width": 151,
-              "height": 69,
-              "anchor": [
-                75.5,
-                55.77
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-gtx-high-output-area--az240--gloss-white.webp",
-              "width": 151,
-              "height": 69,
-              "anchor": [
-                75.5,
-                55.77
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-gtx-high-output-area--az240--matte-black.webp",
-              "width": 151,
-              "height": 69,
-              "anchor": [
-                75.5,
-                55.77
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-gtx-high-output-area--az240--silver.webp",
-              "width": 151,
-              "height": 69,
-              "anchor": [
-                75.5,
-                55.77
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-gtx-high-output-area--az240--statuary-bronze.webp",
-              "width": 151,
-              "height": 69,
-              "anchor": [
-                75.5,
                 55.77
               ]
             }
@@ -821,55 +625,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-hdx-area-flood-sports--az120--forest-green.webp",
-              "width": 43,
-              "height": 89,
-              "anchor": [
-                21.5,
-                81.3
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-hdx-area-flood-sports--az120--gloss-white.webp",
-              "width": 43,
-              "height": 89,
-              "anchor": [
-                21.5,
-                81.3
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-hdx-area-flood-sports--az120--matte-black.webp",
-              "width": 43,
-              "height": 89,
-              "anchor": [
-                21.5,
-                81.3
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-hdx-area-flood-sports--az120--silver.webp",
-              "width": 43,
-              "height": 89,
-              "anchor": [
-                21.5,
-                81.3
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-hdx-area-flood-sports--az120--statuary-bronze.webp",
-              "width": 43,
-              "height": 89,
-              "anchor": [
-                21.5,
-                81.3
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -915,55 +670,6 @@
               "anchor": [
                 38.5,
                 80.8
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-hdx-area-flood-sports--az240--forest-green.webp",
-              "width": 79,
-              "height": 88,
-              "anchor": [
-                39.5,
-                80.3
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-hdx-area-flood-sports--az240--gloss-white.webp",
-              "width": 79,
-              "height": 88,
-              "anchor": [
-                39.5,
-                80.3
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-hdx-area-flood-sports--az240--matte-black.webp",
-              "width": 79,
-              "height": 88,
-              "anchor": [
-                39.5,
-                80.3
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-hdx-area-flood-sports--az240--silver.webp",
-              "width": 79,
-              "height": 88,
-              "anchor": [
-                39.5,
-                80.3
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-hdx-area-flood-sports--az240--statuary-bronze.webp",
-              "width": 79,
-              "height": 88,
-              "anchor": [
-                39.5,
-                80.3
               ]
             }
           }
@@ -1172,55 +878,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-hsx-sportslighter--az120--forest-green.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-hsx-sportslighter--az120--gloss-white.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-hsx-sportslighter--az120--matte-black.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-hsx-sportslighter--az120--silver.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-hsx-sportslighter--az120--statuary-bronze.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -1266,55 +923,6 @@
               "anchor": [
                 55,
                 74.62
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-hsx-sportslighter--az240--forest-green.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-hsx-sportslighter--az240--gloss-white.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-hsx-sportslighter--az240--matte-black.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-hsx-sportslighter--az240--silver.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-hsx-sportslighter--az240--statuary-bronze.webp",
-              "width": 109,
-              "height": 83,
-              "anchor": [
-                54.5,
-                74.12
               ]
             }
           }
@@ -1470,55 +1078,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-integrated-crossarm--az120--forest-green.webp",
-              "width": 45,
-              "height": 66,
-              "anchor": [
-                15.45,
-                58.68
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-integrated-crossarm--az120--gloss-white.webp",
-              "width": 45,
-              "height": 66,
-              "anchor": [
-                15.45,
-                58.68
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-integrated-crossarm--az120--matte-black.webp",
-              "width": 45,
-              "height": 66,
-              "anchor": [
-                15.45,
-                58.68
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-integrated-crossarm--az120--silver.webp",
-              "width": 45,
-              "height": 66,
-              "anchor": [
-                15.45,
-                58.68
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-integrated-crossarm--az120--statuary-bronze.webp",
-              "width": 45,
-              "height": 66,
-              "anchor": [
-                15.45,
-                58.68
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -1564,55 +1123,6 @@
               "anchor": [
                 144.03,
                 52.36
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-integrated-crossarm--az240--forest-green.webp",
-              "width": 175,
-              "height": 55,
-              "anchor": [
-                157.08,
-                47.54
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-integrated-crossarm--az240--gloss-white.webp",
-              "width": 175,
-              "height": 55,
-              "anchor": [
-                157.08,
-                47.54
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-integrated-crossarm--az240--matte-black.webp",
-              "width": 175,
-              "height": 55,
-              "anchor": [
-                157.08,
-                47.54
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-integrated-crossarm--az240--silver.webp",
-              "width": 175,
-              "height": 55,
-              "anchor": [
-                157.08,
-                47.54
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-integrated-crossarm--az240--statuary-bronze.webp",
-              "width": 175,
-              "height": 55,
-              "anchor": [
-                157.08,
-                47.54
               ]
             }
           }
@@ -1768,55 +1278,6 @@
             }
           }
         },
-        "az120": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-kbx-lighting-system--az120--forest-green.webp",
-              "width": 114,
-              "height": 77,
-              "anchor": [
-                57,
-                69.54
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-kbx-lighting-system--az120--gloss-white.webp",
-              "width": 114,
-              "height": 77,
-              "anchor": [
-                57,
-                69.54
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-kbx-lighting-system--az120--matte-black.webp",
-              "width": 114,
-              "height": 77,
-              "anchor": [
-                57,
-                69.54
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-kbx-lighting-system--az120--silver.webp",
-              "width": 114,
-              "height": 77,
-              "anchor": [
-                57,
-                69.54
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-kbx-lighting-system--az120--statuary-bronze.webp",
-              "width": 114,
-              "height": 77,
-              "anchor": [
-                57,
-                69.54
-              ]
-            }
-          }
-        },
         "az180": {
           "finishes": {
             "forest-green": {
@@ -1862,55 +1323,6 @@
               "anchor": [
                 85,
                 68.04
-              ]
-            }
-          }
-        },
-        "az240": {
-          "finishes": {
-            "forest-green": {
-              "file": "renders/willsport-kbx-lighting-system--az240--forest-green.webp",
-              "width": 168,
-              "height": 75,
-              "anchor": [
-                84,
-                67.54
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/willsport-kbx-lighting-system--az240--gloss-white.webp",
-              "width": 168,
-              "height": 75,
-              "anchor": [
-                84,
-                67.54
-              ]
-            },
-            "matte-black": {
-              "file": "renders/willsport-kbx-lighting-system--az240--matte-black.webp",
-              "width": 168,
-              "height": 75,
-              "anchor": [
-                84,
-                67.54
-              ]
-            },
-            "silver": {
-              "file": "renders/willsport-kbx-lighting-system--az240--silver.webp",
-              "width": 168,
-              "height": 75,
-              "anchor": [
-                84,
-                67.54
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/willsport-kbx-lighting-system--az240--statuary-bronze.webp",
-              "width": 168,
-              "height": 75,
-              "anchor": [
-                84,
-                67.54
               ]
             }
           }

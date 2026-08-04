@@ -407,65 +407,10 @@ body {
   color: var(--muted-text, #58595b);
 }
 
-/* ---- Banner picker + spec options (Phase 0.8 C/D) ---- */
+/* ---- Banner picker + per-part options (Phase 0.8 C/D, reshaped in 0.10) ---- */
 
-.banner-picker,
-.spec-options {
-  margin-top: 14px;
-  padding: 14px 16px;
-  background: var(--panel-raised);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.banner-picker h3 {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-/* Phase 0.9 (A3): collapsible Product Options header. */
-.spec-options-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font: inherit;
-}
-
-.spec-options-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.spec-options-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.spec-options-count {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text);
-  background: var(--will-yellow);
-  border-radius: 999px;
-  padding: 1px 8px;
-}
-
-.spec-options-arrow {
-  font-size: 12px;
-  color: var(--muted-text, #58595b);
-}
-
-.spec-options-body {
-  margin-top: 10px;
+.banner-picker {
+  margin-top: 6px;
 }
 
 .spec-options-note {
@@ -508,19 +453,6 @@ body {
   font: inherit;
 }
 
-.banner-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.banner-controls {
-  margin-top: 10px;
-}
-
 .banner-arm-choice {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -535,6 +467,394 @@ body {
   margin-top: 8px;
   font-size: 12px;
   color: var(--text);
+}
+
+/* ---- Phase 0.10: Sternberg choose-then-configure step body ---- */
+
+.step-body {
+  padding: 0 12px 12px;
+}
+
+/* The part cards keep their own padding when they sit inside a step body. */
+.step-body .options {
+  padding: 0 0 4px;
+}
+
+.step-next {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+/* Per-part configure block (ordering columns + Options field). */
+.part-configure {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.part-configure-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.part-configure-fixed,
+.options-empty {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--muted-text, #58595b);
+}
+
+.part-configure .arm-count {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.part-configure-number {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--muted-text, #58595b);
+}
+
+.part-configure-number code {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.part-configure-number.incomplete code {
+  background: var(--yellow-soft);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* Multi-select Options field (Workstream B) */
+.add-ons {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.add-ons legend {
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.add-on-group + .add-on-group,
+.add-on + .add-on-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+.add-on-group-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-text, #58595b);
+}
+
+.add-on {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.add-on:hover {
+  background: var(--will-silver);
+}
+
+.add-on.selected {
+  background: var(--yellow-soft);
+}
+
+.add-on code {
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Assembly-level Options step: base cover + banner (Workstream B) */
+.assembly-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assembly-option {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.assembly-option.selected {
+  border-color: var(--will-yellow);
+}
+
+.assembly-option-toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.assembly-option-name {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.assembly-option-sub {
+  grid-column: 2;
+  font-size: 11px;
+  color: var(--muted-text, #58595b);
+}
+
+.assembly-option-body {
+  padding: 0 12px 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.assembly-option-body .options {
+  grid-template-columns: 1fr 1fr;
+  padding: 10px 0 0;
+}
+
+/* Labelled banner dimensions (Workstream C) */
+.banner-dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  background: var(--will-silver);
+  border-radius: 8px;
+}
+
+.banner-dims dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted-text, #58595b);
+}
+
+.banner-dims dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.finish-code {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-text, #58595b);
+}
+
+/* ---- Phase 0.10, Workstream 0: the part-number card (headline output) ---- */
+
+.part-numbers {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--panel-raised);
+  border: 1px solid var(--will-yellow);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(66, 65, 61, 0.1);
+}
+
+.part-numbers-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.part-numbers-head h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.btn.small {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.part-number-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.part-number {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.part-number.pending {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 2px 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.part-number.pending .part-number-name {
+  grid-column: 2;
+  margin: 0;
+}
+
+.part-number-code {
+  overflow-wrap: anywhere;
+}
+
+.part-number-main {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.part-number-slot {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-text, #58595b);
+}
+
+.part-number-code {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+
+.part-number-code.muted {
+  font-weight: 400;
+}
+
+/* Inline de-emphasis used across the 0.10 panels. */
+.muted,
+.subtle {
+  color: var(--muted-text, #58595b);
+  font-weight: 400;
+}
+
+.part-number.incomplete .part-number-code {
+  background: var(--yellow-soft);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.part-number-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted-text, #58595b);
+}
+
+.part-number-name {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--muted-text, #58595b);
+}
+
+.part-number-breakdown {
+  padding: 0 10px 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.part-number-breakdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.part-number-breakdown th {
+  width: 42%;
+  padding: 3px 0;
+  text-align: left;
+  font-weight: 500;
+  color: var(--muted-text, #58595b);
+}
+
+.part-number-breakdown td {
+  padding: 3px 6px 3px 0;
+  color: var(--text);
+}
+
+.part-number-breakdown tr.unset td,
+.part-number-breakdown tr.unset th {
+  color: var(--will-dark-yellow, #7f6717);
+}
+
+.part-numbers-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted-text, #58595b);
+}
+
+.part-numbers-note.subtle {
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.part-number-chip {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--will-silver);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.part-number-chip.incomplete {
+  background: var(--yellow-soft);
 }
 
 /* ---- Summary ---- */

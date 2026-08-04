@@ -210,22 +210,27 @@ def _draw_components_table(
     top: float,
     width: float,
 ) -> float:
-    """Draw component table; return Y position after the table."""
+    """Draw component table; return Y position after the table.
+
+    Phase 0.10 (Workstream 0): the WiLL part number is the primary deliverable,
+    so it is a first-class column here — right after the slot, ahead of the
+    product name.  A component with no published ordering matrix prints '-'
+    rather than a fabricated code.
+    """
     # Header row
-    col_w = [30.0, 65.0, width - 95.0]
+    col_w = [24.0, 46.0, 52.0, width - 122.0]
     row_h = 6.5
 
     _set_fill(pdf, _GUNMETAL)
     _set_text(pdf, _WHITE)
     pdf.set_font("Helvetica", "B", 8)
     pdf.set_xy(left, top)
-    for i, label in enumerate(["Slot", "Product", "URL"]):
+    for i, label in enumerate(["Slot", "Part Number", "Product", "URL"]):
         pdf.cell(col_w[i], row_h, label, border=1, fill=True, align="C", new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.ln()
 
     # Data rows
     _set_text(pdf, _GUNMETAL)
-    pdf.set_font("Helvetica", "", 8)
     slot_labels = {
         "fixture": "Fixture",
         "arm": "Arm",
@@ -237,14 +242,37 @@ def _draw_components_table(
         _set_fill(pdf, _LIGHT_GRAY if fill else _WHITE)
         slot_label = slot_labels.get(part["slot"], part["slot"].title())
         url = part.get("productUrl", "")
+        number = part.get("partNumber") or "-"
         pdf.set_xy(left, pdf.get_y())
+        pdf.set_font("Helvetica", "", 8)
         pdf.cell(col_w[0], row_h, _latin1(slot_label), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[1], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[2], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        # The number itself is bold — it is what gets copied into a spec.
+        pdf.set_font("Helvetica", "B", 8)
+        pdf.cell(col_w[1], row_h, _latin1(number), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.cell(col_w[2], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[3], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
     _set_fill(pdf, _WHITE)
-    return pdf.get_y()
+    y = pdf.get_y()
+
+    # Note any number that still needs choices, so an incomplete spec is obvious.
+    incomplete = [p for p in parts if p.get("partNumber") and not p.get("partNumberComplete")]
+    if incomplete:
+        pdf.set_xy(left, y)
+        pdf.set_font("Helvetica", "I", 7)
+        pdf.cell(
+            width,
+            4.5,
+            _latin1(
+                "'?' in a part number marks an ordering column still to be specified."
+            ),
+            new_x=XPos.LMARGIN,
+            new_y=YPos.NEXT,
+        )
+        y = pdf.get_y()
+    return y
 
 
 def _draw_labeled_line(

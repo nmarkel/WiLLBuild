@@ -27,12 +27,13 @@ export interface RenderManifest {
 export const HERO_ANGLE = 'hero'
 
 /**
- * Phase 0.8 (A): the non-hero azimuths (degrees) a radial arm/fixture must be
- * rendered at, beyond 0° (= hero). These are exactly the angles that appear
- * across twin(180)/triple(120,240)/quad(90,180,270), so the position render set
- * is bounded — the render rig bakes one silhouette per azimuth per finish.
+ * Phase 0.8 (A) / 0.10 (A): the non-hero azimuths (degrees) a radial arm/fixture
+ * must be rendered at, beyond 0° (= hero). Arms mount on a 90° drilled tenon
+ * (see `armAzimuths`), so the whole vocabulary across twin (180), triple
+ * (90,180) and quad (90,180,270) is just three angles — the 120°/240° renders
+ * Phase 0.8 baked for its (incorrect) 120° triple are retired.
  */
-export const MULTI_ARM_AZIMUTHS = [90, 120, 180, 240, 270] as const
+export const MULTI_ARM_AZIMUTHS = [90, 180, 270] as const
 
 /** Manifest angle key for a radial azimuth: 0° reuses the existing hero render. */
 export function angleKeyForAzimuth(deg: number): string {

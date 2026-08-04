@@ -1,9 +1,14 @@
-"""Multi-arm (radial armCount) coverage — Phase 0.8 Workstream A3.
+"""Multi-arm (radial armCount) coverage — Phase 0.8 Workstream A3, 0.10 A/D.
 
 The single-arm code path is exercised elsewhere (test_kit, test_step, …).  These
 tests prove that ``armCount>1`` composes N radially-placed arms + fixtures, that
 the arrangement is geometrically symmetric, that the fused volume grows, and
 that a twin config hashes to a distinct filename from the single-arm config.
+
+Phase 0.10 re-points the representative arm: the ordering matrix says SH1 is
+single-only, so clustering belongs to the **Side Shepherds Hook (SS)** family.
+The 0.8 "twin SH1" demo was an unorderable product.  This file also pins the 90°
+drilled-tenon azimuths (a triple is 3@90, NOT 3@120).
 """
 
 from __future__ import annotations
@@ -20,13 +25,16 @@ from app.naming import base_name, config_hash
 
 M = 1000.0
 
+# Phase 0.10: the valid multi-arm representative (SS1..SS4 on the ordering matrix).
+_ARM = "willstudio-side-shepherds-hook-pole-top-brackets"
+
 
 def _cfg(arm_count: int = 1, config_id: str | None = None) -> PoleConfig:
     return PoleConfig(
         configId=config_id or str(uuid.uuid4()),
         pole="alum-pole-20",
         baseCover="bc-fluted",
-        arm="sh1-shepherds-hook",
+        arm=_ARM,
         fixture="gvx-pendant",
         finish="matte-black",
         rev=1,
@@ -50,9 +58,9 @@ def twin(catalog):
 
 def test_twin_has_two_arms_and_two_fixtures(twin):
     ids = [pid for pid, _ in twin.parts]
-    arm_ids = [i for i in ids if i.startswith("sh1-shepherds-hook")]
+    arm_ids = [i for i in ids if i.startswith(_ARM)]
     fx_ids = [i for i in ids if i.startswith("gvx-pendant")]
-    assert arm_ids == ["sh1-shepherds-hook#0", "sh1-shepherds-hook#1"]
+    assert arm_ids == [f"{_ARM}#0", f"{_ARM}#1"]
     assert fx_ids == ["gvx-pendant#0", "gvx-pendant#1"]
     # pole + baseCover + 2 arms + 2 fixtures
     assert len(twin.parts) == 6
@@ -60,7 +68,7 @@ def test_twin_has_two_arms_and_two_fixtures(twin):
 
 def test_single_keeps_plain_part_ids(single):
     ids = [pid for pid, _ in single.parts]
-    assert "sh1-shepherds-hook" in ids
+    assert _ARM in ids
     assert "gvx-pendant" in ids
     assert not any("#" in i for i in ids)
 
@@ -71,8 +79,8 @@ def test_single_keeps_plain_part_ids(single):
 
 def test_twin_arms_are_opposite(twin):
     solids = {pid: s for pid, s in twin.parts}
-    bb0 = solids["sh1-shepherds-hook#0"].bounding_box()
-    bb1 = solids["sh1-shepherds-hook#1"].bounding_box()
+    bb0 = solids[f"{_ARM}#0"].bounding_box()
+    bb1 = solids[f"{_ARM}#1"].bounding_box()
     # Arm 0 reaches +X, arm 1 reaches -X (rotated 180 deg about the pole axis).
     assert bb0.max.X > 0
     assert bb1.min.X < 0
@@ -102,7 +110,7 @@ def test_twin_volume_grows(single, twin):
 
 def test_twin_volume_matches_two_arm_sets(twin):
     solids = {pid: s for pid, s in twin.parts}
-    arm_vol = solids["sh1-shepherds-hook#0"].volume
+    arm_vol = solids[f"{_ARM}#0"].volume
     fx_vol = solids["gvx-pendant#0"].volume
     pole_vol = solids["alum-pole-20"].volume
     bc_vol = solids["bc-fluted"].volume
@@ -163,3 +171,49 @@ def test_twin_step_export_is_deterministic(tmp_path_factory, catalog, twin):
     b1 = adapter.generate(ctx1)[0].read_bytes()
     b2 = adapter.generate(ctx2)[0].read_bytes()
     assert _strip_file_name(b1) == _strip_file_name(b2)
+
+
+# ---------------------------------------------------------------------------
+# Phase 0.10 (Workstream A): the 90-degree drilled tenon
+# ---------------------------------------------------------------------------
+
+def test_arm_azimuths_follow_the_drilled_tenon():
+    """A triple is 3@90 with one leg empty — not the 0.8 assumption of 3@120."""
+    from app.kit.assembly import _arm_azimuths
+
+    assert _arm_azimuths(1) == [0.0]
+    assert _arm_azimuths(2) == [0.0, 180.0]
+    assert _arm_azimuths(3) == [0.0, 90.0, 180.0]
+    assert _arm_azimuths(4) == [0.0, 90.0, 180.0, 270.0]
+    for count in (1, 2, 3, 4):
+        for deg in _arm_azimuths(count):
+            assert deg % 90 == 0
+
+
+def test_triple_places_the_third_arm_on_a_90_degree_leg(catalog):
+    """Geometry proof: the triple's arms lie on +X, +Y/-Y and -X, never at 120."""
+    triple = build_assembly(catalog, _cfg(3, "triple-cfg-0001"))
+    solids = {pid: s for pid, s in triple.parts}
+    reaches = []
+    for i in range(3):
+        bb = solids[f"{_ARM}#{i}"].bounding_box()
+        # The dominant horizontal reach direction of this arm.
+        reaches.append((bb.max.X, bb.min.X, bb.max.Y, bb.min.Y))
+    # Arm 0 reaches +X; arm 2 (180 deg) mirrors it in -X.
+    assert reaches[0][0] > 0
+    assert reaches[2][1] == pytest.approx(-reaches[0][0], abs=1.0)
+    # Arm 1 (90 deg) reaches along Y, and barely along X — a 120 deg arm would
+    # keep a large X component (cos(120) = -0.5 of the reach).
+    arm1_x = max(abs(reaches[1][0]), abs(reaches[1][1]))
+    arm1_y = max(abs(reaches[1][2]), abs(reaches[1][3]))
+    assert arm1_y > arm1_x
+
+
+def test_single_only_arm_is_rejected_for_a_multi_arm_request(catalog):
+    """SH1 is single-only on the ordering matrix, so a 3-arm SH1 has no code."""
+    from app.catalog import validate_config
+
+    cfg = _cfg(3, "sh1-triple-0001")
+    cfg.arm = "sh1-shepherds-hook"
+    with pytest.raises(ValueError, match="not orderable"):
+        validate_config(catalog, cfg)

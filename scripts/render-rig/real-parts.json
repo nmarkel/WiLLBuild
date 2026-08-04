@@ -1,9 +1,22 @@
 {
   "alum-pole-12": "real-assets/glb/alum-pole-12.glb",
+  "aluminum-light-pole-base-covers": "real-assets/glb/aluminum-light-pole-base-covers.glb",
+  "bc-fluted": "real-assets/glb/bc-fluted.glb",
   "bc-round": "real-assets/glb/bc-round.glb",
+  "drx-post-top": "real-assets/glb/drx-post-top.glb",
+  "gvx-pendant": "real-assets/glb/gvx-pendant.glb",
+  "mvx-coach": "real-assets/glb/mvx-coach.glb",
   "sh1-shepherds-hook": {
     "glb": "real-assets/glb/sh1-shepherds-hook.glb",
     "rotateY": -90
   },
-  "gvx-pendant": "real-assets/glb/gvx-pendant.glb"
+  "tex-post-top": "real-assets/glb/tex-post-top.glb",
+  "willstudio-ba1-banner-arm": {
+    "glb": "real-assets/glb/willstudio-ba1-banner-arm.glb",
+    "rotateY": 90
+  },
+  "willstudio-dwx-flood-spot": "real-assets/glb/willstudio-dwx-flood-spot.glb",
+  "willstudio-rxb-sxb-bollard": "real-assets/glb/willstudio-rxb-sxb-bollard.glb",
+  "willstudio-side-shepherds-hook-pole-top-brackets": "real-assets/glb/willstudio-side-shepherds-hook-pole-top-brackets.glb",
+  "willstudio-suspension-arm-pole-top-brackets": "real-assets/glb/willstudio-suspension-arm-pole-top-brackets.glb"
 }

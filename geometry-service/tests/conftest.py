@@ -49,6 +49,19 @@ def valid_combos(catalog: dict) -> list[PoleConfig]:
     poles = [p for p in catalog["parts"] if p["slot"] == "pole"]
     base_covers = [p for p in catalog["parts"] if p["slot"] == "baseCover"]
 
+    def _first_arm_count(pole: dict, arm: dict) -> int:
+        """The lowest arm count this pole+arm pair can actually be ordered in.
+
+        Phase 0.10: the ordering matrix owns `arrangements`, and some families are
+        NOT single — a decorative crossarm exists only as a fixed 2@180 pair
+        (CR2/FR2).  Mirrors allowedArmCounts in src/lib/compat.ts, which is what
+        validate_config now enforces.
+        """
+        pole_set = pole.get("arrangements") or [1]
+        arm_set = arm.get("arrangements") or [1]
+        allowed = sorted({n for n in pole_set if n in arm_set and 1 <= n <= 4})
+        return allowed[0] if allowed else 1
+
     combo_id = 0
     for fixture in fixtures:
         for arm in arms:
@@ -70,6 +83,7 @@ def valid_combos(catalog: dict) -> list[PoleConfig]:
                             fixture=fixture["id"],
                             finish=default_finish,
                             rev=1,
+                            armCount=_first_arm_count(pole, arm),
                         )
                     )
 

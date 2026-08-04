@@ -42,8 +42,14 @@ interface ConfiguratorState {
   setArmCount: (count: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
-  /** Phase 0.8 (D): pick a spec-sheet ordering-matrix option (by SpecOption.key). */
+  /** Phase 0.8 (D): pick an ordering-matrix option on the FIXTURE (legacy shim over setPartOption). */
   setSpecOption: (key: string, code: string) => void
+  /** Phase 0.10: pick a single-select ordering column on one part ('' clears it). */
+  setPartOption: (partId: string, key: string, code: string) => void
+  /** Phase 0.10 (B): add/remove one code in a part's multi-select Options field. */
+  togglePartAddOn: (partId: string, code: string, on: boolean) => void
+  /** Phase 0.10 (B): base cover is an Option — select one or clear it entirely. */
+  setBaseCover: (id: string) => void
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
@@ -135,10 +141,52 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   },
 
   setSpecOption: (key, code) => {
+    const { config, setPartOption } = get()
+    if (!config) return
+    setPartOption(config.fixture, key, code)
+  },
+
+  setPartOption: (partId, key, code) => {
     const { catalog, config, view, brand, scene } = get()
-    if (!catalog || !config || view.kind === 'product') return
-    const specOptions = { ...(config.specOptions ?? {}), [key]: code }
-    const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
+    if (!catalog || !config || view.kind === 'product' || !partId) return
+    const current = config.partOptions?.[partId] ?? {}
+    const codes = { ...(current.codes ?? {}) }
+    // '' is "Standard / not specified" — drop the key so the segment reads as
+    // unresolved rather than as an empty code.
+    if (code) codes[key] = code
+    else delete codes[key]
+    const next = repairConfig(catalog, {
+      ...config,
+      partOptions: { ...(config.partOptions ?? {}), [partId]: { ...current, codes } },
+      rev: config.rev + 1,
+    })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  togglePartAddOn: (partId, code, on) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product' || !partId) return
+    const current = config.partOptions?.[partId] ?? {}
+    const chosen = new Set(current.addOns ?? [])
+    if (on) chosen.add(code)
+    else chosen.delete(code)
+    const next = repairConfig(catalog, {
+      ...config,
+      partOptions: {
+        ...(config.partOptions ?? {}),
+        [partId]: { ...current, addOns: [...chosen].sort() },
+      },
+      rev: config.rev + 1,
+    })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setBaseCover: (id) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product' || config.baseCover === id) return
+    const next = repairConfig(catalog, { ...config, baseCover: id, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

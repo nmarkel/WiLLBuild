@@ -223,10 +223,15 @@ class TestBundleContentsNoRender:
         assert "render.png" not in names
 
     def test_exact_entry_count_without_render(self, bundle_path, cat, default_cfg):
-        """Without render_png: step + pdf + config.json + summary.txt + README.txt = 5 entries."""
+        """Without render_png: step + pdf + config.json + summary.txt + README.txt = 5 entries.
+
+        Phase 0.10 adds optional ``factory-cad/`` members (Engineering's own STEP for
+        components whose real CAD is released locally), so the fixed contract is
+        counted over the non-factory entries.
+        """
         with zipfile.ZipFile(bundle_path) as zf:
-            names = zf.namelist()
-        assert len(names) == 5, f"Expected 5 entries, got {len(names)}: {names}"
+            names = [n for n in zf.namelist() if not n.startswith("factory-cad/")]
+        assert len(names) == 5, f"Expected 5 core entries, got {len(names)}: {names}"
 
 
 # ---------------------------------------------------------------------------
@@ -254,10 +259,22 @@ class TestBundleContentsWithRender:
         assert data == _TINY_PNG
 
     def test_exact_entry_count_with_render(self, bundle_path, cat, default_cfg):
-        """With render_png: step + pdf + render.png + config.json + summary.txt + README.txt = 6 entries."""
+        """With render_png: step + pdf + render.png + config.json + summary.txt + README.txt = 6.
+
+        ``factory-cad/`` members (Phase 0.10) are counted separately — see the
+        no-render case above.
+        """
         with zipfile.ZipFile(bundle_path) as zf:
-            names = zf.namelist()
-        assert len(names) == 6, f"Expected 6 entries, got {len(names)}: {names}"
+            names = [n for n in zf.namelist() if not n.startswith("factory-cad/")]
+        assert len(names) == 6, f"Expected 6 core entries, got {len(names)}: {names}"
+
+    def test_factory_cad_members_are_complete_part_numbers(self, bundle_path):
+        """A factory-CAD file is only ever named by a COMPLETE part number."""
+        with zipfile.ZipFile(bundle_path) as zf:
+            factory = [n for n in zf.namelist() if n.startswith("factory-cad/")]
+        for name in factory:
+            assert "?" not in name and "x-x" not in name, name
+            assert name.endswith(".step")
 
 
 # ---------------------------------------------------------------------------

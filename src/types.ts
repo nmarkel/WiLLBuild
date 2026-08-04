@@ -75,6 +75,67 @@ export interface CatalogPart {
   /** Phase 0.8 (D): spec-sheet-parsed ordering-matrix options (only spec-parsed parts). */
   options?: SpecOption[]
   optionsMeta?: SpecOptionsMeta
+  /** Phase 0.10 (Workstream 0): this part's ordering-matrix block (part-number codes). */
+  ordering?: PartOrdering
+}
+
+/**
+ * Phase 0.10 (Workstream 0): one design code from a product family's ordering
+ * matrix. For radial arm families the trailing digit IS the arm count, so the
+ * count the customer picks selects the design code (Side Shepherds Hook + 3 →
+ * SS3). Families whose design does not encode a count (base covers) omit
+ * `armCount`.
+ */
+export interface OrderingDesign {
+  code: string
+  label: string
+  armCount?: number
+}
+
+/** A pole/tenon-fit code and the nominal OD (inches) it fits. */
+export interface OrderingFitCode {
+  code: string
+  odIn: number | null
+  label: string
+}
+
+/**
+ * Phase 0.10 (Workstream 0): the ordering-matrix block injected onto a catalog
+ * part by `scripts/merge-ordering.mjs` (source: docs/ordering-matrix.json).
+ * The part-number resolver reads ONLY this — no code table lives in a component
+ * or in the resolver itself.
+ */
+export interface PartOrdering {
+  /** Family key in docs/ordering-matrix.json (e.g. `arm-side-shepherds-hook`). */
+  familyKey: string
+  /** Human family name from the sheet, e.g. "Side Shepherds Hook". */
+  familyLabel: string
+  /** Product-family code — the part number's first segment (e.g. `WP`). */
+  family: string
+  designs: OrderingDesign[]
+  /** Which fit-code table applies (`tenon` | `poleFlush` | `poleOd` | `plate`), null = no fit segment. */
+  fit: string | null
+  /** How the fit OD is derived: from the host socket, or the host pole's shaft OD. */
+  fitFrom: 'hostSocket' | 'hostPoleShaftOd'
+  /** Part-number-bearing options (arms: CF1/CF2/CF3). */
+  options?: { code: string; label: string }[]
+  source: string
+  note?: string
+}
+
+/** Shared ordering-code tables (catalog root), injected by scripts/merge-ordering.mjs. */
+export interface CatalogOrdering {
+  structure: string
+  example: string
+  source: string
+  provenance: string
+  fitCodes: Record<string, OrderingFitCode[]>
+  /** Nominal OD (inches) of a mounting socket type — drives the fit segment. */
+  socketOdIn: Record<string, number>
+  socketOdNote: string
+  /** A derived OD must be within this many inches of a code's nominal OD. */
+  fitToleranceIn: number
+  fitToleranceNote: string
 }
 
 /**
@@ -144,6 +205,8 @@ export interface FinishDef {
   keywords: string[]
   /** RAL colour code for this finish (provisional — palette unconfirmed). */
   ral?: string
+  /** Phase 0.10: ordering-matrix finish code (BK/DB/DG/WH/NA) — the part number's finish segment. */
+  code?: string
 }
 
 /** A known stock combination; a config matching one gets the "Standard" status chip. */
@@ -162,6 +225,8 @@ export interface Catalog {
   referenceAssemblies: ReferenceAssembly[]
   /** Official category order per product line (willbrands.com/pages/products) — drives brand-showroom category order. */
   categories?: Record<string, string[]>
+  /** Phase 0.10: shared ordering-code tables for the part-number resolver. */
+  ordering?: CatalogOrdering
 }
 
 /**
@@ -199,9 +264,28 @@ export interface PoleConfig {
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
   /**
-   * Phase 0.8 (D): selected spec-sheet option codes, keyed by SpecOption.key
-   * (e.g. {"lumen-output":"80","distribution":"5W"}). Drives the ordering-code
-   * summary; values whose SpecOptionValue.buildable !== true route to a quote.
+   * Phase 0.8 (D): selected spec-sheet option codes for the FIXTURE, keyed by
+   * SpecOption.key (e.g. {"lumen-output":"80"}). Superseded in 0.10 by the
+   * per-part `partOptions` map — kept so pre-0.10 share links keep working;
+   * `repairConfig` folds it into `partOptions[fixture]` and clears it.
    */
   specOptions?: Record<string, string>
+  /**
+   * Phase 0.10 (Workstream 0/A2/B): per-part ordering selections, keyed by
+   * catalog part id. The Sternberg flow configures one part at a time, and each
+   * part resolves its OWN WiLL part number, so its ordering choices have to hang
+   * off the part, not off the assembly.
+   */
+  partOptions?: Record<string, PartSelections>
+}
+
+/**
+ * Phase 0.10: one part's ordering selections. `codes` holds single-select
+ * ordering-matrix columns (Design, Lumen Output, Voltage…); `addOns` holds the
+ * multi-select Options/Accessories field — Tyler (8/3): customers pick MULTIPLE
+ * add-ons there, so it is a set, not a single code.
+ */
+export interface PartSelections {
+  codes?: Record<string, string>
+  addOns?: string[]
 }

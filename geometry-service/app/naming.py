@@ -28,6 +28,10 @@ def config_hash(cfg: PoleConfig) -> str:
     geometry, so it joins the whitelist as its serialised dict (``armId``,
     ``count``, ``heightFt``) when present, else ``None`` — a config with a
     banner hashes distinctly from the same config without one.
+
+    ``partOptions`` (Phase 0.10) changes the printed part numbers rather than the
+    geometry, and is included only when non-empty so historical hashes are
+    unchanged.
     """
     canonical: dict = {
         "arm": cfg.arm,
@@ -38,6 +42,24 @@ def config_hash(cfg: PoleConfig) -> str:
         "fixture": cfg.fixture,
         "pole": cfg.pole,
     }
+    # Phase 0.10 (Workstream 0): ordering selections do not change the geometry,
+    # but they DO change the part numbers printed on the spec sheet / concept
+    # card — so two configs that differ only in options must not share a cached
+    # artifact.  The key is added ONLY when selections exist, so every pre-0.10
+    # config keeps its historical hash byte-for-byte.
+    if cfg.partOptions:
+        selections = {
+            part_id: {
+                "addOns": sorted(sel.addOns),
+                "codes": dict(sorted(sel.codes.items())),
+            }
+            for part_id, sel in sorted(cfg.partOptions.items())
+            if sel.codes or sel.addOns
+        }
+        # A map of empty selections is not a selection: keep the key out entirely
+        # so the hash stays identical to the same config without partOptions.
+        if selections:
+            canonical["partOptions"] = selections
     payload = json.dumps(canonical, sort_keys=True, separators=(",", ":"))
     digest = hashlib.sha256(payload.encode()).hexdigest()
     return digest[:8]

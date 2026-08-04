@@ -210,3 +210,65 @@ describe('product view <-> URL params', () => {
     expect(view).toEqual({ kind: 'builder' })
   })
 })
+
+// ---- Phase 0.10 (Workstream 0/B): per-part options + optional base cover ----
+
+describe('per-part ordering selections in the share URL', () => {
+  const withOptions: PoleConfig = {
+    ...config,
+    partOptions: {
+      'drx-post-top': { codes: { 'lumen-output': '80', voltage: 'MV' }, addOns: ['BPC1', 'N5P'] },
+      upsweep: { codes: { design: 'BR13' } },
+    },
+  }
+
+  it('round-trips codes and add-ons for every part', () => {
+    const partial = paramsToPartialConfig(configToParams(withOptions))
+    expect(partial?.partOptions).toEqual(withOptions.partOptions)
+  })
+
+  it('serializes as two sorted, human-readable lists', () => {
+    const params = configToParams(withOptions)
+    expect(params.get('popts')).toBe('drx-post-top.lumen-output=80,drx-post-top.voltage=MV,upsweep.design=BR13')
+    expect(params.get('addons')).toBe('drx-post-top.BPC1,drx-post-top.N5P')
+  })
+
+  it('is deterministic regardless of key insertion order', () => {
+    const reordered: PoleConfig = {
+      ...config,
+      partOptions: {
+        upsweep: { codes: { design: 'BR13' } },
+        'drx-post-top': { codes: { voltage: 'MV', 'lumen-output': '80' }, addOns: ['N5P', 'BPC1'] },
+      },
+    }
+    expect(configToParams(reordered).toString()).toBe(configToParams(withOptions).toString())
+  })
+
+  it('omits both params when nothing is selected', () => {
+    const params = configToParams(config)
+    expect(params.has('popts')).toBe(false)
+    expect(params.has('addons')).toBe(false)
+  })
+
+  it('ignores malformed entries rather than throwing', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('popts=garbage,.novalue=1,a.b=c&addons=.x,ok.CF1'))
+    expect(partial?.partOptions).toEqual({ a: { codes: { b: 'c' } }, ok: { addOns: ['CF1'] } })
+  })
+
+  it('a pre-0.10 opts= link still parses (repairConfig folds it onto the fixture)', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('opts=lumen-output:80'))
+    expect(partial?.specOptions).toEqual({ 'lumen-output': '80' })
+  })
+})
+
+describe('optional base cover (Workstream B)', () => {
+  it('encodes a deliberate "no base cover" so the link restores it', () => {
+    const params = configToParams({ ...config, baseCover: '' })
+    expect(params.get('baseCover')).toBe('none')
+    expect(paramsToPartialConfig(params)?.baseCover).toBe('')
+  })
+
+  it('a real base cover still round-trips by id', () => {
+    expect(paramsToPartialConfig(configToParams(config))?.baseCover).toBe('bc-fluted')
+  })
+})

@@ -59,6 +59,32 @@ Radial arm-count + banner arms, previously WiLLstudio-only, were added **additiv
 
 Rationale: the frontend is a static site (see CLAUDE.md "Stack"). Committing the baked layers means `npm run build` → deploy needs no headless-Chrome render rig or Python spec-parser in CI; the viewer's assets ship as-is. The trade-off is repo size (~7.5 MB of WebP); at this scale that is acceptable and Git LFS is not warranted. They remain **regenerable** — the offline rig (`scripts/render-rig/`, a devDependency using Puppeteer + three) and `scripts/spec-parse/` reproduce them deterministically — but the committed copies are the source of truth the app reads. Revisit (Git LFS or a build step) only if the render set grows past tens of MB.
 
+## Real-CAD ingest (Phase 0.10 — 2026-08-04)
+
+Engineering's released WiLLstudio STEP set (`/Volumes/WiLLdrive/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio`, 26 files / 380 MB) is now ingested. **The filenames are ordering codes** (`SS3-40F.STEP` = Side Shepherds Hook, 3 arms, 4" flush pole fit), which is why the ingest is also the provenance record for part numbers.
+
+**Pipeline (offline, one command per batch):**
+
+```
+cp <drive>/*.STEP scripts/render-rig/real-assets/step/        # gitignored
+cd scripts/step-to-glb
+../../geometry-service/.venv/bin/python ingest.py             # small/medium parts
+../../geometry-service/.venv/bin/python ingest.py --fixtures  # the 22-87 MB masters
+../../geometry-service/.venv/bin/python ingest.py --manifest  # docs/real-geometry.json
+cd ../.. && npm run render-rig -- --parts <ids>               # WebP layers
+npm run render-manifest && node scripts/build-viewer-assets.mjs
+```
+
+- **STEP → GLB** (`scripts/step-to-glb/convert.py`, OCP): tessellated to a per-part tolerance (0.5–1.5 mm — this is the "decimate" step; there is no mesh simplifier in the offline chain), origin at the part's lower attachment point, and **colour-aware** for fixtures so only the paintable `will-body` primitive takes the finish while lens/LED/PCB keep their STEP-authored colours. That `will-body` primitive IS the finish material slot this document's checklist asks for.
+- **Frames:** the masters are Y-up (SolidWorks), except the bollard + flood, which are modelled Z-up — those are stood up at conversion time (`rotateX`). Reach direction is corrected per part (`rotateY` in `real-parts.json`) so every arm reaches +X, the axis the assembly rotates about the pole.
+- **Sockets:** real geometry corrected the catalog again (the 0.6/PoC pattern): SS1 fixture socket `[0.6,0.42,0]` → `[0.622,0.676,0]`, AR1 `[0.7,0.14,0]` → `[0.61,0.143,0]` (both measured from the real hook tube-end centre plus the 92 mm pendant-stem insertion already calibrated on the real SH1), and the banner's bar centres to a symmetric ±0.625 m.
+- **What ships:** only the ~4 KB WebP layers + the tracked manifests. STEP (380 MB) and GLB (140 MB) stay gitignored, exactly as since the 0.6 spike.
+- **Coverage table:** `viewer-assets.md` (generated) marks every part **real CAD** vs **placeholder** and lists the unmapped files; `docs/real-geometry.json` carries per-file sha256 + mapping.
+
+**CAD downloads.** `app/realgeom.py` resolves a part (and its configured design code) to real CAD, and the zip bundle ships Engineering's own STEP per component named by part number (`factory-cad/WP-SS3-40F-BK.step` IS the released 3-arm assembly). Building the *assembly* solid from real B-reps is opt-in (`REAL_GEOMETRY_IN_KIT=1`) and off by default: parsing a master costs 10–20 s and fusing several did not finish in 10 minutes, so STEP/DXF/IFC/RFA stay on the fast parametric path.
+
 ## Status
 
-Real GLBs exist for `alum-pole-12`, `bc-round`, `sh1-shepherds-hook`, `gvx-pendant`; all other parts render from parametric placeholder solids until their STEP arrives (drops into the same manifest slots — the app never blocks on assets).
+**Real CAD (14 parts):** `alum-pole-12`, `sh1-shepherds-hook`, `willstudio-side-shepherds-hook-pole-top-brackets`, `willstudio-suspension-arm-pole-top-brackets`, `bc-round`, `bc-fluted`, `aluminum-light-pole-base-covers`, `willstudio-ba1-banner-arm`, `gvx-pendant`, `drx-post-top`, `tex-post-top`, `mvx-coach`, `willstudio-rxb-sxb-bollard`, `willstudio-dwx-flood-spot`.
+
+**Still placeholder (94 parts):** every NAFCO / WiLLsport / WiLLev / WiLLcloud product, plus the WiLLstudio parts with no released STEP yet (the remaining arms, the inventory poles, and the fluted/round covers' sibling styles). Real CAD drops into the same manifest slots — the app never blocks on assets. Unmapped real files (`FH-4R`, `PH-4R`, `SC1-4R`, `SC2-4R`) are recorded in `docs/real-geometry.json` awaiting a code confirmation from Tyler/Cole.

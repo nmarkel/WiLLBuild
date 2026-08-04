@@ -5,7 +5,7 @@ import { Panel } from './components/Panel'
 import { Summary } from './components/Summary'
 import { DescribeBox } from './components/DescribeBox'
 import { OutputTray } from './components/OutputTray'
-import { SpecOptions } from './components/SpecOptions'
+import { PartNumbers } from './components/PartNumbers'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
 import { BrandProductList, firstBrandProduct } from './components/BrandProductList'
@@ -100,7 +100,9 @@ export default function App() {
         <BrandSwitcher />
         {brand === 'WiLLstudio' && <DescribeBox />}
         <Panel catalog={catalog} config={config} />
-        <SpecOptions catalog={catalog} config={config} />
+        {/* Workstream 0: the part numbers are the headline deliverable, so they
+            sit directly under the build steps, above the config summary. */}
+        <PartNumbers catalog={catalog} config={config} />
         <Summary catalog={catalog} config={config} />
         <OutputTray catalog={catalog} config={config} />
       </aside>

@@ -1,16 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
-import { allowedArmCounts, compatibleParts, partById } from '../lib/compat'
+import { compatibleParts, partById } from '../lib/compat'
+import { resolvePartNumber } from '../lib/partNumber'
 import { useConfigurator } from '../store'
-import { BannerPicker } from './BannerPicker'
+import { OptionsStep } from './OptionsStep'
+import { PartConfigure } from './PartConfigure'
+import { PartNumberChip } from './PartNumbers'
 
-/** Phase 0.8 (A1): labels for the radial arm-count selector. */
-const ARM_COUNT_LABELS: Record<number, { label: string; sub: string }> = {
-  1: { label: 'Single', sub: '1 arm' },
-  2: { label: 'Twin', sub: '2 arms · 180°' },
-  3: { label: 'Triple', sub: '3 arms · 120°' },
-  4: { label: 'Quad', sub: '4 arms · 90°' },
-}
+/**
+ * Phase 0.10, Workstream A2 — the Sternberg-style flow.
+ *
+ * Tyler's liked model (Sternberg Genesis3D): **choose a part → configure it →
+ * next part → configure it**, sequentially. So each step now has two halves —
+ * pick the product, then configure that product (its ordering columns, its arm
+ * count, its Options) — and ends with a "Next" hand-off to the following part.
+ * The step header carries that component's live WiLL part number, because the
+ * number is the deliverable (Workstream 0).
+ *
+ * Base cover and banner are no longer steps of their own: they are entries in
+ * the Options step (Workstream B).
+ */
+
+type StepKey = Slot | 'options' | 'finish'
 
 interface Props {
   catalog: Catalog
@@ -18,34 +29,48 @@ interface Props {
 }
 
 // Fixture-first per Round 1 feedback: downstream steps filter on the fixture's
-// mounting requirements.
-const STEPS: { key: Slot | 'finish'; label: string }[] = [
+// mounting requirements. Base cover left the stepper in 0.10 (it is an Option).
+const STEPS: { key: StepKey; label: string }[] = [
   { key: 'fixture', label: 'Fixture' },
   { key: 'arm', label: 'Arm' },
   { key: 'pole', label: 'Pole' },
-  { key: 'baseCover', label: 'Base Cover' },
+  { key: 'options', label: 'Options' },
   { key: 'finish', label: 'Finish' },
 ]
 
+const isPartStep = (key: StepKey): key is Slot => key !== 'options' && key !== 'finish'
+
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
-  const setArmCount = useConfigurator((s) => s.setArmCount)
-  const [openStep, setOpenStep] = useState<Slot | 'finish'>('fixture')
+  const [openStep, setOpenStep] = useState<StepKey>('fixture')
 
-  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
+  // Hide part steps the brand has no parts for (e.g. a line with no arms).
   const steps = STEPS.filter(
-    (step) =>
-      step.key === 'finish' || compatibleParts(catalog, config, step.key as Slot).length > 0,
+    (step) => !isPartStep(step.key) || compatibleParts(catalog, config, step.key).length > 0,
   )
+
+  // Keep the open step valid when the brand switch removes it.
+  useEffect(() => {
+    if (!steps.some((s) => s.key === openStep)) setOpenStep(steps[0]?.key ?? 'finish')
+  }, [steps, openStep])
+
+  const stepIndex = steps.findIndex((s) => s.key === openStep)
+  const nextStep = steps[stepIndex + 1]
 
   return (
     <div className="stepper">
       {steps.map((step, i) => {
-        const isFinish = step.key === 'finish'
-        const selectedName = isFinish
-          ? catalog.finishes.find((f) => f.id === config.finish)?.name
-          : partById(catalog, config[step.key])?.name
         const open = openStep === step.key
+        // Narrow once, so the part branch below can index the config by slot.
+        const slot: Slot | null = isPartStep(step.key) ? step.key : null
+        const part = slot ? partById(catalog, config[slot]) : undefined
+        const selectedName =
+          step.key === 'finish'
+            ? catalog.finishes.find((f) => f.id === config.finish)?.name
+            : step.key === 'options'
+              ? optionsSummary(catalog, config)
+              : part?.name
+        const number = part ? resolvePartNumber(catalog, config, part.id) : undefined
 
         return (
           <section key={step.key} className={`step ${open ? 'open' : ''}`}>
@@ -53,49 +78,71 @@ export function Panel({ catalog, config }: Props) {
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">{selectedName}</span>
+              <PartNumberChip number={number} />
             </button>
             {open && (
-              <div className={isFinish ? 'options finishes' : 'options'}>
-                {isFinish && catalog.finishesProvisional && (
-                  <p className="finish-note">Standard WiLLcoat palette pending confirmation — colors shown are provisional.</p>
-                )}
-                {isFinish
-                  ? catalog.finishes.map((f) => (
+              <div className={step.key === 'finish' ? 'options finishes' : 'step-body'}>
+                {/* --- 1. Choose the part --- */}
+                {step.key === 'finish' ? (
+                  <>
+                    {catalog.finishesProvisional && (
+                      <p className="finish-note">
+                        Standard WiLLcoat palette pending confirmation — colors shown are provisional.
+                      </p>
+                    )}
+                    {catalog.finishes.map((f) => (
                       <button
                         key={f.id}
                         className={`finish-chip ${config.finish === f.id ? 'selected' : ''}`}
                         onClick={() => select('finish', f.id)}
-                        title={f.name}
+                        title={f.code ? `${f.name} (${f.code})` : f.name}
                       >
                         <span className="swatch" style={{ background: f.hex }} />
                         <span>{f.name}</span>
-                      </button>
-                    ))
-                  : compatibleParts(catalog, config, step.key as Slot).map((part) => (
-                      <button
-                        key={part.id}
-                        className={`option-card ${config[step.key] === part.id ? 'selected' : ''}`}
-                        onClick={() => select(step.key, part.id)}
-                      >
-                        <span className="thumb">
-                          {part.thumbnail ? (
-                            <img src={import.meta.env.BASE_URL + part.thumbnail} alt="" />
-                          ) : part.photo ? (
-                            <img src={part.photo} alt="" loading="lazy" />
-                          ) : (
-                            part.family.slice(0, 2).toUpperCase()
-                          )}
-                        </span>
-                        <span className="option-name">{part.name}</span>
-                        <span className="option-family">{part.family}</span>
+                        {f.code && <span className="finish-code">{f.code}</span>}
                       </button>
                     ))}
-                {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
-                    the chosen pole + arm actually support multiples (catalog rule). */}
-                {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
-                {/* Phase 0.9 (A2): banner-arm accessory mounts on the pole shaft,
-                    so its controls live inside the Pole step (no standalone section). */}
-                {step.key === 'pole' && <BannerPicker catalog={catalog} config={config} />}
+                  </>
+                ) : step.key === 'options' ? (
+                  <OptionsStep catalog={catalog} config={config} />
+                ) : slot ? (
+                  <>
+                    <div className="options">
+                      {compatibleParts(catalog, config, slot).map((option) => (
+                        <button
+                          key={option.id}
+                          className={`option-card ${config[slot] === option.id ? 'selected' : ''}`}
+                          onClick={() => select(slot, option.id)}
+                        >
+                          <span className="thumb">
+                            {option.thumbnail ? (
+                              <img src={import.meta.env.BASE_URL + option.thumbnail} alt="" />
+                            ) : option.photo ? (
+                              <img src={option.photo} alt="" loading="lazy" />
+                            ) : (
+                              option.family.slice(0, 2).toUpperCase()
+                            )}
+                          </span>
+                          <span className="option-name">{option.name}</span>
+                          <span className="option-family">
+                            {option.ordering?.familyLabel ?? option.family}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                    {/* --- 2. Configure the chosen part --- */}
+                    {part && <PartConfigure catalog={catalog} config={config} part={part} />}
+                  </>
+                ) : null}
+
+                {/* --- 3. On to the next part --- */}
+                {nextStep && (
+                  <div className="step-next">
+                    <button className="btn primary" onClick={() => setOpenStep(nextStep.key)}>
+                      Next: {nextStep.label} →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </section>
@@ -105,42 +152,10 @@ export function Panel({ catalog, config }: Props) {
   )
 }
 
-/**
- * Phase 0.8 (A1/A2): choose how many arms mount radially around the pole top.
- * The available options come straight from catalog rules (allowedArmCounts) so
- * only real, mountable layouts appear; hidden entirely when only single is valid.
- */
-function ArmCountSelector({
-  catalog,
-  config,
-  onSelect,
-}: {
-  catalog: Catalog
-  config: PoleConfig
-  onSelect: (count: number) => void
-}) {
-  const counts = allowedArmCounts(catalog, config)
-  if (counts.length <= 1) return null
-  const current = config.armCount ?? 1
-  return (
-    <div className="arm-count">
-      <p className="arm-count-label">Arms</p>
-      <div className="arm-count-options">
-        {counts.map((n) => {
-          const meta = ARM_COUNT_LABELS[n] ?? { label: `${n}`, sub: `${n} arms` }
-          return (
-            <button
-              key={n}
-              className={`arm-count-chip ${current === n ? 'selected' : ''}`}
-              onClick={() => onSelect(n)}
-              title={`${meta.label} — ${meta.sub}`}
-            >
-              <span className="arm-count-name">{meta.label}</span>
-              <span className="arm-count-sub">{meta.sub}</span>
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
+/** Header text for the Options step: what the customer has actually added. */
+function optionsSummary(catalog: Catalog, config: PoleConfig): string {
+  const chosen: string[] = []
+  if (config.baseCover) chosen.push(partById(catalog, config.baseCover)?.name ?? 'Base cover')
+  if (config.banner) chosen.push('Banner arm')
+  return chosen.length > 0 ? chosen.join(' · ') : 'None'
 }
