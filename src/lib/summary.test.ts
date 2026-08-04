@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
-import { buildSummaryText } from './summary'
+import { buildPartNumber, buildSummaryText } from './summary'
 import { paramsToPartialConfig } from './url'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -26,13 +26,30 @@ describe('buildSummaryText', () => {
     expect(summary).toContain('Config ID: test-config-123')
   })
 
-  it('includes all parts and finish', () => {
+  it('includes all parts, each with its own finish (Phase 1.0)', () => {
     const summary = buildSummaryText(catalog, config({}))
-    expect(summary).toContain('Fixture:')
-    expect(summary).toContain('Arm:')
-    expect(summary).toContain('Pole:')
-    expect(summary).toContain('Base Cover:')
-    expect(summary).toContain('Finish:')
+    expect(summary).toContain('Fixture: GVX Pendant — Matte Black')
+    expect(summary).toContain('Arm: SH1 Shepherds Hook — Matte Black')
+    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Matte Black')
+    expect(summary).toContain('Base Cover: Fluted Base Cover — Matte Black')
+  })
+
+  it('a per-slot finish override shows on that part only', () => {
+    const summary = buildSummaryText(catalog, config({ finishes: { pole: 'silver' } }))
+    expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Silver')
+    expect(summary).toContain('Fixture: GVX Pendant — Matte Black')
+  })
+
+  it('indents a part’s spec-sheet choices under the part', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ specOptions: { fixture: { 'lumen-output': '100' } } }),
+    )
+    const lines = summary.split('\n')
+    const fixtureIdx = lines.findIndex((l) => l.startsWith('Fixture:'))
+    const optLine = lines.findIndex((l) => l.startsWith('  ') && l.includes('100'))
+    expect(fixtureIdx).toBeGreaterThanOrEqual(0)
+    expect(optLine).toBe(fixtureIdx + 1)
   })
 
   it('round-trips the share URL with config params', () => {
@@ -59,5 +76,49 @@ describe('buildSummaryText', () => {
     expect(parsed!.arm).toBe(testConfig.arm)
     expect(parsed!.fixture).toBe(testConfig.fixture)
     expect(parsed!.finish).toBe(testConfig.finish)
+  })
+})
+
+describe('buildPartNumber (Phase 1.0)', () => {
+  it('assembles base config in sheet order with implied family/design/finish', () => {
+    // Nothing chosen: WD (single-value family) - GVX (part card) - four open
+    // columns - BK (matte-black via mapsTo).
+    const pn = buildPartNumber(catalog, config({}), 'fixture')
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK')
+  })
+
+  it('fills chosen base-config codes and tracks the per-part finish', () => {
+    const pn = buildPartNumber(
+      catalog,
+      config({
+        finishes: { fixture: 'silver' },
+        specOptions: { fixture: { 'lumen-output': '80', 'color-temp': '30', voltage: 'MV' } },
+      }),
+      'fixture',
+    )
+    expect(pn).toBe('WD-GVX-80-30-MV-_-NA')
+  })
+
+  it('appends options and accessories codes with a dash each', () => {
+    const pn = buildPartNumber(
+      catalog,
+      config({
+        specOptions: {
+          fixture: { options: ['WHP7NP', 'SRG27710'], accessories: ['HSS-GVX'] },
+        },
+      }),
+      'fixture',
+    )
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP-SRG27710-HSS-GVX')
+  })
+
+  it('returns undefined for parts without a parsed ordering table', () => {
+    expect(buildPartNumber(catalog, config({}), 'arm')).toBeUndefined()
+    expect(buildPartNumber(catalog, config({}), 'baseCover')).toBeUndefined()
+  })
+
+  it('is included in the summary text as a Part No line', () => {
+    const summary = buildSummaryText(catalog, config({}))
+    expect(summary).toContain('  Part No: WD-GVX-_-_-_-_-BK')
   })
 })

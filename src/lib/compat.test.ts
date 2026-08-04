@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, isAssemblyPart, partById, repairConfig } from './compat'
+import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, exclusiveFamily, finishFor, isAssemblyPart, partById, repairConfig, specCodes, voltageCompatible } from './compat'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -58,9 +58,25 @@ describe('compatibleParts (fixture-first)', () => {
     expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
   })
 
-  it('offers every pole for any arm, and every base cover for any pole', () => {
-    expect(compatibleParts(catalog, config({}), 'pole')).toHaveLength(11)
+  it('offers the four aluminum poles for any arm, and every base cover for any pole', () => {
+    expect(compatibleParts(catalog, config({}), 'pole')).toHaveLength(4)
     expect(compatibleParts(catalog, config({}), 'baseCover')).toHaveLength(3)
+  })
+
+  it('demoted poles (fiberglass, steel fluted, named decorative) are never wizard parts', () => {
+    for (const id of [
+      'huntington-decorative-aluminum-anchor-base-light-poles',
+      'round-tapered-fiberglass-anchor-base-light-poles',
+      'round-tapered-fiberglass-direct-burial-light-poles',
+      'round-tapered-steel-fluted-anchor-base-light-poles',
+      'sacramento-decorative-aluminum-anchor-base-light-poles',
+      'washington-decorative-aluminum-anchor-base-light-poles',
+      'williamsburg-decorative-aluminum-anchor-base-light-poles',
+    ]) {
+      const part = partById(catalog, id)!
+      expect(part.slot).toBe('standalone')
+      expect(part.productClass).toBe('standalone')
+    }
   })
 })
 
@@ -81,19 +97,10 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'willstudio-suspension-arm-pole-top-brackets',
   ].sort()
 
-  const ALL_POLES = [
-    'alum-pole-12',
-    'alum-pole-14',
-    'alum-pole-16',
-    'alum-pole-20',
-    'huntington-decorative-aluminum-anchor-base-light-poles',
-    'round-tapered-fiberglass-anchor-base-light-poles',
-    'round-tapered-fiberglass-direct-burial-light-poles',
-    'round-tapered-steel-fluted-anchor-base-light-poles',
-    'sacramento-decorative-aluminum-anchor-base-light-poles',
-    'washington-decorative-aluminum-anchor-base-light-poles',
-    'williamsburg-decorative-aluminum-anchor-base-light-poles',
-  ].sort()
+  // Phase 1.0: the builder offers only the core aluminum pole system — the
+  // fiberglass, steel-fluted, and named decorative poles (Huntington,
+  // Sacramento, Washington, Williamsburg) were demoted back to standalone.
+  const ALL_POLES = ['alum-pole-12', 'alum-pole-14', 'alum-pole-16', 'alum-pole-20'].sort()
 
   const ALL_BASE_COVERS = ['aluminum-light-pole-base-covers', 'bc-fluted', 'bc-round'].sort()
 
@@ -430,5 +437,214 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9)', () => {
   it('leaves an in-range height untouched', () => {
     const cfg = config({ pole: 'alum-pole-20', banner: { armId: bannerId, count: 2, heightFt: 8 } })
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
+  })
+})
+
+describe('finishFor + repairConfig — per-part finishes (Phase 1.0)', () => {
+  it('falls back to the base finish when a slot has no override', () => {
+    const c = config({})
+    expect(finishFor(c, 'pole')).toBe('matte-black')
+    expect(finishFor(c, 'fixture')).toBe('matte-black')
+  })
+
+  it('an override wins for its slot only', () => {
+    const c = config({ finishes: { pole: 'silver' } })
+    expect(finishFor(c, 'pole')).toBe('silver')
+    expect(finishFor(c, 'fixture')).toBe('matte-black')
+  })
+
+  it('non-assembly slots (banner) always use the base finish', () => {
+    const c = config({ finishes: { pole: 'silver' } })
+    expect(finishFor(c, 'banner')).toBe('matte-black')
+  })
+
+  it('repairConfig drops unknown finish ids from overrides', () => {
+    const repaired = repairConfig(catalog, config({ finishes: { pole: 'not-a-finish', arm: 'silver' } }))
+    expect(repaired.finishes).toEqual({ arm: 'silver' })
+  })
+
+  it('repairConfig clears an all-invalid overrides map to undefined', () => {
+    const repaired = repairConfig(catalog, config({ finishes: { pole: 'not-a-finish' } }))
+    expect(repaired.finishes).toBeUndefined()
+  })
+})
+
+describe('repairConfig — per-slot spec-option pruning (Phase 1.0)', () => {
+  it('keeps valid choices for the selected part', () => {
+    const fixture = partById(catalog, 'gvx-pendant')!
+    const opt = fixture.options![0]
+    const code = opt.values[0].code
+    const repaired = repairConfig(
+      catalog,
+      config({ specOptions: { fixture: { [opt.key]: code } } }),
+    )
+    expect(repaired.specOptions).toEqual({ fixture: { [opt.key]: code } })
+  })
+
+  it('drops keys the selected part does not offer and empty codes', () => {
+    const fixture = partById(catalog, 'gvx-pendant')!
+    const opt = fixture.options![0]
+    const repaired = repairConfig(
+      catalog,
+      config({ specOptions: { fixture: { 'no-such-column': 'X', [opt.key]: '' } } }),
+    )
+    expect(repaired.specOptions).toBeUndefined()
+  })
+
+  it('drops choices for a slot whose part has no parsed sheet', () => {
+    // sh1-shepherds-hook (arm) has no options table
+    const repaired = repairConfig(
+      catalog,
+      config({ specOptions: { arm: { anything: 'X' } } }),
+    )
+    expect(repaired.specOptions).toBeUndefined()
+  })
+
+  it('a part swap drops stale codes the new part does not offer', () => {
+    // DRX has a `design` ordering column; TEX does not.
+    const valid = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { design: 'CH' } },
+      }),
+    )
+    expect(valid.specOptions?.fixture?.design).toBe('CH')
+    const swapped = repairConfig(
+      catalog,
+      config({
+        fixture: 'tex-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { design: 'CH' } },
+      }),
+    )
+    expect(swapped.specOptions?.fixture?.design ?? undefined).toBeUndefined()
+  })
+})
+
+describe('multi-select options & exclusive families (Phase 1.0)', () => {
+  it('specCodes normalizes strings, arrays, and absent values', () => {
+    expect(specCodes(undefined)).toEqual([])
+    expect(specCodes('')).toEqual([])
+    expect(specCodes('BK')).toEqual(['BK'])
+    expect(specCodes(['A', '', 'B'])).toEqual(['A', 'B'])
+  })
+
+  it('exclusiveFamily groups cords, surge suppressors, and photocontrols', () => {
+    expect(exclusiveFamily('WHP3NP')).toBe('cord')
+    expect(exclusiveFamily('SRG27710')).toBe('surge-suppressor')
+    expect(exclusiveFamily('BPC1')).toBe('photocontrol')
+    expect(exclusiveFamily('TLPC4')).toBe('photocontrol')
+    expect(exclusiveFamily('N5P')).toBeUndefined()
+  })
+
+  it('repairConfig keeps multiple non-family codes in one multi column', () => {
+    // drx options-2: BPC1 (photocontrol) + N5P (receptacle) may coexist
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { 'options-2': ['BPC1', 'N5P'] } },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.['options-2']).toEqual(['BPC1', 'N5P'])
+  })
+
+  it('repairConfig keeps only the first code of an exclusive family', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { options: ['WHP3NP', 'WHP7NP'] } },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.options).toEqual(['WHP3NP'])
+  })
+
+  it('family exclusivity spans columns (BPC in options-2 blocks TLPC in accessories)', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { 'options-2': ['BPC1'], accessories: ['TLPC1', 'HSS-DRX'] } },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.['options-2']).toEqual(['BPC1'])
+    expect(repaired.specOptions?.fixture?.accessories).toEqual(['HSS-DRX'])
+  })
+
+  it('repairConfig normalizes shapes: ordering → string, options/accessories → array', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { 'lumen-output': ['40'], options: 'WHP3NP' } },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.['lumen-output']).toBe('40')
+    expect(repaired.specOptions?.fixture?.options).toEqual(['WHP3NP'])
+  })
+})
+
+describe('voltage → options compatibility (Phase 1.0)', () => {
+  it('voltageCompatible reads ratings out of value labels', () => {
+    expect(voltageCompatible('MV', 'Button Photocontrol, 120-277V')).toBe(true)
+    expect(voltageCompatible('MV', 'Button Photocontrol, 347V')).toBe(false)
+    expect(voltageCompatible('MV', 'Twist-Lock Photocell, 347/480V (Not Installed)')).toBe(false)
+    expect(voltageCompatible('HV', '10kA Surge Suppressor (Field Replaceable), 347-480V')).toBe(true)
+    expect(voltageCompatible('HV', '10kA Surge Suppressor (Field Replaceable), 120-277V')).toBe(false)
+    // Unrated gear and custom/absent voltage never filter.
+    expect(voltageCompatible('MV', 'NEMA 5pin Twist-Lock Receptacle')).toBe(true)
+    expect(voltageCompatible('CV', 'Button Photocontrol, 480V')).toBe(true)
+    expect(voltageCompatible(undefined, 'Button Photocontrol, 480V')).toBe(true)
+  })
+
+  it('repairConfig drops selected options that clash with the chosen voltage', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: {
+          fixture: { voltage: 'MV', 'options-2': ['SRG48010', 'N5P'], accessories: ['TLPC4'] },
+        },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.['options-2']).toEqual(['N5P'])
+    expect(repaired.specOptions?.fixture?.accessories).toBeUndefined()
+  })
+
+  it('a voltage change swaps which photocontrols survive', () => {
+    const mv = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { voltage: 'HV', 'options-2': ['BPC4'] } },
+      }),
+    )
+    expect(mv.specOptions?.fixture?.['options-2']).toEqual(['BPC4'])
+    const swapped = repairConfig(catalog, {
+      ...mv,
+      specOptions: { fixture: { ...mv.specOptions!.fixture!, voltage: 'MV' } },
+    })
+    expect(swapped.specOptions?.fixture?.['options-2']).toBeUndefined()
+  })
+
+  it('no voltage chosen leaves every option available', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        specOptions: { fixture: { 'options-2': ['BPC4', 'N5P'] } },
+      }),
+    )
+    expect(repaired.specOptions?.fixture?.['options-2']).toEqual(['BPC4', 'N5P'])
   })
 })

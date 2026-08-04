@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, partById } from './compat'
+import { armAzimuths, attachSocket, finishFor, partById } from './compat'
 
 /** One rendered layer/product image produced by the render rig. */
 export interface RenderAsset {
@@ -242,7 +242,9 @@ export function resolveAssemblyLayout(
   const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
   for (const { layerId, part, angle, world, z } of placements) {
-    const asset = resolveRenderAsset(manifest, part.id, config.finish, angle)
+    // Phase 1.0: each part renders in its own step's finish (base finish when
+    // the slot has no override — see finishFor).
+    const asset = resolveRenderAsset(manifest, part.id, finishFor(config, part.slot), angle)
     if (!asset) {
       missingSet.add(part.id)
       continue

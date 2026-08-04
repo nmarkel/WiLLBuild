@@ -252,11 +252,56 @@ body {
   text-align: right;
 }
 
+/* Phase 1.0: the expanded step's body — one concierge "chapter" per part. */
+.step-body {
+  padding: 0 14px 14px;
+}
+
+.step-tagline {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+/* A titled section inside a step (Finish / Base configuration / Options & accessories). */
+.step-group {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.step-group-title {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.step-continue {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px 12px;
+  background: var(--will-yellow);
+  border: none;
+  border-radius: 8px;
+  color: var(--will-gray);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.step-continue:hover {
+  filter: brightness(0.96);
+}
+
 .options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  padding: 0 12px 12px;
 }
 
 .option-card {
@@ -316,21 +361,24 @@ body {
   font-size: 11px;
 }
 
+/* Phase 1.0: per-step finish swatches — a compact wrap row, not a full list. */
 .options.finishes {
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .finish-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
+  gap: 7px;
+  padding: 6px 10px;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   color: var(--text);
   font: inherit;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -407,10 +455,10 @@ body {
   color: var(--muted-text, #58595b);
 }
 
-/* ---- Banner picker + spec options (Phase 0.8 C/D) ---- */
+/* ---- Banner picker + spec options (Phase 0.8 C/D; options moved into the
+   step chapters in Phase 1.0) ---- */
 
-.banner-picker,
-.spec-options {
+.banner-picker {
   margin-top: 14px;
   padding: 14px 16px;
   background: var(--panel-raised);
@@ -423,49 +471,6 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-}
-
-/* Phase 0.9 (A3): collapsible Product Options header. */
-.spec-options-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font: inherit;
-}
-
-.spec-options-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.spec-options-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.spec-options-count {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text);
-  background: var(--will-yellow);
-  border-radius: 999px;
-  padding: 1px 8px;
-}
-
-.spec-options-arrow {
-  font-size: 12px;
-  color: var(--muted-text, #58595b);
-}
-
-.spec-options-body {
-  margin-top: 10px;
 }
 
 .spec-options-note {
@@ -506,6 +511,43 @@ body {
   background: #fff;
   color: var(--text);
   font: inherit;
+}
+
+/* Phase 1.0: multi-select options & accessories — one checkbox row per code. */
+.spec-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.spec-check + .spec-check {
+  margin-top: 4px;
+}
+
+.spec-check.checked {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.spec-check input[type='checkbox'] {
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--will-yellow);
+}
+
+.spec-check-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.spec-check-code {
+  font-weight: 700;
 }
 
 .banner-toggle {
@@ -619,6 +661,23 @@ body {
 
 .summary-label {
   color: var(--text-dim);
+}
+
+/* Phase 1.0: part name + full ordering part number stacked on the right. */
+.summary-part {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.summary-pn {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--text-dim);
+  text-align: right;
+  word-break: break-all;
 }
 
 .summary a {

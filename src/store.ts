@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
-import { defaultConfig, repairConfig } from './lib/compat'
+import { defaultConfig, exclusiveFamily, repairConfig, specCodes } from './lib/compat'
 import { parseDescription } from './lib/parse'
 import {
   configToParams,
@@ -37,13 +37,21 @@ interface ConfiguratorState {
   /** Active brand — drives routing and catalog scoping. */
   brand: ProductLine
   loadCatalog: () => Promise<void>
-  select: (slot: Slot | 'finish', id: string) => void
+  select: (slot: Slot, id: string) => void
+  /** Phase 1.0: set one part's finish (per-slot override on the base finish). */
+  setFinish: (slot: Slot, id: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
   setArmCount: (count: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
-  /** Phase 0.8 (D): pick a spec-sheet ordering-matrix option (by SpecOption.key). */
-  setSpecOption: (key: string, code: string) => void
+  /** Phase 0.8 (D), reshaped 1.0: pick a single-choice ordering column value for one part's step. */
+  setSpecOption: (slot: Slot, key: string, code: string) => void
+  /**
+   * Phase 1.0: toggle a multi-select options/accessories code for one part's
+   * step. Checking a code in an exclusive family (cord/surge/photocontrol)
+   * unchecks that family's previous code across all of the part's columns.
+   */
+  toggleSpecOption: (slot: Slot, key: string, code: string) => void
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
@@ -134,10 +142,49 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
   },
 
-  setSpecOption: (key, code) => {
+  setFinish: (slot, id) => {
     const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config || view.kind === 'product') return
-    const specOptions = { ...(config.specOptions ?? {}), [key]: code }
+    if ((config.finishes?.[slot] ?? config.finish) === id) return
+    const finishes = { ...(config.finishes ?? {}), [slot]: id }
+    const next = repairConfig(catalog, { ...config, finishes, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setSpecOption: (slot, key, code) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const forSlot = { ...(config.specOptions?.[slot] ?? {}), [key]: code }
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: forSlot }
+    const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  toggleSpecOption: (slot, key, code) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const forSlot: Record<string, string | string[]> = { ...(config.specOptions?.[slot] ?? {}) }
+    const current = specCodes(forSlot[key])
+    if (current.includes(code)) {
+      forSlot[key] = current.filter((c) => c !== code)
+    } else {
+      // One per exclusive family: strip the family's previous code from every
+      // multi-select column before adding (repairConfig keeps first-in-sheet,
+      // so the stale one must go here for the new pick to survive).
+      const family = exclusiveFamily(code)
+      if (family) {
+        for (const k of Object.keys(forSlot)) {
+          const codes = specCodes(forSlot[k])
+          if (Array.isArray(forSlot[k]) || k === key) {
+            forSlot[k] = codes.filter((c) => exclusiveFamily(c) !== family)
+          }
+        }
+      }
+      forSlot[key] = [...specCodes(forSlot[key]), code]
+    }
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: forSlot }
     const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })

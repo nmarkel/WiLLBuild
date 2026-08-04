@@ -187,7 +187,20 @@ export interface PoleConfig {
   baseCover: string
   arm: string
   fixture: string
+  /**
+   * Base finish. Kept as the single-finish field the frozen geometry-service
+   * contract and pre-1.0 share URLs expect; the UI no longer offers a global
+   * finish step — it acts as the default for any slot without a `finishes`
+   * override (see `finishFor` in lib/compat.ts).
+   */
   finish: string
+  /**
+   * Phase 1.0 (concierge steps): per-part finish overrides, keyed by slot.
+   * Absent slot → the part renders in the base `finish`. The describe-box
+   * parser still writes `finish` only, so "in a black finish" colors every
+   * part that hasn't been individually overridden.
+   */
+  finishes?: Partial<Record<Slot, string>>
   rev: number
   /**
    * Phase 0.8 (A1): how many arms are mounted radially around the pole top.
@@ -199,9 +212,15 @@ export interface PoleConfig {
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
   /**
-   * Phase 0.8 (D): selected spec-sheet option codes, keyed by SpecOption.key
-   * (e.g. {"lumen-output":"80","distribution":"5W"}). Drives the ordering-code
-   * summary; values whose SpecOptionValue.buildable !== true route to a quote.
+   * Phase 0.8 (D), reshaped in 1.0: selected spec-sheet option codes, keyed by
+   * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":
+   * {"anchor-bolts-base-type-finish-type":"AB"}}) — each part step carries its
+   * own ordering-table choices. Ordering columns are single-choice (string);
+   * options & accessories columns are multi-select (string[]), constrained to
+   * one code per exclusive family — cord/surge/photocontrol (see
+   * EXCLUSIVE_CODE_FAMILIES in lib/compat.ts). Values whose
+   * SpecOptionValue.buildable !== true route to a quote. Legacy flat share
+   * URLs are read as fixture options.
    */
-  specOptions?: Record<string, string>
+  specOptions?: Partial<Record<Slot, Record<string, string | string[]>>>
 }

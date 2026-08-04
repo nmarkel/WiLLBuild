@@ -1,5 +1,83 @@
-import type { Catalog, CatalogPart, PoleConfig, ProductLine, Slot } from '../types'
+import type { Catalog, CatalogPart, PartSlot, PoleConfig, ProductLine, Slot, SpecOption } from '../types'
 export { isAssemblyPart } from '../types'
+
+const SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
+
+function isSlot(s: PartSlot): s is Slot {
+  return (SLOTS as readonly string[]).includes(s)
+}
+
+/**
+ * Phase 1.0 (concierge steps): the finish a part in `slot` renders in — the
+ * per-slot override when set, else the base `config.finish`. Non-assembly
+ * slots (banner accessories) always use the base finish.
+ */
+export function finishFor(config: PoleConfig, slot: PartSlot): string {
+  if (isSlot(slot)) return config.finishes?.[slot] ?? config.finish
+  return config.finish
+}
+
+/** Display label for a spec-sheet column, minus sheet-jargon suffixes. */
+export function optionLabel(opt: SpecOption): string {
+  return opt.label.replace(' (Model Nominal Lumens)', '')
+}
+
+/**
+ * A spec-option value normalized to a code list: ordering columns store a
+ * single string, options & accessories columns store string[] — readers use
+ * this so they never care which shape a share URL delivered.
+ */
+export function specCodes(value: string | string[] | undefined): string[] {
+  if (!value) return []
+  return (Array.isArray(value) ? value : [value]).filter(Boolean)
+}
+
+/**
+ * Options & accessories are multi-select, but some codes are variants of one
+ * physical thing (a cord length, a surge suppressor voltage, a photocontrol
+ * voltage) — only one of each family may be on a part, across all of its
+ * option columns. Families are matched by order-code prefix.
+ */
+const EXCLUSIVE_CODE_FAMILIES: { name: string; match: RegExp }[] = [
+  { name: 'cord', match: /^WHP/ },
+  { name: 'surge-suppressor', match: /^SRG/ },
+  { name: 'photocontrol', match: /^(BPC|TLPC)/ },
+]
+
+/** The exclusive family a code belongs to, if any. */
+export function exclusiveFamily(code: string): string | undefined {
+  return EXCLUSIVE_CODE_FAMILIES.find((f) => f.match.test(code))?.name
+}
+
+/**
+ * Voltage class an option/accessory label declares, parsed from its rating
+ * text ("120-277V", "347V", "347/480V", …): 'mv' when every mentioned voltage
+ * fits the MV fixture range (≤277V), 'hv' when every one needs HV (≥347V),
+ * undefined when the label carries no rating (fits any voltage).
+ */
+function voltageClass(label: string): 'mv' | 'hv' | undefined {
+  const volts: number[] = []
+  for (const m of label.matchAll(/(\d{2,3})(?:\s*[-–/]\s*(\d{2,3}))?\s*V\b/g)) {
+    volts.push(Number(m[1]))
+    if (m[2]) volts.push(Number(m[2]))
+  }
+  if (volts.length === 0) return undefined
+  if (volts.every((v) => v <= 277)) return 'mv'
+  if (volts.every((v) => v >= 347)) return 'hv'
+  return undefined
+}
+
+/**
+ * Whether a spec-sheet option/accessory value works with the fixture's chosen
+ * voltage: MV (120-277V) pairs with ≤277V-rated gear, HV (277-480V) with
+ * ≥347V-rated gear; unrated values and no/custom (CV) voltage never filter.
+ */
+export function voltageCompatible(voltageCode: string | undefined, valueLabel: string): boolean {
+  if (voltageCode !== 'MV' && voltageCode !== 'HV') return true
+  const cls = voltageClass(valueLabel)
+  if (!cls) return true
+  return voltageCode === 'MV' ? cls === 'mv' : cls === 'hv'
+}
 
 /**
  * Selection order is fixture-first (Phase 0.1): downstream steps filter on the
@@ -96,6 +174,56 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
     next.finish = catalog.finishes[0].id
+  }
+  // Phase 1.0: per-slot finish overrides — keep only known finish ids.
+  if (next.finishes) {
+    const cleaned: Partial<Record<Slot, string>> = {}
+    for (const slot of SLOT_ORDER) {
+      const id = next.finishes[slot]
+      if (id && catalog.finishes.some((f) => f.id === id)) cleaned[slot] = id
+    }
+    next.finishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
+  }
+  // Phase 1.0: prune spec options to the columns + codes the currently selected
+  // part's ordering table actually offers (a part swap drops stale choices).
+  // Ordering columns normalize to a single string; options & accessories to a
+  // string[] holding at most one code per exclusive family (first one wins,
+  // walking columns in sheet order — so hand-crafted URLs can't stack cords).
+  if (next.specOptions) {
+    const cleaned: NonNullable<PoleConfig['specOptions']> = {}
+    for (const slot of SLOT_ORDER) {
+      const chosen = next.specOptions[slot]
+      if (!chosen) continue
+      const options = partById(catalog, next[slot])?.options
+      if (!options) continue
+      const kept: Record<string, string | string[]> = {}
+      const seenFamilies = new Set<string>()
+      for (const opt of [...options].sort((a, b) => a.orderPosition - b.orderPosition)) {
+        const valid = specCodes(chosen[opt.key]).filter((code) =>
+          opt.values.some((v) => v.code === code),
+        )
+        if (valid.length === 0) continue
+        if (opt.group === 'ordering') {
+          kept[opt.key] = valid[0]
+          continue
+        }
+        // Ordering columns sort ahead of options & accessories, so the kept
+        // voltage is already resolved when multi codes are vetted against it.
+        const voltage = typeof kept['voltage'] === 'string' ? kept['voltage'] : undefined
+        const codes = valid.filter((code) => {
+          const label = opt.values.find((v) => v.code === code)?.label ?? ''
+          if (!voltageCompatible(voltage, label)) return false
+          const family = exclusiveFamily(code)
+          if (!family) return true
+          if (seenFamilies.has(family)) return false
+          seenFamilies.add(family)
+          return true
+        })
+        if (codes.length > 0) kept[opt.key] = codes
+      }
+      if (Object.keys(kept).length > 0) cleaned[slot] = kept
+    }
+    next.specOptions = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
   // Phase 0.8 (A2): clamp the arm count to what the repaired pole+arm allow.
   const allowed = allowedArmCounts(catalog, next)

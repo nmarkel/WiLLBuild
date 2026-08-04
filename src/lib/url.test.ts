@@ -79,24 +79,33 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
   })
 })
 
-describe('spec options <-> URL params (Phase 0.8 D)', () => {
+describe('spec options <-> URL params (Phase 0.8 D, per-slot in 1.0)', () => {
   it('omits absent / empty spec options', () => {
     expect(configToParams(config).get('opts')).toBeNull()
     expect(configToParams({ ...config, specOptions: {} }).get('opts')).toBeNull()
+    expect(configToParams({ ...config, specOptions: { fixture: {} } }).get('opts')).toBeNull()
   })
 
-  it('round-trips selected spec options', () => {
-    const specOptions = { color: 'BK', mounting: 'ARM' }
+  it('round-trips selected spec options across slots', () => {
+    const specOptions = {
+      fixture: { 'lumen-output': '80', mounting: 'ARM' },
+      pole: { 'fixture-mounting': 'T23' },
+    }
     const params = configToParams({ ...config, specOptions })
     expect(paramsToPartialConfig(params)?.specOptions).toEqual(specOptions)
   })
 
   it('serializes spec options deterministically (keys sorted)', () => {
     // Same map, different insertion order -> identical string (share-link stability).
-    const a = configToParams({ ...config, specOptions: { mounting: 'ARM', color: 'BK' } })
-    const b = configToParams({ ...config, specOptions: { color: 'BK', mounting: 'ARM' } })
-    expect(a.get('opts')).toBe('color:BK,mounting:ARM')
+    const a = configToParams({ ...config, specOptions: { fixture: { mounting: 'ARM', color: 'BK' } } })
+    const b = configToParams({ ...config, specOptions: { fixture: { color: 'BK', mounting: 'ARM' } } })
+    expect(a.get('opts')).toBe('fixture.color:BK,fixture.mounting:ARM')
     expect(a.get('opts')).toBe(b.get('opts'))
+  })
+
+  it('reads legacy pre-1.0 pairs (no slot prefix) as fixture options', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,mounting:ARM'))
+    expect(partial?.specOptions).toEqual({ fixture: { color: 'BK', mounting: 'ARM' } })
   })
 
   it('ignores a malformed opts param (no valid key:code pairs)', () => {
@@ -105,8 +114,30 @@ describe('spec options <-> URL params (Phase 0.8 D)', () => {
   })
 
   it('keeps only well-formed pairs from a partially-malformed opts param', () => {
-    const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,junk,mounting:ARM'))
-    expect(partial?.specOptions).toEqual({ color: 'BK', mounting: 'ARM' })
+    const partial = paramsToPartialConfig(
+      new URLSearchParams('?opts=fixture.color:BK,junk,notaslot.k:V,pole.mounting:ARM'),
+    )
+    expect(partial?.specOptions).toEqual({ fixture: { color: 'BK' }, pole: { mounting: 'ARM' } })
+  })
+})
+
+describe('per-part finishes <-> URL params (Phase 1.0)', () => {
+  it('omits absent / empty finish overrides', () => {
+    expect(configToParams(config).get('fins')).toBeNull()
+    expect(configToParams({ ...config, finishes: {} }).get('fins')).toBeNull()
+  })
+
+  it('round-trips per-slot finish overrides (base finish param unchanged)', () => {
+    const finishes = { fixture: 'matte-black', pole: 'silver' }
+    const params = configToParams({ ...config, finishes })
+    expect(params.get('finish')).toBe('forest-green')
+    expect(params.get('fins')).toBe('fixture:matte-black,pole:silver')
+    expect(paramsToPartialConfig(params)?.finishes).toEqual(finishes)
+  })
+
+  it('drops unknown slots from a fins param', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?fins=fixture:silver,evil:hack'))
+    expect(partial?.finishes).toEqual({ fixture: 'silver' })
   })
 })
 
@@ -208,5 +239,24 @@ describe('product view <-> URL params', () => {
   it('builder view when no params present', () => {
     const view = paramsToViewMode(new URLSearchParams(''))
     expect(view).toEqual({ kind: 'builder' })
+  })
+})
+
+describe('multi-select spec options <-> URL params (Phase 1.0)', () => {
+  it('joins multi codes with + and round-trips them as an array', () => {
+    const specOptions = { fixture: { options: ['WHP3NP', 'N5P'] } }
+    const params = configToParams({ ...config, specOptions })
+    expect(params.get('opts')).toBe('fixture.options:WHP3NP+N5P')
+    expect(paramsToPartialConfig(params)?.specOptions).toEqual(specOptions)
+  })
+
+  it('a single-code multi column parses as a plain string (repairConfig normalizes)', () => {
+    const params = configToParams({ ...config, specOptions: { fixture: { options: ['WHP3NP'] } } })
+    expect(params.get('opts')).toBe('fixture.options:WHP3NP')
+    expect(paramsToPartialConfig(params)?.specOptions).toEqual({ fixture: { options: 'WHP3NP' } })
+  })
+
+  it('omits empty arrays', () => {
+    expect(configToParams({ ...config, specOptions: { fixture: { options: [] } } }).get('opts')).toBeNull()
   })
 })
