@@ -31,7 +31,9 @@ describe('parseDescription', () => {
   })
 
   it('picks the nearest pole height', () => {
-    expect(parseDescription(catalog, 'a 15 ft pole').matched.pole).toBe('alum-pole-14')
+    // 15 ft is a real height since Phase 1.0; 13 ft still snaps to the nearest.
+    expect(parseDescription(catalog, 'a 15 ft pole').matched.pole).toBe('alum-pole-15')
+    expect(parseDescription(catalog, 'a 13 ft pole').matched.pole).toBe('alum-pole-14')
     expect(parseDescription(catalog, "a 30' pole").matched.pole).toBe('alum-pole-20')
   })
 

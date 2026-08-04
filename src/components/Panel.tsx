@@ -39,14 +39,15 @@ function isFinishColumn(opt: SpecOption): boolean {
 }
 
 /**
- * Fixture ordering columns already answered by picking the fixture card
- * itself (choosing "GVX Pendant" IS the product family + design), so their
- * dropdowns are hidden from the step.
+ * Ordering columns already answered by picking the step's part itself
+ * (choosing "GVX Pendant" or the WiLLstudio pole IS the product family +
+ * design), so their dropdowns are hidden from every step. They stay in the
+ * catalog data so the part number still carries their codes.
  */
-const IMPLIED_FIXTURE_COLUMNS = new Set(['product-family', 'design'])
+const IMPLIED_COLUMNS = new Set(['product-family', 'design'])
 
-function isImpliedColumn(slot: Slot, opt: SpecOption): boolean {
-  return slot === 'fixture' && IMPLIED_FIXTURE_COLUMNS.has(opt.key)
+function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
+  return IMPLIED_COLUMNS.has(opt.key)
 }
 
 export function Panel({ catalog, config }: Props) {
@@ -83,27 +84,11 @@ export function Panel({ catalog, config }: Props) {
             {open && (
               <div className="step-body">
                 <p className="step-tagline">{step.tagline}</p>
-                <div className="options">
-                  {compatibleParts(catalog, config, step.key).map((p) => (
-                    <button
-                      key={p.id}
-                      className={`option-card ${config[step.key] === p.id ? 'selected' : ''}`}
-                      onClick={() => select(step.key, p.id)}
-                    >
-                      <span className="thumb">
-                        {p.thumbnail ? (
-                          <img src={import.meta.env.BASE_URL + p.thumbnail} alt="" />
-                        ) : p.photo ? (
-                          <img src={p.photo} alt="" loading="lazy" />
-                        ) : (
-                          p.family.slice(0, 2).toUpperCase()
-                        )}
-                      </span>
-                      <span className="option-name">{p.name}</span>
-                      <span className="option-family">{p.family}</span>
-                    </button>
-                  ))}
-                </div>
+                <PartChoice
+                  parts={compatibleParts(catalog, config, step.key)}
+                  selectedId={config[step.key]}
+                  onSelect={(id) => select(step.key, id)}
+                />
                 {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                     the chosen pole + arm actually support multiples (catalog rule). */}
                 {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
@@ -318,6 +303,72 @@ function StepSpecOptions({
         {partial && ` Some columns need a human review pass (${part.optionsMeta?.gaps.length ?? 0} flagged).`}
       </p>
     </>
+  )
+}
+
+/**
+ * Phase 1.0: the step's part choices. Normally a card grid; when every choice
+ * is the same design at a different height (single family, all with heightFt —
+ * the WiLLstudio pole system), the design is implied by the step itself and
+ * the cards collapse to a "Height" chip row, sorted short → tall.
+ */
+function PartChoice({
+  parts,
+  selectedId,
+  onSelect,
+}: {
+  parts: CatalogPart[]
+  selectedId: string
+  onSelect: (id: string) => void
+}) {
+  const singleDesign =
+    parts.length > 1 &&
+    new Set(parts.map((p) => p.family)).size === 1 &&
+    parts.every((p) => p.heightFt !== undefined)
+
+  if (singleDesign) {
+    const byHeight = [...parts].sort((a, b) => (a.heightFt ?? 0) - (b.heightFt ?? 0))
+    return (
+      <div className="arm-count">
+        <p className="arm-count-label">Height</p>
+        <div className="arm-count-options">
+          {byHeight.map((p) => (
+            <button
+              key={p.id}
+              className={`arm-count-chip ${selectedId === p.id ? 'selected' : ''}`}
+              onClick={() => onSelect(p.id)}
+              title={p.name}
+            >
+              <span className="arm-count-name">{p.heightFt} ft</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="options">
+      {parts.map((p) => (
+        <button
+          key={p.id}
+          className={`option-card ${selectedId === p.id ? 'selected' : ''}`}
+          onClick={() => onSelect(p.id)}
+        >
+          <span className="thumb">
+            {p.thumbnail ? (
+              <img src={import.meta.env.BASE_URL + p.thumbnail} alt="" />
+            ) : p.photo ? (
+              <img src={p.photo} alt="" loading="lazy" />
+            ) : (
+              p.family.slice(0, 2).toUpperCase()
+            )}
+          </span>
+          <span className="option-name">{p.name}</span>
+          <span className="option-family">{p.family}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 

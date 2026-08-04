@@ -19,6 +19,104 @@
     "pxPerMeterY": 179.0139411662892
   },
   "parts": {
+    "alum-pole-10": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "custom-ral": {
+              "file": "renders/alum-pole-10--hero--custom-ral.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-10--hero--dark-platinum.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-10--hero--forest-green.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-10--hero--gloss-white.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-10--hero--graphite-metallic.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-10--hero--light-gray.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-10--hero--matte-black.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-10--hero--silver.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-10--hero--slate-gray.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-10--hero--statuary-bronze.webp",
+              "width": 40,
+              "height": 561,
+              "anchor": [
+                20,
+                553
+              ]
+            }
+          }
+        }
+      }
+    },
     "alum-pole-12": {
       "angles": {
         "hero": {
@@ -170,6 +268,104 @@
         }
       }
     },
+    "alum-pole-15": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "custom-ral": {
+              "file": "renders/alum-pole-15--hero--custom-ral.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-15--hero--dark-platinum.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-15--hero--forest-green.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-15--hero--gloss-white.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-15--hero--graphite-metallic.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-15--hero--light-gray.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-15--hero--matte-black.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-15--hero--silver.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-15--hero--slate-gray.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-15--hero--statuary-bronze.webp",
+              "width": 40,
+              "height": 833,
+              "anchor": [
+                20,
+                825.55
+              ]
+            }
+          }
+        }
+      }
+    },
     "alum-pole-16": {
       "angles": {
         "hero": {
@@ -268,6 +464,104 @@
         }
       }
     },
+    "alum-pole-18": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "custom-ral": {
+              "file": "renders/alum-pole-18--hero--custom-ral.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-18--hero--dark-platinum.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-18--hero--forest-green.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-18--hero--gloss-white.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-18--hero--graphite-metallic.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-18--hero--light-gray.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-18--hero--matte-black.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-18--hero--silver.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-18--hero--slate-gray.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-18--hero--statuary-bronze.webp",
+              "width": 40,
+              "height": 998,
+              "anchor": [
+                20,
+                989.89
+              ]
+            }
+          }
+        }
+      }
+    },
     "alum-pole-20": {
       "angles": {
         "hero": {
@@ -360,6 +654,104 @@
               "anchor": [
                 23,
                 1099.49
+              ]
+            }
+          }
+        }
+      }
+    },
+    "alum-pole-8": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "custom-ral": {
+              "file": "renders/alum-pole-8--hero--custom-ral.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-8--hero--dark-platinum.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-8--hero--forest-green.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-8--hero--gloss-white.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-8--hero--graphite-metallic.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-8--hero--light-gray.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-8--hero--matte-black.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-8--hero--silver.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-8--hero--slate-gray.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-8--hero--statuary-bronze.webp",
+              "width": 40,
+              "height": 452,
+              "anchor": [
+                20,
+                443.9
               ]
             }
           }

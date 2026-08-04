@@ -58,8 +58,8 @@ describe('compatibleParts (fixture-first)', () => {
     expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
   })
 
-  it('offers the four aluminum poles for any arm, and every base cover for any pole', () => {
-    expect(compatibleParts(catalog, config({}), 'pole')).toHaveLength(4)
+  it('offers the eight aluminum pole heights for any arm, and every base cover for any pole', () => {
+    expect(compatibleParts(catalog, config({}), 'pole')).toHaveLength(8)
     expect(compatibleParts(catalog, config({}), 'baseCover')).toHaveLength(3)
   })
 
@@ -100,7 +100,10 @@ describe('P1 pole-system promotions (Workstream G)', () => {
   // Phase 1.0: the builder offers only the core aluminum pole system — the
   // fiberglass, steel-fluted, and named decorative poles (Huntington,
   // Sacramento, Washington, Williamsburg) were demoted back to standalone.
-  const ALL_POLES = ['alum-pole-12', 'alum-pole-14', 'alum-pole-16', 'alum-pole-20'].sort()
+  const ALL_POLES = [
+    'alum-pole-8', 'alum-pole-10', 'alum-pole-12', 'alum-pole-14',
+    'alum-pole-15', 'alum-pole-16', 'alum-pole-18', 'alum-pole-20',
+  ].sort()
 
   const ALL_BASE_COVERS = ['aluminum-light-pole-base-covers', 'bc-fluted', 'bc-round'].sort()
 
@@ -754,5 +757,23 @@ describe('arm orientation (Phase 1.0)', () => {
 
   it('repairConfig resets a tampered orientation', () => {
     expect(repairConfig(catalog, config({ armOrientation: 45 })).armOrientation).toBeUndefined()
+  })
+})
+
+describe('pole heights + diameter column (Phase 1.0)', () => {
+  it('offers the full WiLLstudio height range for the one design', () => {
+    const poles = compatibleParts(catalog, config({}), 'pole')
+    expect(new Set(poles.map((p) => p.family)).size).toBe(1)
+    expect(poles.map((p) => p.heightFt).sort((a, b) => a! - b!)).toEqual([8, 10, 12, 14, 15, 16, 18, 20])
+  })
+
+  it('every pole has the Pole Diameter column (4040/5050/6060) and no length artifact', () => {
+    for (const pole of compatibleParts(catalog, config({}), 'pole')) {
+      const keys = (pole.options ?? []).map((o) => o.key)
+      expect(keys).toContain('pole-diameter')
+      expect(keys).not.toContain('length-pole-base-pole-top-wall-od-od-thickness')
+      const dia = pole.options!.find((o) => o.key === 'pole-diameter')!
+      expect(dia.values.map((v) => v.code)).toEqual(['4040', '5050', '6060'])
+    }
   })
 })
