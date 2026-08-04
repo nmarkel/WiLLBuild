@@ -3,6 +3,9 @@ export { isAssemblyPart } from '../types'
 
 const SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
 
+/** Minimum banner-arm height up the pole shaft, in feet (clearance rule). */
+export const BANNER_MIN_FT = 8
+
 function isSlot(s: PartSlot): s is Slot {
   return (SLOTS as readonly string[]).includes(s)
 }
@@ -239,10 +242,10 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       if (!sides.includes(banner.count)) banner = { ...banner, count: sides[0] ?? 1 }
       // Phase 0.9: clamp the shaft height to the pole's usable range so a
       // hand-crafted share link can't place the banner off the pole (mirrors
-      // BannerPicker's slider bounds: [4 ft, pole height − 2 ft]).
+      // BannerPicker's slider bounds: [BANNER_MIN_FT, pole height − 2 ft]).
       const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
-      const maxFt = Math.max(4, Math.round(poleFt - 2))
-      const clampedFt = Math.min(maxFt, Math.max(4, banner.heightFt))
+      const maxFt = Math.max(BANNER_MIN_FT, Math.round(poleFt - 2))
+      const clampedFt = Math.min(maxFt, Math.max(BANNER_MIN_FT, banner.heightFt))
       if (clampedFt !== banner.heightFt) banner = { ...banner, heightFt: clampedFt }
       next.banner = banner
     }

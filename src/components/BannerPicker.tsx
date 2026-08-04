@@ -1,5 +1,5 @@
 import type { Catalog, PoleConfig } from '../types'
-import { partById } from '../lib/compat'
+import { BANNER_MIN_FT, partById } from '../lib/compat'
 import { useConfigurator } from '../store'
 
 interface Props {
@@ -28,12 +28,13 @@ export function BannerPicker({ catalog, config }: Props) {
 
   const pole = partById(catalog, config.pole)
   const poleFt = pole?.heightFt ?? 20
-  const maxFt = Math.max(4, Math.round(poleFt - 2))
+  const maxFt = Math.max(BANNER_MIN_FT, Math.round(poleFt - 2))
   const active = config.banner
   const part = active ? (partById(catalog, active.armId) ?? bannerParts[0]) : bannerParts[0]
   const sides = part?.arrangements ?? [1, 2, 4]
 
-  const enable = () => setBanner({ armId: part.id, count: sides[0] ?? 1, heightFt: Math.min(8, maxFt) })
+  const enable = () =>
+    setBanner({ armId: part.id, count: sides[0] ?? 1, heightFt: Math.min(BANNER_MIN_FT, maxFt) })
 
   return (
     <div className="banner-picker">
@@ -80,7 +81,7 @@ export function BannerPicker({ catalog, config }: Props) {
             <span>Height up shaft: {active.heightFt} ft</span>
             <input
               type="range"
-              min={4}
+              min={BANNER_MIN_FT}
               max={maxFt}
               step={1}
               value={Math.min(active.heightFt, maxFt)}

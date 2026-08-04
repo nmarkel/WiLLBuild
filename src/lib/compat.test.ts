@@ -429,9 +429,9 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9)', () => {
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(12)
   })
 
-  it('clamps a below-floor height up to 4 ft', () => {
+  it('clamps a below-floor height up to the 8 ft minimum (Phase 1.0)', () => {
     const cfg = config({ pole: 'alum-pole-14', banner: { armId: bannerId, count: 1, heightFt: 0 } })
-    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(4)
+    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
   })
 
   it('leaves an in-range height untouched', () => {
