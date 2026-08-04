@@ -5,13 +5,13 @@
     {
       "id": "matte-black",
       "name": "Black",
-      "hex": "#232323",
+      "hex": "#26282a",
       "roughness": 0.55,
       "metalness": 0.05,
       "clearcoat": 0,
       "clearcoatRoughness": 0.5,
       "envMapIntensity": 0.9,
-      "ral": "RAL 9005",
+      "ral": "RAL 9011",
       "keywords": [
         "black"
       ],
@@ -20,13 +20,12 @@
     {
       "id": "statuary-bronze",
       "name": "Dark Bronze",
-      "hex": "#4a3527",
+      "hex": "#322a22",
       "roughness": 0.5,
       "metalness": 0.15,
       "clearcoat": 0.15,
       "clearcoatRoughness": 0.4,
       "envMapIntensity": 1,
-      "ral": "RAL 8019",
       "keywords": [
         "bronze",
         "brown"
@@ -36,13 +35,13 @@
     {
       "id": "gloss-white",
       "name": "White",
-      "hex": "#f2f2f0",
+      "hex": "#f2f4f3",
       "roughness": 0.3,
       "metalness": 0,
       "clearcoat": 1,
       "clearcoatRoughness": 0.12,
       "envMapIntensity": 1,
-      "ral": "RAL 9016",
+      "ral": "RAL 9003",
       "keywords": [
         "white"
       ],
@@ -51,13 +50,12 @@
     {
       "id": "silver",
       "name": "Nat Alum Silver",
-      "hex": "#b4b8bc",
+      "hex": "#939695",
       "roughness": 0.35,
       "metalness": 0.8,
       "clearcoat": 0.25,
       "clearcoatRoughness": 0.25,
       "envMapIntensity": 1.1,
-      "ral": "RAL 9006",
       "keywords": [
         "silver",
         "gray",
@@ -69,13 +67,13 @@
       "id": "light-gray",
       "name": "Light Gray",
       "code": "LG",
-      "hex": "#c9cbcd",
+      "hex": "#9fa1a2",
       "roughness": 0.55,
       "metalness": 0.1,
       "clearcoat": 0,
       "clearcoatRoughness": 0.5,
       "envMapIntensity": 0.9,
-      "ral": "RAL 7035",
+      "ral": "RAL 7004",
       "keywords": [
         "light gray",
         "light grey",
@@ -87,13 +85,13 @@
       "id": "slate-gray",
       "name": "Slate Gray",
       "code": "SG",
-      "hex": "#6e7276",
+      "hex": "#4a4f4d",
       "roughness": 0.55,
       "metalness": 0.1,
       "clearcoat": 0,
       "clearcoatRoughness": 0.5,
       "envMapIntensity": 0.9,
-      "ral": "RAL 7015",
+      "ral": "RAL 7043",
       "keywords": [
         "slate gray",
         "slate grey",
@@ -103,13 +101,13 @@
     {
       "id": "forest-green",
       "name": "Dark Green",
-      "hex": "#15351f",
+      "hex": "#123a28",
       "roughness": 0.45,
       "metalness": 0.05,
       "clearcoat": 0.3,
       "clearcoatRoughness": 0.3,
       "envMapIntensity": 1,
-      "ral": "RAL 6009",
+      "ral": "RAL 6005",
       "keywords": [
         "green"
       ],
@@ -134,7 +132,7 @@
       "id": "graphite-metallic",
       "name": "Graphite Metallic",
       "code": "GM",
-      "hex": "#4a4d52",
+      "hex": "#3f4246",
       "roughness": 0.4,
       "metalness": 0.7,
       "clearcoat": 0.2,

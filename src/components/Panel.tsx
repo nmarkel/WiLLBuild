@@ -210,8 +210,9 @@ function StepSpecOptions({
 }) {
   const setSpecOption = useConfigurator((s) => s.setSpecOption)
   const toggleSpecOption = useConfigurator((s) => s.toggleSpecOption)
-  // Options & accessories are additive extras — nobody is required to pick
-  // one, so they stay tucked behind a disclosure until asked for.
+  // Both spec-sheet groups stay tucked behind disclosures — the standard
+  // build needs neither, so they shouldn't crowd the step until asked for.
+  const [showBase, setShowBase] = useState(false)
   const [showExtras, setShowExtras] = useState(false)
   const options = part.options
   if (!options || options.length === 0) return null
@@ -222,6 +223,7 @@ function StepSpecOptions({
     .filter((o) => o.group === 'ordering' && !isFinishColumn(o) && !isImpliedColumn(slot, o))
     .sort(byPosition)
   const extraOpts = options.filter((o) => o.group === 'options-accessories').sort(byPosition)
+  const baseCount = baseOpts.reduce((n, o) => n + (specCodes(chosen[o.key])[0] ? 1 : 0), 0)
   const extrasCount = extraOpts.reduce((n, o) => n + specCodes(chosen[o.key]).length, 0)
   const partial = part.optionsMeta?.parseStatus === 'partial'
 
@@ -229,23 +231,39 @@ function StepSpecOptions({
     <>
       {baseOpts.length > 0 && (
         <div className="step-group">
-          <p className="step-group-title">Base configuration</p>
-          {baseOpts.map((opt) => (
-            <label className="spec-option" key={opt.key}>
-              <span className="spec-option-label">{optionLabel(opt)}</span>
-              <select
-                value={specCodes(chosen[opt.key])[0] ?? ''}
-                onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
-              >
-                <option value="">Standard / not specified</option>
-                {opt.values.map((v) => (
-                  <option key={v.code} value={v.code}>
-                    {v.code} — {v.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
+          <button
+            type="button"
+            className="extras-toggle"
+            onClick={() => setShowBase((v) => !v)}
+            aria-expanded={showBase}
+          >
+            <span className="step-group-title">Base configuration</span>
+            <span className="extras-meta">
+              {baseCount > 0 ? (
+                <span className="extras-count">{baseCount} set</span>
+              ) : (
+                <span className="extras-optional">standard</span>
+              )}
+              <span className="extras-arrow">{showBase ? '▾' : '▸'}</span>
+            </span>
+          </button>
+          {showBase &&
+            baseOpts.map((opt) => (
+              <label className="spec-option" key={opt.key}>
+                <span className="spec-option-label">{optionLabel(opt)}</span>
+                <select
+                  value={specCodes(chosen[opt.key])[0] ?? ''}
+                  onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
+                >
+                  <option value="">Standard / not specified</option>
+                  {opt.values.map((v) => (
+                    <option key={v.code} value={v.code}>
+                      {v.code} — {v.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
         </div>
       )}
       {extraOpts.length > 0 && (

@@ -23,94 +23,49 @@
       "angles": {
         "hero": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/alum-pole-12--hero--custom-ral.webp",
-              "width": 38,
-              "height": 670,
-              "anchor": [
-                19,
-                662.1
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-12--hero--dark-platinum.webp",
-              "width": 38,
-              "height": 670,
-              "anchor": [
-                19,
-                662.1
-              ]
-            },
             "forest-green": {
               "file": "renders/alum-pole-12--hero--forest-green.webp",
-              "width": 38,
+              "width": 31,
               "height": 670,
               "anchor": [
-                19,
-                662.1
+                16,
+                662.38
               ]
             },
             "gloss-white": {
               "file": "renders/alum-pole-12--hero--gloss-white.webp",
-              "width": 38,
+              "width": 31,
               "height": 670,
               "anchor": [
-                19,
-                662.1
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-12--hero--graphite-metallic.webp",
-              "width": 38,
-              "height": 670,
-              "anchor": [
-                19,
-                662.1
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-12--hero--light-gray.webp",
-              "width": 38,
-              "height": 670,
-              "anchor": [
-                19,
-                662.1
+                16,
+                662.38
               ]
             },
             "matte-black": {
               "file": "renders/alum-pole-12--hero--matte-black.webp",
-              "width": 38,
+              "width": 31,
               "height": 670,
               "anchor": [
-                19,
-                662.1
+                16,
+                662.38
               ]
             },
             "silver": {
               "file": "renders/alum-pole-12--hero--silver.webp",
-              "width": 38,
+              "width": 31,
               "height": 670,
               "anchor": [
-                19,
-                662.1
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-12--hero--slate-gray.webp",
-              "width": 38,
-              "height": 670,
-              "anchor": [
-                19,
-                662.1
+                16,
+                662.38
               ]
             },
             "statuary-bronze": {
               "file": "renders/alum-pole-12--hero--statuary-bronze.webp",
-              "width": 38,
+              "width": 31,
               "height": 670,
               "anchor": [
-                19,
-                662.1
+                16,
+                662.38
               ]
             }
           }
@@ -3843,94 +3798,49 @@
       "angles": {
         "hero": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/bc-round--hero--custom-ral.webp",
-              "width": 71,
-              "height": 72,
-              "anchor": [
-                35.5,
-                62.35
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/bc-round--hero--dark-platinum.webp",
-              "width": 71,
-              "height": 72,
-              "anchor": [
-                35.5,
-                62.35
-              ]
-            },
             "forest-green": {
               "file": "renders/bc-round--hero--forest-green.webp",
-              "width": 71,
-              "height": 72,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                35.5,
-                62.35
+                45.5,
+                108.16
               ]
             },
             "gloss-white": {
               "file": "renders/bc-round--hero--gloss-white.webp",
-              "width": 71,
-              "height": 72,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                35.5,
-                62.35
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/bc-round--hero--graphite-metallic.webp",
-              "width": 71,
-              "height": 72,
-              "anchor": [
-                35.5,
-                62.35
-              ]
-            },
-            "light-gray": {
-              "file": "renders/bc-round--hero--light-gray.webp",
-              "width": 71,
-              "height": 72,
-              "anchor": [
-                35.5,
-                62.35
+                45.5,
+                108.16
               ]
             },
             "matte-black": {
               "file": "renders/bc-round--hero--matte-black.webp",
-              "width": 71,
-              "height": 72,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                35.5,
-                62.35
+                45.5,
+                108.16
               ]
             },
             "silver": {
               "file": "renders/bc-round--hero--silver.webp",
-              "width": 71,
-              "height": 72,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                35.5,
-                62.35
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/bc-round--hero--slate-gray.webp",
-              "width": 71,
-              "height": 72,
-              "anchor": [
-                35.5,
-                62.35
+                45.5,
+                108.16
               ]
             },
             "statuary-bronze": {
               "file": "renders/bc-round--hero--statuary-bronze.webp",
-              "width": 71,
-              "height": 72,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                35.5,
-                62.35
+                45.5,
+                108.16
               ]
             }
           }
@@ -5175,564 +5085,294 @@
       "angles": {
         "az120": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--az120--custom-ral.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--az120--dark-platinum.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--az120--forest-green.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--az120--gloss-white.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--az120--graphite-metallic.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--az120--light-gray.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--az120--matte-black.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--az120--silver.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--az120--slate-gray.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--az120--statuary-bronze.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             }
           }
         },
         "az180": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--az180--custom-ral.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--az180--dark-platinum.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--az180--forest-green.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--az180--gloss-white.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--az180--graphite-metallic.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--az180--light-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--az180--matte-black.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--az180--silver.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--az180--slate-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--az180--statuary-bronze.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             }
           }
         },
         "az240": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--az240--custom-ral.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--az240--dark-platinum.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--az240--forest-green.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--az240--gloss-white.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--az240--graphite-metallic.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--az240--light-gray.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--az240--matte-black.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--az240--silver.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--az240--slate-gray.webp",
-              "width": 107,
-              "height": 89,
-              "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--az240--statuary-bronze.webp",
-              "width": 107,
-              "height": 89,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                6.7
+                49.5,
+                7.02
               ]
             }
           }
         },
         "az270": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--az270--custom-ral.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--az270--dark-platinum.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--az270--forest-green.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--az270--gloss-white.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--az270--graphite-metallic.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--az270--light-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--az270--matte-black.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--az270--silver.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--az270--slate-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--az270--statuary-bronze.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             }
           }
         },
         "az90": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--az90--custom-ral.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--az90--dark-platinum.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--az90--forest-green.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--az90--gloss-white.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--az90--graphite-metallic.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--az90--light-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--az90--matte-black.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--az90--silver.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--az90--slate-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--az90--statuary-bronze.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 101,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             }
           }
         },
         "hero": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/gvx-pendant--hero--custom-ral.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/gvx-pendant--hero--dark-platinum.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
             "forest-green": {
               "file": "renders/gvx-pendant--hero--forest-green.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "gloss-white": {
               "file": "renders/gvx-pendant--hero--gloss-white.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/gvx-pendant--hero--graphite-metallic.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "light-gray": {
-              "file": "renders/gvx-pendant--hero--light-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "matte-black": {
               "file": "renders/gvx-pendant--hero--matte-black.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "silver": {
               "file": "renders/gvx-pendant--hero--silver.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/gvx-pendant--hero--slate-gray.webp",
-              "width": 107,
-              "height": 90,
-              "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             },
             "statuary-bronze": {
               "file": "renders/gvx-pendant--hero--statuary-bronze.webp",
-              "width": 107,
-              "height": 90,
+              "width": 99,
+              "height": 100,
               "anchor": [
-                53.5,
-                7.2
+                49.5,
+                6.52
               ]
             }
           }
@@ -17751,564 +17391,294 @@
       "angles": {
         "az120": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--az120--custom-ral.webp",
-              "width": 33,
-              "height": 167,
-              "anchor": [
-                11.69,
-                160.33
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--az120--dark-platinum.webp",
-              "width": 33,
-              "height": 167,
-              "anchor": [
-                11.69,
-                160.33
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--az120--forest-green.webp",
-              "width": 33,
-              "height": 167,
+              "width": 35,
+              "height": 170,
               "anchor": [
-                11.69,
-                160.33
+                15.88,
+                163.04
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--az120--gloss-white.webp",
-              "width": 33,
-              "height": 167,
+              "width": 35,
+              "height": 170,
               "anchor": [
-                11.69,
-                160.33
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--az120--graphite-metallic.webp",
-              "width": 33,
-              "height": 167,
-              "anchor": [
-                11.69,
-                160.33
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--az120--light-gray.webp",
-              "width": 33,
-              "height": 167,
-              "anchor": [
-                11.69,
-                160.33
+                15.88,
+                163.04
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--az120--matte-black.webp",
-              "width": 33,
-              "height": 167,
+              "width": 35,
+              "height": 170,
               "anchor": [
-                11.69,
-                160.33
+                15.88,
+                163.04
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--az120--silver.webp",
-              "width": 33,
-              "height": 167,
+              "width": 35,
+              "height": 170,
               "anchor": [
-                11.69,
-                160.33
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--az120--slate-gray.webp",
-              "width": 33,
-              "height": 167,
-              "anchor": [
-                11.69,
-                160.33
+                15.88,
+                163.04
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--az120--statuary-bronze.webp",
-              "width": 33,
-              "height": 167,
+              "width": 35,
+              "height": 170,
               "anchor": [
-                11.69,
-                160.33
+                15.88,
+                163.04
               ]
             }
           }
         },
         "az180": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--az180--custom-ral.webp",
-              "width": 118,
-              "height": 164,
-              "anchor": [
-                104.2,
-                156.9
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--az180--dark-platinum.webp",
-              "width": 118,
-              "height": 164,
-              "anchor": [
-                104.2,
-                156.9
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--az180--forest-green.webp",
-              "width": 118,
-              "height": 164,
+              "width": 99,
+              "height": 168,
               "anchor": [
-                104.2,
-                156.9
+                83.02,
+                160.21
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--az180--gloss-white.webp",
-              "width": 118,
-              "height": 164,
+              "width": 99,
+              "height": 168,
               "anchor": [
-                104.2,
-                156.9
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--az180--graphite-metallic.webp",
-              "width": 118,
-              "height": 164,
-              "anchor": [
-                104.2,
-                156.9
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--az180--light-gray.webp",
-              "width": 118,
-              "height": 164,
-              "anchor": [
-                104.2,
-                156.9
+                83.02,
+                160.21
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--az180--matte-black.webp",
-              "width": 118,
-              "height": 164,
+              "width": 99,
+              "height": 168,
               "anchor": [
-                104.2,
-                156.9
+                83.02,
+                160.21
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--az180--silver.webp",
-              "width": 118,
-              "height": 164,
+              "width": 99,
+              "height": 168,
               "anchor": [
-                104.2,
-                156.9
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--az180--slate-gray.webp",
-              "width": 118,
-              "height": 164,
-              "anchor": [
-                104.2,
-                156.9
+                83.02,
+                160.21
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--az180--statuary-bronze.webp",
-              "width": 118,
-              "height": 164,
+              "width": 99,
+              "height": 168,
               "anchor": [
-                104.2,
-                156.9
+                83.02,
+                160.21
               ]
             }
           }
         },
         "az240": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--az240--custom-ral.webp",
-              "width": 129,
-              "height": 158,
-              "anchor": [
-                114.51,
-                151.15
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--az240--dark-platinum.webp",
-              "width": 129,
-              "height": 158,
-              "anchor": [
-                114.51,
-                151.15
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--az240--forest-green.webp",
-              "width": 129,
-              "height": 158,
+              "width": 106,
+              "height": 163,
               "anchor": [
-                114.51,
-                151.15
+                90.13,
+                155.88
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--az240--gloss-white.webp",
-              "width": 129,
-              "height": 158,
+              "width": 106,
+              "height": 163,
               "anchor": [
-                114.51,
-                151.15
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--az240--graphite-metallic.webp",
-              "width": 129,
-              "height": 158,
-              "anchor": [
-                114.51,
-                151.15
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--az240--light-gray.webp",
-              "width": 129,
-              "height": 158,
-              "anchor": [
-                114.51,
-                151.15
+                90.13,
+                155.88
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--az240--matte-black.webp",
-              "width": 129,
-              "height": 158,
+              "width": 106,
+              "height": 163,
               "anchor": [
-                114.51,
-                151.15
+                90.13,
+                155.88
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--az240--silver.webp",
-              "width": 129,
-              "height": 158,
+              "width": 106,
+              "height": 163,
               "anchor": [
-                114.51,
-                151.15
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--az240--slate-gray.webp",
-              "width": 129,
-              "height": 158,
-              "anchor": [
-                114.51,
-                151.15
+                90.13,
+                155.88
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--az240--statuary-bronze.webp",
-              "width": 129,
-              "height": 158,
+              "width": 106,
+              "height": 163,
               "anchor": [
-                114.51,
-                151.15
+                90.13,
+                155.88
               ]
             }
           }
         },
         "az270": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--az270--custom-ral.webp",
-              "width": 89,
-              "height": 156,
-              "anchor": [
-                76.15,
-                149.36
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--az270--dark-platinum.webp",
-              "width": 89,
-              "height": 156,
-              "anchor": [
-                76.15,
-                149.36
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--az270--forest-green.webp",
-              "width": 89,
-              "height": 156,
+              "width": 77,
+              "height": 162,
               "anchor": [
-                76.15,
-                149.36
+                61.82,
+                154.16
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--az270--gloss-white.webp",
-              "width": 89,
-              "height": 156,
+              "width": 77,
+              "height": 162,
               "anchor": [
-                76.15,
-                149.36
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--az270--graphite-metallic.webp",
-              "width": 89,
-              "height": 156,
-              "anchor": [
-                76.15,
-                149.36
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--az270--light-gray.webp",
-              "width": 89,
-              "height": 156,
-              "anchor": [
-                76.15,
-                149.36
+                61.82,
+                154.16
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--az270--matte-black.webp",
-              "width": 89,
-              "height": 156,
+              "width": 77,
+              "height": 162,
               "anchor": [
-                76.15,
-                149.36
+                61.82,
+                154.16
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--az270--silver.webp",
-              "width": 89,
-              "height": 156,
+              "width": 77,
+              "height": 162,
               "anchor": [
-                76.15,
-                149.36
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--az270--slate-gray.webp",
-              "width": 89,
-              "height": 156,
-              "anchor": [
-                76.15,
-                149.36
+                61.82,
+                154.16
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--az270--statuary-bronze.webp",
-              "width": 89,
-              "height": 156,
+              "width": 77,
+              "height": 162,
               "anchor": [
-                76.15,
-                149.36
+                61.82,
+                154.16
               ]
             }
           }
         },
         "az90": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--az90--custom-ral.webp",
-              "width": 89,
-              "height": 166,
-              "anchor": [
-                12.85,
-                158.81
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--az90--dark-platinum.webp",
-              "width": 89,
-              "height": 166,
-              "anchor": [
-                12.85,
-                158.81
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--az90--forest-green.webp",
-              "width": 89,
-              "height": 166,
+              "width": 77,
+              "height": 169,
               "anchor": [
-                12.85,
-                158.81
+                15.18,
+                161.27
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--az90--gloss-white.webp",
-              "width": 89,
-              "height": 166,
+              "width": 77,
+              "height": 169,
               "anchor": [
-                12.85,
-                158.81
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--az90--graphite-metallic.webp",
-              "width": 89,
-              "height": 166,
-              "anchor": [
-                12.85,
-                158.81
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--az90--light-gray.webp",
-              "width": 89,
-              "height": 166,
-              "anchor": [
-                12.85,
-                158.81
+                15.18,
+                161.27
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--az90--matte-black.webp",
-              "width": 89,
-              "height": 166,
+              "width": 77,
+              "height": 169,
               "anchor": [
-                12.85,
-                158.81
+                15.18,
+                161.27
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--az90--silver.webp",
-              "width": 89,
-              "height": 166,
+              "width": 77,
+              "height": 169,
               "anchor": [
-                12.85,
-                158.81
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--az90--slate-gray.webp",
-              "width": 89,
-              "height": 166,
-              "anchor": [
-                12.85,
-                158.81
+                15.18,
+                161.27
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--az90--statuary-bronze.webp",
-              "width": 89,
-              "height": 166,
+              "width": 77,
+              "height": 169,
               "anchor": [
-                12.85,
-                158.81
+                15.18,
+                161.27
               ]
             }
           }
         },
         "hero": {
           "finishes": {
-            "custom-ral": {
-              "file": "renders/sh1-shepherds-hook--hero--custom-ral.webp",
-              "width": 118,
-              "height": 157,
-              "anchor": [
-                13.8,
-                150.28
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/sh1-shepherds-hook--hero--dark-platinum.webp",
-              "width": 118,
-              "height": 157,
-              "anchor": [
-                13.8,
-                150.28
-              ]
-            },
             "forest-green": {
               "file": "renders/sh1-shepherds-hook--hero--forest-green.webp",
-              "width": 118,
-              "height": 157,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                13.8,
-                150.28
+                15.98,
+                155.23
               ]
             },
             "gloss-white": {
               "file": "renders/sh1-shepherds-hook--hero--gloss-white.webp",
-              "width": 118,
-              "height": 157,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                13.8,
-                150.28
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/sh1-shepherds-hook--hero--graphite-metallic.webp",
-              "width": 118,
-              "height": 157,
-              "anchor": [
-                13.8,
-                150.28
-              ]
-            },
-            "light-gray": {
-              "file": "renders/sh1-shepherds-hook--hero--light-gray.webp",
-              "width": 118,
-              "height": 157,
-              "anchor": [
-                13.8,
-                150.28
+                15.98,
+                155.23
               ]
             },
             "matte-black": {
               "file": "renders/sh1-shepherds-hook--hero--matte-black.webp",
-              "width": 118,
-              "height": 157,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                13.8,
-                150.28
+                15.98,
+                155.23
               ]
             },
             "silver": {
               "file": "renders/sh1-shepherds-hook--hero--silver.webp",
-              "width": 118,
-              "height": 157,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                13.8,
-                150.28
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/sh1-shepherds-hook--hero--slate-gray.webp",
-              "width": 118,
-              "height": 157,
-              "anchor": [
-                13.8,
-                150.28
+                15.98,
+                155.23
               ]
             },
             "statuary-bronze": {
               "file": "renders/sh1-shepherds-hook--hero--statuary-bronze.webp",
-              "width": 118,
-              "height": 157,
+              "width": 99,
+              "height": 163,
               "anchor": [
-                13.8,
-                150.28
+                15.98,
+                155.23
               ]
             }
           }

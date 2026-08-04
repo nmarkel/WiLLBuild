@@ -51,6 +51,16 @@ async function main() {
     realParts = JSON.parse(await readFile(REALPARTS_PATH, 'utf8'))
   } catch { /* no real parts mapped */ }
 
+  // The committed renders for real-parts.json entries came from real design
+  // files (GLBs under real-assets/, gitignored — they live only on the machine
+  // that owns them). When a GLB is unavailable we must never overwrite those
+  // renders with placeholder geometry; the part is skipped and its existing
+  // manifest entry carried over instead.
+  let existingManifest = null
+  try {
+    existingManifest = JSON.parse(await readFile(resolve(OUT_DIR, 'manifest.json'), 'utf8'))
+  } catch { /* first-ever run */ }
+
   let parts = catalog.parts.filter((p) => p.placeholder || realParts[p.id])
   if (line) parts = parts.filter((p) => p.line === line)
   if (partFilter) parts = parts.filter((p) => partFilter.includes(p.id))
@@ -116,11 +126,24 @@ async function main() {
             console.log(`  loaded real geometry for ${part.id} (${(b64.length / 1e6).toFixed(1)}MB b64)`)
             realLoaded = true
           } catch (err) {
-            console.error(`  FAILED to load real GLB for ${part.id}: ${err.message} — using placeholder`)
+            console.error(`  FAILED to load real GLB for ${part.id}: ${err.message}`)
           }
         } else {
-          console.error(`  MISSING GLB for ${part.id}: ${glbPath} — using placeholder`)
+          console.error(`  MISSING GLB for ${part.id}: ${glbPath}`)
         }
+      }
+      if (realRel && !realLoaded) {
+        // Real-render part whose design file isn't on this machine — skip it
+        // so the committed real renders survive, and keep its manifest entry.
+        const prev = existingManifest?.parts?.[part.id]
+        if (prev) {
+          manifestParts[part.id] = prev
+          console.log(`  ${part.id}: real design file unavailable — render skipped, manifest entry preserved`)
+        } else {
+          console.error(`  ${part.id}: real design file unavailable and no prior manifest entry — part left unrendered`)
+          failures++
+        }
+        continue
       }
       // Phase 0.8 (A/B): arms and fixtures are radial attachments, so they get
       // one render per discrete mount azimuth (0°=hero + the twin/triple/quad
