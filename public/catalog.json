@@ -3136,77 +3136,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -3828,6 +3757,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -4017,77 +3975,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -4709,6 +4596,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -4898,77 +4814,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -5590,6 +5435,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -5779,77 +5653,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -6471,6 +6274,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -6660,77 +6492,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -7352,6 +7113,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -7541,77 +7331,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -8233,6 +7952,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8422,77 +8170,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -9114,6 +8791,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -9303,77 +9009,6 @@
         },
         {
           "group": "ordering",
-          "key": "anchor-bolts-base-type-finish-type",
-          "label": "Anchor Bolts Base Type Finish Type",
-          "orderPosition": 3,
-          "values": [
-            {
-              "buildable": null,
-              "code": "AB",
-              "label": "Includes",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SB",
-              "label": "Standard",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "FP",
-              "label": "Finish",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LAB",
-              "label": "Less Anchor",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CB",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "AN",
-              "label": "Anodized Bolts Base",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WG",
-              "label": "Wood",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom Grain System",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "ordering",
           "key": "finish-color",
           "label": "Finish Color",
           "orderPosition": 4,
@@ -9995,6 +9630,35 @@
             {
               "code": "6060",
               "label": "6\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "wall-thickness",
+          "label": "Wall Thickness",
+          "group": "ordering",
+          "orderPosition": 2.5,
+          "values": [
+            {
+              "code": "C",
+              "label": "0.125\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "D",
+              "label": "0.188\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "E",
+              "label": "0.250\"",
               "buildable": true,
               "mapsTo": null,
               "note": null

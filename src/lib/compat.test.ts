@@ -777,3 +777,15 @@ describe('pole heights + diameter column (Phase 1.0)', () => {
     }
   })
 })
+
+describe('pole base configuration columns (Phase 1.0)', () => {
+  it('every pole offers Wall Thickness (C/D/E) and no anchor-bolts artifact', () => {
+    for (const pole of compatibleParts(catalog, config({}), 'pole')) {
+      const keys = (pole.options ?? []).map((o) => o.key)
+      expect(keys).toContain('wall-thickness')
+      expect(keys).not.toContain('anchor-bolts-base-type-finish-type')
+      const wall = pole.options!.find((o) => o.key === 'wall-thickness')!
+      expect(wall.values.map((v) => `${v.code}=${v.label}`)).toEqual(['C=0.125"', 'D=0.188"', 'E=0.250"'])
+    }
+  })
+})
