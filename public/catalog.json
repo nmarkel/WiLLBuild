@@ -2382,28 +2382,6 @@
         },
         {
           "group": "options-accessories",
-          "key": "mounting",
-          "label": "Mounting",
-          "orderPosition": 7,
-          "values": [
-            {
-              "buildable": null,
-              "code": "PM",
-              "label": "Pendant Mount",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CM",
-              "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            }
-          ]
-        },
-        {
-          "group": "options-accessories",
           "key": "options",
           "label": "Options",
           "orderPosition": 8,
