@@ -185,79 +185,88 @@ function StepSpecOptions({
 }) {
   const setSpecOption = useConfigurator((s) => s.setSpecOption)
   const toggleSpecOption = useConfigurator((s) => s.toggleSpecOption)
+  // Options & accessories are additive extras — nobody is required to pick
+  // one, so they stay tucked behind a disclosure until asked for.
+  const [showExtras, setShowExtras] = useState(false)
   const options = part.options
   if (!options || options.length === 0) return null
 
   const chosen = config.specOptions?.[slot] ?? {}
-  const groups: { title: string; opts: SpecOption[]; multi: boolean }[] = [
-    {
-      title: 'Base configuration',
-      opts: options.filter(
-        (o) => o.group === 'ordering' && !isFinishColumn(o) && !isImpliedColumn(slot, o),
-      ),
-      multi: false,
-    },
-    {
-      title: 'Options & accessories',
-      opts: options.filter((o) => o.group === 'options-accessories'),
-      multi: true,
-    },
-  ]
+  const byPosition = (a: SpecOption, b: SpecOption) => a.orderPosition - b.orderPosition
+  const baseOpts = options
+    .filter((o) => o.group === 'ordering' && !isFinishColumn(o) && !isImpliedColumn(slot, o))
+    .sort(byPosition)
+  const extraOpts = options.filter((o) => o.group === 'options-accessories').sort(byPosition)
+  const extrasCount = extraOpts.reduce((n, o) => n + specCodes(chosen[o.key]).length, 0)
   const partial = part.optionsMeta?.parseStatus === 'partial'
 
   return (
     <>
-      {groups.map(
-        ({ title, opts, multi }) =>
-          opts.length > 0 && (
-            <div className="step-group" key={title}>
-              <p className="step-group-title">{title}</p>
-              {opts
-                .slice()
-                .sort((a, b) => a.orderPosition - b.orderPosition)
-                .map((opt) =>
-                  multi ? (
-                    // Multi-select: check any combination; exclusive families
-                    // (cord/surge/photocontrol) auto-swap in the store, and a
-                    // chosen voltage hides gear rated for the other range.
-                    <div className="spec-option" key={opt.key}>
-                      {opt.values
-                        .filter((v) => voltageCompatible(specCodes(chosen['voltage'])[0], v.label))
-                        .map((v) => {
-                        const checked = specCodes(chosen[opt.key]).includes(v.code)
-                        return (
-                          <label className={`spec-check ${checked ? 'checked' : ''}`} key={v.code}>
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleSpecOption(slot, opt.key, v.code)}
-                            />
-                            <span className="spec-check-text">
-                              <span className="spec-check-code">{v.code}</span> {v.label}
-                            </span>
-                          </label>
-                        )
-                      })}
-                    </div>
-                  ) : (
-                    <label className="spec-option" key={opt.key}>
-                      <span className="spec-option-label">{optionLabel(opt)}</span>
-                      <select
-                        value={specCodes(chosen[opt.key])[0] ?? ''}
-                        onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
-                      >
-                        <option value="">Standard / not specified</option>
-                        {opt.values.map((v) => (
-                          <option key={v.code} value={v.code}>
-                            {v.code} — {v.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ),
-                )}
-            </div>
-          ),
+      {baseOpts.length > 0 && (
+        <div className="step-group">
+          <p className="step-group-title">Base configuration</p>
+          {baseOpts.map((opt) => (
+            <label className="spec-option" key={opt.key}>
+              <span className="spec-option-label">{optionLabel(opt)}</span>
+              <select
+                value={specCodes(chosen[opt.key])[0] ?? ''}
+                onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
+              >
+                <option value="">Standard / not specified</option>
+                {opt.values.map((v) => (
+                  <option key={v.code} value={v.code}>
+                    {v.code} — {v.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </div>
+      )}
+      {extraOpts.length > 0 && (
+        <div className="step-group">
+          <button
+            type="button"
+            className="extras-toggle"
+            onClick={() => setShowExtras((v) => !v)}
+            aria-expanded={showExtras}
+          >
+            <span className="step-group-title">Options &amp; accessories</span>
+            <span className="extras-meta">
+              {extrasCount > 0 ? (
+                <span className="extras-count">{extrasCount} selected</span>
+              ) : (
+                <span className="extras-optional">optional</span>
+              )}
+              <span className="extras-arrow">{showExtras ? '▾' : '▸'}</span>
+            </span>
+          </button>
+          {showExtras &&
+            extraOpts.map((opt) => (
+              // Multi-select: check any combination; exclusive families
+              // (cord/surge/photocontrol) auto-swap in the store, and a
+              // chosen voltage hides gear rated for the other range.
+              <div className="spec-option" key={opt.key}>
+                {opt.values
+                  .filter((v) => voltageCompatible(specCodes(chosen['voltage'])[0], v.label))
+                  .map((v) => {
+                    const checked = specCodes(chosen[opt.key]).includes(v.code)
+                    return (
+                      <label className={`spec-check ${checked ? 'checked' : ''}`} key={v.code}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleSpecOption(slot, opt.key, v.code)}
+                        />
+                        <span className="spec-check-text">
+                          <span className="spec-check-code">{v.code}</span> {v.label}
+                        </span>
+                      </label>
+                    )
+                  })}
+              </div>
+            ))}
+        </div>
       )}
       <p className="spec-options-note subtle">
         From the {part.name} spec sheet — your selections are included in the quote request.

@@ -513,6 +513,52 @@ body {
   font: inherit;
 }
 
+/* Phase 1.0: collapsed-by-default Options & accessories disclosure. */
+.extras-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.extras-toggle .step-group-title {
+  margin: 0;
+}
+
+.extras-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.extras-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--will-yellow);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.extras-optional {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.extras-arrow {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
 /* Phase 1.0: multi-select options & accessories — one checkbox row per code. */
 .spec-check {
   display: flex;
