@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
-import { defaultConfig, exclusiveFamily, repairConfig, specCodes } from './lib/compat'
+import { defaultConfig, defaultSpecOptions, exclusiveFamily, partById, repairConfig, specCodes } from './lib/compat'
 import { parseDescription } from './lib/parse'
 import {
   configToParams,
@@ -119,7 +119,11 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (!catalog || !config || config[slot] === id) return
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
-    const next = repairConfig(catalog, { ...config, [slot]: id, rev: config.rev + 1 })
+    // Phase 1.0: choosing a different part resets that slot's spec choices to
+    // the part's defaults (e.g. the 6' cord) — the old choices belonged to a
+    // different product's ordering table.
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: defaultSpecOptions(partById(catalog, id)) }
+    const next = repairConfig(catalog, { ...config, [slot]: id, specOptions, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

@@ -53,6 +53,30 @@ export function exclusiveFamily(code: string): string | undefined {
 }
 
 /**
+ * Order codes pre-selected whenever a part offering them is chosen (the 6'
+ * cord is the standard build). The customer can still uncheck them; they only
+ * reseed when the part itself changes.
+ */
+const DEFAULT_OPTION_CODES = ['WHP7NP']
+
+/**
+ * The default multi-select choices for a freshly chosen part: each default
+ * code the part's sheet offers, keyed by its column. Undefined when none.
+ */
+export function defaultSpecOptions(
+  part: CatalogPart | undefined,
+): Record<string, string[]> | undefined {
+  if (!part?.options) return undefined
+  const seeded: Record<string, string[]> = {}
+  for (const opt of part.options) {
+    if (opt.group !== 'options-accessories') continue
+    const codes = opt.values.filter((v) => DEFAULT_OPTION_CODES.includes(v.code)).map((v) => v.code)
+    if (codes.length > 0) seeded[opt.key] = codes
+  }
+  return Object.keys(seeded).length > 0 ? seeded : undefined
+}
+
+/**
  * Voltage class an option/accessory label declares, parsed from its rating
  * text ("120-277V", "347V", "347/480V", …): 'mv' when every mentioned voltage
  * fits the MV fixture range (≤277V), 'hv' when every one needs HV (≥347V),
@@ -270,16 +294,19 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
 }
 
 export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio'): PoleConfig {
+  const fixture = partsForSlot(catalog, 'fixture', brand)[0]?.id ?? ''
+  const seeded = defaultSpecOptions(partById(catalog, fixture))
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
     brand,
     pole: '',
     baseCover: '',
     arm: '',
-    fixture: partsForSlot(catalog, 'fixture', brand)[0]?.id ?? '',
+    fixture,
     finish: catalog.finishes[0].id,
     rev: 1,
     armCount: 1,
     banner: null,
+    specOptions: seeded ? { fixture: seeded } : undefined,
   })
 }

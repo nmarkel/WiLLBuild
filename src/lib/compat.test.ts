@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, exclusiveFamily, finishFor, isAssemblyPart, partById, repairConfig, specCodes, voltageCompatible } from './compat'
+import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, repairConfig, specCodes, voltageCompatible } from './compat'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -646,5 +646,22 @@ describe('voltage → options compatibility (Phase 1.0)', () => {
       }),
     )
     expect(repaired.specOptions?.fixture?.['options-2']).toEqual(['BPC4', 'N5P'])
+  })
+})
+
+describe('default spec options — WHP7NP cord (Phase 1.0)', () => {
+  it('defaultSpecOptions seeds the 6-ft cord where the sheet offers it', () => {
+    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHP7NP'] })
+    expect(defaultSpecOptions(partById(catalog, 'drx-post-top'))).toEqual({ options: ['WHP7NP'] })
+    // TEX offers no cords; arms have no sheet at all.
+    expect(defaultSpecOptions(partById(catalog, 'tex-post-top'))).toBeUndefined()
+    expect(defaultSpecOptions(partById(catalog, 'sh1-shepherds-hook'))).toBeUndefined()
+  })
+
+  it('defaultConfig starts with the cord pre-selected on the default fixture', () => {
+    const cfg = defaultConfig(catalog)
+    expect(cfg.specOptions?.fixture?.options).toEqual(['WHP7NP'])
+    // Still a stable, fully valid config.
+    expect(repairConfig(catalog, cfg)).toEqual(cfg)
   })
 })
