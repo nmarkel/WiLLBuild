@@ -192,12 +192,12 @@ describe('scene <-> URL params', () => {
 
   it('non-default scene is serialized', () => {
     expect(configToParams(config, 'street').get('scene')).toBe('street')
-    expect(configToParams(config, 'courtyard').get('scene')).toBe('courtyard')
+    expect(configToParams(config, 'parking').get('scene')).toBe('parking')
   })
 
   it('non-default scene round-trips through params', () => {
-    const params = configToParams(config, 'courtyard')
-    expect(paramsToScene(params)).toBe('courtyard')
+    const params = configToParams(config, 'parking')
+    expect(paramsToScene(params)).toBe('parking')
   })
 
   it('absent scene param reads back as the default', () => {

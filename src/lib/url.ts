@@ -21,8 +21,12 @@ const VALID_BRANDS = ['NAFCO', 'WiLLsport', 'WiLLstudio', 'WiLLev', 'WiLLcloud',
  * product. Persisted in store state (survives config changes) and, when
  * non-default, in the share URL (same "omit the default" rule as `brand`).
  */
-export const SCENES = ['park', 'street', 'courtyard', 'blank'] as const
-export type Scene = (typeof SCENES)[number]
+export const SCENES = ['park', 'street', 'parking', 'blank'] as const
+/**
+ * 'custom' is a session-only scene backed by a user-uploaded photo (object
+ * URL in the store) — it can't ride a share URL, so it's outside SCENES.
+ */
+export type Scene = (typeof SCENES)[number] | 'custom'
 export const DEFAULT_SCENE: Scene = 'park'
 
 function isScene(v: string | null): v is Scene {
@@ -103,7 +107,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (opts) params.set('opts', opts)
   }
-  if (scene !== DEFAULT_SCENE) {
+  if (scene !== DEFAULT_SCENE && isScene(scene)) {
     params.set('scene', scene)
   }
   return params

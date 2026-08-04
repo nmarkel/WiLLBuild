@@ -73,6 +73,7 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
   const viewYaw = useConfigurator((s) => s.viewYaw)
   const setViewYaw = useConfigurator((s) => s.setViewYaw)
+  const customSceneUrl = useConfigurator((s) => s.customSceneUrl)
   const manifest = useRenderManifest()
   const night = mode === 'night'
 
@@ -271,9 +272,13 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
           stays at HORIZON_FRAC for any viewport aspect ratio. The 'blank' scene
           renders no photo — the clean studio background of .composite-viewer
           (a soft gradient, dark at night) shows through instead. */}
-      {scene !== 'blank' && (
-        <img className="composite-backdrop" src={sceneBackdrop(scene)} alt="" draggable={false} />
-      )}
+      {scene === 'custom'
+        ? customSceneUrl && (
+            <img className="composite-backdrop" src={customSceneUrl} alt="" draggable={false} />
+          )
+        : scene !== 'blank' && (
+            <img className="composite-backdrop" src={sceneBackdrop(scene)} alt="" draggable={false} />
+          )}
 
       <div
         className="composite-stage"
