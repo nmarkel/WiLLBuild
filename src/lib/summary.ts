@@ -18,8 +18,14 @@ export function buildPartNumber(
   slot: Slot,
 ): string | undefined {
   const part = partById(catalog, config[slot])
-  const options = part?.options
-  if (!part || !options || options.length === 0) return undefined
+  if (!part) return undefined
+  // Arms carry official per-configuration model codes (SH1, SS3, AR2, …) —
+  // that code IS the arm's ordering part number for the chosen count.
+  if (slot === 'arm' && part.modelCodes) {
+    return part.modelCodes[config.armCount ?? 1]
+  }
+  const options = part.options
+  if (!options || options.length === 0) return undefined
   const chosen = config.specOptions?.[slot] ?? {}
   const finishId = finishFor(config, slot)
   const byPosition = (a: { orderPosition: number }, b: { orderPosition: number }) =>
@@ -104,6 +110,7 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
     `Status: ${configStatus(catalog, config)}`,
     ...partLines,
     ...(armCount > 1 ? [`Arm arrangement: ${armArrangementLabel(armCount)}`] : []),
+    ...(config.armOrientation ? [`Arm orientation: ${config.armOrientation}°`] : []),
     ...(banner
       ? [`Banner arm: ${bannerPart?.name ?? banner.armId} — ${banner.count}-side @ ${banner.heightFt} ft`]
       : []),

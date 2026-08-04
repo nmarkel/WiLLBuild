@@ -154,12 +154,17 @@ export function attachSocket(part: CatalogPart, host: CatalogPart) {
 }
 
 /**
- * Phase 0.8 (A1): even-spaced azimuths (degrees, about the pole's vertical axis)
- * for a radial arm arrangement. 1→[0]; 2→[0,180]; 3→[0,120,240]; 4→[0,90,180,270].
- * Position 0° is the single-arm reference direction, so armCount=1 is unchanged.
+ * Phase 0.8 (A1): azimuths (degrees, about the pole's vertical axis) for a
+ * radial arm arrangement. 1→[0]; 2→[0,180]; 4→[0,90,180,270]. Triple is the
+ * official 3@90 layout (SS3/AR3 ordering codes) — [0,90,180], not even 120°
+ * spacing. Position 0° is the single-arm reference, so armCount=1 is unchanged.
  */
+/** Phase 1.0: the orientations an arm arrangement may rotate to about the pole. */
+export const ARM_ORIENTATIONS = [0, 90, 180, 270]
+
 export function armAzimuths(count: number): number[] {
   const n = Math.max(1, Math.floor(count))
+  if (n === 3) return [0, 90, 180]
   return Array.from({ length: n }, (_, i) => (i * 360) / n)
 }
 
@@ -268,6 +273,12 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const allowed = allowedArmCounts(catalog, next)
   const count = next.armCount ?? 1
   next.armCount = allowed.includes(count) ? count : 1
+  // Phase 1.0: arm orientation is one of the four compass rotations; anything
+  // else (tampered URL) resets to 0, and 0 stays unset to keep URLs clean.
+  if (next.armOrientation !== undefined) {
+    next.armOrientation = ARM_ORIENTATIONS.includes(next.armOrientation) ? next.armOrientation : 0
+    if (next.armOrientation === 0) next.armOrientation = undefined
+  }
   // Phase 0.8 (C): drop a banner selection that is no longer a valid part.
   if (next.banner) {
     const bannerPart = partById(catalog, next.banner.armId)

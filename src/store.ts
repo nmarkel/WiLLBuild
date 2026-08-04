@@ -44,6 +44,8 @@ interface ConfiguratorState {
   setFinishRal: (slot: Slot, hex: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
   setArmCount: (count: number) => void
+  /** Phase 1.0: rotate the arm arrangement about the pole (0 / 90 / 180 / 270°). */
+  setArmOrientation: (deg: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
   /** Phase 0.8 (D), reshaped 1.0: pick a single-choice ordering column value for one part's step. */
@@ -135,6 +137,15 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (!catalog || !config || (config.armCount ?? 1) === count) return
     if (view.kind === 'product') return
     const next = repairConfig(catalog, { ...config, armCount: count, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setArmOrientation: (deg) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || (config.armOrientation ?? 0) === deg) return
+    if (view.kind === 'product') return
+    const next = repairConfig(catalog, { ...config, armOrientation: deg, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

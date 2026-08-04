@@ -112,8 +112,7 @@ describe('buildPartNumber (Phase 1.0)', () => {
     expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP-SRG27710-HSS-GVX')
   })
 
-  it('returns undefined for parts without a parsed ordering table', () => {
-    expect(buildPartNumber(catalog, config({}), 'arm')).toBeUndefined()
+  it('returns undefined for parts without a parsed ordering table or model codes', () => {
     expect(buildPartNumber(catalog, config({}), 'baseCover')).toBeUndefined()
   })
 
@@ -135,5 +134,25 @@ describe('custom RAL in summary + part number (Phase 1.1)', () => {
   it('part number uses the palette code for finishes newer than the parsed sheet', () => {
     const pn = buildPartNumber(catalog, config({ finishes: { fixture: 'custom-ral' } }), 'fixture')
     expect(pn).toBe('WD-GVX-_-_-_-_-RAL')
+  })
+})
+
+describe('arm model code as part number (Phase 1.0)', () => {
+  it('uses the official code for the chosen count', () => {
+    const cfg = config({
+      fixture: 'gvx-pendant',
+      arm: 'willstudio-suspension-arm-pole-top-brackets',
+      armCount: 3,
+    })
+    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('AR3')
+    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: AR3')
+  })
+
+  it('single-only arms report their fixed code', () => {
+    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('SH1')
+  })
+
+  it('the upsweep has no code yet (24"/36" length model pending)', () => {
+    expect(buildPartNumber(catalog, config({ fixture: 'mvx-coach', arm: 'upsweep' }), 'arm')).toBeUndefined()
   })
 })

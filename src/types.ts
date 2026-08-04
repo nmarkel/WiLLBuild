@@ -56,6 +56,12 @@ export interface CatalogPart {
    * Absent → single only ([1]).
    */
   arrangements?: number[]
+  /**
+   * Phase 1.0: official ordering model code per radial count (arms), e.g.
+   * {1:"SS1",2:"SS2",3:"SS3",4:"SS4"} — the arm's part number for that
+   * configuration. Keys mirror `arrangements`.
+   */
+  modelCodes?: Record<number, string>
   finishes: string[]
   /** Phrases the describe-your-product parser matches against (lowercase). */
   keywords: string[]
@@ -218,6 +224,11 @@ export interface PoleConfig {
    * Optional so pre-0.8 configs and share URLs (which omit it) read as single.
    */
   armCount?: number
+  /**
+   * Phase 1.0: rotation of the whole arm arrangement about the pole, in
+   * degrees — 0 | 90 | 180 | 270. Optional so pre-1.0 configs read as 0.
+   */
+  armOrientation?: number
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
   /**

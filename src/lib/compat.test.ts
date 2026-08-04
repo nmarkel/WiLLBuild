@@ -383,17 +383,18 @@ describe('armAzimuths', () => {
   it('gives even-spaced azimuths for each count', () => {
     expect(armAzimuths(1)).toEqual([0])
     expect(armAzimuths(2)).toEqual([0, 180])
-    expect(armAzimuths(3)).toEqual([0, 120, 240])
+    // Official 3-arm layout is 3@90 (SS3/AR3), not even 120° spacing.
+    expect(armAzimuths(3)).toEqual([0, 90, 180])
     expect(armAzimuths(4)).toEqual([0, 90, 180, 270])
   })
 })
 
 describe('allowedArmCounts', () => {
   it('intersects the pole and arm arrangement lists', () => {
-    // alum-pole-14 and sh1-shepherds-hook are both annotated [1,2,3,4].
-    expect(allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'sh1-shepherds-hook' }))).toEqual([
-      1, 2, 3, 4,
-    ])
+    // alum-pole-14 and the AR suspension arm are both annotated [1,2,3,4].
+    expect(
+      allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'willstudio-suspension-arm-pole-top-brackets' })),
+    ).toEqual([1, 2, 3, 4])
   })
 
   it('falls back to single-only for an arm with no arrangements (e.g. direct mount)', () => {
@@ -409,7 +410,10 @@ describe('allowedArmCounts', () => {
 
 describe('repairConfig — arm count clamping', () => {
   it('keeps a valid multi-arm count', () => {
-    expect(repairConfig(catalog, config({ armCount: 3 })).armCount).toBe(3)
+    // (AR suspension arm — SH1/PA1 became single-only per the official config list.)
+    expect(
+      repairConfig(catalog, config({ arm: 'willstudio-suspension-arm-pole-top-brackets', armCount: 3 })).armCount,
+    ).toBe(3)
   })
 
   it('resets an unsupported count to single', () => {
@@ -690,5 +694,65 @@ describe('custom RAL color (Phase 1.1)', () => {
     expect(catalog.finishes.map((f) => f.code)).toEqual([
       'BK', 'DB', 'WH', 'NA', 'LG', 'SG', 'DG', 'DP', 'GM', 'RAL',
     ])
+  })
+})
+
+describe('SH1 shepherd’s hook is single-arm only (Phase 1.0)', () => {
+  it('offers no multi-arm counts for SH1 on any pole', () => {
+    expect(allowedArmCounts(catalog, config({ arm: 'sh1-shepherds-hook', pole: 'alum-pole-20' }))).toEqual([1])
+  })
+
+  it('repairConfig clamps an old multi-arm SH1 share link to single', () => {
+    const repaired = repairConfig(catalog, config({ arm: 'sh1-shepherds-hook', armCount: 4 }))
+    expect(repaired.armCount).toBe(1)
+  })
+})
+
+describe('official arm configuration list (Phase 1.0)', () => {
+  const CASES: [string, number[]][] = [
+    ['sh1-shepherds-hook', [1]],
+    ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2, 3, 4]],
+    ['willstudio-supported-decorative-arms', [1, 2]],
+    ['willstudio-suspension-arm-pole-top-brackets', [1, 2, 3, 4]],
+    ['upsweep', [1, 2]],
+    ['willstudio-cr2-decorative-crossarm', [1]],
+    ['willstudio-fr2-decorative-crossarm', [1]],
+    ['willstudio-hsx-decorative-upsweep-arms', [1, 2]],
+    ['pa1-pendant-arm', [1]],
+    ['pm1-pendant-arm', [1]],
+  ]
+
+  it.each(CASES)('%s offers counts %j', (armId, counts) => {
+    const arm = partById(catalog, armId)!
+    // Pair with a fixture the arm can carry (the arm's socket type says what
+    // it hosts) so the config survives repair.
+    const socketType = Object.values(arm.sockets ?? {})[0]?.type
+    const fixture =
+      socketType === 'pendant' ? 'gvx-pendant' : socketType === 'arm-mount' ? 'mvx-coach' : 'drx-post-top'
+    const cfg = repairConfig(catalog, config({ fixture, arm: armId, pole: 'alum-pole-20' }))
+    expect(cfg.arm).toBe(armId)
+    expect(allowedArmCounts(catalog, cfg)).toEqual(counts)
+  })
+
+  it('arms with model codes cover every offered count', () => {
+    for (const [armId] of CASES) {
+      const arm = partById(catalog, armId)!
+      if (!arm.modelCodes) continue
+      for (const n of arm.arrangements ?? [1]) {
+        expect(arm.modelCodes[n], `${armId} count ${n}`).toBeTruthy()
+      }
+    }
+  })
+})
+
+describe('arm orientation (Phase 1.0)', () => {
+  it('repairConfig keeps valid orientations and normalizes 0 to unset', () => {
+    expect(repairConfig(catalog, config({ armOrientation: 90 })).armOrientation).toBe(90)
+    expect(repairConfig(catalog, config({ armOrientation: 270 })).armOrientation).toBe(270)
+    expect(repairConfig(catalog, config({ armOrientation: 0 })).armOrientation).toBeUndefined()
+  })
+
+  it('repairConfig resets a tampered orientation', () => {
+    expect(repairConfig(catalog, config({ armOrientation: 45 })).armOrientation).toBeUndefined()
   })
 })

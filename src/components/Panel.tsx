@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { allowedArmCounts, compatibleParts, finishFor, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { allowedArmCounts, ARM_ORIENTATIONS, compatibleParts, finishFor, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { useConfigurator } from '../store'
 import { BannerPicker } from './BannerPicker'
 
-/** Phase 0.8 (A1): labels for the radial arm-count selector. */
+/** Phase 0.8 (A1): labels for the radial arm-count selector (official layouts: 2@180, 3@90, 4@90). */
 const ARM_COUNT_LABELS: Record<number, { label: string; sub: string }> = {
   1: { label: 'Single', sub: '1 arm' },
   2: { label: 'Twin', sub: '2 arms · 180°' },
-  3: { label: 'Triple', sub: '3 arms · 120°' },
+  3: { label: 'Triple', sub: '3 arms · 90°' },
   4: { label: 'Quad', sub: '4 arms · 90°' },
 }
 
@@ -107,6 +107,8 @@ export function Panel({ catalog, config }: Props) {
                 {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                     the chosen pole + arm actually support multiples (catalog rule). */}
                 {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
+                {/* Phase 1.0: rotate the arrangement about the pole (0/90/180/270°). */}
+                {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
                 <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
                 {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
                 {/* Phase 0.9 (A2): banner-arm accessory mounts on the pole shaft,
@@ -320,6 +322,38 @@ function StepSpecOptions({
 }
 
 /**
+ * Phase 1.0: rotate the whole arm arrangement about the pole — 0/90/180/270°.
+ * Hidden for arms with no lateral reach (the direct-mount tenon adapter),
+ * where rotation changes nothing; reach is read from the arm's fixture socket,
+ * never from a hardcoded part list.
+ */
+function ArmOrientationSelector({ catalog, config }: { catalog: Catalog; config: PoleConfig }) {
+  const setArmOrientation = useConfigurator((s) => s.setArmOrientation)
+  const arm = partById(catalog, config.arm)
+  const socket = Object.values(arm?.sockets ?? {})[0]
+  const reach = socket ? Math.hypot(socket.position[0], socket.position[2]) : 0
+  if (reach < 0.05) return null
+  const current = config.armOrientation ?? 0
+  return (
+    <div className="arm-count">
+      <p className="arm-count-label">Orientation</p>
+      <div className="arm-count-options">
+        {ARM_ORIENTATIONS.map((deg) => (
+          <button
+            key={deg}
+            className={`arm-count-chip ${current === deg ? 'selected' : ''}`}
+            onClick={() => setArmOrientation(deg)}
+            title={`Rotate the arm arrangement to ${deg}°`}
+          >
+            <span className="arm-count-name">{deg}°</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/**
  * Phase 0.8 (A1/A2): choose how many arms mount radially around the pole top.
  * The available options come straight from catalog rules (allowedArmCounts) so
  * only real, mountable layouts appear; hidden entirely when only single is valid.
@@ -338,7 +372,7 @@ function ArmCountSelector({
   const current = config.armCount ?? 1
   return (
     <div className="arm-count">
-      <p className="arm-count-label">Arms</p>
+      <p className="arm-count-label">Design Configuration</p>
       <div className="arm-count-options">
         {counts.map((n) => {
           const meta = ARM_COUNT_LABELS[n] ?? { label: `${n}`, sub: `${n} arms` }

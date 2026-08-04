@@ -274,3 +274,17 @@ describe('custom RAL color <-> URL params (Phase 1.1)', () => {
     expect(partial?.finishRal).toEqual({ fixture: '#112233' })
   })
 })
+
+describe('arm orientation <-> URL params (Phase 1.0)', () => {
+  it('omits the 0° default and round-trips the rest', () => {
+    expect(configToParams(config).get('orient')).toBeNull()
+    expect(configToParams({ ...config, armOrientation: 0 }).get('orient')).toBeNull()
+    const params = configToParams({ ...config, armOrientation: 180 })
+    expect(params.get('orient')).toBe('180')
+    expect(paramsToPartialConfig(params)?.armOrientation).toBe(180)
+  })
+
+  it('ignores an out-of-set orientation', () => {
+    expect(paramsToPartialConfig(new URLSearchParams('?orient=45'))?.armOrientation).toBeUndefined()
+  })
+})

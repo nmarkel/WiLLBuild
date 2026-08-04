@@ -48,6 +48,10 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   if (config.armCount && config.armCount > 1) {
     params.set('arms', String(config.armCount))
   }
+  // Phase 1.0: arm orientation — omit the 0° default.
+  if (config.armOrientation) {
+    params.set('orient', String(config.armOrientation))
+  }
   // Phase 0.8 (C/A4): banner accessory encoded as `armId~count~heightFt`.
   if (config.banner) {
     params.set(
@@ -126,6 +130,15 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
     const n = Number(armsValue)
     if (Number.isInteger(n) && n >= 1 && n <= 4) {
       partial.armCount = n
+      found = true
+    }
+  }
+  // Phase 1.0: arm orientation — whitelist 90/180/270 (0 is the omitted default).
+  const orientValue = params.get('orient')
+  if (orientValue) {
+    const deg = Number(orientValue)
+    if ([90, 180, 270].includes(deg)) {
+      partial.armOrientation = deg
       found = true
     }
   }

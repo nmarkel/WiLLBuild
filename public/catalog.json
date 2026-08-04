@@ -2683,12 +2683,9 @@
       },
       "thumbnail": "thumbnails/sh1-shepherds-hook.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
-      "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "modelCodes": {
+        "1": "SH1"
+      }
     },
     {
       "id": "upsweep",
@@ -2773,9 +2770,7 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "arrangements": [
         1,
-        2,
-        3,
-        4
+        2
       ]
     },
     {
@@ -2848,12 +2843,9 @@
       },
       "thumbnail": "thumbnails/pa1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
-      "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "modelCodes": {
+        "1": "PA1"
+      }
     },
     {
       "id": "pm1-pendant-arm",
@@ -2921,12 +2913,9 @@
       },
       "thumbnail": "thumbnails/pm1-pendant-arm.png",
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
-      "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "modelCodes": {
+        "1": "PM1"
+      }
     },
     {
       "id": "direct-mount",
@@ -13368,12 +13357,9 @@
         "graphite-metallic",
         "custom-ral"
       ],
-      "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "modelCodes": {
+        "1": "CR2"
+      }
     },
     {
       "id": "willstudio-dwx-flood-spot",
@@ -13554,12 +13540,9 @@
         "graphite-metallic",
         "custom-ral"
       ],
-      "arrangements": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "modelCodes": {
+        "1": "FR2"
+      }
     },
     {
       "id": "willstudio-hsx-decorative-upsweep-arms",
@@ -13642,10 +13625,12 @@
       ],
       "arrangements": [
         1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "modelCodes": {
+        "1": "HS1",
+        "2": "HS2"
+      }
     },
     {
       "id": "willstudio-pendant-ceiling-mounts",
@@ -13902,7 +13887,13 @@
         2,
         3,
         4
-      ]
+      ],
+      "modelCodes": {
+        "1": "SS1",
+        "2": "SS2",
+        "3": "SS3",
+        "4": "SS4"
+      }
     },
     {
       "id": "willstudio-supported-decorative-arms",
@@ -13979,10 +13970,12 @@
       ],
       "arrangements": [
         1,
-        2,
-        3,
-        4
-      ]
+        2
+      ],
+      "modelCodes": {
+        "1": "SD1",
+        "2": "SD2"
+      }
     },
     {
       "id": "willstudio-suspension-arm-pole-top-brackets",
@@ -14054,7 +14047,13 @@
         2,
         3,
         4
-      ]
+      ],
+      "modelCodes": {
+        "1": "AR1",
+        "2": "AR2",
+        "3": "AR3",
+        "4": "AR4"
+      }
     },
     {
       "id": "willstudio-ba1-banner-arm",

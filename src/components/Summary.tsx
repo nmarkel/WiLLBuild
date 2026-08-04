@@ -70,6 +70,12 @@ export function Summary({ catalog, config }: Props) {
             <span>{armArrangementLabel(config.armCount ?? 1)}</span>
           </li>
         )}
+        {!!config.armOrientation && (
+          <li>
+            <span className="summary-label">Orientation</span>
+            <span>{config.armOrientation}°</span>
+          </li>
+        )}
         {config.banner && (
           <li>
             <span className="summary-label">Banner Arm</span>

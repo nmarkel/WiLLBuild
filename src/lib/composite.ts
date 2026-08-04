@@ -171,7 +171,10 @@ export function resolveAssemblyLayout(
       const armSocket = attachSocket(arm, pole)
       if (armSocket) {
         const count = Math.max(1, Math.floor(config.armCount ?? 1))
-        const azimuths = armAzimuths(count)
+        // Phase 1.0: orientation rotates the whole arrangement about the pole
+        // (0/90/180/270) — each arm just shifts to the matching azimuth render.
+        const orientation = config.armOrientation ?? 0
+        const azimuths = armAzimuths(count).map((a) => (a + orientation) % 360)
         const fixSocket = fixture ? attachSocket(fixture, arm) : undefined
         azimuths.forEach((deg, i) => {
           const single = count === 1
@@ -179,9 +182,11 @@ export function resolveAssemblyLayout(
           // The arm mounts on the pole's vertical axis, so its origin is
           // rotation-invariant; the reach is baked into the per-azimuth render.
           const armWorld: [number, number, number] = [...armSocket.position]
-          // Single-arm keeps the historic fixed z-order; radial arms z-sort by
-          // camera depth so ones reaching behind the pole draw first.
-          const armZ = single ? SLOT_Z.arm : SLOT_Z.pole + armDepthProxy(manifest.rig, deg)
+          // The unrotated single arm keeps the historic fixed z-order; rotated
+          // or radial arms z-sort by camera depth so ones reaching behind the
+          // pole draw first.
+          const armZ =
+            single && deg === 0 ? SLOT_Z.arm : SLOT_Z.pole + armDepthProxy(manifest.rig, deg)
           placements.push({
             layerId: single ? arm.id : `${arm.id}#${i}`,
             part: arm,
@@ -201,7 +206,7 @@ export function resolveAssemblyLayout(
               part: fixture,
               angle,
               world,
-              z: single ? SLOT_Z.fixture : armZ + 0.001,
+              z: single && deg === 0 ? SLOT_Z.fixture : armZ + 0.001,
             })
             // Each radial fixture emits its own night glow (twin/triple/quad
             // all light up, not just the first arm).
