@@ -150,14 +150,20 @@ async function main() {
       // angles). Everything else (poles, base covers, standalone) is single-view.
       // The union of angles across single/twin/triple/quad is bounded — 6 total.
       const isRadial = part.slot === 'arm' || part.slot === 'fixture' || part.slot === 'banner'
+      // Phase 1.0: full 45° compass — arm arrangements/orientations are
+      // 90°-stepped, and the viewer's 8-angle assembly spin shifts them by
+      // 45°, so every multiple of 45° must exist. (az120/az240 died with the
+      // old 3@120 triple layout.)
       const ANGLES = isRadial
         ? [
             { key: 'hero', yaw: 0 },
+            { key: 'az45', yaw: 45 },
             { key: 'az90', yaw: 90 },
-            { key: 'az120', yaw: 120 },
+            { key: 'az135', yaw: 135 },
             { key: 'az180', yaw: 180 },
-            { key: 'az240', yaw: 240 },
+            { key: 'az225', yaw: 225 },
             { key: 'az270', yaw: 270 },
+            { key: 'az315', yaw: 315 },
           ]
         : [{ key: 'hero', yaw: 0 }]
 

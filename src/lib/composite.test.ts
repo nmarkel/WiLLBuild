@@ -46,7 +46,7 @@ const manifest: RenderManifest = {
 const catalog: Catalog = {
   finishes: [
     // Only ids matter to the compositor
-    { id: 'black', name: 'Black', code: 'BK', hex: '#000', roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, envMapIntensity: 1, keywords: [] },
+    { id: 'black', name: 'Black', code: 'BK', typeCode: 'FP', hex: '#000', roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, envMapIntensity: 1, keywords: [] },
   ],
   finishesProvisional: false,
   referenceAssemblies: [],
@@ -260,9 +260,27 @@ describe('resolveAssemblyLayout — multi-arm', () => {
     expect(layout.lightPx).toEqual(layout.lightPxs![0])
   })
 
-  it('reports the real part id (once) when a radial azimuth render is missing', () => {
-    // Manifest with only hero (no az180) → twin partner has no render.
+  it('falls back to the nearest available angle when a radial azimuth render is missing', () => {
+    // Phase 1.0: a hero-only manifest (no az180) no longer breaks the twin —
+    // the partner resolves the nearest angle (hero). Missing is reserved for
+    // parts with no renders at all.
     const layout = resolveAssemblyLayout(catalog, manifest, twin)
-    expect(layout.missing.sort()).toEqual(['arm', 'fix'])
+    expect(layout.missing).toEqual([])
+    expect(layout.layers.filter((l) => l.partId.startsWith('arm'))).toHaveLength(2)
+  })
+})
+
+describe('view rotation + nearest-angle fallback (Phase 1.0)', () => {
+  it('nearest angle falls back to hero when the requested azimuth is missing', () => {
+    // Synthetic parts carry hero only — a rotated view must not report missing.
+    const layout = resolveAssemblyLayout(catalog, manifest, config, 90)
+    expect(layout.missing).toEqual([])
+    expect(layout.layers.map((l) => l.partId)).toEqual(['pole', 'base', 'arm', 'fix'])
+  })
+
+  it('a full-circle rotation is identical to no rotation', () => {
+    const a = resolveAssemblyLayout(catalog, manifest, config, 0)
+    const b = resolveAssemblyLayout(catalog, manifest, config, 360)
+    expect(b).toEqual(a)
   })
 })

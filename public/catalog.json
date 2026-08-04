@@ -15,7 +15,8 @@
       "keywords": [
         "black"
       ],
-      "code": "BK"
+      "code": "BK",
+      "typeCode": "FP"
     },
     {
       "id": "statuary-bronze",
@@ -30,7 +31,8 @@
         "bronze",
         "brown"
       ],
-      "code": "DB"
+      "code": "DB",
+      "typeCode": "FP"
     },
     {
       "id": "gloss-white",
@@ -45,7 +47,8 @@
       "keywords": [
         "white"
       ],
-      "code": "WH"
+      "code": "WH",
+      "typeCode": "FP"
     },
     {
       "id": "silver",
@@ -61,7 +64,8 @@
         "gray",
         "grey"
       ],
-      "code": "NA"
+      "code": "NA",
+      "typeCode": "FP"
     },
     {
       "id": "light-gray",
@@ -79,7 +83,8 @@
         "light grey",
         "gray",
         "grey"
-      ]
+      ],
+      "typeCode": "FP"
     },
     {
       "id": "slate-gray",
@@ -96,7 +101,8 @@
         "slate gray",
         "slate grey",
         "slate"
-      ]
+      ],
+      "typeCode": "FP"
     },
     {
       "id": "forest-green",
@@ -111,7 +117,8 @@
       "keywords": [
         "green"
       ],
-      "code": "DG"
+      "code": "DG",
+      "typeCode": "FP"
     },
     {
       "id": "dark-platinum",
@@ -126,7 +133,8 @@
       "keywords": [
         "dark platinum",
         "platinum"
-      ]
+      ],
+      "typeCode": "FP"
     },
     {
       "id": "graphite-metallic",
@@ -141,7 +149,54 @@
       "keywords": [
         "graphite",
         "metallic"
-      ]
+      ],
+      "typeCode": "FP"
+    },
+    {
+      "id": "bronze-anodized",
+      "name": "Bronze Anodized",
+      "code": "BA",
+      "hex": "#33291f",
+      "roughness": 0.4,
+      "metalness": 0.7,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0.4,
+      "envMapIntensity": 1.25,
+      "keywords": [
+        "bronze anodized"
+      ],
+      "typeCode": "AN"
+    },
+    {
+      "id": "black-anodized",
+      "name": "Black Anodized",
+      "code": "BKA",
+      "hex": "#1f1e1c",
+      "roughness": 0.4,
+      "metalness": 0.7,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0.4,
+      "envMapIntensity": 1.25,
+      "keywords": [
+        "black anodized"
+      ],
+      "typeCode": "AN"
+    },
+    {
+      "id": "satin-silver-anodized",
+      "name": "Satin Silver Anodized",
+      "code": "SA",
+      "hex": "#c4c6c4",
+      "roughness": 0.35,
+      "metalness": 0.85,
+      "clearcoat": 0,
+      "clearcoatRoughness": 0.3,
+      "envMapIntensity": 1.35,
+      "keywords": [
+        "satin silver",
+        "anodized"
+      ],
+      "typeCode": "AN"
     },
     {
       "id": "custom-ral",
@@ -156,7 +211,8 @@
       "keywords": [
         "custom",
         "ral"
-      ]
+      ],
+      "typeCode": "FP"
     }
   ],
   "parts": [
@@ -3005,6 +3061,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -3013,10 +3072,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 3.66,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.07
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 3.66,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.07
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.067,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -3396,113 +3483,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -3524,7 +3520,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -3538,119 +3534,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -3664,71 +3555,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -3786,6 +3635,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -3844,6 +3745,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -3852,10 +3756,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 4.27,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.075
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 4.27,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.072,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -4235,113 +4167,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -4363,7 +4204,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -4377,119 +4218,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -4503,71 +4239,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -4625,6 +4319,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -4683,6 +4429,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -4691,10 +4440,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 4.88,
-        "radiusTopM": 0.05,
-        "radiusBottomM": 0.08
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 4.88,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.08
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.078,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -5074,113 +4851,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -5202,7 +4888,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -5216,119 +4902,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -5342,71 +4923,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -5464,6 +5003,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -5522,6 +5113,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -5530,10 +5124,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 6.1,
-        "radiusTopM": 0.05,
-        "radiusBottomM": 0.09
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 6.1,
+              "radiusTopM": 0.05,
+              "radiusBottomM": 0.09
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.088,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -5913,113 +5535,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -6041,7 +5572,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -6055,119 +5586,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -6181,71 +5607,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -6303,6 +5687,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -6361,6 +5797,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -6369,10 +5808,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 2.44,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.075
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 2.44,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.07,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -6752,113 +6219,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -6880,7 +6256,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -6894,119 +6270,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -7020,71 +6291,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -7142,6 +6371,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -7200,6 +6481,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -7208,10 +6492,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 3.05,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.075
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 3.05,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.071,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -7591,113 +6903,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -7719,7 +6940,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -7733,119 +6954,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -7859,71 +6975,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -7981,6 +7055,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8039,6 +7165,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -8047,10 +7176,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 4.57,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.075
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 4.57,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.072,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -8430,113 +7587,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -8558,7 +7624,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -8572,119 +7638,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -8698,71 +7659,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -8820,6 +7739,58 @@
             {
               "code": "E",
               "label": "0.250\"",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8878,6 +7849,9 @@
         "forest-green",
         "dark-platinum",
         "graphite-metallic",
+        "bronze-anodized",
+        "black-anodized",
+        "satin-silver-anodized",
         "custom-ral"
       ],
       "keywords": [
@@ -8886,10 +7860,38 @@
       ],
       "model": null,
       "placeholder": {
-        "kind": "pole",
-        "heightM": 5.49,
-        "radiusTopM": 0.045,
-        "radiusBottomM": 0.075
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "pole",
+              "heightM": 5.49,
+              "radiusTopM": 0.045,
+              "radiusBottomM": 0.075
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.02,
+                0.127,
+                0.07619999999999999
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.073,
+              0.3175,
+              0
+            ]
+          }
+        ]
       },
       "thumbnail": "thumbnails/alum-pole.png",
       "productUrl": "https://willbrands.com/collections/decorative-light-poles/products/willstudio-decorative-aluminum-light-poles",
@@ -9269,113 +8271,22 @@
           "values": [
             {
               "buildable": null,
-              "code": "SPL",
-              "label": "Special Cut Length (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BCSPCL",
-              "label": "Special Base Plate & Cover to Match Existing Bolt Circle (May Add to Production Lead Time) & Orientation)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDA",
-              "label": "Internal Vibration Dampener, Factory Installed",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "HHUR-4/5/6",
-              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Unreinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "HHRR-4/5/6",
-              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation) Height & Orientation)",
+              "label": "Additional Reinforced Hand Hole Opening w/ Cover Assembly (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FSTR",
-              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate) Ordering Information (Aluminum Base Covers) Ex: WP-CL2-50-BK Product Family Design Pole Fit Finish Color Accessories",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WP",
-              "label": "WiLLstudio®",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL1",
-              "label": "Small Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "4R",
-              "label": "4\" OD Round Poles Cast Base Cover Light Pole Base Extender",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL2",
-              "label": "Medium Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "5R",
-              "label": "5\" OD Round Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CL3",
-              "label": "Large Clamshell Cast Base Cover Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC1",
-              "label": "Spun Base Collar",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom (1pc Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SC2",
-              "label": "Spun Base Collar (Split Design)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom 1. See previous pages for standard light pole model configurations and loading guidelines. 2. Additional hand hole option required for poles with side drilling plus tenon top. 3. Consult WiLL support to verify options and accessories will work with your light pole part number. 4. Custom products, configurations, options, and accessories available.",
+              "label": "Festoon Provision, Electrical by Others (Specify Pole Height & Orientation, Minimum 37” Above Base Plate)",
               "mapsTo": null,
               "note": null
             }
@@ -9397,7 +8308,7 @@
             {
               "buildable": null,
               "code": "CPL-P-34",
-              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height",
+              "label": "3/4\" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
@@ -9411,119 +8322,14 @@
             {
               "buildable": null,
               "code": "CPL-S-12",
-              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole",
+              "label": "1/2\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "CPL-S-34",
-              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CPL",
-              "label": "Custom Coupling (Please Specify)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CLE",
-              "label": "Clamshell",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "BK",
-              "label": "Black",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "MB",
-              "label": "Medium Bronze CL3 = Large Clamshell 6R = 6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "6R",
-              "label": "6\" OD Round CL1 CL2 CL3",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DB",
-              "label": "Dark Bronze",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "WH",
-              "label": "White",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "NA",
-              "label": "Nat Alum Silver",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "LG",
-              "label": "Light Gray CLE",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SG",
-              "label": "Slate Gray",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DG",
-              "label": "Dark Green SC1 SC2",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "DP",
-              "label": "Dark Platinum",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "GM",
-              "label": "Graphite Metallic",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "RAL",
-              "label": "Custom RAL Match",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
+              "label": "3/4\" NPSM Straight-Thread Female Coupling (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -9537,71 +8343,29 @@
           "values": [
             {
               "buildable": null,
-              "code": "STAMP",
-              "label": "Engineering Services, Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "STAMPCA",
-              "label": "Engineering Services, CA Signed & Sealed Calcs",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE063",
-              "label": "Pre-Ship Anchor Bolts - 0.625” x 16” x 2”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE075",
-              "label": "Pre-Ship Anchor Bolts - 0.75” x 17” x 3”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "PRE100",
-              "label": "Pre-Ship Anchor Bolts - 1.0” x 36” x 4”",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "VDF",
-              "label": "Internal Vibration Dampener, Field Installable",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "BA24",
-              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "24\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "BA30",
-              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed)",
+              "label": "30\" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 30\" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "FH",
-              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Flag Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PH",
-              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed)",
+              "label": "Single Plant Holder Kit, Stainless Hardware Included (Field Installed) (Specify Pole Height & Orientation)",
               "mapsTo": null,
               "note": null
             }
@@ -9664,6 +8428,58 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "anchor-bolts",
+          "label": "Anchor Bolts",
+          "group": "ordering",
+          "orderPosition": 2.6,
+          "values": [
+            {
+              "code": "AB",
+              "label": "Anchor Bolts Included",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "base-type",
+          "label": "Base Type",
+          "group": "ordering",
+          "orderPosition": 2.7,
+          "values": [
+            {
+              "code": "SB",
+              "label": "Standard Base",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-type",
+          "label": "Finish Type",
+          "group": "ordering",
+          "orderPosition": 2.8,
+          "values": [
+            {
+              "code": "FP",
+              "label": "Finish Painted",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "AN",
+              "label": "Anodized",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -9678,11 +8494,906 @@
       }
     },
     {
-      "id": "bc-fluted",
+      "id": "bc-cl1-small-clamshell",
       "slot": "baseCover",
       "line": "WiLLstudio",
       "category": "base-cover",
       "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Small Clamshell Cast Base Cover",
+      "family": "Clamshell Cast",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [
+        "cl1",
+        "small",
+        "clamshell"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.25,
+        "radiusTopM": 0.1,
+        "radiusBottomM": 0.15
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers",
+      "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/CL1-45.jpg?v=1740595083",
+      "options": [
+        {
+          "key": "product-family",
+          "label": "Product Family",
+          "group": "ordering",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "group": "ordering",
+          "orderPosition": 1,
+          "values": [
+            {
+              "code": "CL1",
+              "label": "Small Clamshell Cast Base Cover",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "pole-fit",
+          "label": "Pole Fit",
+          "group": "ordering",
+          "orderPosition": 2,
+          "values": [
+            {
+              "code": "4R",
+              "label": "4\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "5R",
+              "label": "5\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "6R",
+              "label": "6\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-color",
+          "label": "Finish Color",
+          "group": "ordering",
+          "orderPosition": 3,
+          "values": [
+            {
+              "code": "BK",
+              "label": "Black",
+              "buildable": true,
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "code": "DB",
+              "label": "Dark Bronze",
+              "buildable": true,
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "code": "WH",
+              "label": "White",
+              "buildable": true,
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "buildable": true,
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "code": "LG",
+              "label": "Light Gray",
+              "buildable": true,
+              "mapsTo": "light-gray",
+              "note": null
+            },
+            {
+              "code": "SG",
+              "label": "Slate Gray",
+              "buildable": true,
+              "mapsTo": "slate-gray",
+              "note": null
+            },
+            {
+              "code": "DG",
+              "label": "Dark Green",
+              "buildable": true,
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "code": "DP",
+              "label": "Dark Platinum",
+              "buildable": true,
+              "mapsTo": "dark-platinum",
+              "note": null
+            },
+            {
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "buildable": true,
+              "mapsTo": "graphite-metallic",
+              "note": null
+            },
+            {
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "buildable": true,
+              "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bc-cl2-medium-clamshell",
+      "slot": "baseCover",
+      "line": "WiLLstudio",
+      "category": "base-cover",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Medium Clamshell Cast Base Cover",
+      "family": "Clamshell Cast",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [
+        "cl2",
+        "medium",
+        "clamshell"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.35,
+        "radiusTopM": 0.1,
+        "radiusBottomM": 0.19
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers",
+      "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/CL2-45.jpg?v=1740595083",
+      "options": [
+        {
+          "key": "product-family",
+          "label": "Product Family",
+          "group": "ordering",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "group": "ordering",
+          "orderPosition": 1,
+          "values": [
+            {
+              "code": "CL2",
+              "label": "Medium Clamshell Cast Base Cover",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "pole-fit",
+          "label": "Pole Fit",
+          "group": "ordering",
+          "orderPosition": 2,
+          "values": [
+            {
+              "code": "4R",
+              "label": "4\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "5R",
+              "label": "5\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "6R",
+              "label": "6\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-color",
+          "label": "Finish Color",
+          "group": "ordering",
+          "orderPosition": 3,
+          "values": [
+            {
+              "code": "BK",
+              "label": "Black",
+              "buildable": true,
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "code": "DB",
+              "label": "Dark Bronze",
+              "buildable": true,
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "code": "WH",
+              "label": "White",
+              "buildable": true,
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "buildable": true,
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "code": "LG",
+              "label": "Light Gray",
+              "buildable": true,
+              "mapsTo": "light-gray",
+              "note": null
+            },
+            {
+              "code": "SG",
+              "label": "Slate Gray",
+              "buildable": true,
+              "mapsTo": "slate-gray",
+              "note": null
+            },
+            {
+              "code": "DG",
+              "label": "Dark Green",
+              "buildable": true,
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "code": "DP",
+              "label": "Dark Platinum",
+              "buildable": true,
+              "mapsTo": "dark-platinum",
+              "note": null
+            },
+            {
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "buildable": true,
+              "mapsTo": "graphite-metallic",
+              "note": null
+            },
+            {
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "buildable": true,
+              "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bc-cl3-large-clamshell",
+      "slot": "baseCover",
+      "line": "WiLLstudio",
+      "category": "base-cover",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Large Clamshell Cast Base Cover",
+      "family": "Clamshell Cast",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [
+        "cl3",
+        "large",
+        "clamshell"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.5,
+        "radiusTopM": 0.11,
+        "radiusBottomM": 0.24
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers",
+      "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/CL3-45.jpg?v=1740595083",
+      "options": [
+        {
+          "key": "product-family",
+          "label": "Product Family",
+          "group": "ordering",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "group": "ordering",
+          "orderPosition": 1,
+          "values": [
+            {
+              "code": "CL3",
+              "label": "Large Clamshell Cast Base Cover",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "pole-fit",
+          "label": "Pole Fit",
+          "group": "ordering",
+          "orderPosition": 2,
+          "values": [
+            {
+              "code": "4R",
+              "label": "4\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "5R",
+              "label": "5\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "6R",
+              "label": "6\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-color",
+          "label": "Finish Color",
+          "group": "ordering",
+          "orderPosition": 3,
+          "values": [
+            {
+              "code": "BK",
+              "label": "Black",
+              "buildable": true,
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "code": "DB",
+              "label": "Dark Bronze",
+              "buildable": true,
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "code": "WH",
+              "label": "White",
+              "buildable": true,
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "buildable": true,
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "code": "LG",
+              "label": "Light Gray",
+              "buildable": true,
+              "mapsTo": "light-gray",
+              "note": null
+            },
+            {
+              "code": "SG",
+              "label": "Slate Gray",
+              "buildable": true,
+              "mapsTo": "slate-gray",
+              "note": null
+            },
+            {
+              "code": "DG",
+              "label": "Dark Green",
+              "buildable": true,
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "code": "DP",
+              "label": "Dark Platinum",
+              "buildable": true,
+              "mapsTo": "dark-platinum",
+              "note": null
+            },
+            {
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "buildable": true,
+              "mapsTo": "graphite-metallic",
+              "note": null
+            },
+            {
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "buildable": true,
+              "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bc-sc1-spun-collar",
+      "slot": "baseCover",
+      "line": "WiLLstudio",
+      "category": "base-cover",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Spun Base Collar (1pc Design)",
+      "family": "Spun Collar",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [
+        "sc1",
+        "spun",
+        "base"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.14,
+        "radiusTopM": 0.09,
+        "radiusBottomM": 0.13
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers",
+      "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SC1-Pole-45.jpg?v=1740595083",
+      "options": [
+        {
+          "key": "product-family",
+          "label": "Product Family",
+          "group": "ordering",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "group": "ordering",
+          "orderPosition": 1,
+          "values": [
+            {
+              "code": "SC1",
+              "label": "Spun Base Collar (1pc Design)",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "pole-fit",
+          "label": "Pole Fit",
+          "group": "ordering",
+          "orderPosition": 2,
+          "values": [
+            {
+              "code": "4R",
+              "label": "4\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "5R",
+              "label": "5\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "6R",
+              "label": "6\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-color",
+          "label": "Finish Color",
+          "group": "ordering",
+          "orderPosition": 3,
+          "values": [
+            {
+              "code": "BK",
+              "label": "Black",
+              "buildable": true,
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "code": "DB",
+              "label": "Dark Bronze",
+              "buildable": true,
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "code": "WH",
+              "label": "White",
+              "buildable": true,
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "buildable": true,
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "code": "LG",
+              "label": "Light Gray",
+              "buildable": true,
+              "mapsTo": "light-gray",
+              "note": null
+            },
+            {
+              "code": "SG",
+              "label": "Slate Gray",
+              "buildable": true,
+              "mapsTo": "slate-gray",
+              "note": null
+            },
+            {
+              "code": "DG",
+              "label": "Dark Green",
+              "buildable": true,
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "code": "DP",
+              "label": "Dark Platinum",
+              "buildable": true,
+              "mapsTo": "dark-platinum",
+              "note": null
+            },
+            {
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "buildable": true,
+              "mapsTo": "graphite-metallic",
+              "note": null
+            },
+            {
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "buildable": true,
+              "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bc-sc2-spun-collar-split",
+      "slot": "baseCover",
+      "line": "WiLLstudio",
+      "category": "base-cover",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "name": "Spun Base Collar (Split Design)",
+      "family": "Spun Collar",
+      "mount": "base-collar",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [
+        "sc2",
+        "spun",
+        "base"
+      ],
+      "model": null,
+      "placeholder": {
+        "kind": "baseCover",
+        "heightM": 0.14,
+        "radiusTopM": 0.09,
+        "radiusBottomM": 0.13
+      },
+      "thumbnail": null,
+      "productUrl": "https://willbrands.com/products/willstudio-decorative-base-covers",
+      "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SC2-Pole-45.jpg?v=1740595083",
+      "options": [
+        {
+          "key": "product-family",
+          "label": "Product Family",
+          "group": "ordering",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "WP",
+              "label": "WiLLstudio®",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "group": "ordering",
+          "orderPosition": 1,
+          "values": [
+            {
+              "code": "SC2",
+              "label": "Spun Base Collar (Split Design)",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "pole-fit",
+          "label": "Pole Fit",
+          "group": "ordering",
+          "orderPosition": 2,
+          "values": [
+            {
+              "code": "4R",
+              "label": "4\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "5R",
+              "label": "5\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "6R",
+              "label": "6\" OD Round",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "finish-color",
+          "label": "Finish Color",
+          "group": "ordering",
+          "orderPosition": 3,
+          "values": [
+            {
+              "code": "BK",
+              "label": "Black",
+              "buildable": true,
+              "mapsTo": "matte-black",
+              "note": null
+            },
+            {
+              "code": "DB",
+              "label": "Dark Bronze",
+              "buildable": true,
+              "mapsTo": "statuary-bronze",
+              "note": null
+            },
+            {
+              "code": "WH",
+              "label": "White",
+              "buildable": true,
+              "mapsTo": "gloss-white",
+              "note": null
+            },
+            {
+              "code": "NA",
+              "label": "Nat Alum Silver",
+              "buildable": true,
+              "mapsTo": "silver",
+              "note": null
+            },
+            {
+              "code": "LG",
+              "label": "Light Gray",
+              "buildable": true,
+              "mapsTo": "light-gray",
+              "note": null
+            },
+            {
+              "code": "SG",
+              "label": "Slate Gray",
+              "buildable": true,
+              "mapsTo": "slate-gray",
+              "note": null
+            },
+            {
+              "code": "DG",
+              "label": "Dark Green",
+              "buildable": true,
+              "mapsTo": "forest-green",
+              "note": null
+            },
+            {
+              "code": "DP",
+              "label": "Dark Platinum",
+              "buildable": true,
+              "mapsTo": "dark-platinum",
+              "note": null
+            },
+            {
+              "code": "GM",
+              "label": "Graphite Metallic",
+              "buildable": true,
+              "mapsTo": "graphite-metallic",
+              "note": null
+            },
+            {
+              "code": "RAL",
+              "label": "Custom RAL Match",
+              "buildable": true,
+              "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bc-fluted",
+      "slot": "standalone",
+      "line": "WiLLstudio",
+      "category": "base-cover",
+      "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
       "name": "Fluted Base Cover",
@@ -9716,10 +9427,10 @@
     },
     {
       "id": "bc-round",
-      "slot": "baseCover",
+      "slot": "standalone",
       "line": "WiLLstudio",
       "category": "base-cover",
-      "productClass": "assembly-part",
+      "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
       "name": "Round Base Cover",
@@ -15120,10 +14831,10 @@
     },
     {
       "id": "aluminum-light-pole-base-covers",
-      "slot": "baseCover",
+      "slot": "standalone",
       "line": "WiLLstudio",
       "category": "Base Covers",
-      "productClass": "assembly-part",
+      "productClass": "standalone",
       "dropShip": true,
       "tier": 2,
       "name": "Aluminum Light Pole Base Covers",

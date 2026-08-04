@@ -17,7 +17,7 @@ const base: PoleConfig = repairConfig(catalog, {
   configId: 'multiarm-e2e',
   brand: 'WiLLstudio',
   pole: 'alum-pole-20',
-  baseCover: 'bc-fluted',
+  baseCover: 'bc-cl2-medium-clamshell',
   arm: 'willstudio-suspension-arm-pole-top-brackets',
   fixture: 'gvx-pendant',
   finish: 'matte-black',
@@ -141,5 +141,49 @@ describe('arm orientation — real assets', () => {
     expect(
       layout.layers.filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets')),
     ).toHaveLength(3)
+  })
+})
+
+// Phase 1.0: the 8-angle assembly spin — rotated views must composite with
+// nothing missing (rig parts carry the full 45° compass; real-render parts
+// resolve their nearest available angle).
+describe('assembly view rotation — real assets', () => {
+  it.each([45, 90, 135, 180, 225, 270, 315])('viewYaw=%i composites with 0 missing', (yaw) => {
+    const twin = repairConfig(catalog, { ...base, armCount: 2 })
+    const layout = resolveAssemblyLayout(catalog, manifest, twin, yaw)
+    expect(layout.missing).toEqual([])
+    expect(
+      layout.layers.filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets')),
+    ).toHaveLength(2)
+  })
+
+  it('a 45° view uses exact 45°-compass renders for rig-rendered arms', () => {
+    // HSX deco upsweep is placeholder-rendered → full 8-angle compass.
+    const twin = repairConfig(catalog, {
+      ...base,
+      fixture: 'mvx-coach',
+      arm: 'willstudio-hsx-decorative-upsweep-arms',
+      armCount: 2,
+    })
+    const layout = resolveAssemblyLayout(catalog, manifest, twin, 45)
+    const files = layout.layers
+      .filter((l) => l.partId.startsWith('willstudio-hsx'))
+      .map((l) => l.asset.file)
+      .join(',')
+    expect(files).toContain('az135')
+    expect(files).toContain('az315')
+  })
+
+  it('a 45° view resolves the nearest angle for real-render parts (no 45° compass yet)', () => {
+    // The suspension arm is real-parts-registered (6 preserved angles):
+    // 135° → az120, 315° → az270 — close render beats a missing layer.
+    const twin = repairConfig(catalog, { ...base, armCount: 2 })
+    const layout = resolveAssemblyLayout(catalog, manifest, twin, 45)
+    const files = layout.layers
+      .filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets'))
+      .map((l) => l.asset.file)
+      .join(',')
+    expect(files).toContain('az120')
+    expect(files).toContain('az270')
   })
 })

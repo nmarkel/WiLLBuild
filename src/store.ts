@@ -34,6 +34,13 @@ interface ConfiguratorState {
   scene: Scene
   /** Current view mode: builder (3D wizard) or product (standalone product page). */
   view: ViewMode
+  /**
+   * Phase 1.0: assembly view rotation in 45° steps (0..315). A viewer-state
+   * axis like `scene` — spins the whole composited assembly via the
+   * per-azimuth renders; it never changes the config.
+   */
+  viewYaw: number
+  setViewYaw: (deg: number) => void
   /** Active brand — drives routing and catalog scoping. */
   brand: ProductLine
   loadCatalog: () => Promise<void>
@@ -48,6 +55,8 @@ interface ConfiguratorState {
   setArmOrientation: (deg: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
+  /** Phase 1.0: place a selected pole accessory (FSTR/CPL/FH/PH/…) on the shaft. */
+  setAccessoryPlacement: (code: string, placement: import('./types').AccessoryPlacement) => void
   /** Phase 0.8 (D), reshaped 1.0: pick a single-choice ordering column value for one part's step. */
   setSpecOption: (slot: Slot, key: string, code: string) => void
   /**
@@ -169,6 +178,15 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
   },
 
+  setAccessoryPlacement: (code, placement) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const accessoryPlacements = { ...(config.accessoryPlacements ?? {}), [code]: placement }
+    const next = repairConfig(catalog, { ...config, accessoryPlacements, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
   setFinishRal: (slot, hex) => {
     const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config || view.kind === 'product') return
@@ -229,6 +247,9 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
     return matchedTerms
   },
+
+  viewYaw: 0,
+  setViewYaw: (deg) => set({ viewYaw: ((Math.round(deg / 45) * 45) % 360 + 360) % 360 }),
 
   toggleScale: () => set((s) => ({ showScale: !s.showScale })),
 

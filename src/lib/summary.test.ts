@@ -11,7 +11,7 @@ function config(overrides: Partial<PoleConfig>): PoleConfig {
     configId: 'test-config-123',
     brand: 'WiLLstudio',
     pole: 'alum-pole-14',
-    baseCover: 'bc-fluted',
+    baseCover: 'bc-cl2-medium-clamshell',
     arm: 'sh1-shepherds-hook',
     fixture: 'gvx-pendant',
     finish: 'matte-black',
@@ -31,7 +31,7 @@ describe('buildSummaryText', () => {
     expect(summary).toContain('Fixture: GVX Pendant — Black')
     expect(summary).toContain('Arm: SH1 Shepherds Hook — Black')
     expect(summary).toContain('Pole: 14 ft Decorative Aluminum — Black')
-    expect(summary).toContain('Base Cover: Fluted Base Cover — Black')
+    expect(summary).toContain('Base Cover: Medium Clamshell Cast Base Cover — Black')
   })
 
   it('a per-slot finish override shows on that part only', () => {
@@ -112,8 +112,10 @@ describe('buildPartNumber (Phase 1.0)', () => {
     expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP-SRG27710-HSS-GVX')
   })
 
-  it('returns undefined for parts without a parsed ordering table or model codes', () => {
-    expect(buildPartNumber(catalog, config({}), 'baseCover')).toBeUndefined()
+  it('returns undefined for an empty or unknown selection', () => {
+    expect(buildPartNumber(catalog, config({ baseCover: '' }), 'baseCover')).toBeUndefined()
+    // The upsweep still has no model codes (24"/36" length model pending).
+    expect(buildPartNumber(catalog, config({ fixture: 'mvx-coach', arm: 'upsweep' }), 'arm')).toBeUndefined()
   })
 
   it('is included in the summary text as a Part No line', () => {
@@ -154,5 +156,49 @@ describe('arm model code as part number (Phase 1.0)', () => {
 
   it('the upsweep has no code yet (24"/36" length model pending)', () => {
     expect(buildPartNumber(catalog, config({ fixture: 'mvx-coach', arm: 'upsweep' }), 'arm')).toBeUndefined()
+  })
+})
+
+describe('pole part number — fixed and derived segments (Phase 1.0)', () => {
+  it('carries AB/SB and a color-derived finish type', () => {
+    const cfg = config({
+      finishes: { pole: 'slate-gray' },
+      specOptions: { pole: { 'pole-diameter': '5050', 'wall-thickness': 'D' } },
+    })
+    // product-family(WP) design(_) diameter wall AB SB FP color(SG) mounting(_)
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-_-5050-D-AB-SB-FP-SG-_')
+  })
+
+  it('an anodized color flips the finish type to AN', () => {
+    const cfg = config({ finishes: { pole: 'black-anodized' } })
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-_-_-_-AB-SB-AN-BKA-_')
+  })
+})
+
+describe('accessory placement in summary (Phase 1.0)', () => {
+  it('placed accessories carry their shaft position', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        pole: 'alum-pole-12',
+        specOptions: { pole: { options: ['FSTR'] } },
+        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+      }),
+    )
+    expect(summary).toContain('FSTR — Festoon Provision')
+    expect(summary).toContain('— placed 6 ft @ 90°')
+  })
+})
+
+describe('base cover part number (Phase 1.0)', () => {
+  it('assembles WP-design-poleFit-color per the sheet ordering example', () => {
+    const cfg = config({
+      baseCover: 'bc-cl2-medium-clamshell',
+      finishes: { baseCover: 'matte-black' },
+      specOptions: { baseCover: { 'pole-fit': '5R' } },
+    })
+    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-5R-BK')
   })
 })

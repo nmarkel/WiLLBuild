@@ -44,6 +44,9 @@ export function buildPartNumber(
           catalog.finishes.find((f) => f.id === finishId)?.code ??
           '_',
       )
+    } else if (opt.key === 'finish-type') {
+      // Finish type is a function of the picked color: FP painted / AN anodized.
+      segments.push(catalog.finishes.find((f) => f.id === finishId)?.typeCode ?? opt.values[0].code)
     } else if (opt.values.length === 1) {
       segments.push(opt.values[0].code)
     } else if (opt.values.some((v) => v.code === part.family)) {
@@ -99,7 +102,13 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
         for (const code of specCodes(chosen[opt.key])) {
           const value = opt.values.find((v) => v.code === code)
           const quote = value && value.buildable !== true ? ' (quote only)' : ''
-          partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}`)
+          // Placed accessories carry their shaft position for the quote.
+          const placement = config.accessoryPlacements?.[code]
+          const sides = placement?.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
+          const placed = placement
+            ? ` — placed ${placement.heightFt} ft @ ${placement.orientation}°${sides}`
+            : ''
+          partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`)
         }
       }
     }

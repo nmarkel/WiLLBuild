@@ -69,6 +69,17 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (fins) params.set('fins', fins)
   }
+  // Phase 1.0: accessory placements as `code~heightFt~orientation[~sides]`.
+  if (config.accessoryPlacements) {
+    const place = Object.entries(config.accessoryPlacements)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(
+        ([code, p]) =>
+          `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}${p.sides !== undefined ? `~${p.sides}` : ''}`,
+      )
+      .join(',')
+    if (place) params.set('place', place)
+  }
   // Phase 1.1: custom RAL colors as `slot:rrggbb` (hex without the #).
   if (config.finishRal) {
     const rals = Object.entries(config.finishRal)
@@ -164,6 +175,28 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
     }
     if (Object.keys(finishes).length > 0) {
       partial.finishes = finishes
+      found = true
+    }
+  }
+  // Phase 1.0: accessory placements `code~heightFt~orientation`; repairConfig
+  // clamps values and drops codes not actually selected on the pole.
+  const placeValue = params.get('place')
+  if (placeValue) {
+    const accessoryPlacements: NonNullable<PoleConfig['accessoryPlacements']> = {}
+    for (const entry of placeValue.split(',')) {
+      const [code, ftStr, oStr, sidesStr] = entry.split('~')
+      const heightFt = Number(ftStr)
+      const orientation = Number(oStr)
+      if (code && Number.isFinite(heightFt) && Number.isFinite(orientation)) {
+        const sides = sidesStr !== undefined ? Number(sidesStr) : undefined
+        accessoryPlacements[code] =
+          sides !== undefined && Number.isFinite(sides)
+            ? { heightFt, orientation, sides }
+            : { heightFt, orientation }
+      }
+    }
+    if (Object.keys(accessoryPlacements).length > 0) {
+      partial.accessoryPlacements = accessoryPlacements
       found = true
     }
   }

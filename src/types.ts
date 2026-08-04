@@ -139,8 +139,13 @@ export function isAssemblyPart(
 export interface FinishDef {
   id: string
   name: string
-  /** Spec-sheet order code (BK, DB, WH, NA, LG, SG, DG, DP, GM, RAL). */
+  /** Spec-sheet order code (BK, DB, WH, NA, LG, SG, DG, DP, GM, BA, BKA, SA, RAL). */
   code: string
+  /**
+   * Finish-type PN segment this color implies: FP (painted, incl. custom RAL)
+   * or AN (anodized, aluminum only).
+   */
+  typeCode: string
   hex: string
   roughness: number
   metalness: number
@@ -179,6 +184,19 @@ export interface Catalog {
  * `slot: 'banner'`. Custom banner artwork is explicitly deferred — the render
  * carries a plain placeholder panel only.
  */
+/**
+ * Phase 1.0: shaft placement for a pole accessory whose label carries the
+ * "Specify Pole Height & Orientation" marker (festoon, couplings, extra hand
+ * holes, flag/plant holders). Height in feet above grade; orientation is one
+ * of the four compass rotations relative to the 0° hand-hole reference.
+ */
+export interface AccessoryPlacement {
+  heightFt: number
+  orientation: number
+  /** Banner-arm kits (BA24/BA30) only: how many radial sides — 1 | 2 (@180) | 4. */
+  sides?: number
+}
+
 export interface BannerConfig {
   armId: string
   /** Number of sides the banner bracket set repeats on (1 | 2 | 4). */
@@ -231,6 +249,12 @@ export interface PoleConfig {
   armOrientation?: number
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
+  /**
+   * Phase 1.0: shaft placements keyed by the selected pole-accessory order
+   * code (FSTR, CPL-P-12, FH, …). Only meaningful while the code is selected
+   * in the pole's options — repairConfig prunes the rest.
+   */
+  accessoryPlacements?: Record<string, AccessoryPlacement>
   /**
    * Phase 0.8 (D), reshaped in 1.0: selected spec-sheet option codes, keyed by
    * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":

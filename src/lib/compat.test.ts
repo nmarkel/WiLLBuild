@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, repairConfig, specCodes, voltageCompatible } from './compat'
+import { accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, specCodes, voltageCompatible } from './compat'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -10,7 +10,7 @@ function config(overrides: Partial<PoleConfig>): PoleConfig {
     configId: 'test',
     brand: 'WiLLstudio',
     pole: 'alum-pole-14',
-    baseCover: 'bc-fluted',
+    baseCover: 'bc-cl2-medium-clamshell',
     arm: 'sh1-shepherds-hook',
     fixture: 'gvx-pendant',
     finish: 'matte-black',
@@ -60,7 +60,7 @@ describe('compatibleParts (fixture-first)', () => {
 
   it('offers the eight aluminum pole heights for any arm, and every base cover for any pole', () => {
     expect(compatibleParts(catalog, config({}), 'pole')).toHaveLength(8)
-    expect(compatibleParts(catalog, config({}), 'baseCover')).toHaveLength(3)
+    expect(compatibleParts(catalog, config({}), 'baseCover')).toHaveLength(5)
   })
 
   it('demoted poles (fiberglass, steel fluted, named decorative) are never wizard parts', () => {
@@ -105,7 +105,12 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'alum-pole-15', 'alum-pole-16', 'alum-pole-18', 'alum-pole-20',
   ].sort()
 
-  const ALL_BASE_COVERS = ['aluminum-light-pole-base-covers', 'bc-fluted', 'bc-round'].sort()
+  // Phase 1.0: the official five base cover designs (CL1-3 clamshells, SC1-2
+  // spun collars); the previous three covers were demoted to standalone.
+  const ALL_BASE_COVERS = [
+    'bc-cl1-small-clamshell', 'bc-cl2-medium-clamshell', 'bc-cl3-large-clamshell',
+    'bc-sc1-spun-collar', 'bc-sc2-spun-collar-split',
+  ].sort()
 
   it('both post-top fixtures accept the same post-top arm list (with direct mount)', () => {
     for (const fixture of ['drx-post-top', 'tex-post-top']) {
@@ -341,7 +346,7 @@ describe('mount-type rules (H3b)', () => {
     configId: 'test',
     brand: 'WiLLstudio',
     pole: 'alum-pole-14',
-    baseCover: 'bc-fluted',
+    baseCover: 'bc-cl2-medium-clamshell',
     arm: '',
     fixture: 'gvx-pendant',
     finish: 'matte-black',
@@ -695,7 +700,7 @@ describe('custom RAL color (Phase 1.1)', () => {
 
   it('the ten-color WiLLcoat palette is in the catalog with order codes', () => {
     expect(catalog.finishes.map((f) => f.code)).toEqual([
-      'BK', 'DB', 'WH', 'NA', 'LG', 'SG', 'DG', 'DP', 'GM', 'RAL',
+      'BK', 'DB', 'WH', 'NA', 'LG', 'SG', 'DG', 'DP', 'GM', 'BA', 'BKA', 'SA', 'RAL',
     ])
   })
 })
@@ -787,5 +792,107 @@ describe('pole base configuration columns (Phase 1.0)', () => {
       const wall = pole.options!.find((o) => o.key === 'wall-thickness')!
       expect(wall.values.map((v) => `${v.code}=${v.label}`)).toEqual(['C=0.125"', 'D=0.188"', 'E=0.250"'])
     }
+  })
+})
+
+describe('anodized finishes are pole-only (Phase 1.0)', () => {
+  const ANODIZED = ['bronze-anodized', 'black-anodized', 'satin-silver-anodized']
+
+  it('poles offer the anodized trio; fixtures/arms/base covers do not', () => {
+    for (const pole of compatibleParts(catalog, config({}), 'pole')) {
+      for (const id of ANODIZED) expect(pole.finishes).toContain(id)
+    }
+    for (const slot of ['fixture', 'arm', 'baseCover'] as const) {
+      for (const part of compatibleParts(catalog, config({}), slot)) {
+        for (const id of ANODIZED) expect(part.finishes, `${part.id}`).not.toContain(id)
+      }
+    }
+  })
+
+  it('repairConfig drops an anodized override on a non-pole slot but keeps it on the pole', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({ finishes: { fixture: 'black-anodized', pole: 'black-anodized' } }),
+    )
+    expect(repaired.finishes).toEqual({ pole: 'black-anodized' })
+  })
+})
+
+describe('accessory placements (Phase 1.0)', () => {
+  const withFstr = () =>
+    config({
+      fixture: 'drx-post-top',
+      arm: 'direct-mount',
+      pole: 'alum-pole-12',
+      specOptions: { pole: { options: ['FSTR'] } },
+    })
+
+  it('placeableAccessoryCodes lists selected marker-carrying codes only', () => {
+    const cfg = repairConfig(catalog, withFstr())
+    expect(placeableAccessoryCodes(catalog, cfg)).toEqual(['FSTR'])
+    // BA24/BA30 banner kits are placeable too (height + orientation panel).
+    const withBa = repairConfig(catalog, { ...withFstr(), specOptions: { pole: { accessories: ['BA24'] } } })
+    expect(placeableAccessoryCodes(catalog, withBa)).toEqual(['BA24'])
+  })
+
+  it('repairConfig clamps placement height to the shaft and orientation to the compass set', () => {
+    const repaired = repairConfig(catalog, {
+      ...withFstr(),
+      accessoryPlacements: { FSTR: { heightFt: 99, orientation: 45 } },
+    })
+    // 12 ft pole → max 11 ft; bad orientation resets to 0.
+    expect(repaired.accessoryPlacements).toEqual({ FSTR: { heightFt: 11, orientation: 0 } })
+  })
+
+  it('repairConfig drops placements whose code is not selected', () => {
+    const repaired = repairConfig(catalog, {
+      ...config({}),
+      accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+    })
+    expect(repaired.accessoryPlacements).toBeUndefined()
+  })
+})
+
+describe('accessory placement sides (Phase 1.0)', () => {
+  it('side sets come from what the accessory is', () => {
+    expect(accessorySideOptions('24" Wind Shedding Banner Arm Kit, ... (Specify Pole Height & Orientation)')).toEqual([1, 2, 4])
+    expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toEqual([1, 2])
+    expect(accessorySideOptions('Single Flag Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
+    expect(accessorySideOptions('Single Plant Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
+    expect(accessorySideOptions('Festoon Provision, Electrical by Others')).toBeUndefined()
+  })
+
+  it('repairConfig clamps sides to the accessory set and strips them elsewhere', () => {
+    const base = config({
+      fixture: 'drx-post-top',
+      arm: 'direct-mount',
+      pole: 'alum-pole-12',
+      specOptions: { pole: { options: ['FSTR'], accessories: ['BA24', 'FH'] } },
+    })
+    const repaired = repairConfig(catalog, {
+      ...base,
+      accessoryPlacements: {
+        BA24: { heightFt: 10, orientation: 90, sides: 4 },
+        FH: { heightFt: 8, orientation: 0, sides: 4 }, // FH allows 1|2 → clamps to 1
+        FSTR: { heightFt: 6, orientation: 0, sides: 2 }, // FSTR has no sides → stripped
+      },
+    })
+    expect(repaired.accessoryPlacements?.BA24?.sides).toBe(4)
+    expect(repaired.accessoryPlacements?.FH?.sides).toBe(1)
+    expect(repaired.accessoryPlacements?.FSTR?.sides).toBeUndefined()
+  })
+
+  it('repairConfig honors FSTR’s 37-inch label minimum', () => {
+    const base = config({
+      fixture: 'drx-post-top',
+      arm: 'direct-mount',
+      pole: 'alum-pole-12',
+      specOptions: { pole: { options: ['FSTR'] } },
+    })
+    const repaired = repairConfig(catalog, {
+      ...base,
+      accessoryPlacements: { FSTR: { heightFt: 0, orientation: 0 } },
+    })
+    expect(repaired.accessoryPlacements?.FSTR?.heightFt).toBeCloseTo(37 / 12, 5)
   })
 })

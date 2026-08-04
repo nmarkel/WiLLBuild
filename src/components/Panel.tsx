@@ -1,6 +1,21 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { allowedArmCounts, ARM_ORIENTATIONS, compatibleParts, finishFor, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, compatibleParts, finishFor, labelMinFt, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+
+/** Side-count labels for accessory placements (banner kits, couplings). */
+const SIDE_LABELS: Record<number, string> = {
+  1: 'One Side',
+  2: 'Opposite Pair · 2@180',
+  4: 'Four Sides',
+}
+
+/** Feet as a friendly label — whole feet plain, otherwise feet′ inches″. */
+function ftLabel(ft: number): string {
+  const totalIn = Math.round(ft * 12)
+  const f = Math.floor(totalIn / 12)
+  const i = totalIn % 12
+  return i === 0 ? `${f} ft` : `${f}′ ${i}″`
+}
 import { useConfigurator } from '../store'
 import { BannerPicker } from './BannerPicker'
 
@@ -44,10 +59,13 @@ function isFinishColumn(opt: SpecOption): boolean {
  * design), so their dropdowns are hidden from every step. They stay in the
  * catalog data so the part number still carries their codes.
  */
-const IMPLIED_COLUMNS = new Set(['product-family', 'design'])
+// finish-type is derived from the picked color (FP painted / AN anodized).
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
-  return IMPLIED_COLUMNS.has(opt.key)
+  // Single-value columns (fixed segments like AB anchor bolts / SB base type /
+  // FP finish type) offer no choice — they auto-fill the part number instead.
+  return IMPLIED_COLUMNS.has(opt.key) || opt.values.length === 1
 }
 
 export function Panel({ catalog, config }: Props) {
@@ -96,9 +114,16 @@ export function Panel({ catalog, config }: Props) {
                 {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
                 <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
                 {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
-                {/* Phase 0.9 (A2): banner-arm accessory mounts on the pole shaft,
-                    so its controls live inside the Pole step (no standalone section). */}
-                {step.key === 'pole' && <BannerPicker catalog={catalog} config={config} />}
+                {/* Phase 0.9 (A2), retired for accessory-driven brands in 1.0:
+                    the Banner Arm box shows only when the pole's sheet has no
+                    banner-kit accessory (BA24/BA30) — those configure banners
+                    through Options & accessories placements instead. */}
+                {step.key === 'pole' &&
+                  !part?.options?.some(
+                    (o) =>
+                      o.group === 'options-accessories' &&
+                      o.values.some((v) => v.label.includes('Banner Arm Kit')),
+                  ) && <BannerPicker catalog={catalog} config={config} />}
                 {nextStep && (
                   <button className="step-continue" onClick={() => setOpenStep(nextStep.key)}>
                     Continue to {nextStep.label} →
@@ -281,17 +306,29 @@ function StepSpecOptions({
                   .filter((v) => voltageCompatible(specCodes(chosen['voltage'])[0], v.label))
                   .map((v) => {
                     const checked = specCodes(chosen[opt.key]).includes(v.code)
+                    const placeable = slot === 'pole' && v.label.includes(PLACEMENT_MARKER)
                     return (
-                      <label className={`spec-check ${checked ? 'checked' : ''}`} key={v.code}>
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleSpecOption(slot, opt.key, v.code)}
-                        />
-                        <span className="spec-check-text">
-                          <span className="spec-check-code">{v.code}</span> {v.label}
-                        </span>
-                      </label>
+                      <div key={v.code}>
+                        <label className={`spec-check ${checked ? 'checked' : ''}`}>
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleSpecOption(slot, opt.key, v.code)}
+                          />
+                          <span className="spec-check-text">
+                            <span className="spec-check-code">{v.code}</span> {v.label}
+                          </span>
+                        </label>
+                        {checked && placeable && (
+                          <AccessoryPlacementBox
+                            code={v.code}
+                            config={config}
+                            poleFt={part.heightFt ?? 20}
+                            minFt={labelMinFt(v.label) ?? 2}
+                            sideOptions={accessorySideOptions(v.label)}
+                          />
+                        )}
+                      </div>
                     )
                   })}
               </div>
@@ -304,6 +341,18 @@ function StepSpecOptions({
       </p>
     </>
   )
+}
+
+/**
+ * The part number / design code shown as a card's subtitle: an arm's base
+ * model code (SH1, AR1…), else the part's single-value Design column code
+ * (CL1…SC2 base covers), else its family (DRX/GVX fixtures — already codes).
+ */
+function partDesignCode(part: CatalogPart): string {
+  if (part.modelCodes?.[1]) return part.modelCodes[1]
+  const design = part.options?.find((o) => o.key === 'design')
+  if (design && design.values.length === 1) return design.values[0].code
+  return part.family
 }
 
 /**
@@ -365,9 +414,85 @@ function PartChoice({
             )}
           </span>
           <span className="option-name">{p.name}</span>
-          <span className="option-family">{p.family}</span>
+          <span className="option-family">{partDesignCode(p)}</span>
         </button>
       ))}
+    </div>
+  )
+}
+
+/**
+ * Phase 1.0: shaft placement for a checked pole accessory that specifies
+ * height & orientation (festoon, couplings, extra hand holes, flag/plant
+ * holders) — the banner arm's pattern, generalized. Orientation is relative
+ * to the 0° hand-hole reference. Product renders will later drive a viewer
+ * layer from this same data.
+ */
+function AccessoryPlacementBox({
+  code,
+  config,
+  poleFt,
+  minFt,
+  sideOptions,
+}: {
+  code: string
+  config: PoleConfig
+  poleFt: number
+  minFt: number
+  sideOptions?: number[]
+}) {
+  const setAccessoryPlacement = useConfigurator((s) => s.setAccessoryPlacement)
+  const maxFt = Math.max(2, Math.round(poleFt - 1))
+  // A label-declared minimum (FSTR's 37") is also the default placement.
+  const defaultFt = minFt > 2 ? minFt : Math.min(4, maxFt)
+  const placement = config.accessoryPlacements?.[code] ?? {
+    heightFt: defaultFt,
+    orientation: 0,
+    ...(sideOptions ? { sides: 1 } : {}),
+  }
+  return (
+    <div className="placement-box">
+      <label className="banner-height">
+        <span>Height up shaft: {ftLabel(placement.heightFt)}</span>
+        <input
+          type="range"
+          min={minFt}
+          max={maxFt}
+          step={1 / 12}
+          value={Math.min(placement.heightFt, maxFt)}
+          onChange={(e) => setAccessoryPlacement(code, { ...placement, heightFt: Number(e.target.value) })}
+        />
+      </label>
+      {sideOptions && (
+        <>
+          <p className="arm-count-label">Sides</p>
+          <div className="arm-count-options">
+            {sideOptions.map((n) => (
+              <button
+                key={n}
+                className={`arm-count-chip ${(placement.sides ?? 1) === n ? 'selected' : ''}`}
+                onClick={() => setAccessoryPlacement(code, { ...placement, sides: n })}
+                title={SIDE_LABELS[n] ?? `${n} sides`}
+              >
+                <span className="arm-count-name">{SIDE_LABELS[n] ?? `${n} sides`}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+      <p className="arm-count-label">Orientation</p>
+      <div className="arm-count-options">
+        {ARM_ORIENTATIONS.map((deg) => (
+          <button
+            key={deg}
+            className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
+            onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
+            title={`${deg}° from the hand-hole reference`}
+          >
+            <span className="arm-count-name">{deg}°</span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

@@ -19,11 +19,11 @@ interface Props {
   scene: Scene
 }
 
-// Fit is the floor: zoom only magnifies from the grounded fitted view. Zooming
-// out below fit just shrinks the product low in an empty frame — no purpose —
-// and (with pan) is how the old viewer got "stuck" off-centre.
-const MIN_ZOOM = 1
-const MAX_ZOOM = 4
+// Phase 1.0: a wider inspection range — step back to half fit for context,
+// and push in to 10× for close detail (clampPan keeps the product on screen
+// and everything self-heals back to grounded/centred at fit).
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 10
 /** Exponential step per wheel tick / button click, so zoom feels linear-ish at any level. */
 const WHEEL_SENSITIVITY = 0.0015
 const BUTTON_ZOOM_STEP = 1.25
@@ -71,12 +71,14 @@ function clampZoom(z: number): number {
  */
 export function CompositeViewer({ catalog, config, showScale, mode, scene }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
+  const viewYaw = useConfigurator((s) => s.viewYaw)
+  const setViewYaw = useConfigurator((s) => s.setViewYaw)
   const manifest = useRenderManifest()
   const night = mode === 'night'
 
   const layout = useMemo(
-    () => (manifest ? resolveAssemblyLayout(catalog, manifest, config) : null),
-    [catalog, manifest, config],
+    () => (manifest ? resolveAssemblyLayout(catalog, manifest, config, viewYaw) : null),
+    [catalog, manifest, config, viewYaw],
   )
 
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -185,7 +187,11 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   const resetView = () => {
     setZoom(1)
     setPan({ x: 0, y: 0 })
+    setViewYaw(0)
   }
+  // Phase 1.0: spin the assembly in 45° steps (the per-azimuth render compass).
+  const rotateLeft = () => setViewYaw(viewYaw - 45)
+  const rotateRight = () => setViewYaw(viewYaw + 45)
 
   if (manifest === undefined) {
     return <div className="composite-loading">Loading render…</div>
@@ -341,6 +347,13 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
       </div>
 
       <div className="composite-zoom">
+        <button type="button" onClick={rotateLeft} title="Rotate view 45° left" aria-label="Rotate view left">
+          ⟲
+        </button>
+        {viewYaw !== 0 && <span className="composite-yaw">{viewYaw}°</span>}
+        <button type="button" onClick={rotateRight} title="Rotate view 45° right" aria-label="Rotate view right">
+          ⟳
+        </button>
         <button type="button" onClick={zoomOut} title="Zoom out" aria-label="Zoom out">
           −
         </button>

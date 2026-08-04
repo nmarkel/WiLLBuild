@@ -35,6 +35,62 @@ export function specCodes(value: string | string[] | undefined): string[] {
   return (Array.isArray(value) ? value : [value]).filter(Boolean)
 }
 
+/** Marker text on pole-accessory values whose install point must be specified. */
+export const PLACEMENT_MARKER = 'Specify Pole Height & Orientation'
+
+/**
+ * A placement minimum declared in an accessory's own label (e.g. FSTR's
+ * "Minimum 37” Above Base Plate"), in feet — undefined when the label doesn't
+ * declare one (generic 2 ft floor applies).
+ */
+export function labelMinFt(label: string): number | undefined {
+  const m = label.match(/Minimum\s+(\d+)\s*[”"]/)
+  return m ? Number(m[1]) / 12 : undefined
+}
+
+/**
+ * Radial side counts an accessory may repeat on, by what it is: banner-arm
+ * kits go 1 / 2@180 / 4; couplings go single or opposite pair; everything
+ * else places once (undefined — no Sides chooser).
+ */
+export function accessorySideOptions(label: string): number[] | undefined {
+  if (label.includes('Banner Arm Kit')) return [1, 2, 4]
+  if (label.includes('Coupling')) return [1, 2]
+  if (label.includes('Flag Holder') || label.includes('Plant Holder')) return [1, 2]
+  return undefined
+}
+
+/** The label of a selected pole accessory value, for placement rules. */
+export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: string): string {
+  for (const opt of partById(catalog, config.pole)?.options ?? []) {
+    if (opt.group !== 'options-accessories') continue
+    const value = opt.values.find((v) => v.code === code)
+    if (value) return value.label
+  }
+  return ''
+}
+
+/**
+ * The pole-accessory codes currently selected on `config` that carry the
+ * placement marker — each gets a height/orientation config box (and, once
+ * product renders exist, a shaft layer in the viewer).
+ */
+export function placeableAccessoryCodes(catalog: Catalog, config: PoleConfig): string[] {
+  const options = partById(catalog, config.pole)?.options
+  if (!options) return []
+  const chosen = config.specOptions?.pole
+  if (!chosen) return []
+  const codes: string[] = []
+  for (const opt of options) {
+    if (opt.group !== 'options-accessories') continue
+    for (const code of specCodes(chosen[opt.key])) {
+      const value = opt.values.find((v) => v.code === code)
+      if (value?.label.includes(PLACEMENT_MARKER)) codes.push(code)
+    }
+  }
+  return codes
+}
+
 /**
  * Options & accessories are multi-select, but some codes are variants of one
  * physical thing (a cord length, a surge suppressor voltage, a photocontrol
@@ -207,12 +263,16 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
     next.finish = catalog.finishes[0].id
   }
-  // Phase 1.0: per-slot finish overrides — keep only known finish ids.
+  // Phase 1.0: per-slot finish overrides — keep only known finish ids the
+  // selected part actually offers (anodized colors are pole/aluminum-only).
   if (next.finishes) {
     const cleaned: Partial<Record<Slot, string>> = {}
     for (const slot of SLOT_ORDER) {
       const id = next.finishes[slot]
-      if (id && catalog.finishes.some((f) => f.id === id)) cleaned[slot] = id
+      if (!id || !catalog.finishes.some((f) => f.id === id)) continue
+      const offered = partById(catalog, next[slot])?.finishes
+      if (offered && offered.length > 0 && !offered.includes(id) && id !== 'custom-ral') continue
+      cleaned[slot] = id
     }
     next.finishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
@@ -278,6 +338,36 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   if (next.armOrientation !== undefined) {
     next.armOrientation = ARM_ORIENTATIONS.includes(next.armOrientation) ? next.armOrientation : 0
     if (next.armOrientation === 0) next.armOrientation = undefined
+  }
+  // Phase 1.0: accessory placements exist only while their code is selected
+  // on the pole; height clamps to the shaft and orientation to the compass set.
+  if (next.accessoryPlacements) {
+    const placeable = new Set(placeableAccessoryCodes(catalog, next))
+    const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
+    const cleaned: NonNullable<PoleConfig['accessoryPlacements']> = {}
+    for (const [code, p] of Object.entries(next.accessoryPlacements)) {
+      if (!placeable.has(code) || !p) continue
+      const maxFt = Math.max(2, Math.round(poleFt - 1))
+      // Label-declared minimum wins (FSTR: 37" above base plate); heights are
+      // inch-granular so such minimums are representable exactly.
+      const label = poleAccessoryLabel(catalog, next, code)
+      // Banner kits keep the banner's 8 ft clearance floor; a label-declared
+      // minimum (FSTR's 37") wins where present; 2 ft generic otherwise.
+      const minFt =
+        labelMinFt(label) ?? (label.includes('Banner Arm Kit') ? BANNER_MIN_FT : 2)
+      const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
+      const orientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
+      // Sides exist only where the accessory supports them, clamped to its set.
+      const sideOptions = accessorySideOptions(label)
+      const sides =
+        sideOptions && p.sides !== undefined
+          ? sideOptions.includes(p.sides)
+            ? p.sides
+            : 1
+          : undefined
+      cleaned[code] = sides !== undefined ? { heightFt, orientation, sides } : { heightFt, orientation }
+    }
+    next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
   // Phase 0.8 (C): drop a banner selection that is no longer a valid part.
   if (next.banner) {

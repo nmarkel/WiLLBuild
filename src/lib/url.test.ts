@@ -13,7 +13,7 @@ const config: PoleConfig = {
   configId: 'test',
   brand: 'WiLLstudio',
   pole: 'alum-pole-14',
-  baseCover: 'bc-fluted',
+  baseCover: 'bc-cl2-medium-clamshell',
   arm: 'upsweep',
   fixture: 'drx-post-top',
   finish: 'forest-green',
@@ -25,7 +25,7 @@ describe('config <-> URL params', () => {
     const partial = paramsToPartialConfig(configToParams(config))
     expect(partial).toEqual({
       pole: 'alum-pole-14',
-      baseCover: 'bc-fluted',
+      baseCover: 'bc-cl2-medium-clamshell',
       arm: 'upsweep',
       fixture: 'drx-post-top',
       finish: 'forest-green',
@@ -286,5 +286,28 @@ describe('arm orientation <-> URL params (Phase 1.0)', () => {
 
   it('ignores an out-of-set orientation', () => {
     expect(paramsToPartialConfig(new URLSearchParams('?orient=45'))?.armOrientation).toBeUndefined()
+  })
+})
+
+describe('accessory placements <-> URL params (Phase 1.0)', () => {
+  it('round-trips placements as code~ft~deg', () => {
+    const accessoryPlacements = { FSTR: { heightFt: 6, orientation: 90 }, FH: { heightFt: 9, orientation: 0 } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('FH~9~0,FSTR~6~90')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
+  })
+
+  it('drops malformed placement entries', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?place=FSTR~x~90,FH~9~0'))
+    expect(partial?.accessoryPlacements).toEqual({ FH: { heightFt: 9, orientation: 0 } })
+  })
+})
+
+describe('accessory placement sides <-> URL (Phase 1.0)', () => {
+  it('round-trips the optional sides token', () => {
+    const accessoryPlacements = { BA24: { heightFt: 10, orientation: 90, sides: 2 } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('BA24~10~90~2')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
   })
 })
