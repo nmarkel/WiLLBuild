@@ -20,7 +20,7 @@ free for commercial and personal use, no attribution required, no sign-up.
 |-------|------|--------------|-------------|
 | Park | `park.jpg` | ID 17952424 | https://www.pexels.com/photo/17952424/ |
 | Street side | `street.jpg` | ID 38336361 | https://www.pexels.com/photo/38336361/ |
-| Parking lot | `parking.jpg` | ID 12131159 | https://www.pexels.com/photo/12131159/ |
+| Parking lot | `parking.jpg` | ID 250659 | https://www.pexels.com/photo/250659/ |
 
 ## Processing
 
