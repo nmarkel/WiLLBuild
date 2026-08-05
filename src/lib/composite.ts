@@ -198,7 +198,10 @@ export function resolveAssemblyLayout(
   const lightWorlds: [number, number, number][] = []
 
   if (pole) {
-    placements.push({ layerId: pole.id, part: pole, angle: HERO_ANGLE, world: [0, 0, 0], z: SLOT_Z.pole })
+    // The pole rotates with the view too — its hand-hole cover marks the 0°
+    // homing reference (real-render poles without a compass snap to nearest).
+    const poleAngle = angleKeyForAzimuth((((0 - viewYaw) % 360) + 360) % 360)
+    placements.push({ layerId: pole.id, part: pole, angle: poleAngle, world: [0, 0, 0], z: SLOT_Z.pole })
     if (baseCover) {
       const s = attachSocket(baseCover, pole)
       if (s)

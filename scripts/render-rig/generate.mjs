@@ -149,7 +149,10 @@ async function main() {
       // one render per discrete mount azimuth (0°=hero + the twin/triple/quad
       // angles). Everything else (poles, base covers, standalone) is single-view.
       // The union of angles across single/twin/triple/quad is bounded — 6 total.
-      const isRadial = part.slot === 'arm' || part.slot === 'fixture' || part.slot === 'banner'
+      // Poles joined the radial set in Phase 1.0: the baked hand-hole cover
+      // breaks their rotational symmetry, so the view spin needs their compass.
+      const isRadial =
+        part.slot === 'arm' || part.slot === 'fixture' || part.slot === 'banner' || part.slot === 'pole'
       // Phase 1.0: full 45° compass — arm arrangements/orientations are
       // 90°-stepped, and the viewer's 8-angle assembly spin shifts them by
       // 45°, so every multiple of 45° must exist. (az120/az240 died with the
