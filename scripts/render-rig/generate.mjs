@@ -135,10 +135,24 @@ async function main() {
       if (realRel && !realLoaded) {
         // Real-render part whose design file isn't on this machine — skip it
         // so the committed real renders survive, and keep its manifest entry.
+        // If the rig's pixel density changed since the entry was written, its
+        // pixel dimensions/anchors scale by the ratio (the image FILE stays at
+        // its old density; the compositor draws it at the entry's size).
         const prev = existingManifest?.parts?.[part.id]
         if (prev) {
-          manifestParts[part.id] = prev
-          console.log(`  ${part.id}: real design file unavailable — render skipped, manifest entry preserved`)
+          const ratio = rig.pxPerMeter / (existingManifest.rig?.pxPerMeter ?? rig.pxPerMeter)
+          const scaled = JSON.parse(JSON.stringify(prev))
+          if (ratio !== 1) {
+            for (const angle of Object.values(scaled.angles)) {
+              for (const a of Object.values(angle.finishes)) {
+                a.width = Math.round(a.width * ratio * 100) / 100
+                a.height = Math.round(a.height * ratio * 100) / 100
+                a.anchor = [a.anchor[0] * ratio, a.anchor[1] * ratio]
+              }
+            }
+          }
+          manifestParts[part.id] = scaled
+          console.log(`  ${part.id}: real design file unavailable — render skipped, manifest entry preserved${ratio !== 1 ? ` (scaled ×${ratio})` : ''}`)
         } else {
           console.error(`  ${part.id}: real design file unavailable and no prior manifest entry — part left unrendered`)
           failures++

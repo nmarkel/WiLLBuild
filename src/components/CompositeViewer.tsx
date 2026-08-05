@@ -234,6 +234,8 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   }
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
+  // The yaw the layout actually drew (snapped to the assembly's shared step).
+  const appliedYaw = layout.appliedViewYaw ?? viewYaw
   const shadowWidthPx = GROUND_SHADOW_M[0] * pxPerMeterY
   const shadowHeightPx = GROUND_SHADOW_M[1] * pxPerMeterY
 
@@ -365,15 +367,15 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           <svg className="composite-compass" style={{ overflow: 'visible' }} aria-hidden="true">
             <polygon
               points={Array.from({ length: 48 }, (_, i) => {
-                const p = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], i * 7.5 - viewYaw))
+                const p = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], i * 7.5 - appliedYaw))
                 return `${p[0]},${p[1]}`
               }).join(' ')}
               className="composite-compass-ring"
             />
             {[0, 90, 180, 270].map((a) => {
-              const tickIn = pointInLayout(layout, manifest, rotateY([COMPASS_R_M * 0.88, 0, 0], a - viewYaw))
-              const tickOut = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], a - viewYaw))
-              const label = pointInLayout(layout, manifest, rotateY([COMPASS_LABEL_R_M, 0, 0], a - viewYaw))
+              const tickIn = pointInLayout(layout, manifest, rotateY([COMPASS_R_M * 0.88, 0, 0], a - appliedYaw))
+              const tickOut = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], a - appliedYaw))
+              const label = pointInLayout(layout, manifest, rotateY([COMPASS_LABEL_R_M, 0, 0], a - appliedYaw))
               return (
                 <g key={a} className={a === 0 ? 'composite-compass-zero' : undefined}>
                   <line x1={tickIn[0]} y1={tickIn[1]} x2={tickOut[0]} y2={tickOut[1]} />

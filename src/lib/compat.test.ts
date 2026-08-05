@@ -24,7 +24,8 @@ const sortedIds = (parts: { id: string }[]) => parts.map((p) => p.id).sort()
 
 describe('compatibleParts (fixture-first)', () => {
   it('offers every fixture unconditionally', () => {
-    expect(compatibleParts(catalog, config({}), 'fixture')).toHaveLength(4)
+    // DRX, TEX, MVX, GVX + the DWX flood (Phase 1.0)
+    expect(compatibleParts(catalog, config({}), 'fixture')).toHaveLength(5)
   })
 
   it('offers only pendant arms for the GVX pendant', () => {
@@ -112,8 +113,8 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'bc-sc1-spun-collar', 'bc-sc2-spun-collar-split',
   ].sort()
 
-  it('both post-top fixtures accept the same post-top arm list (with direct mount)', () => {
-    for (const fixture of ['drx-post-top', 'tex-post-top']) {
+  it('post-top-mount fixtures accept the same post-top arm list (with direct mount)', () => {
+    for (const fixture of ['drx-post-top', 'tex-post-top', 'willstudio-dwx-flood-spot']) {
       const ids = sortedIds(compatibleParts(catalog, config({ fixture }), 'arm'))
       expect(ids).toEqual(POST_TOP_ARMS)
     }

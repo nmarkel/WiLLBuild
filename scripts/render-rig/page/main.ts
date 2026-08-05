@@ -35,7 +35,7 @@ async function loadRealModel(
 }
 
 // ---- Rig constants (shared across every part → layer coherence) -------------
-const PX_PER_M = 180
+const PX_PER_M = 360 // 2x supersample — assets downscale crisply in the viewer
 const MAX_CANVAS = 4096
 const AZIMUTH_DEG = 35
 const ELEVATION_DEG = 6
@@ -123,19 +123,19 @@ function specToObject(spec: PlaceholderSpec, material: THREE.Material): THREE.Ob
   switch (spec.kind) {
     case 'pole':
     case 'baseCover': {
-      const geo = new THREE.CylinderGeometry(spec.radiusTopM, spec.radiusBottomM, spec.heightM, 32)
+      const geo = new THREE.CylinderGeometry(spec.radiusTopM, spec.radiusBottomM, spec.heightM, 96)
       const mesh = new THREE.Mesh(geo, material)
       mesh.position.y = spec.heightM / 2
       return mesh
     }
     case 'tube': {
       const curve = new THREE.CatmullRomCurve3(spec.points.map((p) => new THREE.Vector3(...p)))
-      const geo = new THREE.TubeGeometry(curve, 32, spec.radiusM, 12, false)
+      const geo = new THREE.TubeGeometry(curve, 96, spec.radiusM, 24, false)
       return new THREE.Mesh(geo, material)
     }
     case 'lathe': {
       const pts = spec.profile.map(([r, y]) => new THREE.Vector2(r, y))
-      const geo = new THREE.LatheGeometry(pts, 48)
+      const geo = new THREE.LatheGeometry(pts, 96)
       return new THREE.Mesh(geo, material)
     }
     case 'prism': {
@@ -158,7 +158,7 @@ function specToObject(spec: PlaceholderSpec, material: THREE.Material): THREE.Ob
     }
     case 'cone': {
       const up = spec.direction === 'up'
-      const geo = new THREE.ConeGeometry(spec.radiusM, spec.heightM, 32)
+      const geo = new THREE.ConeGeometry(spec.radiusM, spec.heightM, 64)
       const mesh = new THREE.Mesh(geo, material)
       mesh.position.y = up ? spec.heightM / 2 : -spec.heightM / 2
       mesh.rotation.x = up ? 0 : Math.PI

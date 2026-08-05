@@ -85,6 +85,11 @@ export interface CompositeLayout {
   origin: [number, number]
   /** Part ids in the config that have no render asset (→ fallback UI). */
   missing: string[]
+  /**
+   * The view yaw actually applied — the request snapped to the coarsest step
+   * every rotating part renders (overlays like the compass must use this).
+   */
+  appliedViewYaw?: number
   /** Pixel position of the primary fixture's light source (night glow), when known. */
   lightPx?: [number, number]
   /**
@@ -183,6 +188,23 @@ export function resolveAssemblyLayout(
   const baseCover = partById(catalog, config.baseCover)
   const arm = partById(catalog, config.arm)
   const fixture = partById(catalog, config.fixture)
+
+  // The assembly rotates as ONE object: snap the requested view yaw to the
+  // coarsest angle step every rotating part can actually render. Per-part
+  // snapping would rotate parts by different amounts and shear the assembly
+  // apart. Parts with only a hero render (real-render poles awaiting their
+  // compass) are treated as rotation-symmetric and don't constrain the step.
+  const rotatingParts = [pole, arm, fixture].filter(
+    (p): p is CatalogPart => !!p,
+  )
+  const supports45 = rotatingParts.every((p) => {
+    const angles = manifest.parts[p.id]?.angles
+    if (!angles) return true
+    const keys = Object.keys(angles)
+    return keys.length <= 1 || 'az45' in angles
+  })
+  const yawStep = supports45 ? 45 : 90
+  viewYaw = ((Math.round(viewYaw / yawStep) * yawStep) % 360 + 360) % 360
 
   // A placement carries a unique layer id, the real part (for missing-render
   // reporting), the render angle key, and the world offset. armCount=1 produces
@@ -369,6 +391,7 @@ export function resolveAssemblyLayout(
     height: maxY - minY,
     origin,
     missing,
+    appliedViewYaw: viewYaw,
   }
   if (lightWorlds.length && !missing.length) {
     const lightPxs = lightWorlds.map((w) => pointInLayout(layout, manifest, w))

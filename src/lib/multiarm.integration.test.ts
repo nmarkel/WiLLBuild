@@ -187,16 +187,30 @@ describe('assembly view rotation — real assets', () => {
     expect(files).toContain('az315')
   })
 
-  it('a 45° view resolves the nearest angle for real-render parts (no 45° compass yet)', () => {
-    // The suspension arm is real-parts-registered (6 preserved angles):
-    // 135° → az120, 315° → az270 — close render beats a missing layer.
+  it('assemblies with real-render parts rotate coherently in 90° steps', () => {
+    // The suspension arm + GVX carry only 90°-step renders, so the WHOLE
+    // assembly snaps: a 45° request applies as 90° for every part — parts
+    // never rotate by different amounts and shear apart.
     const twin = repairConfig(catalog, { ...base, armCount: 2 })
-    const layout = resolveAssemblyLayout(catalog, manifest, twin, 45)
-    const files = layout.layers
+    const at45 = resolveAssemblyLayout(catalog, manifest, twin, 45)
+    const at90 = resolveAssemblyLayout(catalog, manifest, twin, 90)
+    expect(at45.appliedViewYaw).toBe(90)
+    expect(at45).toEqual(at90)
+    const files = at45.layers
       .filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets'))
       .map((l) => l.asset.file)
       .join(',')
-    expect(files).toContain('az120')
     expect(files).toContain('az270')
+    expect(files).toContain('az90')
+  })
+
+  it('all-rig assemblies apply 45° exactly', () => {
+    const twin = repairConfig(catalog, {
+      ...base,
+      fixture: 'mvx-coach',
+      arm: 'willstudio-hsx-decorative-upsweep-arms',
+      armCount: 2,
+    })
+    expect(resolveAssemblyLayout(catalog, manifest, twin, 45).appliedViewYaw).toBe(45)
   })
 })

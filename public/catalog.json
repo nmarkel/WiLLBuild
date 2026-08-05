@@ -16010,24 +16010,36 @@
     },
     {
       "id": "willstudio-dwx-flood-spot",
-      "slot": "standalone",
+      "slot": "fixture",
       "line": "WiLLstudio",
       "category": "DWX Flood & Spot",
-      "productClass": "standalone",
+      "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
       "name": "WiLLstudio® DWX Flood & Spot",
-      "family": "WiLLstudio Fixtures",
+      "family": "DWX",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/DWX-45.jpg?v=1763042175",
       "thumbnail": null,
       "model": null,
       "keywords": [
         "dwx",
         "flood",
-        "spot"
+        "spot",
+        "floodlight"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-dwx-flood-spot",
-      "finishes": [],
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
       "placeholder": {
         "kind": "group",
         "children": [
@@ -16117,7 +16129,14 @@
             ]
           }
         ]
-      }
+      },
+      "mount": "tenon-2-3/8",
+      "sockets": {},
+      "lightOffset": [
+        0.05,
+        0.25,
+        0
+      ]
     },
     {
       "id": "willstudio-fr2-decorative-crossarm",
