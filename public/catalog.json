@@ -3078,8 +3078,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 3.66,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.07
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -3098,7 +3098,7 @@
               "direction": "up"
             },
             "position": [
-              0.067,
+              0.0635,
               0.3175,
               0
             ]
@@ -3762,8 +3762,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 4.27,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.075
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -3782,7 +3782,7 @@
               "direction": "up"
             },
             "position": [
-              0.072,
+              0.0635,
               0.3175,
               0
             ]
@@ -4446,8 +4446,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 4.88,
-              "radiusTopM": 0.05,
-              "radiusBottomM": 0.08
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -4466,7 +4466,7 @@
               "direction": "up"
             },
             "position": [
-              0.078,
+              0.0635,
               0.3175,
               0
             ]
@@ -5130,8 +5130,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 6.1,
-              "radiusTopM": 0.05,
-              "radiusBottomM": 0.09
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -5150,7 +5150,7 @@
               "direction": "up"
             },
             "position": [
-              0.088,
+              0.0635,
               0.3175,
               0
             ]
@@ -5814,8 +5814,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 2.44,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.075
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -5834,7 +5834,7 @@
               "direction": "up"
             },
             "position": [
-              0.07,
+              0.0635,
               0.3175,
               0
             ]
@@ -6498,8 +6498,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 3.05,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.075
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -6518,7 +6518,7 @@
               "direction": "up"
             },
             "position": [
-              0.071,
+              0.0635,
               0.3175,
               0
             ]
@@ -7182,8 +7182,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 4.57,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.075
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -7202,7 +7202,7 @@
               "direction": "up"
             },
             "position": [
-              0.072,
+              0.0635,
               0.3175,
               0
             ]
@@ -7866,8 +7866,8 @@
             "spec": {
               "kind": "pole",
               "heightM": 5.49,
-              "radiusTopM": 0.045,
-              "radiusBottomM": 0.075
+              "radiusTopM": 0.0635,
+              "radiusBottomM": 0.0635
             },
             "position": [
               0,
@@ -7886,7 +7886,7 @@
               "direction": "up"
             },
             "position": [
-              0.073,
+              0.0635,
               0.3175,
               0
             ]

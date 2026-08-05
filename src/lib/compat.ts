@@ -369,6 +369,18 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
+  // Phase 1.0: brands whose pole sheet carries banner-kit accessories
+  // (BA24/BA30) configure banners exclusively through those placements — a
+  // legacy `banner` from an old share URL would render an unremovable panel.
+  if (
+    next.banner &&
+    partById(catalog, next.pole)?.options?.some(
+      (o) =>
+        o.group === 'options-accessories' && o.values.some((v) => v.label.includes('Banner Arm Kit')),
+    )
+  ) {
+    next.banner = null
+  }
   // Phase 0.8 (C): drop a banner selection that is no longer a valid part.
   if (next.banner) {
     const bannerPart = partById(catalog, next.banner.armId)

@@ -432,23 +432,36 @@ describe('repairConfig — arm count clamping', () => {
   })
 })
 
-describe('repairConfig — banner shaft-height clamping (Phase 0.9)', () => {
-  const bannerId = 'willstudio-ba1-banner-arm'
+describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path, NAFCO)', () => {
+  // WiLLstudio banners flow through BA24/BA30 accessory placements in 1.0 —
+  // the legacy config.banner path survives only for brands whose pole sheets
+  // carry no banner-kit accessory (NAFCO / WiLLsport).
+  const bannerId = 'nafco-ba1-banner-arm'
+  const nafcoCfg = repairConfig(
+    catalog,
+    config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
+  )
+  const poleFt = partById(catalog, nafcoCfg.pole)?.heightFt ?? 20
+  const maxFt = Math.max(8, Math.round(poleFt - 2))
 
   it('clamps an out-of-range height from a crafted share link down to the pole max', () => {
-    // 14 ft pole → usable max = round(14 - 2) = 12 ft; a 9999 ft link must clamp.
-    const cfg = config({ pole: 'alum-pole-14', banner: { armId: bannerId, count: 2, heightFt: 9999 } })
-    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(12)
+    const cfg = { ...nafcoCfg, banner: { armId: bannerId, count: 2, heightFt: 9999 } }
+    expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(maxFt)
   })
 
   it('clamps a below-floor height up to the 8 ft minimum (Phase 1.0)', () => {
-    const cfg = config({ pole: 'alum-pole-14', banner: { armId: bannerId, count: 1, heightFt: 0 } })
+    const cfg = { ...nafcoCfg, banner: { armId: bannerId, count: 1, heightFt: 0 } }
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
   })
 
   it('leaves an in-range height untouched', () => {
-    const cfg = config({ pole: 'alum-pole-20', banner: { armId: bannerId, count: 2, heightFt: 8 } })
+    const cfg = { ...nafcoCfg, banner: { armId: bannerId, count: 2, heightFt: 8 } }
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
+  })
+
+  it('strips a legacy banner on brands with banner-kit accessories (WiLLstudio)', () => {
+    const cfg = config({ pole: 'alum-pole-14', banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt: 10 } })
+    expect(repairConfig(catalog, cfg).banner).toBeNull()
   })
 })
 

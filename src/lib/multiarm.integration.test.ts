@@ -74,8 +74,21 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
 })
 
 // Phase 0.8 (C, DoD #9): a banner-arm config renders + composites end-to-end.
-describe('banner arm — real assets', () => {
-  const bannerPart = catalog.parts.find((p) => p.slot === 'banner')
+// Legacy config.banner path — WiLLstudio moved to BA24/BA30 accessory
+// placements in 1.0, so this proof runs on NAFCO (still Banner Arm box).
+describe('banner arm — real assets (legacy path, NAFCO)', () => {
+  const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === 'NAFCO')
+  const nafcoBase: PoleConfig = repairConfig(catalog, {
+    configId: 'banner-e2e',
+    brand: 'NAFCO',
+    pole: '',
+    baseCover: '',
+    arm: '',
+    fixture: 'nafco-chx-cobrahead',
+    finish: 'matte-black',
+    rev: 1,
+    armCount: 1,
+  })
 
   it('the banner-arm category exists in the catalog', () => {
     expect(bannerPart).toBeDefined()
@@ -88,7 +101,7 @@ describe('banner arm — real assets', () => {
     [4, 4],
   ])('an opposite/multi-side banner (count=%i) composites with 0 missing and %i banner layers', (count, expected) => {
     const config = repairConfig(catalog, {
-      ...base,
+      ...nafcoBase,
       banner: { armId: bannerPart!.id, count, heightFt: 8 },
     })
     expect(config.banner?.count).toBe(count)
@@ -100,12 +113,12 @@ describe('banner arm — real assets', () => {
 
   it('places the banner at the configured mid-shaft height (below the arm)', () => {
     const config = repairConfig(catalog, {
-      ...base,
+      ...nafcoBase,
       banner: { armId: bannerPart!.id, count: 1, heightFt: 8 },
     })
     const layout = resolveAssemblyLayout(catalog, manifest, config)
     const banner = layout.layers.find((l) => l.partId.startsWith(bannerPart!.id))!
-    const arm = layout.layers.find((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets'))!
+    const arm = layout.layers.find((l) => l.partId.startsWith(nafcoBase.arm))!
     // Banner at 8 ft sits below the arm at the 20 ft pole top (larger top = lower on screen).
     expect(banner.top).toBeGreaterThan(arm.top)
   })

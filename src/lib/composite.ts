@@ -214,9 +214,14 @@ export function resolveAssemblyLayout(
         const orientation = config.armOrientation ?? 0
         const azimuths = armAzimuths(count).map((a) => (((a + orientation - viewYaw) % 360) + 360) % 360)
         const fixSocket = fixture ? attachSocket(fixture, arm) : undefined
-        azimuths.forEach((deg, i) => {
+        azimuths.forEach((rawDeg, i) => {
           const single = count === 1
-          const angle = angleKeyForAzimuth(deg)
+          // Snap the arm's GEOMETRY to the angle it can actually render:
+          // position math and artwork must rotate together, or a real-render
+          // arm (no 45° compass yet) draws at one angle while its fixture
+          // hangs at another and the assembly visibly disconnects.
+          const angle = nearestAngleKey(manifest, arm.id, angleKeyForAzimuth(rawDeg))
+          const deg = angleKeyDeg(angle)
           // The arm mounts on the pole's vertical axis, so its origin is
           // rotation-invariant; the reach is baked into the per-azimuth render.
           const armWorld: [number, number, number] = [...armSocket.position]
