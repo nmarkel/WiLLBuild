@@ -8,9 +8,12 @@ const viewport = { w: 1200, h: 800 }
 const base = { zoom: 2, scale: 1.5, box, viewport, horizonFrac: 0.8 }
 
 describe('clampPan', () => {
-  it('returns {0,0} when not zoomed in (zoom <= 1) regardless of input', () => {
-    expect(clampPan({ x: 500, y: -300 }, { ...base, zoom: 1 })).toEqual({ x: 0, y: 0 })
-    expect(clampPan({ x: 500, y: -300 }, { ...base, zoom: 0.6 })).toEqual({ x: 0, y: 0 })
+  it('allows placement panning at fit and below (Phase 1.0), still bounded', () => {
+    // Dragging at any zoom places the product in the backdrop photo — a small
+    // pan passes through unchanged even at fit.
+    expect(clampPan({ x: 50, y: -30 }, { ...base, zoom: 1, scale: 0.6 })).toEqual({ x: 50, y: -30 })
+    const flung = clampPan({ x: 100000, y: 0 }, { ...base, zoom: 0.6, scale: 0.4 })
+    expect(flung.x).toBeLessThan(100000)
   })
 
   it('returns {0,0} when the viewport has no size yet', () => {

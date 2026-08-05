@@ -11,8 +11,21 @@ import { BrandProductList, firstBrandProduct } from './components/BrandProductLi
 import { ScenePicker } from './components/ScenePicker'
 
 export default function App() {
-  const { catalog, config, showScale, mode, scene, view, brand, loadCatalog, toggleScale, toggleMode, openHome } =
-    useConfigurator()
+  const {
+    catalog,
+    config,
+    showScale,
+    showCompass,
+    mode,
+    scene,
+    view,
+    brand,
+    loadCatalog,
+    toggleScale,
+    toggleCompass,
+    toggleMode,
+    openHome,
+  } = useConfigurator()
 
   useEffect(() => {
     loadCatalog()
@@ -103,7 +116,14 @@ export default function App() {
         <OutputTray catalog={catalog} config={config} />
       </aside>
       <main className="viewport">
-        <CompositeViewer catalog={catalog} config={config} showScale={showScale} mode={mode} scene={scene} />
+        <CompositeViewer
+          catalog={catalog}
+          config={config}
+          showScale={showScale}
+          showCompass={showCompass}
+          mode={mode}
+          scene={scene}
+        />
         {mode === 'night' && (
           <div className="night-disclaimer">Conceptual night preview — not a photometric simulation</div>
         )}
@@ -118,6 +138,13 @@ export default function App() {
           </button>
           <button className="scale-toggle" onClick={toggleScale}>
             {showScale ? 'Hide' : 'Show'} human scale
+          </button>
+          <button
+            className="scale-toggle"
+            onClick={toggleCompass}
+            title="Ground compass at the pole base — 0° marks the hand-hole reference"
+          >
+            {showCompass ? 'Hide' : 'Show'} compass
           </button>
         </div>
       </main>

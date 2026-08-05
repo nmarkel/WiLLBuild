@@ -7,11 +7,10 @@
  * stuck (dragging is disabled at fit, so only Reset recovers it). `clampPan`
  * makes the displayed offset a bounded, self-healing function of state:
  *
- *   - at fit or smaller (zoom <= 1) there is nothing to inspect, so pan is 0
- *     and the product sits grounded and centred;
- *   - when zoomed in, pan is clamped so the scaled product box always keeps a
- *     margin of overlap with the viewport — you can pan across the whole
- *     product (e.g. down to the fixture) but never fling it off-screen.
+ *   - pan works at ANY zoom (Phase 1.0: dragging the product places it in the
+ *     backdrop photo), clamped so the scaled product box always keeps a margin
+ *     of overlap with the viewport — you can put the pole anywhere in frame
+ *     but never fling it off-screen; Reset restores grounded/centred.
  *
  * Deriving the effective pan every render (rather than mutating stored pan)
  * means the view can never get into a stuck state regardless of the order of
@@ -42,8 +41,8 @@ export function clampPan(
   pan: { x: number; y: number },
   opts: PanClampOpts,
 ): { x: number; y: number } {
-  const { zoom, scale, box, viewport, horizonFrac } = opts
-  if (zoom <= 1 || viewport.w <= 0 || viewport.h <= 0) return { x: 0, y: 0 }
+  const { scale, box, viewport, horizonFrac } = opts
+  if (viewport.w <= 0 || viewport.h <= 0) return { x: 0, y: 0 }
 
   // Product box edges in screen space at pan = 0 (foot pinned to the horizon).
   const footX = viewport.w / 2

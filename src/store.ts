@@ -41,6 +41,9 @@ interface ConfiguratorState {
    */
   viewYaw: number
   setViewYaw: (deg: number) => void
+  /** Phase 1.0: ground compass at the pole base (0/90/180/270 reference). */
+  showCompass: boolean
+  toggleCompass: () => void
   /** Phase 1.0: object URL of the user-uploaded custom backdrop (session-only). */
   customSceneUrl: string | null
   /** Store an uploaded backdrop photo and switch to it. */
@@ -254,6 +257,9 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
 
   viewYaw: 0,
   setViewYaw: (deg) => set({ viewYaw: ((Math.round(deg / 45) * 45) % 360 + 360) % 360 }),
+
+  showCompass: false,
+  toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
 
   customSceneUrl: null,
   setCustomScene: (url) => {
