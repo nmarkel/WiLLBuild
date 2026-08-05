@@ -12490,121 +12490,49 @@
       "angles": {
         "hero": {
           "finishes": {
-            "black-anodized": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--black-anodized.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--bronze-anodized.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--custom-ral.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--dark-platinum.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
-              ]
-            },
             "forest-green": {
               "file": "renders/bc-cl2-medium-clamshell--hero--forest-green.webp",
-              "width": 81,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                41,
-                70.83
+                45.5,
+                108.16
               ]
             },
             "gloss-white": {
               "file": "renders/bc-cl2-medium-clamshell--hero--gloss-white.webp",
-              "width": 81,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--graphite-metallic.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "light-gray": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--light-gray.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
+                45.5,
+                108.16
               ]
             },
             "matte-black": {
               "file": "renders/bc-cl2-medium-clamshell--hero--matte-black.webp",
-              "width": 81,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--satin-silver-anodized.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
+                45.5,
+                108.16
               ]
             },
             "silver": {
               "file": "renders/bc-cl2-medium-clamshell--hero--silver.webp",
-              "width": 81,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                41,
-                70.83
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/bc-cl2-medium-clamshell--hero--slate-gray.webp",
-              "width": 81,
-              "height": 81,
-              "anchor": [
-                41,
-                70.83
+                45.5,
+                108.16
               ]
             },
             "statuary-bronze": {
               "file": "renders/bc-cl2-medium-clamshell--hero--statuary-bronze.webp",
-              "width": 81,
-              "height": 81,
+              "width": 91,
+              "height": 119,
               "anchor": [
-                41,
-                70.83
+                45.5,
+                108.16
               ]
             }
           }

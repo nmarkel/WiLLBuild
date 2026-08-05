@@ -186,6 +186,10 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   }, [layout, manifest, night, showScale, registerSnapshot])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // Presses on the viewer's own controls (rotate/zoom/reset) must stay
+    // clicks — capturing the pointer here would retarget their events to the
+    // wrapper and swallow them.
+    if ((e.target as HTMLElement).closest('button')) return
     e.currentTarget.setPointerCapture(e.pointerId)
     dragRef.current = {
       startX: e.clientX,
@@ -405,7 +409,6 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         <button type="button" onClick={rotateLeft} title="Rotate view 45° left" aria-label="Rotate view left">
           ⟲
         </button>
-        {viewYaw !== 0 && <span className="composite-yaw">{viewYaw}°</span>}
         <button type="button" onClick={rotateRight} title="Rotate view 45° right" aria-label="Rotate view right">
           ⟳
         </button>

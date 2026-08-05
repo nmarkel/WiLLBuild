@@ -1728,16 +1728,6 @@ body {
   fill: #7f6717;
 }
 
-/* Phase 1.0: current view rotation badge between the spin buttons. */
-.composite-yaw {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--will-gray);
-  background: var(--will-yellow);
-  border-radius: 999px;
-  padding: 2px 7px;
-}
-
 .composite-zoom button {
   display: grid;
   place-items: center;
