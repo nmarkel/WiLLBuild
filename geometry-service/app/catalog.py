@@ -199,6 +199,20 @@ def validate_config(catalog: dict, cfg: PoleConfig) -> None:
                 f"pole sockets={list(pole_part.get('sockets', {}).keys())})"
             )
 
+    # --- armCount must be a layout this family can actually be ordered in.
+    # Mirrors allowedArmCounts in src/lib/compat.ts: the intersection of the
+    # pole's and the arm's `arrangements` (absent → single only). Tyler's
+    # catalog carries `arrangements` on 55 parts. ---
+    if pole_part is not None and arm_part is not None and cfg.armCount in (1, 2, 3, 4):
+        pole_set = pole_part.get("arrangements") or [1]
+        arm_set = arm_part.get("arrangements") or [1]
+        allowed = sorted({n for n in pole_set if n in arm_set and 1 <= n <= 4}) or [1]
+        if cfg.armCount not in allowed:
+            problems.append(
+                f"armCount {cfg.armCount} not orderable for arm {cfg.arm!r} "
+                f"on pole {cfg.pole!r} (allowed: {allowed})"
+            )
+
     if pole_part is not None and base_cover_part is not None:
         if not _can_host(pole_part, base_cover_part):
             problems.append(

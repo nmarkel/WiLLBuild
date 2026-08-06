@@ -463,7 +463,9 @@ class TestMultiArmGenerate:
             configId="twin-http-0001",
             pole="alum-pole-20",
             baseCover=bc_alum20,
-            arm="sh1-shepherds-hook",
+            # Phase 0.10: the Side Shepherds Hook (SS1..SS4) is the valid
+            # multi-arm family — SH1 is single-only on the ordering matrix.
+            arm="willstudio-side-shepherds-hook-pole-top-brackets",
             fixture="gvx-pendant",
             finish="matte-black",
             rev=1,
@@ -505,6 +507,18 @@ class TestMultiArmGenerate:
         )
         assert resp.status_code == 422
         assert "armCount" in resp.json()["detail"]
+
+    def test_unorderable_armcount_returns_422(self, bc_alum20) -> None:
+        """A 3-arm SH1 has no design code on the matrix, so it must not build."""
+        cfg = self._twin_cfg(bc_alum20)
+        cfg["arm"] = "sh1-shepherds-hook"
+        cfg["armCount"] = 3
+        resp = client.post(
+            "/generate",
+            json={"config": cfg, "formats": ["pdf"], "renderPng": None},
+        )
+        assert resp.status_code == 422
+        assert "not orderable" in resp.json()["detail"]
 
     def test_absent_armcount_defaults_to_single(self, bc_alum20) -> None:
         cfg = self._single_cfg(bc_alum20)
