@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
-import { buildPartNumber, buildSummaryText } from './summary'
+import { armAzimuths } from './compat'
+import { armArrangementLabel, buildPartNumber, buildSummaryText } from './summary'
 import { paramsToPartialConfig } from './url'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -200,5 +201,23 @@ describe('base cover part number (Phase 1.0)', () => {
       specOptions: { baseCover: { 'pole-fit': '5R' } },
     })
     expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-5R-BK')
+  })
+})
+
+describe('armArrangementLabel', () => {
+  // Phase 0.10.5: arms mount on a 90° drilled tenon, so a triple is 3 @ 90°,
+  // not 120°. The label must not contradict armAzimuths or the render.
+  it('describes the same angles the geometry actually uses', () => {
+    for (const count of [2, 3, 4]) {
+      const azimuths = armAzimuths(count)
+      const gaps = azimuths.slice(1).map((a, i) => a - azimuths[i])
+      const step = Math.min(...gaps)
+      expect(armArrangementLabel(count)).toContain(`${step}°`)
+    }
+  })
+
+  it('labels a triple as 90°, matching the drilled tenon', () => {
+    expect(armAzimuths(3)).toEqual([0, 90, 180])
+    expect(armArrangementLabel(3)).toBe('Triple (3 @ 90°)')
   })
 })

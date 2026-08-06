@@ -1,4 +1,5 @@
 import type { Catalog, PoleConfig } from '../types'
+import { bannerGeometry, formatFtIn, formatIn } from '../lib/banner'
 import { BANNER_MIN_FT, partById } from '../lib/compat'
 import { useConfigurator } from '../store'
 
@@ -32,6 +33,10 @@ export function BannerPicker({ catalog, config }: Props) {
   const active = config.banner
   const part = active ? (partById(catalog, active.armId) ?? bannerParts[0]) : bannerParts[0]
   const sides = part?.arrangements ?? [1, 2, 4]
+  // Phase 0.10 (C): the banner's labelled dimensions — a banner is defined by
+  // the two bars that hold it — derived from the part's catalog placeholder
+  // geometry rather than a new free variable (see src/lib/banner.ts).
+  const geom = active && part ? bannerGeometry(part, active.heightFt) : null
 
   const enable = () =>
     setBanner({ armId: part.id, count: sides[0] ?? 1, heightFt: Math.min(BANNER_MIN_FT, maxFt) })
@@ -88,6 +93,31 @@ export function BannerPicker({ catalog, config }: Props) {
               onChange={(e) => setBanner({ ...active, heightFt: Number(e.target.value) })}
             />
           </label>
+
+          {geom && (
+            <dl className="banner-dims">
+              <div>
+                <dt>Banner height</dt>
+                <dd>
+                  {formatIn(geom.panelHeightM)}{' '}
+                  <span className="subtle">({formatFtIn(geom.panelHeightM)})</span>
+                </dd>
+              </div>
+              <div>
+                <dt>Top bar above grade</dt>
+                <dd>{formatFtIn(geom.topBarM)}</dd>
+              </div>
+              <div>
+                <dt>Bottom bar above grade</dt>
+                <dd>{formatFtIn(geom.bottomBarM)}</dd>
+              </div>
+              <div>
+                <dt>Banner width</dt>
+                <dd>{formatIn(geom.panelWidthM)}</dd>
+              </div>
+            </dl>
+          )}
+
           <p className="spec-options-note subtle">Custom banner artwork is a future feature — not included in this preview.</p>
         </div>
       )}

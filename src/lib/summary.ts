@@ -69,9 +69,17 @@ export const SUMMARY_ROWS: { label: string; key: 'fixture' | 'arm' | 'pole' | 'b
   { label: 'Base Cover', key: 'baseCover' },
 ]
 
-/** Phase 0.8: human label for a radial arm count. */
+/**
+ * Phase 0.10.5: arms mount on a 90° drilled tenon, so a triple is 3 @ 90° —
+ * NOT 120°. The old label contradicted both armAzimuths (which returns
+ * [0, 90, 180]) and the per-azimuth renders. Mirrors
+ * _ARM_ARRANGEMENT_LABELS in geometry-service/app/generation.py.
+ */
 export function armArrangementLabel(count: number): string {
-  return { 1: 'Single', 2: 'Twin (180°)', 3: 'Triple (120°)', 4: 'Quad (90°)' }[count] ?? `${count} arms`
+  return (
+    { 1: 'Single', 2: 'Twin (2 @ 180°)', 3: 'Triple (3 @ 90°)', 4: 'Quad (4 @ 90°)' }[count] ??
+    `${count} arms`
+  )
 }
 
 /**

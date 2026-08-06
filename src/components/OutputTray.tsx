@@ -412,10 +412,12 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
             <span className="deliverable-audience">For your client</span>
           </button>
         )}
+        {/* Phase 0.10 (Workstream 0): the summary now leads with the part
+            numbers — the artifact a designer pastes into their spec. */}
         <button className="deliverable" onClick={() => void copySummary()}>
-          <span className="deliverable-title">{copied ? 'Copied ✓' : 'Config Summary'}</span>
+          <span className="deliverable-title">{copied ? 'Copied ✓' : 'Part Numbers + Config'}</span>
           <span className="deliverable-format">Text · copies to clipboard</span>
-          <span className="deliverable-audience">For WiLL Engineering</span>
+          <span className="deliverable-audience">For the project spec</span>
         </button>
 
         {/* ---- Geometry-service deliverables ---- */}

@@ -665,6 +665,32 @@ body {
   color: var(--text);
 }
 
+/* Phase 0.10 (C): derived banner dimensions — panel height + both bar
+   heights above grade, computed from catalog geometry in src/lib/banner.ts. */
+.banner-dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  background: var(--will-silver);
+  border-radius: 8px;
+}
+
+.banner-dims dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted-text, #58595b);
+}
+
+.banner-dims dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
 /* ---- Summary ---- */
 
 .summary {
