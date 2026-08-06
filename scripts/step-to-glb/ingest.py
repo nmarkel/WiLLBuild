@@ -131,10 +131,17 @@ UNMAPPED: list[dict] = [
 
 # Poles derived by axial scaling from the one real pole export (Phase 0.10.5,
 # spec D10).  A decorative pole is a straight extrusion, so scaling
-# RSAA-4040-12 along its axis carries the real profile, wall thickness and
-# hand hole to the other catalog heights — this is a derivation, not a guess,
-# and it is recorded as kind="derived" so it is never mistaken for a native
-# export from Engineering.
+# RSAA-4040-12 along its axis carries the real profile and wall thickness to
+# the other catalog heights — this is a derivation, not a guess, and it is
+# recorded as kind="derived" so it is never mistaken for a native export from
+# Engineering.
+#
+# RSAA-4040-12.STEP itself has NO hand hole (verified: 6 faces, 1 solid, a
+# plain hollow tube — no cutout anywhere along the shaft).  The hand hole is a
+# fixed-size access door at a fixed height, not a feature of the extrusion, so
+# it must never be scaled with pole height; a later render-rig task grafts the
+# placeholder's hand-hole geometry onto the real tube at native size, after
+# this scale is applied.
 _DERIVED_POLE_SOURCE = "alum-pole-12"
 _DERIVED_POLE_SOURCE_FT = 12.0
 
@@ -155,8 +162,11 @@ def derive_scaled_poles(catalog: dict) -> list[dict]:
                 scaleY=height_ft / _DERIVED_POLE_SOURCE_FT,
                 note=(
                     f"Axially scaled from RSAA-4040-12.STEP "
-                    f"({_DERIVED_POLE_SOURCE_FT:g} ft -> {height_ft:g} ft). "
-                    "Straight extrusion, so the real profile, wall and hand hole carry over."
+                    f"({_DERIVED_POLE_SOURCE_FT:g} ft -> {height_ft:g} ft): carries the "
+                    "real profile and wall thickness. This STEP export has no hand hole "
+                    "(verified: 6 faces, a plain hollow tube) -- the hand-hole cover is "
+                    "grafted separately by the render rig at native size and fixed "
+                    "height, not scaled with pole height."
                 ),
             )
         )

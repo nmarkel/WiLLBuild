@@ -3,7 +3,7 @@
   "ingestedBy": "scripts/step-to-glb/ingest.py",
   "localStepDir": "scripts/render-rig/real-assets/step (gitignored)",
   "localGlbDir": "scripts/render-rig/real-assets/glb (gitignored)",
-  "note": "Filenames are WiLL ordering codes. 'component' files are the render-rig + geometry-service geometry source for one part; 'cluster' files are whole multi-arm assemblies shipped as-is in the download bundle; 'unmapped' files have no confirmed catalog part yet and are never guessed at.",
+  "note": "Filenames are WiLL ordering codes. 'component' files are the render-rig + geometry-service geometry source for one part; 'cluster' files are whole multi-arm assemblies shipped as-is in the download bundle; 'unmapped' files have no confirmed catalog part yet and are never guessed at; 'derived' parts have no STEP export of their own \u2014 they are the source part's geometry, scaled axially to a different catalog height, and are never native.",
   "components": [
     {
       "file": "RSAA-4040-12.STEP",
@@ -360,6 +360,78 @@
       "designCode": "PH",
       "fitCode": "4R",
       "note": "Plant Holder \u2014 Single Plant Holder Kit. An Accessory adder, not a slot part."
+    }
+  ],
+  "derived": [
+    {
+      "kind": "derived",
+      "partId": "alum-pole-10",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 0.8333333333333334,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 10 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-14",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 1.1666666666666667,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 14 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-15",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 1.25,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 15 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-16",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 1.3333333333333333,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 16 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-18",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 1.5,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 18 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-20",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 1.6666666666666667,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 20 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
+    },
+    {
+      "kind": "derived",
+      "partId": "alum-pole-8",
+      "source": "alum-pole-12",
+      "sourceFile": "RSAA-4040-12.STEP",
+      "scaleY": 0.6666666666666666,
+      "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 8 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
+      "glb": null,
+      "glbBytes": null
     }
   ]
 }
