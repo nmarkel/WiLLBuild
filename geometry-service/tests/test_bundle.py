@@ -29,16 +29,18 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name
 
+from .conftest import first_base_cover_for
+
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _default_cfg(config_id: str | None = None) -> PoleConfig:
+def _default_cfg(cat: dict, config_id: str | None = None) -> PoleConfig:
     return PoleConfig(
         configId=config_id or str(uuid.uuid4()),
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -64,8 +66,8 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="module")
-def default_cfg() -> PoleConfig:
-    return _default_cfg("bundle-test-abc12345")
+def default_cfg(cat) -> PoleConfig:
+    return _default_cfg(cat, "bundle-test-abc12345")
 
 
 @pytest.fixture(scope="module")
@@ -91,7 +93,7 @@ def _make_ctx(tmp_path: Path, cat: dict, cfg: PoleConfig, assembly, render_png=N
             {"slot": "fixture", "id": cfg.fixture, "name": "GVX Pendant", "productUrl": ""},
             {"slot": "arm", "id": cfg.arm, "name": "Shepherds Hook", "productUrl": ""},
             {"slot": "pole", "id": cfg.pole, "name": "Alum Pole 20ft", "productUrl": ""},
-            {"slot": "baseCover", "id": cfg.baseCover, "name": "Fluted Base Cover", "productUrl": ""},
+            {"slot": "baseCover", "id": cfg.baseCover, "name": "Small Clamshell Cast Base Cover", "productUrl": ""},
         ],
         "finish": "Matte Black",
         "finish_ral": "RAL 9005",
@@ -415,7 +417,7 @@ class TestBundleDeterminism:
 # ---------------------------------------------------------------------------
 
 class TestBundleIntegration:
-    def test_generate_bundle_returns_200(self):
+    def test_generate_bundle_returns_200(self, cat):
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
@@ -425,7 +427,7 @@ class TestBundleIntegration:
                 "config": {
                     "configId": "bundle-integ-test-1234",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -437,7 +439,7 @@ class TestBundleIntegration:
         )
         assert resp.status_code == 200
 
-    def test_generate_bundle_files_list_has_zip(self):
+    def test_generate_bundle_files_list_has_zip(self, cat):
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
@@ -447,7 +449,7 @@ class TestBundleIntegration:
                 "config": {
                     "configId": "bundle-integ-test-5678",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -464,7 +466,7 @@ class TestBundleIntegration:
             f"No bundle.zip in files list: {filenames}"
         )
 
-    def test_generate_bundle_format_label_is_bundle(self):
+    def test_generate_bundle_format_label_is_bundle(self, cat):
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
@@ -474,7 +476,7 @@ class TestBundleIntegration:
                 "config": {
                     "configId": "bundle-integ-test-9999",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

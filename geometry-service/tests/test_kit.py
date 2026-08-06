@@ -98,13 +98,19 @@ def _built(catalog):
 
 
 def test_combo_count(catalog):
-    """Sanity: the kit enumerates the expected 561 valid combos.
+    """Sanity: the kit enumerates the expected 880 valid combos.
 
-    Grew from 48 after Workstream G promoted the P1 pole-system parts
-    (7 arms, 7 poles, 1 base cover) into the wizard: 17 fixture-arm pairs
-    x 11 poles x 3 base covers = 561.
+    Was 561 (17 fixture-arm pairs x 11 poles x 3 base covers) before Phase
+    0.10.5 re-slotted bc-fluted/bc-round to 'standalone' and the catalog grew
+    to include NAFCO/WiLLsport wizard parts and 2 additional official base
+    covers (bc-cl2/bc-cl3/bc-sc2 replacing bc-fluted/bc-round — net 3 -> 5).
+    880 is the current count computed by the same socket-matching
+    valid_combos() this test exercises; no independent formula holds across
+    the now-multi-brand catalog (WiLLstudio + NAFCO + WiLLsport each have
+    their own socket families), so this is a regression guard on that count,
+    not a hand-derived product.
     """
-    assert len(valid_combos(catalog)) == 561
+    assert len(valid_combos(catalog)) == 880
 
 
 def test_every_combo_has_positive_volume(catalog, _built):

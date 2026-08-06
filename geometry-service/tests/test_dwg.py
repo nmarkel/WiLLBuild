@@ -17,7 +17,10 @@ from fastapi.testclient import TestClient
 
 from app.adapters import DWG_WARNING, REGISTRY
 from app.adapters.dwg_adapter import _find_oda
+from app.catalog import load_catalog
 from app.main import app
+
+from .conftest import first_base_cover_for
 
 client = TestClient(app)
 
@@ -26,7 +29,7 @@ _ODA_PRESENT = _find_oda() is not None
 _CFG = {
     "configId": "dwg-test",
     "pole": "alum-pole-20",
-    "baseCover": "bc-fluted",
+    "baseCover": first_base_cover_for(load_catalog(), "alum-pole-20"),
     "arm": "sh1-shepherds-hook",
     "fixture": "gvx-pendant",
     "finish": "matte-black",

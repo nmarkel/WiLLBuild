@@ -32,7 +32,14 @@ from app.main import app
 from app.models import PoleConfig
 from app.naming import DISCLAIMER
 
+from .conftest import first_base_cover_for
+
 client = TestClient(app)
+
+# Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'; derive the
+# regression-test baseCover instead of hardcoding a part that no longer
+# lives in that slot.
+_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
 
 
 # ---------------------------------------------------------------------------
@@ -292,7 +299,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-pdf-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -312,7 +319,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-step-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

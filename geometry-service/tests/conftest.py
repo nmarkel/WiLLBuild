@@ -80,3 +80,43 @@ def valid_combos(catalog: dict) -> list[PoleConfig]:
 def all_valid_combos(catalog: dict) -> list[PoleConfig]:
     """Fixture version of valid_combos."""
     return valid_combos(catalog)
+
+
+def first_base_cover_for(catalog: dict, pole_id: str) -> str:
+    """The first catalog baseCover the given pole can host.
+
+    Derived instead of hardcoded: Phase 0.10.5 moved bc-fluted/bc-round to the
+    'standalone' slot, so any literal base-cover id in a fixture is a latent
+    129-test failure.  Socket matching mirrors compat.ts canHost.
+    """
+    poles = [p for p in catalog["parts"] if p["id"] == pole_id]
+    if not poles:
+        raise KeyError(f"Unknown pole id: {pole_id!r}")
+    pole = poles[0]
+    socket_types = {s.get("type") for s in pole.get("sockets", {}).values()}
+    for part in catalog["parts"]:
+        if part["slot"] != "baseCover":
+            continue
+        mount = part.get("mount")
+        if mount is None or mount in socket_types:
+            return part["id"]
+    raise LookupError(f"No baseCover in the catalog mounts on {pole_id!r}")
+
+
+@pytest.fixture(scope="session")
+def default_cfg(catalog: dict) -> PoleConfig:
+    """The canonical single-arm WiLLstudio config used across the suite.
+
+    Pole/arm/fixture stay at their historic ids (still correctly slotted, and
+    several tests assert on their geometry); only the baseCover is derived,
+    because that is the slot Phase 0.10.5 re-slotted.
+    """
+    return PoleConfig(
+        configId="test-cfg-abc12345",
+        pole="alum-pole-20",
+        baseCover=first_base_cover_for(catalog, "alum-pole-20"),
+        arm="sh1-shepherds-hook",
+        fixture="gvx-pendant",
+        finish="matte-black",
+        rev=1,
+    )

@@ -23,6 +23,8 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name, config_hash
 
+from .conftest import first_base_cover_for
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -35,11 +37,11 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="module")
-def default_cfg() -> PoleConfig:
+def default_cfg(cat) -> PoleConfig:
     return PoleConfig(
         configId="test-rfa-abc12345",
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -214,7 +216,7 @@ class TestRfaRegistry:
         assert resp.status_code == 200
         assert resp.json()["adapters"].get("rfa") is True
 
-    def test_generate_rfa_returns_file_with_warning(self, monkeypatch):
+    def test_generate_rfa_returns_file_with_warning(self, cat, monkeypatch):
         """POST /generate with formats=['rfa'] returns one .rfa file and mock warning."""
         monkeypatch.delenv("APS_CLIENT_ID", raising=False)
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
@@ -227,7 +229,7 @@ class TestRfaRegistry:
                 "config": {
                     "configId": "integ-rfa-12345678",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

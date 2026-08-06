@@ -18,14 +18,16 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import base_name, config_hash
 
+from .conftest import first_base_cover_for
+
 M = 1000.0
 
 
-def _cfg(arm_count: int = 1, config_id: str | None = None) -> PoleConfig:
+def _cfg(catalog: dict, arm_count: int = 1, config_id: str | None = None) -> PoleConfig:
     return PoleConfig(
         configId=config_id or str(uuid.uuid4()),
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(catalog, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -36,12 +38,12 @@ def _cfg(arm_count: int = 1, config_id: str | None = None) -> PoleConfig:
 
 @pytest.fixture(scope="module")
 def single(catalog):
-    return build_assembly(catalog, _cfg(1, "single-cfg-0001"))
+    return build_assembly(catalog, _cfg(catalog, 1, "single-cfg-0001"))
 
 
 @pytest.fixture(scope="module")
 def twin(catalog):
-    return build_assembly(catalog, _cfg(2, "twin-cfg-0001"))
+    return build_assembly(catalog, _cfg(catalog, 2, "twin-cfg-0001"))
 
 
 # ---------------------------------------------------------------------------
@@ -100,12 +102,12 @@ def test_twin_volume_grows(single, twin):
     assert twin.solid.volume > single.solid.volume
 
 
-def test_twin_volume_matches_two_arm_sets(twin):
+def test_twin_volume_matches_two_arm_sets(catalog, twin):
     solids = {pid: s for pid, s in twin.parts}
     arm_vol = solids["sh1-shepherds-hook#0"].volume
     fx_vol = solids["gvx-pendant#0"].volume
     pole_vol = solids["alum-pole-20"].volume
-    bc_vol = solids["bc-fluted"].volume
+    bc_vol = solids[first_base_cover_for(catalog, "alum-pole-20")].volume
 
     # Sum of individual (unfused) part volumes: pole + base + 2 arms + 2 fixtures.
     naive_sum = pole_vol + bc_vol + 2 * arm_vol + 2 * fx_vol
@@ -124,14 +126,14 @@ def test_twin_reach_is_positive(twin):
 # (d) twin config hashes differently from single
 # ---------------------------------------------------------------------------
 
-def test_twin_hash_differs_from_single():
-    h1 = config_hash(_cfg(1, "same-id-9999"))
-    h2 = config_hash(_cfg(2, "same-id-9999"))
+def test_twin_hash_differs_from_single(catalog):
+    h1 = config_hash(_cfg(catalog, 1, "same-id-9999"))
+    h2 = config_hash(_cfg(catalog, 2, "same-id-9999"))
     assert h1 != h2, "armCount must affect the config hash (cache-key correctness)"
 
 
-def test_triple_and_quad_hash_distinctly():
-    hashes = {config_hash(_cfg(n, "same-id-0000")) for n in (1, 2, 3, 4)}
+def test_triple_and_quad_hash_distinctly(catalog):
+    hashes = {config_hash(_cfg(catalog, n, "same-id-0000")) for n in (1, 2, 3, 4)}
     assert len(hashes) == 4
 
 
@@ -146,7 +148,7 @@ def _strip_file_name(content: bytes) -> bytes:
 
 def test_twin_step_export_is_deterministic(tmp_path_factory, catalog, twin):
     adapter = StepAdapter()
-    cfg = _cfg(2, "twin-det-0001")
+    cfg = _cfg(catalog, 2, "twin-det-0001")
 
     out1 = tmp_path_factory.mktemp("twin_a")
     ctx1 = GenContext(

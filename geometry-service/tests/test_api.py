@@ -8,14 +8,20 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from app.catalog import validate_config
+from app.catalog import load_catalog, validate_config
 from app.main import app
 from app.models import PoleConfig
 from app.naming import config_hash
 
-from .conftest import valid_combos
+from .conftest import first_base_cover_for, valid_combos
 
 client = TestClient(app)
+
+# Derived once at import time: this file's tests don't share a fixture, so a
+# module-level constant avoids threading a `catalog` fixture through every
+# independent test method just to look up the (fixed) baseCover for
+# alum-pole-20.  Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'.
+_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +66,7 @@ class TestGenerateValidation:
         resp = self._post(
             {
                 "configId": "missing-pole-test",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -77,7 +83,7 @@ class TestGenerateValidation:
             {
                 "configId": "bad-fixture-test",
                 "pole": "alum-pole-20",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "does-not-exist",
                 "finish": "matte-black",
@@ -91,7 +97,7 @@ class TestGenerateValidation:
             {
                 "configId": "bad-arm-test",
                 "pole": "alum-pole-20",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "no-such-arm",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -105,7 +111,7 @@ class TestGenerateValidation:
             {
                 "configId": "bad-pole-test",
                 "pole": "alum-pole-99",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -119,7 +125,7 @@ class TestGenerateValidation:
             {
                 "configId": "bad-finish-test",
                 "pole": "alum-pole-20",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "not-a-real-finish",
@@ -137,7 +143,7 @@ class TestGenerateValidation:
             {
                 "configId": "socket-violation-test",
                 "pole": "alum-pole-20",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "drx-post-top",
                 "finish": "matte-black",
@@ -155,7 +161,7 @@ class TestGenerateValidation:
             {
                 "configId": "detail-test",
                 "pole": "alum-pole-20",
-                "baseCover": "bc-fluted",
+                "baseCover": _BC_ALUM20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "does-not-exist",
                 "finish": "matte-black",
@@ -185,7 +191,7 @@ class TestGenerateNoAdapter:
                 "config": {
                     "configId": "valid-no-adapter",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -210,7 +216,7 @@ class TestConfigHash:
     _base = dict(
         configId="aaa-111",
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=_BC_ALUM20,
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -271,7 +277,7 @@ class TestValidateConfig:
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",
             fixture="totally-fake",
             finish="matte-black",
@@ -285,7 +291,7 @@ class TestValidateConfig:
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",  # only pendant socket
             fixture="drx-post-top",   # mount=tenon-2-3/8 — not pendant
             finish="matte-black",
@@ -298,7 +304,7 @@ class TestValidateConfig:
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="hot-pink",
@@ -312,7 +318,7 @@ class TestValidateConfig:
         cfg = PoleConfig(
             configId="slot-mismatch-test",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",
             fixture="alum-pole-12",   # pole id, not a fixture id
             finish="matte-black",
@@ -329,7 +335,7 @@ class TestValidateConfig:
                 "config": {
                     "configId": "slot-mismatch-api-test",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "alum-pole-12",   # pole id in fixture field
                     "finish": "matte-black",
@@ -359,7 +365,7 @@ class TestGenerateSummaryParts:
                 "config": {
                     "configId": "summary-parts-test",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -396,7 +402,7 @@ class TestGenerateRenderPngBase64:
                 "config": {
                     "configId": "png-valid-test",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -419,7 +425,7 @@ class TestGenerateRenderPngBase64:
                 "config": {
                     "configId": "png-invalid-test",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": _BC_ALUM20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -447,7 +453,7 @@ class TestMultiArmGenerate:
         return dict(
             configId="twin-http-0001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -512,7 +518,7 @@ class TestBannerGenerate:
         cfg = dict(
             configId="banner-http-0001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=_BC_ALUM20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",

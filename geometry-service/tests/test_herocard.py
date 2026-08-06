@@ -28,6 +28,8 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name
 
+from .conftest import first_base_cover_for
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -39,11 +41,11 @@ _TINY_PNG_B64 = (
 _TINY_PNG_BYTES = base64.b64decode(_TINY_PNG_B64)
 
 
-def _cfg(config_id: str | None = None) -> PoleConfig:
+def _cfg(cat: dict, config_id: str | None = None) -> PoleConfig:
     return PoleConfig(
         configId=config_id or "hero-test-" + str(uuid.uuid4())[:8],
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -118,8 +120,8 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="session")
-def fixed_cfg() -> PoleConfig:
-    return _cfg("hero-fixed-test-0001")
+def fixed_cfg(cat) -> PoleConfig:
+    return _cfg(cat, "hero-fixed-test-0001")
 
 
 # ---------------------------------------------------------------------------
@@ -131,7 +133,7 @@ class TestHeroCardFileProduced:
         """HeroCardAdapter.generate must write a file whose name ends with -hero.pdf."""
         from app.adapters.herocard_adapter import HeroCardAdapter
 
-        cfg = _cfg("hero-file-test-0001")
+        cfg = _cfg(cat, "hero-file-test-0001")
         ctx = _make_ctx(cat, cfg, tmp_path)
         adapter = HeroCardAdapter()
         out_paths = adapter.generate(ctx)
@@ -161,7 +163,7 @@ class TestHeroCardContent:
         """Hero card must start with %PDF."""
         from app.adapters.herocard_adapter import HeroCardAdapter
 
-        cfg = _cfg("hero-magic-test-0001")
+        cfg = _cfg(cat, "hero-magic-test-0001")
         ctx = _make_ctx(cat, cfg, tmp_path)
         adapter = HeroCardAdapter()
         paths = adapter.generate(ctx)
@@ -173,7 +175,7 @@ class TestHeroCardContent:
         from app.adapters.herocard_adapter import HeroCardAdapter
         from pypdf import PdfReader
 
-        cfg = _cfg("hero-disc-test-0001")
+        cfg = _cfg(cat, "hero-disc-test-0001")
         ctx = _make_ctx(cat, cfg, tmp_path)
         adapter = HeroCardAdapter()
         paths = adapter.generate(ctx)
@@ -192,7 +194,7 @@ class TestHeroCardContent:
         from pypdf import PdfReader
 
         config_id = "hero-cfgid-test-0001"
-        cfg = _cfg(config_id)
+        cfg = _cfg(cat, config_id)
         ctx = _make_ctx(cat, cfg, tmp_path)
         adapter = HeroCardAdapter()
         paths = adapter.generate(ctx)
@@ -209,7 +211,7 @@ class TestHeroCardContent:
         from app.adapters.herocard_adapter import HeroCardAdapter
         from pypdf import PdfReader
 
-        cfg = _cfg("hero-title-test-0001")
+        cfg = _cfg(cat, "hero-title-test-0001")
         ctx = _make_ctx(cat, cfg, tmp_path)
         adapter = HeroCardAdapter()
         paths = adapter.generate(ctx)
@@ -234,7 +236,7 @@ class TestHeroCardDeterminism:
         cfg = PoleConfig(
             configId="hero-determinism-check-001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=first_base_cover_for(cat, "alum-pole-20"),
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -265,21 +267,22 @@ class TestConfigStatus:
         """config_status must return 'Configurable' when referenceAssemblies is empty."""
         from app.catalog import config_status
 
-        cfg = _cfg("hero-status-test-0001")
+        cfg = _cfg(cat, "hero-status-test-0001")
         result = config_status(cat, cfg)
         assert result == "Configurable", (
             f"Expected 'Configurable' (referenceAssemblies empty), got {result!r}"
         )
 
-    def test_returns_standard_when_ref_assembly_matches(self) -> None:
+    def test_returns_standard_when_ref_assembly_matches(self, cat) -> None:
         """config_status returns 'Standard' when config matches a referenceAssembly."""
         from app.catalog import config_status
 
+        bc = first_base_cover_for(cat, "alum-pole-20")
         mock_catalog = {
             "referenceAssemblies": [
                 {
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": bc,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                 }
@@ -288,7 +291,7 @@ class TestConfigStatus:
         cfg = PoleConfig(
             configId="hero-std-test-0001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=bc,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -297,15 +300,16 @@ class TestConfigStatus:
         result = config_status(mock_catalog, cfg)
         assert result == "Standard", f"Expected 'Standard', got {result!r}"
 
-    def test_returns_configurable_when_ref_assembly_no_match(self) -> None:
+    def test_returns_configurable_when_ref_assembly_no_match(self, cat) -> None:
         """config_status returns 'Configurable' when no referenceAssembly matches."""
         from app.catalog import config_status
 
+        bc = first_base_cover_for(cat, "alum-pole-20")
         mock_catalog = {
             "referenceAssemblies": [
                 {
                     "pole": "other-pole",
-                    "baseCover": "bc-fluted",
+                    "baseCover": bc,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                 }
@@ -314,7 +318,7 @@ class TestConfigStatus:
         cfg = PoleConfig(
             configId="hero-notstd-test-0001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=bc,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -329,7 +333,7 @@ class TestConfigStatus:
 # ---------------------------------------------------------------------------
 
 class TestHeroCardIntegration:
-    def test_generate_herocard_returns_200_with_hero_file(self) -> None:
+    def test_generate_herocard_returns_200_with_hero_file(self, cat) -> None:
         from app.main import app
         from fastapi.testclient import TestClient
 
@@ -340,7 +344,7 @@ class TestHeroCardIntegration:
                 "config": {
                     "configId": "hero-integration-test-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

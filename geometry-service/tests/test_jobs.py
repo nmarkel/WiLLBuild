@@ -16,18 +16,23 @@ import uuid
 
 from fastapi.testclient import TestClient
 
+from app.catalog import load_catalog
 from app.main import OUT_DIR, app
 from app.models import GenerateRequest
 from app.naming import base_name
 
+from .conftest import first_base_cover_for
+
 client = TestClient(app)
+
+_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
 
 
 def _cfg(config_id: str) -> dict:
     return {
         "configId": config_id,
         "pole": "alum-pole-20",
-        "baseCover": "bc-fluted",
+        "baseCover": _BC_ALUM20,
         "arm": "sh1-shepherds-hook",
         "fixture": "gvx-pendant",
         "finish": "matte-black",

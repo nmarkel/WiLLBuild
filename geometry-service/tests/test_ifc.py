@@ -26,6 +26,8 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name
 
+from .conftest import first_base_cover_for
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -38,11 +40,11 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="module")
-def default_cfg() -> PoleConfig:
+def default_cfg(cat) -> PoleConfig:
     return PoleConfig(
         configId="test-cfg-abc12345",
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -229,7 +231,7 @@ class TestIfcRegistry:
 
 
 class TestGenerateIfcIntegration:
-    def test_generate_ifc_returns_file(self):
+    def test_generate_ifc_returns_file(self, cat):
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
@@ -239,7 +241,7 @@ class TestGenerateIfcIntegration:
                 "config": {
                     "configId": "integ-ifc-12345678",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
