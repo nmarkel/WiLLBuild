@@ -154,6 +154,13 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
     # mounting bars, so the line LABELS the banner height and both bar heights
     # above grade.  Only emitted when a banner is present, so no-banner spec
     # sheets / hero cards are byte-identical to earlier output.
+    #
+    # Uses an em dash (—), matching banner.ts's bannerSummaryLine exactly at the
+    # source-code level. _latin1() in app/adapters/_spec_template.py transliterates
+    # it to a plain hyphen before it ever reaches fpdf2 (_LATIN1_MAP maps
+    # "—" -> "-"), so the rendered PDF bytes are unchanged either way — this is
+    # about not having two "mirror" strings disagree at the source, not a
+    # customer-visible fix.
     banner = getattr(req.config, "banner", None)
     if banner is not None:
         banner_part = part_map.get(banner.armId)
@@ -163,11 +170,11 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
         if geom is None:
             h = banner.heightFt
             h_txt = str(int(h)) if float(h).is_integer() else str(h)
-            summary["banner"] = f"{banner_name} - {sides} @ {h_txt} ft"
+            summary["banner"] = f"{banner_name} — {sides} @ {h_txt} ft"
         else:
             panel_mm, top_mm, bottom_mm = geom
             summary["banner"] = (
-                f"{banner_name} - {sides}, banner height {round(panel_mm / 25.4)} in "
+                f"{banner_name} — {sides}, banner height {round(panel_mm / 25.4)} in "
                 f"(top bar {_ft_in(top_mm)} / bottom bar {_ft_in(bottom_mm)} above grade)"
             )
     return summary
