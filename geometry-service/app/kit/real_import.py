@@ -31,7 +31,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from build123d import Location, Part, Rotation
+from build123d import Compound, Location, Rotation
 
 _MM = 1.0  # OCCT returns millimetres
 
@@ -114,7 +114,14 @@ def _read_brep(cache: Path):
         builder = BRep_Builder()
         if not BRepTools.Read_s(shape, str(cache), builder):
             return None
-        return Part(shape)
+        # Cast to the concrete wrapper (Solid/Shell/Compound…) that matches the
+        # OCCT shape's actual type — a bare ``Part(shape)`` around a raw
+        # TopoDS_Solid masquerades as a Compound, and Compound.volume walks
+        # sub-shapes rather than measuring the shape itself, so it silently
+        # reports 0 for anything that isn't a genuine TopoDS_Compound. This is
+        # the same cast build123d's own Rotation/Location operators apply, so a
+        # cache hit and a fresh STEP parse return the same wrapper type.
+        return Compound.cast(shape)
     except Exception:  # noqa: BLE001
         return None
 
