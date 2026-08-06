@@ -1,4 +1,5 @@
 import type { Catalog, PoleConfig, Slot } from '../types'
+import { bannerSummaryLine } from './banner'
 import { configStatus, finishFor, optionLabel, partById, specCodes } from './compat'
 import { shareUrl } from './url'
 
@@ -129,7 +130,13 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
     ...(armCount > 1 ? [`Arm arrangement: ${armArrangementLabel(armCount)}`] : []),
     ...(config.armOrientation ? [`Arm orientation: ${config.armOrientation}°`] : []),
     ...(banner
-      ? [`Banner arm: ${bannerPart?.name ?? banner.armId} — ${banner.count}-side @ ${banner.heightFt} ft`]
+      ? [
+          `Banner arm: ${
+            bannerPart
+              ? bannerSummaryLine(bannerPart, banner.count, banner.heightFt)
+              : `${banner.armId} — ${banner.count}-side @ ${banner.heightFt} ft`
+          }`,
+        ]
       : []),
     `Link: ${shareUrl(config)}`,
   ].join('\n')

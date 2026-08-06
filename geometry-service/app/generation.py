@@ -20,6 +20,7 @@ Two entry points
 from __future__ import annotations
 
 import base64
+import math
 import threading
 from pathlib import Path
 from typing import Callable
@@ -173,10 +174,17 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
 
 
 def _ft_in(mm: float) -> str:
-    """Millimetres -> ``9'-2"`` (mirrors formatFtIn in src/lib/banner.ts)."""
+    """Millimetres -> ``9'-2"`` (mirrors formatFtIn in src/lib/banner.ts).
+
+    Uses ``floor(x + 0.5)`` rather than Python's builtin ``round()`` (which is
+    round-half-to-even) so this matches JS ``Math.round`` (round-half-away-
+    from-zero) exactly on a .5 inch remainder — the two "mirror" functions
+    must agree on every input, not just the ones the current catalog happens
+    to produce.
+    """
     total_inches = mm / 25.4
     feet = int(total_inches // 12)
-    inches = round(total_inches % 12)
+    inches = math.floor(total_inches % 12 + 0.5)
     if inches == 12:
         feet += 1
         inches = 0

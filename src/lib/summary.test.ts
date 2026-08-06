@@ -204,6 +204,31 @@ describe('base cover part number (Phase 1.0)', () => {
   })
 })
 
+describe('banner arm summary line (Phase 0.10.5)', () => {
+  // Finding 1 (Task 3 review): buildSummaryText used to emit an undimensioned
+  // "Banner arm: <name> — 2-side @ 8 ft" line — the same class of bug as the
+  // arm-arrangement label: quote text disagreeing with the PDF and the widget.
+  // It must now go through bannerSummaryLine so the clipboard text carries the
+  // derived banner height + both bar heights, matching generation.py's summary.
+  it('carries the derived dimensions and matches the Python wording ("opposite pair")', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt: 8 } }),
+    )
+    expect(summary).toContain('Banner arm: BA1 Banner Arm — opposite pair, banner height 49 in')
+    expect(summary).toMatch(/top bar \d+'-\d+"/)
+    expect(summary).toMatch(/bottom bar \d+'-\d+"/)
+  })
+
+  it('falls back to the plain line for an unknown banner armId', () => {
+    const summary = buildSummaryText(
+      catalog,
+      config({ banner: { armId: 'not-a-real-part', count: 2, heightFt: 8 } }),
+    )
+    expect(summary).toContain('Banner arm: not-a-real-part — 2-side @ 8 ft')
+  })
+})
+
 describe('armArrangementLabel', () => {
   // Phase 0.10.5: arms mount on a 90° drilled tenon, so a triple is 3 @ 90°,
   // not 120°. The label must not contradict armAzimuths or the render.
