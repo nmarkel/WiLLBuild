@@ -35,6 +35,9 @@ from convert import convert_color_aware, convert_monolithic
 
 STEP_DIR = os.path.join(os.path.dirname(__file__), "..", "render-rig", "real-assets", "step")
 GLB_DIR = os.path.join(os.path.dirname(__file__), "..", "render-rig", "real-assets", "glb")
+_CATALOG_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "public", "catalog.json")
+with open(_CATALOG_PATH, encoding="utf-8") as fh:
+    _CATALOG = json.load(fh)
 
 # ---------------------------------------------------------------------------
 # The mapping: real STEP file -> catalog part + ordering codes.
@@ -126,6 +129,42 @@ UNMAPPED: list[dict] = [
          note="Plant Holder — Single Plant Holder Kit. An Accessory adder, not a slot part."),
 ]
 
+# Poles derived by axial scaling from the one real pole export (Phase 0.10.5,
+# spec D10).  A decorative pole is a straight extrusion, so scaling
+# RSAA-4040-12 along its axis carries the real profile, wall thickness and
+# hand hole to the other catalog heights — this is a derivation, not a guess,
+# and it is recorded as kind="derived" so it is never mistaken for a native
+# export from Engineering.
+_DERIVED_POLE_SOURCE = "alum-pole-12"
+_DERIVED_POLE_SOURCE_FT = 12.0
+
+
+def derive_scaled_poles(catalog: dict) -> list[dict]:
+    """One DERIVED entry per alum-pole-* height other than the real 12 ft."""
+    out: list[dict] = []
+    for part in catalog["parts"]:
+        part_id = part["id"]
+        if not part_id.startswith("alum-pole-") or part_id == _DERIVED_POLE_SOURCE:
+            continue
+        height_ft = part["heightFt"]
+        out.append(
+            dict(
+                part=part_id,
+                kind="derived",
+                source=_DERIVED_POLE_SOURCE,
+                scaleY=height_ft / _DERIVED_POLE_SOURCE_FT,
+                note=(
+                    f"Axially scaled from RSAA-4040-12.STEP "
+                    f"({_DERIVED_POLE_SOURCE_FT:g} ft -> {height_ft:g} ft). "
+                    "Straight extrusion, so the real profile, wall and hand hole carry over."
+                ),
+            )
+        )
+    return sorted(out, key=lambda e: e["part"])
+
+
+DERIVED: list[dict] = derive_scaled_poles(_CATALOG)
+
 
 def convert_one(entry: dict) -> dict:
     step_path = os.path.join(STEP_DIR, entry["file"])
@@ -139,6 +178,36 @@ def convert_one(entry: dict) -> dict:
     else:
         stats = convert_monolithic(step_path, out_path, origin=entry["origin"],
                                    tol_mm=entry["tol"], **rot)
+    stats["seconds"] = round(time.time() - t0, 1)
+    stats["glb_bytes"] = os.path.getsize(out_path)
+    stats["glb"] = os.path.relpath(out_path, os.path.join(os.path.dirname(__file__), "..", "render-rig"))
+    return stats
+
+
+def _source_entry(derived_entry: dict) -> dict:
+    """Look up the INGEST entry a DERIVED entry's `source` part came from."""
+    for entry in INGEST:
+        if entry["part"] == derived_entry["source"]:
+            return entry
+    raise KeyError(f"no INGEST entry for source part {derived_entry['source']!r}")
+
+
+def convert_derived(entry: dict) -> dict:
+    """Convert a DERIVED pole: re-run the source STEP with an axial scale."""
+    src = _source_entry(entry)
+    if src["mode"] != "mono":
+        # Only the monolithic path takes scale_y today; no derived entry needs
+        # color-aware conversion (poles are one uniform aluminum body).
+        raise ValueError(
+            f"derived source {src['file']} uses mode={src['mode']!r}; "
+            "convert_derived only supports mode='mono'"
+        )
+    step_path = os.path.join(STEP_DIR, src["file"])
+    out_path = os.path.join(GLB_DIR, f"{entry['part']}.glb")
+    os.makedirs(GLB_DIR, exist_ok=True)
+    t0 = time.time()
+    stats = convert_monolithic(step_path, out_path, origin=src["origin"],
+                               tol_mm=src["tol"], scale_y=entry["scaleY"])
     stats["seconds"] = round(time.time() - t0, 1)
     stats["glb_bytes"] = os.path.getsize(out_path)
     stats["glb"] = os.path.relpath(out_path, os.path.join(os.path.dirname(__file__), "..", "render-rig"))
@@ -199,6 +268,27 @@ def write_manifest() -> str:
             out["note"] = entry["note"]
         return out
 
+    def describe_derived(entry: dict) -> dict:
+        """DERIVED entries have no `file` of their own — they reuse the source
+        part's STEP, scaled axially — so this is a separate, smaller shape than
+        ``describe()`` above."""
+        src = _source_entry(entry)
+        glb_path = os.path.join(GLB_DIR, f"{entry['part']}.glb")
+        return {
+            "kind": entry["kind"],
+            "partId": entry["part"],
+            "source": entry["source"],
+            "sourceFile": src["file"],
+            "scaleY": entry["scaleY"],
+            "note": entry["note"],
+            "glb": (
+                os.path.relpath(glb_path, os.path.join(os.path.dirname(__file__), ".."))
+                if os.path.isfile(glb_path)
+                else None
+            ),
+            "glbBytes": os.path.getsize(glb_path) if os.path.isfile(glb_path) else None,
+        }
+
     manifest = {
         "source": "/Volumes/WiLLdrive/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio",
         "ingestedBy": "scripts/step-to-glb/ingest.py",
@@ -208,11 +298,14 @@ def write_manifest() -> str:
             "Filenames are WiLL ordering codes. 'component' files are the render-rig + "
             "geometry-service geometry source for one part; 'cluster' files are whole "
             "multi-arm assemblies shipped as-is in the download bundle; 'unmapped' files "
-            "have no confirmed catalog part yet and are never guessed at."
+            "have no confirmed catalog part yet and are never guessed at; 'derived' parts "
+            "have no STEP export of their own — they are the source part's geometry, "
+            "scaled axially to a different catalog height, and are never native."
         ),
         "components": [describe(e, "component") for e in INGEST],
         "clusters": [describe(e, "cluster") for e in CLUSTERS],
         "unmapped": [describe(e, "unmapped") for e in UNMAPPED],
+        "derived": [describe_derived(e) for e in DERIVED],
     }
     path = os.path.abspath(MANIFEST_PATH)
     with open(path, "w", encoding="utf-8") as fh:
@@ -228,6 +321,34 @@ def main(argv: list[str]) -> int:
 
     if "--manifest" in argv:
         print(f"wrote {write_manifest()}")
+        return 0
+
+    if "--derived" in argv:
+        # DERIVED entries are keyed by `part`, not `file` (they have no STEP of
+        # their own — see convert_derived), so this is a separate filter loop
+        # rather than reusing the INGEST loop's `entry["file"] not in only` check.
+        results = {}
+        for entry in DERIVED:
+            if only and entry["part"] not in only:
+                continue
+            print(
+                f"deriving {entry['part']} <- {entry['source']} "
+                f"(scaleY={entry['scaleY']:.4f}) ...",
+                flush=True,
+            )
+            try:
+                stats = convert_derived(entry)
+            except Exception as exc:  # noqa: BLE001 — one bad entry must not stop the batch
+                print(f"  FAILED: {exc}", flush=True)
+                results[entry["part"]] = {"error": str(exc)}
+                continue
+            print(
+                f"  {stats['glb_bytes'] / 1e6:.1f} MB, {stats.get('triangles', 0)} tris, "
+                f"{stats['seconds']}s",
+                flush=True,
+            )
+            results[entry["part"]] = stats
+        print(json.dumps(results, indent=2))
         return 0
 
     results = {}

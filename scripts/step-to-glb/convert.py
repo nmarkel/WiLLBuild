@@ -135,11 +135,16 @@ def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndar
 
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
                        tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
-                       rotate_x: float = 0.0, rotate_z: float = 0.0) -> dict:
+                       rotate_x: float = 0.0, rotate_z: float = 0.0,
+                       scale_y: float = 1.0) -> dict:
     shape = load_step_shape(step_path)
     verts_mm, tris = tessellate_shape(shape, tol_mm)
     verts_mm = _stand_up(verts_mm, rotate_x, rotate_z)
     pos = _normalize(verts_mm, origin).astype(np.float32)
+    # Phase 0.10.5 (D10): axial scale for derived pole heights. Applied after
+    # re-basing so the pole's base stays on the floor and only its length grows.
+    if scale_y != 1.0:
+        pos[:, 1] *= scale_y
     write_glb(out_glb, [{
         "positions": pos, "indices": tris.reshape(-1),
         "material_name": "will-body", "base_color": base_color,
