@@ -544,7 +544,7 @@ class TestBundlePerRequestArtifacts:
                 {"slot": "fixture", "id": default_cfg.fixture, "name": "GVX Pendant", "productUrl": ""},
                 {"slot": "arm", "id": default_cfg.arm, "name": "Shepherds Hook", "productUrl": ""},
                 {"slot": "pole", "id": default_cfg.pole, "name": "Alum Pole 20ft", "productUrl": ""},
-                {"slot": "baseCover", "id": default_cfg.baseCover, "name": "Fluted Base Cover", "productUrl": ""},
+                {"slot": "baseCover", "id": default_cfg.baseCover, "name": "Small Clamshell Cast Base Cover", "productUrl": ""},
             ],
             "finish": "Matte Black",
             "finish_ral": "RAL 9005",

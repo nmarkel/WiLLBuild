@@ -39,6 +39,11 @@ if TYPE_CHECKING:
 # Four representative WiLLstudio configs (vary fixture / arm / pole / finish)
 # ---------------------------------------------------------------------------
 
+# Must stay module-scope (not a fixture): REPRESENTATIVE_CONFIGS feeds
+# @pytest.mark.parametrize below, which needs literal values at collection
+# time, before any fixture (including a `catalog` fixture) can run. This is
+# the one exception to threading `catalog`/`first_base_cover_for` through a
+# fixture — don't "fix" it to match the other files in this suite.
 _CATALOG_FOR_CONFIGS = load_catalog()
 
 REPRESENTATIVE_CONFIGS = [

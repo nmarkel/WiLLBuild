@@ -8,7 +8,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from app.catalog import load_catalog, validate_config
+from app.catalog import validate_config
 from app.main import app
 from app.models import PoleConfig
 from app.naming import config_hash
@@ -17,11 +17,18 @@ from .conftest import first_base_cover_for, valid_combos
 
 client = TestClient(app)
 
-# Derived once at import time: this file's tests don't share a fixture, so a
-# module-level constant avoids threading a `catalog` fixture through every
-# independent test method just to look up the (fixed) baseCover for
-# alum-pole-20.  Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'.
-_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
+
+@pytest.fixture(scope="session")
+def bc_alum20(catalog: dict) -> str:
+    """The baseCover derived for alum-pole-20.
+
+    Threaded through every test that needs a valid config, per the file's
+    existing dependency-injection pattern (see TestValidateConfig, which
+    already takes `catalog` as a fixture param) rather than a module-level
+    constant computed at import time.  Phase 0.10.5 re-slotted
+    bc-fluted/bc-round to 'standalone'.
+    """
+    return first_base_cover_for(catalog, "alum-pole-20")
 
 
 # ---------------------------------------------------------------------------
@@ -61,12 +68,12 @@ class TestGenerateValidation:
         }
         return client.post("/generate", json=payload)
 
-    def test_missing_pole_in_config_returns_422_with_string_detail(self) -> None:
+    def test_missing_pole_in_config_returns_422_with_string_detail(self, bc_alum20) -> None:
         """POST /generate with body missing config.pole → 422 with string detail."""
         resp = self._post(
             {
                 "configId": "missing-pole-test",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -78,12 +85,12 @@ class TestGenerateValidation:
         assert "detail" in body
         assert isinstance(body["detail"], str)
 
-    def test_unknown_fixture_id_returns_422(self) -> None:
+    def test_unknown_fixture_id_returns_422(self, bc_alum20) -> None:
         resp = self._post(
             {
                 "configId": "bad-fixture-test",
                 "pole": "alum-pole-20",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "does-not-exist",
                 "finish": "matte-black",
@@ -92,12 +99,12 @@ class TestGenerateValidation:
         )
         assert resp.status_code == 422
 
-    def test_unknown_arm_id_returns_422(self) -> None:
+    def test_unknown_arm_id_returns_422(self, bc_alum20) -> None:
         resp = self._post(
             {
                 "configId": "bad-arm-test",
                 "pole": "alum-pole-20",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "no-such-arm",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -106,12 +113,12 @@ class TestGenerateValidation:
         )
         assert resp.status_code == 422
 
-    def test_unknown_pole_id_returns_422(self) -> None:
+    def test_unknown_pole_id_returns_422(self, bc_alum20) -> None:
         resp = self._post(
             {
                 "configId": "bad-pole-test",
                 "pole": "alum-pole-99",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "matte-black",
@@ -120,12 +127,12 @@ class TestGenerateValidation:
         )
         assert resp.status_code == 422
 
-    def test_unknown_finish_id_returns_422(self) -> None:
+    def test_unknown_finish_id_returns_422(self, bc_alum20) -> None:
         resp = self._post(
             {
                 "configId": "bad-finish-test",
                 "pole": "alum-pole-20",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "gvx-pendant",
                 "finish": "not-a-real-finish",
@@ -135,7 +142,7 @@ class TestGenerateValidation:
         assert resp.status_code == 422
 
     def test_socket_violation_post_top_fixture_plus_pendant_arm_returns_422(
-        self,
+        self, bc_alum20
     ) -> None:
         """drx-post-top has mount=tenon-2-3/8; sh1-shepherds-hook only exposes
         a pendant socket — cannot host drx-post-top.  This is a socket violation."""
@@ -143,7 +150,7 @@ class TestGenerateValidation:
             {
                 "configId": "socket-violation-test",
                 "pole": "alum-pole-20",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "drx-post-top",
                 "finish": "matte-black",
@@ -155,13 +162,13 @@ class TestGenerateValidation:
         assert "detail" in body
         assert "drx-post-top" in body["detail"] or "socket" in body["detail"].lower()
 
-    def test_error_detail_is_string(self) -> None:
+    def test_error_detail_is_string(self, bc_alum20) -> None:
         """422 responses from config validation must have a string detail field."""
         resp = self._post(
             {
                 "configId": "detail-test",
                 "pole": "alum-pole-20",
-                "baseCover": _BC_ALUM20,
+                "baseCover": bc_alum20,
                 "arm": "sh1-shepherds-hook",
                 "fixture": "does-not-exist",
                 "finish": "matte-black",
@@ -179,7 +186,7 @@ class TestGenerateValidation:
 
 
 class TestGenerateNoAdapter:
-    def test_valid_config_no_adapter_returns_422(self) -> None:
+    def test_valid_config_no_adapter_returns_422(self, bc_alum20) -> None:
         """When config is valid but no adapter is registered for the format, return 422.
 
         'ply' is not registered — use it as the unregistered format.
@@ -191,7 +198,7 @@ class TestGenerateNoAdapter:
                 "config": {
                     "configId": "valid-no-adapter",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -213,53 +220,55 @@ class TestGenerateNoAdapter:
 
 
 class TestConfigHash:
-    _base = dict(
-        configId="aaa-111",
-        pole="alum-pole-20",
-        baseCover=_BC_ALUM20,
-        arm="sh1-shepherds-hook",
-        fixture="gvx-pendant",
-        finish="matte-black",
-        rev=1,
-    )
+    @staticmethod
+    def _base(bc_alum20: str) -> dict:
+        return dict(
+            configId="aaa-111",
+            pole="alum-pole-20",
+            baseCover=bc_alum20,
+            arm="sh1-shepherds-hook",
+            fixture="gvx-pendant",
+            finish="matte-black",
+            rev=1,
+        )
 
-    def _cfg(self, **overrides: object) -> PoleConfig:
-        return PoleConfig(**{**self._base, **overrides})
+    def _cfg(self, bc_alum20: str, **overrides: object) -> PoleConfig:
+        return PoleConfig(**{**self._base(bc_alum20), **overrides})
 
-    def test_hash_is_8_chars(self) -> None:
-        assert len(config_hash(self._cfg())) == 8
+    def test_hash_is_8_chars(self, bc_alum20) -> None:
+        assert len(config_hash(self._cfg(bc_alum20))) == 8
 
-    def test_hash_is_hex(self) -> None:
-        h = config_hash(self._cfg())
+    def test_hash_is_hex(self, bc_alum20) -> None:
+        h = config_hash(self._cfg(bc_alum20))
         assert all(c in "0123456789abcdef" for c in h)
 
-    def test_hash_stable_across_configId_changes(self) -> None:
-        h1 = config_hash(self._cfg(configId="aaa-111"))
-        h2 = config_hash(self._cfg(configId="bbb-999"))
+    def test_hash_stable_across_configId_changes(self, bc_alum20) -> None:
+        h1 = config_hash(self._cfg(bc_alum20, configId="aaa-111"))
+        h2 = config_hash(self._cfg(bc_alum20, configId="bbb-999"))
         assert h1 == h2, "configId should not affect the hash"
 
-    def test_hash_stable_across_rev_changes(self) -> None:
-        h1 = config_hash(self._cfg(rev=1))
-        h2 = config_hash(self._cfg(rev=42))
+    def test_hash_stable_across_rev_changes(self, bc_alum20) -> None:
+        h1 = config_hash(self._cfg(bc_alum20, rev=1))
+        h2 = config_hash(self._cfg(bc_alum20, rev=42))
         assert h1 == h2, "rev should not affect the hash"
 
-    def test_hash_changes_when_pole_changes(self) -> None:
-        h1 = config_hash(self._cfg(pole="alum-pole-20"))
-        h2 = config_hash(self._cfg(pole="alum-pole-12"))
+    def test_hash_changes_when_pole_changes(self, bc_alum20) -> None:
+        h1 = config_hash(self._cfg(bc_alum20, pole="alum-pole-20"))
+        h2 = config_hash(self._cfg(bc_alum20, pole="alum-pole-12"))
         assert h1 != h2
 
-    def test_hash_changes_when_fixture_changes(self) -> None:
-        h1 = config_hash(self._cfg(fixture="gvx-pendant"))
-        h2 = config_hash(self._cfg(fixture="drx-post-top"))
+    def test_hash_changes_when_fixture_changes(self, bc_alum20) -> None:
+        h1 = config_hash(self._cfg(bc_alum20, fixture="gvx-pendant"))
+        h2 = config_hash(self._cfg(bc_alum20, fixture="drx-post-top"))
         assert h1 != h2
 
-    def test_hash_changes_when_finish_changes(self) -> None:
-        h1 = config_hash(self._cfg(finish="matte-black"))
-        h2 = config_hash(self._cfg(finish="gloss-white"))
+    def test_hash_changes_when_finish_changes(self, bc_alum20) -> None:
+        h1 = config_hash(self._cfg(bc_alum20, finish="matte-black"))
+        h2 = config_hash(self._cfg(bc_alum20, finish="gloss-white"))
         assert h1 != h2
 
-    def test_hash_deterministic_repeated_calls(self) -> None:
-        cfg = self._cfg()
+    def test_hash_deterministic_repeated_calls(self, bc_alum20) -> None:
+        cfg = self._cfg(bc_alum20)
         assert config_hash(cfg) == config_hash(cfg)
 
 
@@ -273,11 +282,11 @@ class TestValidateConfig:
         for cfg in valid_combos(catalog):
             validate_config(catalog, cfg)  # must not raise
 
-    def test_unknown_part_raises_value_error(self, catalog: dict) -> None:
+    def test_unknown_part_raises_value_error(self, catalog: dict, bc_alum20) -> None:
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",
             fixture="totally-fake",
             finish="matte-black",
@@ -286,12 +295,12 @@ class TestValidateConfig:
         with pytest.raises(ValueError, match="totally-fake"):
             validate_config(catalog, cfg)
 
-    def test_socket_violation_raises_value_error(self, catalog: dict) -> None:
+    def test_socket_violation_raises_value_error(self, catalog: dict, bc_alum20) -> None:
         """post-top fixture on a pendant-only arm must raise."""
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",  # only pendant socket
             fixture="drx-post-top",   # mount=tenon-2-3/8 — not pendant
             finish="matte-black",
@@ -300,11 +309,11 @@ class TestValidateConfig:
         with pytest.raises(ValueError):
             validate_config(catalog, cfg)
 
-    def test_unknown_finish_raises_value_error(self, catalog: dict) -> None:
+    def test_unknown_finish_raises_value_error(self, catalog: dict, bc_alum20) -> None:
         cfg = PoleConfig(
             configId="x",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="hot-pink",
@@ -313,12 +322,12 @@ class TestValidateConfig:
         with pytest.raises(ValueError, match="hot-pink"):
             validate_config(catalog, cfg)
 
-    def test_slot_mismatch_pole_in_fixture_field_raises(self, catalog: dict) -> None:
+    def test_slot_mismatch_pole_in_fixture_field_raises(self, catalog: dict, bc_alum20) -> None:
         """Putting a pole id in the fixture field must raise a ValueError."""
         cfg = PoleConfig(
             configId="slot-mismatch-test",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",
             fixture="alum-pole-12",   # pole id, not a fixture id
             finish="matte-black",
@@ -327,7 +336,7 @@ class TestValidateConfig:
         with pytest.raises(ValueError, match="pole"):
             validate_config(catalog, cfg)
 
-    def test_slot_mismatch_via_api_returns_422(self) -> None:
+    def test_slot_mismatch_via_api_returns_422(self, bc_alum20) -> None:
         """POST /generate with a pole id in the fixture field must return 422."""
         resp = client.post(
             "/generate",
@@ -335,7 +344,7 @@ class TestValidateConfig:
                 "config": {
                     "configId": "slot-mismatch-api-test",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "alum-pole-12",   # pole id in fixture field
                     "finish": "matte-black",
@@ -357,7 +366,7 @@ class TestValidateConfig:
 
 
 class TestGenerateSummaryParts:
-    def test_generate_summary_contains_parts_with_names(self) -> None:
+    def test_generate_summary_contains_parts_with_names(self, bc_alum20) -> None:
         """POST /generate must include parts array in summary with slot, id, name, productUrl."""
         resp = client.post(
             "/generate",
@@ -365,7 +374,7 @@ class TestGenerateSummaryParts:
                 "config": {
                     "configId": "summary-parts-test",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -390,7 +399,7 @@ class TestGenerateSummaryParts:
 
 
 class TestGenerateRenderPngBase64:
-    def test_generate_with_valid_base64_png_no_warning(self) -> None:
+    def test_generate_with_valid_base64_png_no_warning(self, bc_alum20) -> None:
         """POST /generate with valid base64 PNG (no prefix) must not produce warning."""
         # Tiny valid PNG in base64 (1x1 transparent PNG)
         tiny_png_b64 = (
@@ -402,7 +411,7 @@ class TestGenerateRenderPngBase64:
                 "config": {
                     "configId": "png-valid-test",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -417,7 +426,7 @@ class TestGenerateRenderPngBase64:
         # Check no warning about renderPng
         assert not any("renderPng" in w for w in body.get("warnings", []))
 
-    def test_generate_with_invalid_base64_png_produces_warning(self) -> None:
+    def test_generate_with_invalid_base64_png_produces_warning(self, bc_alum20) -> None:
         """POST /generate with garbage base64 must produce 'renderPng ignored' warning."""
         resp = client.post(
             "/generate",
@@ -425,7 +434,7 @@ class TestGenerateRenderPngBase64:
                 "config": {
                     "configId": "png-invalid-test",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -449,11 +458,11 @@ class TestGenerateRenderPngBase64:
 class TestMultiArmGenerate:
     """POST /generate with a twin config produces distinct, non-empty output."""
 
-    def _twin_cfg(self) -> dict:
+    def _twin_cfg(self, bc_alum20: str) -> dict:
         return dict(
             configId="twin-http-0001",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -461,12 +470,12 @@ class TestMultiArmGenerate:
             armCount=2,
         )
 
-    def _single_cfg(self) -> dict:
-        c = self._twin_cfg()
+    def _single_cfg(self, bc_alum20: str) -> dict:
+        c = self._twin_cfg(bc_alum20)
         c["armCount"] = 1
         return c
 
-    def test_twin_generate_returns_200_with_files(self) -> None:
+    def test_twin_generate_returns_200_with_files(self, bc_alum20) -> None:
         from app.adapters import REGISTRY
 
         # Guard formats whose engine may be absent in this environment.
@@ -474,7 +483,7 @@ class TestMultiArmGenerate:
         assert "pdf" in formats  # pdf/ifc are hard deps; must be present
         resp = client.post(
             "/generate",
-            json={"config": self._twin_cfg(), "formats": formats, "renderPng": None},
+            json={"config": self._twin_cfg(bc_alum20), "formats": formats, "renderPng": None},
         )
         assert resp.status_code == 200, resp.text
         body = resp.json()
@@ -482,13 +491,13 @@ class TestMultiArmGenerate:
         for entry in body["files"]:
             assert entry["sizeBytes"] > 0
 
-    def test_twin_confighash_differs_from_single(self) -> None:
-        assert config_hash(PoleConfig(**self._twin_cfg())) != config_hash(
-            PoleConfig(**self._single_cfg())
+    def test_twin_confighash_differs_from_single(self, bc_alum20) -> None:
+        assert config_hash(PoleConfig(**self._twin_cfg(bc_alum20))) != config_hash(
+            PoleConfig(**self._single_cfg(bc_alum20))
         )
 
-    def test_armcount_out_of_range_returns_422(self) -> None:
-        cfg = self._twin_cfg()
+    def test_armcount_out_of_range_returns_422(self, bc_alum20) -> None:
+        cfg = self._twin_cfg(bc_alum20)
         cfg["armCount"] = 5
         resp = client.post(
             "/generate",
@@ -497,8 +506,8 @@ class TestMultiArmGenerate:
         assert resp.status_code == 422
         assert "armCount" in resp.json()["detail"]
 
-    def test_absent_armcount_defaults_to_single(self) -> None:
-        cfg = self._single_cfg()
+    def test_absent_armcount_defaults_to_single(self, bc_alum20) -> None:
+        cfg = self._single_cfg(bc_alum20)
         del cfg["armCount"]
         resp = client.post(
             "/generate",
@@ -507,18 +516,18 @@ class TestMultiArmGenerate:
         assert resp.status_code == 200, resp.text
         # Absent armCount hashes the same as an explicit armCount=1.
         assert config_hash(PoleConfig(**cfg)) == config_hash(
-            PoleConfig(**self._single_cfg())
+            PoleConfig(**self._single_cfg(bc_alum20))
         )
 
 
 class TestBannerGenerate:
     """POST /generate with a banner accessory config → 200, distinct hash."""
 
-    def _banner_cfg(self, with_banner: bool = True) -> dict:
+    def _banner_cfg(self, bc_alum20: str, with_banner: bool = True) -> dict:
         cfg = dict(
             configId="banner-http-0001",
             pole="alum-pole-20",
-            baseCover=_BC_ALUM20,
+            baseCover=bc_alum20,
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -532,14 +541,14 @@ class TestBannerGenerate:
             }
         return cfg
 
-    def test_banner_generate_returns_200_with_files(self) -> None:
+    def test_banner_generate_returns_200_with_files(self, bc_alum20) -> None:
         from app.adapters import REGISTRY
 
         formats = [f for f in ("step", "ifc", "pdf") if f in REGISTRY]
         assert "pdf" in formats
         resp = client.post(
             "/generate",
-            json={"config": self._banner_cfg(), "formats": formats, "renderPng": None},
+            json={"config": self._banner_cfg(bc_alum20), "formats": formats, "renderPng": None},
         )
         assert resp.status_code == 200, resp.text
         body = resp.json()
@@ -547,13 +556,13 @@ class TestBannerGenerate:
         for entry in body["files"]:
             assert entry["sizeBytes"] > 0
 
-    def test_banner_confighash_differs_from_no_banner(self) -> None:
-        assert config_hash(PoleConfig(**self._banner_cfg(True))) != config_hash(
-            PoleConfig(**self._banner_cfg(False))
+    def test_banner_confighash_differs_from_no_banner(self, bc_alum20) -> None:
+        assert config_hash(PoleConfig(**self._banner_cfg(bc_alum20, True))) != config_hash(
+            PoleConfig(**self._banner_cfg(bc_alum20, False))
         )
 
-    def test_unsupported_banner_count_returns_422(self) -> None:
-        cfg = self._banner_cfg()
+    def test_unsupported_banner_count_returns_422(self, bc_alum20) -> None:
+        cfg = self._banner_cfg(bc_alum20)
         cfg["banner"]["count"] = 3  # not in arrangements [1, 2, 4]
         resp = client.post(
             "/generate",

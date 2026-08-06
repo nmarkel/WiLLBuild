@@ -17,7 +17,6 @@ from fastapi.testclient import TestClient
 
 from app.adapters import DWG_WARNING, REGISTRY
 from app.adapters.dwg_adapter import _find_oda
-from app.catalog import load_catalog
 from app.main import app
 
 from .conftest import first_base_cover_for
@@ -26,15 +25,18 @@ client = TestClient(app)
 
 _ODA_PRESENT = _find_oda() is not None
 
-_CFG = {
-    "configId": "dwg-test",
-    "pole": "alum-pole-20",
-    "baseCover": first_base_cover_for(load_catalog(), "alum-pole-20"),
-    "arm": "sh1-shepherds-hook",
-    "fixture": "gvx-pendant",
-    "finish": "matte-black",
-    "rev": 1,
-}
+
+@pytest.fixture(scope="module")
+def cfg(catalog: dict) -> dict:
+    return {
+        "configId": "dwg-test",
+        "pole": "alum-pole-20",
+        "baseCover": first_base_cover_for(catalog, "alum-pole-20"),
+        "arm": "sh1-shepherds-hook",
+        "fixture": "gvx-pendant",
+        "finish": "matte-black",
+        "rev": 1,
+    }
 
 
 class TestDwgAbsentFallback:
@@ -52,10 +54,10 @@ class TestDwgAbsentFallback:
         body = client.get("/health").json()
         assert "dwg" not in body["adapters"]
 
-    def test_generate_dwg_falls_back_to_dxf_with_warning(self) -> None:
+    def test_generate_dwg_falls_back_to_dxf_with_warning(self, cfg: dict) -> None:
         if _ODA_PRESENT:
             pytest.skip("ODA present — fallback path not exercised")
-        resp = client.post("/generate", json={"config": _CFG, "formats": ["dwg"]})
+        resp = client.post("/generate", json={"config": cfg, "formats": ["dwg"]})
         assert resp.status_code == 200
         body = resp.json()
         # No .dwg produced, but the request did not 422 …
@@ -74,10 +76,10 @@ class TestDwgPresent:
         body = client.get("/health").json()
         assert body["adapters"].get("dwg") is True
 
-    def test_generate_dwg_produces_dwg_file(self) -> None:
+    def test_generate_dwg_produces_dwg_file(self, cfg: dict) -> None:
         if not _ODA_PRESENT:
             pytest.skip("ODA File Converter not installed")
-        resp = client.post("/generate", json={"config": _CFG, "formats": ["dwg"]})
+        resp = client.post("/generate", json={"config": cfg, "formats": ["dwg"]})
         assert resp.status_code == 200
         body = resp.json()
         dwg_files = [f for f in body["files"] if f["filename"].endswith(".dwg")]

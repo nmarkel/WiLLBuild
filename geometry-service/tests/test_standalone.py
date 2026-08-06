@@ -36,10 +36,16 @@ from .conftest import first_base_cover_for
 
 client = TestClient(app)
 
-# Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'; derive the
-# regression-test baseCover instead of hardcoding a part that no longer
-# lives in that slot.
-_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
+
+@pytest.fixture(scope="module")
+def bc_alum20(catalog: dict) -> str:
+    """The baseCover derived for alum-pole-20.
+
+    Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'; derive the
+    regression-test baseCover instead of hardcoding a part that no longer
+    lives in that slot.
+    """
+    return first_base_cover_for(catalog, "alum-pole-20")
 
 
 # ---------------------------------------------------------------------------
@@ -291,7 +297,7 @@ class TestStandaloneGenerate:
 # ---------------------------------------------------------------------------
 
 class TestNormalConfigRegression:
-    def test_normal_pdf_still_works(self) -> None:
+    def test_normal_pdf_still_works(self, bc_alum20) -> None:
         """Normal assembly config + pdf must still return 200."""
         resp = client.post(
             "/generate",
@@ -299,7 +305,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-pdf-001",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -311,7 +317,7 @@ class TestNormalConfigRegression:
         )
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
-    def test_normal_step_still_works(self) -> None:
+    def test_normal_step_still_works(self, bc_alum20) -> None:
         """Normal assembly config + step must still return 200."""
         resp = client.post(
             "/generate",
@@ -319,7 +325,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-step-001",
                     "pole": "alum-pole-20",
-                    "baseCover": _BC_ALUM20,
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

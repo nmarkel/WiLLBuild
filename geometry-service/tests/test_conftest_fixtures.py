@@ -33,7 +33,12 @@ def test_no_test_file_hardcodes_a_restolled_base_cover():
         if path.name == Path(__file__).name:
             continue  # this file's own source is the pattern list, not a fixture
         text = path.read_text()
-        for bad in ('baseCover="bc-fluted"', 'baseCover="bc-round"'):
+        for bad in (
+            'baseCover="bc-fluted"',
+            'baseCover="bc-round"',
+            '"baseCover": "bc-fluted"',
+            '"baseCover": "bc-round"',
+        ):
             if bad in text:
                 offenders.append(f"{path.name}: {bad}")
     assert offenders == [], f"hardcoded re-slotted base covers: {offenders}"

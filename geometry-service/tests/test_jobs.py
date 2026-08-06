@@ -14,9 +14,9 @@ from __future__ import annotations
 import time
 import uuid
 
+import pytest
 from fastapi.testclient import TestClient
 
-from app.catalog import load_catalog
 from app.main import OUT_DIR, app
 from app.models import GenerateRequest
 from app.naming import base_name
@@ -25,14 +25,18 @@ from .conftest import first_base_cover_for
 
 client = TestClient(app)
 
-_BC_ALUM20 = first_base_cover_for(load_catalog(), "alum-pole-20")
+
+@pytest.fixture(scope="module")
+def bc_alum20(catalog: dict) -> str:
+    """The baseCover derived for alum-pole-20 (threaded, not module-import-time)."""
+    return first_base_cover_for(catalog, "alum-pole-20")
 
 
-def _cfg(config_id: str) -> dict:
+def _cfg(bc_alum20: str, config_id: str) -> dict:
     return {
         "configId": config_id,
         "pole": "alum-pole-20",
-        "baseCover": _BC_ALUM20,
+        "baseCover": bc_alum20,
         "arm": "sh1-shepherds-hook",
         "fixture": "gvx-pendant",
         "finish": "matte-black",
@@ -76,10 +80,10 @@ def _poll_until_done(job_id: str, timeout: float = 60.0) -> dict:
 
 
 class TestJobValidation:
-    def test_invalid_config_returns_422_string_detail(self) -> None:
+    def test_invalid_config_returns_422_string_detail(self, bc_alum20) -> None:
         resp = client.post(
             "/jobs",
-            json={"config": _cfg("bad") | {"fixture": "nope"}, "formats": ["step"]},
+            json={"config": _cfg(bc_alum20, "bad") | {"fixture": "nope"}, "formats": ["step"]},
         )
         assert resp.status_code == 422
         assert isinstance(resp.json()["detail"], str)
@@ -103,8 +107,8 @@ class TestJobValidation:
 
 
 class TestJobLifecycle:
-    def test_pending_then_done_with_files(self) -> None:
-        cfg = _cfg(_unique_config_id("jl"))
+    def test_pending_then_done_with_files(self, bc_alum20) -> None:
+        cfg = _cfg(bc_alum20, _unique_config_id("jl"))
         _clear_cache(cfg)  # force a genuine pending → done run, not a cache hit
         resp = client.post("/jobs", json={"config": cfg, "formats": ["step", "dxf"]})
         assert resp.status_code == 200
@@ -126,9 +130,9 @@ class TestJobLifecycle:
 
 
 class TestJobCache:
-    def test_second_identical_request_served_from_cache(self) -> None:
+    def test_second_identical_request_served_from_cache(self, bc_alum20) -> None:
         # Unique configId + cleared artifacts → first request is a guaranteed miss.
-        cfg = _cfg(_unique_config_id("c"))
+        cfg = _cfg(bc_alum20, _unique_config_id("c"))
         _clear_cache(cfg)
 
         r1 = client.post("/jobs", json={"config": cfg, "formats": ["step"]})
