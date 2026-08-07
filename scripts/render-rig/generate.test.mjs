@@ -8,6 +8,7 @@ import {
 
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 const realParts = JSON.parse(readFileSync('scripts/render-rig/real-parts.json', 'utf-8'))
+const realGeometry = JSON.parse(readFileSync('docs/real-geometry.json', 'utf-8'))
 
 describe('render rig angle coverage (spec D9)', () => {
   it('gives every slot the full 8-angle compass', () => {
@@ -67,5 +68,26 @@ describe('pole hand-hole graft (spec D8a)', () => {
       placeholderGraftChildren(catalog.parts.find((p) => p.id === id)),
     )
     expect(grafts[0]).toEqual(grafts[1])
+  })
+})
+
+describe('real-parts.json matches the ingest provenance record (spec D8 union)', () => {
+  // docs/real-geometry.json is mechanically regenerated (write_manifest() in
+  // ingest.py) from the exact same INGEST/DERIVED literals real-parts.json is
+  // supposed to mirror — reading it here avoids needing Python from a vitest
+  // test while still pinning against the real source of truth. "components"
+  // (kind==='component') is INGEST's real STEP mappings; "clusters" reuse an
+  // existing component's partId (a 2/3/4-arm cluster is not a new render-rig
+  // part) so they contribute no new ids; "unmapped" entries have no partId at
+  // all. "derived" is ingest.DERIVED, the axially-scaled pole heights.
+  it('maps exactly the union of ingest.INGEST and ingest.DERIVED — no more, no less', () => {
+    const expected = new Set([
+      ...realGeometry.components.filter((c) => c.kind === 'component').map((c) => c.partId),
+      ...realGeometry.derived.map((d) => d.partId),
+    ])
+    const actual = new Set(Object.keys(realParts))
+    const missing = [...expected].filter((id) => !actual.has(id)).sort()
+    const extra = [...actual].filter((id) => !expected.has(id)).sort()
+    expect({ missing, extra }).toEqual({ missing: [], extra: [] })
   })
 })
