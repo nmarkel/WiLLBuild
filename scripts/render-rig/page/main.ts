@@ -23,13 +23,35 @@ function b64ToArrayBuffer(b64: string): ArrayBuffer {
   return bytes.buffer
 }
 
+/** A placeholder child to graft onto real geometry (spec D8a) — see
+ *  `placeholderGraftChildren` in generate.mjs, which selects these straight
+ *  out of the catalog placeholder and passes them across the Puppeteer
+ *  boundary as plain JSON. */
+interface GraftChild {
+  spec: PlaceholderSpec
+  position: Vec3
+}
+
 async function loadRealModel(
   partId: string,
   base64: string,
   rotateYDeg = 0,
+  graftChildren: GraftChild[] = [],
 ): Promise<void> {
   const buf = b64ToArrayBuffer(base64)
   const gltf = await gltfLoader.parseAsync(buf, '')
+  if (graftChildren.length) {
+    // Reuse the same 'group' path specToObject already uses for the
+    // placeholder pole itself: each child gets its own sub-group at its
+    // catalog position, so the box lands at native size regardless of any
+    // scale baked into the real mesh (there is none applied here — the
+    // axial scale for derived pole heights is baked into the GLB offline,
+    // never applied to gltf.scene at load time — so grafting a sibling at a
+    // fixed local position can't inherit a stretch that never happens).
+    const graftMaterial = new THREE.MeshStandardMaterial()
+    const graft = specToObject({ kind: 'group', children: graftChildren }, graftMaterial)
+    gltf.scene.add(graft)
+  }
   realModels.set(partId, gltf.scene)
   realRotations.set(partId, (rotateYDeg * Math.PI) / 180)
 }
