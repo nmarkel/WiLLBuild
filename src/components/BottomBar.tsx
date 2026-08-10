@@ -3,6 +3,7 @@ import type { Catalog, PoleConfig } from '../types'
 import { configStatus, partById } from '../lib/compat'
 import { armArrangementLabel, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
 import { shareUrl } from '../lib/url'
+import { displayPartName } from '../lib/display'
 
 const QUOTE_URL = 'https://willbrands.com/pages/request-a-quote'
 
@@ -23,7 +24,10 @@ export function BottomBar({ catalog, config, onOpenDownloads }: Props) {
 
   const status = configStatus(catalog, config)
   const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config))}`
-  const names = SUMMARY_ROWS.map((r) => partById(catalog, config[r.key])?.name).filter(Boolean)
+  const names = SUMMARY_ROWS.map((r) => {
+    const part = partById(catalog, config[r.key])
+    return part && displayPartName(part.name)
+  }).filter(Boolean)
   if ((config.armCount ?? 1) > 1) names.splice(2, 0, armArrangementLabel(config.armCount ?? 1))
 
   const copyLink = async () => {

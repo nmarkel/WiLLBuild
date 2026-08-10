@@ -17,6 +17,7 @@ function ftLabel(ft: number): string {
   return i === 0 ? `${f} ft` : `${f}′ ${i}″`
 }
 import { useConfigurator } from '../store'
+import { displayPartName } from '../lib/display'
 import { BannerPicker } from './BannerPicker'
 
 /** Phase 0.8 (A1): labels for the radial arm-count selector (official layouts: 2@180, 3@90, 4@90). */
@@ -99,7 +100,7 @@ export function Panel({ catalog, config }: Props) {
                     style={{ background: config.finishRal?.[step.key] ?? finish.hex }}
                   />
                 )}
-                {part?.name ?? '—'}
+                {part ? displayPartName(part.name) : '—'}
               </span>
             </div>
             <div className="step-body">
@@ -415,7 +416,7 @@ function PartChoice({
               p.family.slice(0, 2).toUpperCase()
             )}
           </span>
-          <span className="option-name">{p.name}</span>
+          <span className="option-name">{displayPartName(p.name)}</span>
           <span className="option-family">{partDesignCode(p)}</span>
         </button>
       ))}

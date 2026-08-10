@@ -1,6 +1,7 @@
 import type { Catalog, PoleConfig } from '../types'
 import { configStatus, finishFor, partById } from '../lib/compat'
 import { armArrangementLabel, buildPartNumber, SUMMARY_ROWS } from '../lib/summary'
+import { displayPartName } from '../lib/display'
 
 interface Props {
   catalog: Catalog
@@ -37,7 +38,7 @@ export function Summary({ catalog, config }: Props) {
                       />
                     )}
                     <a href={part.productUrl} target="_blank" rel="noreferrer">
-                      {part.name}
+                      {displayPartName(part.name)}
                     </a>
                   </span>
                   {partNumber && (
