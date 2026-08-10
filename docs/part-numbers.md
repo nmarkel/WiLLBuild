@@ -1,4 +1,4 @@
-# WiLL part numbers (Phase 0.10, Workstream 0)
+# WiLL part numbers (Phase 0.10, Workstream 0; frontend-only as of 0.10.5)
 
 The configured **part number is the configurator's primary output**. Per Tyler (8/3): a
 designer drops the WiLL SKU into their project spec, it becomes the basis of design, and
@@ -28,8 +28,20 @@ fluted/round base covers.
 
 ## Resolution rules
 
-Both resolvers — `src/lib/partNumber.ts` (app) and `app/partnumber.py` (service, a mirror
-pinned by the same expected strings in both test suites) — apply:
+**Frontend-only as of 0.10.5.** The part number is resolved by exactly one place in the
+codebase: `buildPartNumber` in `src/lib/summary.ts`. There is no `geometry-service` mirror —
+an earlier `app/partnumber.py` resolver (kept in lockstep with the frontend by pinning both
+test suites to the same expected strings) was deliberately dropped when the two divergent
+0.10.5 source branches were combined, rather than carried forward and re-synced. This is a
+known regression, not an oversight: generated STEP/DXF/IFC/PDF files and the download bundle
+no longer carry the configured part number anywhere, and the geometry-service's `config_hash`
+(`app/naming.py`) does not vary with `specOptions`/ordering-column choices — two configs that
+differ only in a spec option (e.g. cord length) still resolve to the *same* cached CAD/PDF
+files today. Restoring both (the Python resolver and the `config_hash` coupling) is tracked as
+R1/R2 for Phase 0.11 — see `Phase 0.10.5 — Branch Combine, Carry-Forward & Open Decisions.md`
+in the Design Assistant vault. Until then:
+
+`buildPartNumber` applies:
 
 1. **Family** — `ordering.family` (`WP`), or the sheet's `product-family` column (`WD` for
    fixtures).
@@ -49,21 +61,43 @@ pinned by the same expected strings in both test suites) — apply:
 Unresolved required segments render as `?` and mark the number **incomplete**, with a count of
 what is left to choose. An incomplete number never looks spec-able.
 
-## Where it surfaces
+## Where it surfaces (frontend)
 
-- **Panel** — a `WiLL Part Numbers` card under the build steps (copy-all, per-segment
-  breakdown), plus a live chip on each step header.
-- **Config summary / quote request** — the summary text now *leads* with the part numbers.
-- **Spec sheet + concept card (PDF)** — "Part Number" is a first-class column in the
-  components table, bold, with a footnote explaining `?`.
-- **Download bundle** — `factory-cad/<part number>.step` is Engineering's own released CAD for
-  that SKU, when it exists.
+- **Config summary sidebar** (`src/components/Summary.tsx`) — each configured part's row shows
+  its own resolved part number (`summary-pn`) next to its name/finish swatch.
+- **Config summary / quote request** (`buildSummaryText` in `src/lib/summary.ts`) — each part
+  line is immediately followed by its own `Part No: …` line, and its selected spec-sheet
+  options underneath that.
+- **Output tray** — the "Part Numbers + Config" card (`src/components/OutputTray.tsx`) copies
+  that same summary text to the clipboard for pasting into a project spec.
 
-## Cache correctness
+## Where it does NOT surface (known 0.10.5 regression, tracked for 0.11)
 
-`partOptions` (per-part ordering selections) changes the printed numbers but not the geometry,
-so it joins the config hash **only when non-empty** — old configs keep their historical hashes
-byte-for-byte, while two configs that differ only in options can never share a cached PDF.
+Because the Python resolver was dropped rather than carried forward (see "Resolution rules"
+above), none of the geometry-service outputs know about part numbers:
+
+- **Spec sheet / concept-card PDF** (`app/adapters/_spec_template.py`) — the components table
+  has `Slot` / `Product` / `URL` columns only; there is no `Part Number` column.
+- **STEP/DXF/IFC/download bundle** — files are named from `config_hash` + `configId`
+  (`app/naming.py`), never from the configured part number. `app/realgeom.py`'s `CLUSTER_FILES`
+  table (e.g. `SS3-40F.STEP`, a real multi-arm cluster file) is consequently unreachable: the
+  design code that would select it is resolved only on the frontend now, and
+  `app/kit/assembly.py`'s `_design()` always returns `None` (see its own Phase 0.10.5 comment).
+  Every real-CAD part therefore falls back to its single-arm/base STEP file regardless of
+  `armCount`.
+- Restoring this (R1) together with coupling `specOptions` into `config_hash` so that two
+  configs differing only in a spec-sheet option no longer share a cached file (R2) is deferred
+  to Phase 0.11 — see `Phase 0.10.5 — Branch Combine, Carry-Forward & Open Decisions.md` in the
+  Design Assistant vault.
+
+## Cache correctness (as of 0.10.5 — see R2 above)
+
+`app/naming.py`'s `config_hash` whitelist is `{pole, baseCover, arm, fixture, finish, armCount,
+banner}` — it does **not** include `specOptions` (per-part ordering-column / options-and-
+accessories selections). Those change the *printed* part number on the frontend but, today, two
+configs that differ only in a spec option resolve to the same `config_hash` and can share a
+cached geometry-service file. This was true before 0.10.5 too; it is not a regression introduced
+here, but it compounds the part-number gap above and is why R1 and R2 are tracked together.
 
 ## Known spec-parse artifacts (fixed in the catalog, not the parser)
 
@@ -94,14 +128,19 @@ the third defect:
   both — so both keys were also added to `Panel.tsx`'s `IMPLIED_COLUMNS` to keep them out of the
   "Base configuration" dropdowns (mirroring how `design`/`finish-type` were already hidden).
 
-Caveat: `scripts/merge-spec-options.mjs` owns the `options` field and recomputes it verbatim from
-`docs/spec-options.json` (still polluted — the raw parser output was deliberately left alone, see
-above) every time it runs. It is idempotent against its own source but **not** against these
-hand edits: rerunning it would silently revert `design`/`length` (and the two older merges) back
-to the raw merged columns. This was already true before this task for the two older merges; it
-is not fixed here (would require either fixing the parser's column-clustering, which risks
-regressing sheets that already parse cleanly, or teaching the merge script to preserve
-hand-authored columns) — flagged for whoever next touches this pipeline.
+> **⚠ HAZARD — read before ever rerunning `scripts/merge-spec-options.mjs`:** it owns the
+> `options` field and recomputes it *verbatim* from `docs/spec-options.json` (still polluted —
+> the raw parser output was deliberately left alone, see above) on every run — that's what makes
+> it idempotent against its own source. It is **not** idempotent against the hand edits above:
+> rerunning it will silently revert `alum-pole-*`'s hand-fixed `design`/`length` columns (and the
+> two older merges) back to the raw, polluted merged columns, with no error and nothing obviously
+> wrong in a quick diff — `buildPartNumber`'s pole part numbers would just quietly start
+> resolving from bad data again. This was already true before this task for the two older
+> merges; it is not fixed here (would require either fixing the parser's column-clustering,
+> which risks regressing sheets that already parse cleanly, or teaching the merge script to
+> preserve hand-authored columns). If you must rerun it, re-apply the `design`/`length` hand-fix
+> to `alum-pole-*` afterward. The same warning is repeated as a comment at the top of the script
+> itself.
 
 ## Open confirmations
 

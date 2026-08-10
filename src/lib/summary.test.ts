@@ -27,7 +27,7 @@ describe('buildSummaryText', () => {
     expect(summary).toContain('Config ID: test-config-123')
   })
 
-  it('includes all parts, each with its own finish (Phase 1.0)', () => {
+  it('includes all parts, each with its own finish (Phase 0.10.5)', () => {
     const summary = buildSummaryText(catalog, config({}))
     expect(summary).toContain('Fixture: GVX Pendant — Black')
     expect(summary).toContain('Arm: SH1 Shepherds Hook — Black')
@@ -80,7 +80,7 @@ describe('buildSummaryText', () => {
   })
 })
 
-describe('buildPartNumber (Phase 1.0)', () => {
+describe('buildPartNumber (Phase 0.10.5)', () => {
   it('assembles base config in sheet order with implied family/design/finish', () => {
     // Nothing chosen: WD (single-value family) - GVX (part card) - four open
     // columns - BK (matte-black via mapsTo).
@@ -125,7 +125,7 @@ describe('buildPartNumber (Phase 1.0)', () => {
   })
 })
 
-describe('custom RAL in summary + part number (Phase 1.1)', () => {
+describe('custom RAL in summary + part number (Phase 0.10.5)', () => {
   it('quote text carries the picked RAL hex', () => {
     const summary = buildSummaryText(
       catalog,
@@ -140,7 +140,7 @@ describe('custom RAL in summary + part number (Phase 1.1)', () => {
   })
 })
 
-describe('arm model code as part number (Phase 1.0)', () => {
+describe('arm model code as part number (Phase 0.10.5)', () => {
   it('uses the official code for the chosen count', () => {
     const cfg = config({
       fixture: 'gvx-pendant',
@@ -160,7 +160,7 @@ describe('arm model code as part number (Phase 1.0)', () => {
   })
 })
 
-describe('pole part number — fixed and derived segments (Phase 1.0)', () => {
+describe('pole part number — fixed and derived segments (Phase 0.10.5)', () => {
   it('carries AB/SB and a color-derived finish type', () => {
     const cfg = config({
       finishes: { pole: 'slate-gray' },
@@ -221,7 +221,7 @@ describe('buildPartNumber — pole (8/4 spec sheet target)', () => {
   })
 })
 
-describe('accessory placement in summary (Phase 1.0)', () => {
+describe('accessory placement in summary (Phase 0.10.5)', () => {
   it('placed accessories carry their shaft position', () => {
     const summary = buildSummaryText(
       catalog,
@@ -238,7 +238,7 @@ describe('accessory placement in summary (Phase 1.0)', () => {
   })
 })
 
-describe('base cover part number (Phase 1.0)', () => {
+describe('base cover part number (Phase 0.10.5)', () => {
   it('assembles WP-design-poleFit-color per the sheet ordering example', () => {
     const cfg = config({
       baseCover: 'bc-cl2-medium-clamshell',

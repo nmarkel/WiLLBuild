@@ -35,16 +35,16 @@ interface ConfiguratorState {
   /** Current view mode: builder (3D wizard) or product (standalone product page). */
   view: ViewMode
   /**
-   * Phase 1.0: assembly view rotation in 45° steps (0..315). A viewer-state
+   * Phase 0.10.5: assembly view rotation in 45° steps (0..315). A viewer-state
    * axis like `scene` — spins the whole composited assembly via the
    * per-azimuth renders; it never changes the config.
    */
   viewYaw: number
   setViewYaw: (deg: number) => void
-  /** Phase 1.0: ground compass at the pole base (0/90/180/270 reference). */
+  /** Phase 0.10.5: ground compass at the pole base (0/90/180/270 reference). */
   showCompass: boolean
   toggleCompass: () => void
-  /** Phase 1.0: object URL of the user-uploaded custom backdrop (session-only). */
+  /** Phase 0.10.5: object URL of the user-uploaded custom backdrop (session-only). */
   customSceneUrl: string | null
   /** Store an uploaded backdrop photo and switch to it. */
   setCustomScene: (url: string) => void
@@ -52,22 +52,22 @@ interface ConfiguratorState {
   brand: ProductLine
   loadCatalog: () => Promise<void>
   select: (slot: Slot, id: string) => void
-  /** Phase 1.0: set one part's finish (per-slot override on the base finish). */
+  /** Phase 0.10.5: set one part's finish (per-slot override on the base finish). */
   setFinish: (slot: Slot, id: string) => void
-  /** Phase 1.1: set one part's custom RAL color (#rrggbb) — only meaningful when its finish is custom-ral. */
+  /** Phase 0.10.5: set one part's custom RAL color (#rrggbb) — only meaningful when its finish is custom-ral. */
   setFinishRal: (slot: Slot, hex: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
   setArmCount: (count: number) => void
-  /** Phase 1.0: rotate the arm arrangement about the pole (0 / 90 / 180 / 270°). */
+  /** Phase 0.10.5: rotate the arm arrangement about the pole (0 / 90 / 180 / 270°). */
   setArmOrientation: (deg: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
-  /** Phase 1.0: place a selected pole accessory (FSTR/CPL/FH/PH/…) on the shaft. */
+  /** Phase 0.10.5: place a selected pole accessory (FSTR/CPL/FH/PH/…) on the shaft. */
   setAccessoryPlacement: (code: string, placement: import('./types').AccessoryPlacement) => void
-  /** Phase 0.8 (D), reshaped 1.0: pick a single-choice ordering column value for one part's step. */
+  /** Phase 0.8 (D), reshaped in 0.10.5: pick a single-choice ordering column value for one part's step. */
   setSpecOption: (slot: Slot, key: string, code: string) => void
   /**
-   * Phase 1.0: toggle a multi-select options/accessories code for one part's
+   * Phase 0.10.5: toggle a multi-select options/accessories code for one part's
    * step. Checking a code in an exclusive family (cord/surge/photocontrol)
    * unchecks that family's previous code across all of the part's columns.
    */
@@ -139,7 +139,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (!catalog || !config || config[slot] === id) return
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
-    // Phase 1.0: choosing a different part resets that slot's spec choices to
+    // Phase 0.10.5: choosing a different part resets that slot's spec choices to
     // the part's defaults (e.g. the 6' cord) — the old choices belonged to a
     // different product's ordering table.
     const specOptions = { ...(config.specOptions ?? {}), [slot]: defaultSpecOptions(partById(catalog, id)) }

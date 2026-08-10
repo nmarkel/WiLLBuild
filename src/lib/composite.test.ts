@@ -261,7 +261,7 @@ describe('resolveAssemblyLayout — multi-arm', () => {
   })
 
   it('falls back to the nearest available angle when a radial azimuth render is missing', () => {
-    // Phase 1.0: a hero-only manifest (no az180) no longer breaks the twin —
+    // Phase 0.10.5: a hero-only manifest (no az180) no longer breaks the twin —
     // the partner resolves the nearest angle (hero). Missing is reserved for
     // parts with no renders at all.
     const layout = resolveAssemblyLayout(catalog, manifest, twin)
@@ -270,7 +270,7 @@ describe('resolveAssemblyLayout — multi-arm', () => {
   })
 })
 
-describe('view rotation + nearest-angle fallback (Phase 1.0)', () => {
+describe('view rotation + nearest-angle fallback (Phase 0.10.5)', () => {
   it('nearest angle falls back to hero when the requested azimuth is missing', () => {
     // Synthetic parts carry hero only — a rotated view must not report missing.
     const layout = resolveAssemblyLayout(catalog, manifest, config, 90)

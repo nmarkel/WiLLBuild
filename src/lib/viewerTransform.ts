@@ -7,7 +7,7 @@
  * stuck (dragging is disabled at fit, so only Reset recovers it). `clampPan`
  * makes the displayed offset a bounded, self-healing function of state:
  *
- *   - pan works at ANY zoom (Phase 1.0: dragging the product places it in the
+ *   - pan works at ANY zoom (Phase 0.10.5: dragging the product places it in the
  *     backdrop photo), clamped so the scaled product box always keeps a margin
  *     of overlap with the viewport — you can put the pole anywhere in frame
  *     but never fling it off-screen; Reset restores grounded/centred.

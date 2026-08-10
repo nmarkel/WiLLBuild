@@ -75,7 +75,7 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
 
 // Phase 0.8 (C, DoD #9): a banner-arm config renders + composites end-to-end.
 // Legacy config.banner path — WiLLstudio moved to BA24/BA30 accessory
-// placements in 1.0, so this proof runs on NAFCO (still Banner Arm box).
+// placements in 0.10.5, so this proof runs on NAFCO (still Banner Arm box).
 describe('banner arm — real assets (legacy path, NAFCO)', () => {
   const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === 'NAFCO')
   const nafcoBase: PoleConfig = repairConfig(catalog, {
@@ -124,7 +124,7 @@ describe('banner arm — real assets (legacy path, NAFCO)', () => {
   })
 })
 
-// Phase 1.0: orientation rotates the arrangement — every oriented layout must
+// Phase 0.10.5: orientation rotates the arrangement — every oriented layout must
 // resolve real per-azimuth renders with nothing missing.
 describe('arm orientation — real assets', () => {
   it.each([90, 180, 270])('single arm at %i° uses that azimuth render', (deg) => {
@@ -157,10 +157,10 @@ describe('arm orientation — real assets', () => {
   })
 })
 
-// Phase 1.0: the 8-angle assembly spin — rotated views must composite with
-// nothing missing. Phase 0.10.5: every catalog part (rig- and real-render
-// alike) now ships the full 8-angle compass, so this applies exactly rather
-// than falling back to a nearest angle.
+// Phase 0.10.5: the 8-angle assembly spin — rotated views must composite with
+// nothing missing. Every catalog part (rig- and real-render alike) now ships
+// the full 8-angle compass, so this applies exactly rather than falling back
+// to a nearest angle.
 describe('assembly view rotation — real assets', () => {
   it.each([45, 90, 135, 180, 225, 270, 315])('viewYaw=%i composites with 0 missing', (yaw) => {
     const twin = repairConfig(catalog, { ...base, armCount: 2 })

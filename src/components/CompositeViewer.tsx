@@ -24,7 +24,7 @@ interface Props {
 const COMPASS_R_M = 1.5
 const COMPASS_LABEL_R_M = 1.85
 
-// Phase 1.0: zoom doubles as the product's SCALE within the backdrop photo
+// Phase 0.10.5: zoom doubles as the product's SCALE within the backdrop photo
 // (the backdrop never scales) — 0.2× places a pole far down a lot, 10× is
 // close detail. clampPan keeps the product on screen; Reset restores the
 // grounded, centred, true-scale view.
@@ -95,7 +95,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   const [fitScale, setFitScale] = useState(1)
   const [viewport, setViewport] = useState({ w: 0, h: 0 })
 
-  // Phase 1.0: backdrops keep their aspect (object-fit: cover, bottom-anchored),
+  // Phase 0.10.5: backdrops keep their aspect (object-fit: cover, bottom-anchored),
   // so the photo's ground line lands at a viewport-shape-dependent height —
   // compute where, and pin the product's foot there. Blank/custom scenes keep
   // the classic fraction.
@@ -216,7 +216,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     setPan({ x: 0, y: 0 })
     setViewYaw(0)
   }
-  // Phase 1.0: spin the assembly in 45° steps (the per-azimuth render compass).
+  // Phase 0.10.5: spin the assembly in 45° steps (the per-azimuth render compass).
   const rotateLeft = () => setViewYaw(viewYaw - 45)
   const rotateRight = () => setViewYaw(viewYaw + 45)
 
@@ -358,7 +358,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           />
         ))}
 
-        {/* Phase 1.0: ground compass — a projected ring at the pole base with
+        {/* Phase 0.10.5: ground compass — a projected ring at the pole base with
             the four orientation azimuths. 0° tracks the hand-hole homing
             reference, so it rotates with the assembly spin. Projected through
             the same rig map as everything else, so it lies on the ground

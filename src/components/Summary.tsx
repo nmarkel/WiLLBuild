@@ -32,7 +32,7 @@ export function Summary({ catalog, config }: Props) {
       <ul>
         {SUMMARY_ROWS.map((r) => {
           const part = partById(catalog, config[r.key])
-          // Phase 1.0: each part shows its own finish (per-slot override or base).
+          // Phase 0.10.5: each part shows its own finish (per-slot override or base).
           const finish = catalog.finishes.find((f) => f.id === finishFor(config, r.key))
           const partNumber = buildPartNumber(catalog, config, r.key)
           return (

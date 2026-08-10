@@ -32,7 +32,7 @@ interface Props {
   config: PoleConfig
 }
 
-// Phase 1.0 (concierge steps): one distinct chapter per part of the structure,
+// Phase 0.10.5 (concierge steps): one distinct chapter per part of the structure,
 // fixture-first per Round 1 feedback — downstream steps filter on the fixture's
 // mounting requirements. Finish is no longer a global step: each part carries
 // its own finish, and each spec-parsed part exposes its sheet's ordering table
@@ -60,7 +60,7 @@ function isFinishColumn(opt: SpecOption): boolean {
  * catalog data so the part number still carries their codes.
  */
 // finish-type is derived from the picked color (FP painted / AN anodized).
-// length is derived from the chosen pole's own heightFt (Phase 1.0/summary.ts
+// length is derived from the chosen pole's own heightFt (Phase 0.10.5/summary.ts
 // buildPartNumber) — a customer-facing "Length" dropdown independent of the
 // pole height they already picked would let the two disagree.
 const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length'])
@@ -113,11 +113,11 @@ export function Panel({ catalog, config }: Props) {
                 {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                     the chosen pole + arm actually support multiples (catalog rule). */}
                 {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
-                {/* Phase 1.0: rotate the arrangement about the pole (0/90/180/270°). */}
+                {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
                 {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
                 <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
                 {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
-                {/* Phase 0.9 (A2), retired for accessory-driven brands in 1.0:
+                {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
                     the Banner Arm box shows only when the pole's sheet has no
                     banner-kit accessory (BA24/BA30) — those configure banners
                     through Options & accessories placements instead. */}
@@ -142,7 +142,7 @@ export function Panel({ catalog, config }: Props) {
 }
 
 /**
- * Phase 1.0: this part's own finish. Selecting a swatch overrides the base
+ * Phase 0.10.5: this part's own finish. Selecting a swatch overrides the base
  * finish for this slot only; parts left untouched follow the base finish (so
  * the describe-box "in a black finish" still colors the whole structure).
  */
@@ -209,7 +209,7 @@ function StepFinish({
 }
 
 /**
- * Phase 0.8 (Workstream D), moved into the step in 1.0: the part's spec-sheet
+ * Phase 0.8 (Workstream D), moved into the step in 0.10.5: the part's spec-sheet
  * ordering table, split the way the sheet is — base configuration (ordering
  * columns) and options & accessories. Values not confirmed buildable online
  * are flagged "quote". Parts without a parsed sheet render nothing.
@@ -359,7 +359,7 @@ function partDesignCode(part: CatalogPart): string {
 }
 
 /**
- * Phase 1.0: the step's part choices. Normally a card grid; when every choice
+ * Phase 0.10.5: the step's part choices. Normally a card grid; when every choice
  * is the same design at a different height (single family, all with heightFt —
  * the WiLLstudio pole system), the design is implied by the step itself and
  * the cards collapse to a "Height" chip row, sorted short → tall.
@@ -425,7 +425,7 @@ function PartChoice({
 }
 
 /**
- * Phase 1.0: shaft placement for a checked pole accessory that specifies
+ * Phase 0.10.5: shaft placement for a checked pole accessory that specifies
  * height & orientation (festoon, couplings, extra hand holes, flag/plant
  * holders) — the banner arm's pattern, generalized. Orientation is relative
  * to the 0° hand-hole reference. Product renders will later drive a viewer
@@ -501,7 +501,7 @@ function AccessoryPlacementBox({
 }
 
 /**
- * Phase 1.0: rotate the whole arm arrangement about the pole — 0/90/180/270°.
+ * Phase 0.10.5: rotate the whole arm arrangement about the pole — 0/90/180/270°.
  * Hidden for arms with no lateral reach (the direct-mount tenon adapter),
  * where rotation changes nothing; reach is read from the arm's fixture socket,
  * never from a hardcoded part list.

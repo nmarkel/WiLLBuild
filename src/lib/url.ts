@@ -3,7 +3,7 @@ import type { ViewMode } from '../store'
 
 const PART_KEYS = ['pole', 'baseCover', 'arm', 'fixture', 'finish'] as const
 
-/** Slots that may carry a per-part finish override / spec-option set (Phase 1.0). */
+/** Slots that may carry a per-part finish override / spec-option set (Phase 0.10.5). */
 const OPTION_SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
 
 function isOptionSlot(v: string): v is Slot {
@@ -52,7 +52,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   if (config.armCount && config.armCount > 1) {
     params.set('arms', String(config.armCount))
   }
-  // Phase 1.0: arm orientation — omit the 0° default.
+  // Phase 0.10.5: arm orientation — omit the 0° default.
   if (config.armOrientation) {
     params.set('orient', String(config.armOrientation))
   }
@@ -63,8 +63,8 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}`,
     )
   }
-  // Phase 1.0: per-slot finish overrides as `slot:finishId,slot:finishId`
-  // (base `finish` stays its own param for pre-1.0 link compatibility).
+  // Phase 0.10.5: per-slot finish overrides as `slot:finishId,slot:finishId`
+  // (base `finish` stays its own param for pre-0.10.5 link compatibility).
   if (config.finishes) {
     const fins = Object.entries(config.finishes)
       .filter(([, v]) => v)
@@ -73,7 +73,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (fins) params.set('fins', fins)
   }
-  // Phase 1.0: accessory placements as `code~heightFt~orientation[~sides]`.
+  // Phase 0.10.5: accessory placements as `code~heightFt~orientation[~sides]`.
   if (config.accessoryPlacements) {
     const place = Object.entries(config.accessoryPlacements)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -84,7 +84,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (place) params.set('place', place)
   }
-  // Phase 1.1: custom RAL colors as `slot:rrggbb` (hex without the #).
+  // Phase 0.10.5: custom RAL colors as `slot:rrggbb` (hex without the #).
   if (config.finishRal) {
     const rals = Object.entries(config.finishRal)
       .filter(([, v]) => v)
@@ -93,7 +93,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (rals) params.set('ral', rals)
   }
-  // Phase 0.8 (D), reshaped 1.0: spec options as `slot.key:code,slot.key:code`;
+  // Phase 0.8 (D), reshaped in 0.10.5: spec options as `slot.key:code,slot.key:code`;
   // multi-select columns join their codes with `+` (`fixture.options:WHP3NP+N5P`).
   if (config.specOptions) {
     const opts = Object.entries(config.specOptions)
@@ -148,7 +148,7 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 1.0: arm orientation — whitelist 90/180/270 (0 is the omitted default).
+  // Phase 0.10.5: arm orientation — whitelist 90/180/270 (0 is the omitted default).
   const orientValue = params.get('orient')
   if (orientValue) {
     const deg = Number(orientValue)
@@ -168,7 +168,7 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 1.0: per-slot finish overrides `slot:finishId,...`; repairConfig
+  // Phase 0.10.5: per-slot finish overrides `slot:finishId,...`; repairConfig
   // validates the finish ids.
   const finsValue = params.get('fins')
   if (finsValue) {
@@ -182,7 +182,7 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 1.0: accessory placements `code~heightFt~orientation`; repairConfig
+  // Phase 0.10.5: accessory placements `code~heightFt~orientation`; repairConfig
   // clamps values and drops codes not actually selected on the pole.
   const placeValue = params.get('place')
   if (placeValue) {
@@ -204,7 +204,7 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 1.1: custom RAL colors `slot:rrggbb`; repairConfig validates the hex
+  // Phase 0.10.5: custom RAL colors `slot:rrggbb`; repairConfig validates the hex
   // and drops entries whose slot finish isn't custom-ral.
   const ralValue = params.get('ral')
   if (ralValue) {
@@ -220,8 +220,8 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 0.8 (D), reshaped 1.0: spec options `slot.key:code,...` with `+`
-  // joining multi-select codes. Legacy pre-1.0 pairs have no slot prefix —
+  // Phase 0.8 (D), reshaped in 0.10.5: spec options `slot.key:code,...` with `+`
+  // joining multi-select codes. Legacy pre-0.10.5 pairs have no slot prefix —
   // they were always fixture options. repairConfig normalizes shapes (string
   // for ordering columns, string[] for options & accessories).
   const optsValue = params.get('opts')

@@ -24,7 +24,7 @@ const sortedIds = (parts: { id: string }[]) => parts.map((p) => p.id).sort()
 
 describe('compatibleParts (fixture-first)', () => {
   it('offers every fixture unconditionally', () => {
-    // DRX, TEX, MVX, GVX + the DWX flood (Phase 1.0)
+    // DRX, TEX, MVX, GVX + the DWX flood (Phase 0.10.5)
     expect(compatibleParts(catalog, config({}), 'fixture')).toHaveLength(5)
   })
 
@@ -98,7 +98,7 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'willstudio-suspension-arm-pole-top-brackets',
   ].sort()
 
-  // Phase 1.0: the builder offers only the core aluminum pole system — the
+  // Phase 0.10.5: the builder offers only the core aluminum pole system — the
   // fiberglass, steel-fluted, and named decorative poles (Huntington,
   // Sacramento, Washington, Williamsburg) were demoted back to standalone.
   const ALL_POLES = [
@@ -106,7 +106,7 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'alum-pole-15', 'alum-pole-16', 'alum-pole-18', 'alum-pole-20',
   ].sort()
 
-  // Phase 1.0: the official five base cover designs (CL1-3 clamshells, SC1-2
+  // Phase 0.10.5: the official five base cover designs (CL1-3 clamshells, SC1-2
   // spun collars); the previous three covers were demoted to standalone.
   const ALL_BASE_COVERS = [
     'bc-cl1-small-clamshell', 'bc-cl2-medium-clamshell', 'bc-cl3-large-clamshell',
@@ -434,7 +434,7 @@ describe('repairConfig — arm count clamping', () => {
 })
 
 describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path, NAFCO)', () => {
-  // WiLLstudio banners flow through BA24/BA30 accessory placements in 1.0 —
+  // WiLLstudio banners flow through BA24/BA30 accessory placements in 0.10.5 —
   // the legacy config.banner path survives only for brands whose pole sheets
   // carry no banner-kit accessory (NAFCO / WiLLsport).
   const bannerId = 'nafco-ba1-banner-arm'
@@ -450,7 +450,7 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path,
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(maxFt)
   })
 
-  it('clamps a below-floor height up to the 8 ft minimum (Phase 1.0)', () => {
+  it('clamps a below-floor height up to the 8 ft minimum (Phase 0.10.5)', () => {
     const cfg = { ...nafcoCfg, banner: { armId: bannerId, count: 1, heightFt: 0 } }
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(8)
   })
@@ -466,7 +466,7 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path,
   })
 })
 
-describe('finishFor + repairConfig — per-part finishes (Phase 1.0)', () => {
+describe('finishFor + repairConfig — per-part finishes (Phase 0.10.5)', () => {
   it('falls back to the base finish when a slot has no override', () => {
     const c = config({})
     expect(finishFor(c, 'pole')).toBe('matte-black')
@@ -495,7 +495,7 @@ describe('finishFor + repairConfig — per-part finishes (Phase 1.0)', () => {
   })
 })
 
-describe('repairConfig — per-slot spec-option pruning (Phase 1.0)', () => {
+describe('repairConfig — per-slot spec-option pruning (Phase 0.10.5)', () => {
   it('keeps valid choices for the selected part', () => {
     const fixture = partById(catalog, 'gvx-pendant')!
     const opt = fixture.options![0]
@@ -549,7 +549,7 @@ describe('repairConfig — per-slot spec-option pruning (Phase 1.0)', () => {
   })
 })
 
-describe('multi-select options & exclusive families (Phase 1.0)', () => {
+describe('multi-select options & exclusive families (Phase 0.10.5)', () => {
   it('specCodes normalizes strings, arrays, and absent values', () => {
     expect(specCodes(undefined)).toEqual([])
     expect(specCodes('')).toEqual([])
@@ -617,7 +617,7 @@ describe('multi-select options & exclusive families (Phase 1.0)', () => {
   })
 })
 
-describe('voltage → options compatibility (Phase 1.0)', () => {
+describe('voltage → options compatibility (Phase 0.10.5)', () => {
   it('voltageCompatible reads ratings out of value labels', () => {
     expect(voltageCompatible('MV', 'Button Photocontrol, 120-277V')).toBe(true)
     expect(voltageCompatible('MV', 'Button Photocontrol, 347V')).toBe(false)
@@ -675,7 +675,7 @@ describe('voltage → options compatibility (Phase 1.0)', () => {
   })
 })
 
-describe('default spec options — WHP7NP cord (Phase 1.0)', () => {
+describe('default spec options — WHP7NP cord (Phase 0.10.5)', () => {
   it('defaultSpecOptions seeds the 6-ft cord where the sheet offers it', () => {
     expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHP7NP'] })
     expect(defaultSpecOptions(partById(catalog, 'drx-post-top'))).toEqual({ options: ['WHP7NP'] })
@@ -692,7 +692,7 @@ describe('default spec options — WHP7NP cord (Phase 1.0)', () => {
   })
 })
 
-describe('custom RAL color (Phase 1.1)', () => {
+describe('custom RAL color (Phase 0.10.5)', () => {
   it('repairConfig keeps a well-formed hex on a custom-ral slot', () => {
     const repaired = repairConfig(
       catalog,
@@ -719,7 +719,7 @@ describe('custom RAL color (Phase 1.1)', () => {
   })
 })
 
-describe('SH1 shepherd’s hook is single-arm only (Phase 1.0)', () => {
+describe('SH1 shepherd’s hook is single-arm only (Phase 0.10.5)', () => {
   it('offers no multi-arm counts for SH1 on any pole', () => {
     expect(allowedArmCounts(catalog, config({ arm: 'sh1-shepherds-hook', pole: 'alum-pole-20' }))).toEqual([1])
   })
@@ -730,7 +730,7 @@ describe('SH1 shepherd’s hook is single-arm only (Phase 1.0)', () => {
   })
 })
 
-describe('official arm configuration list (Phase 1.0)', () => {
+describe('official arm configuration list (Phase 0.10.5)', () => {
   const CASES: [string, number[]][] = [
     ['sh1-shepherds-hook', [1]],
     ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2, 3, 4]],
@@ -767,7 +767,7 @@ describe('official arm configuration list (Phase 1.0)', () => {
   })
 })
 
-describe('arm orientation (Phase 1.0)', () => {
+describe('arm orientation (Phase 0.10.5)', () => {
   it('repairConfig keeps valid orientations and normalizes 0 to unset', () => {
     expect(repairConfig(catalog, config({ armOrientation: 90 })).armOrientation).toBe(90)
     expect(repairConfig(catalog, config({ armOrientation: 270 })).armOrientation).toBe(270)
@@ -779,7 +779,7 @@ describe('arm orientation (Phase 1.0)', () => {
   })
 })
 
-describe('pole heights + diameter column (Phase 1.0)', () => {
+describe('pole heights + diameter column (Phase 0.10.5)', () => {
   it('offers the full WiLLstudio height range for the one design', () => {
     const poles = compatibleParts(catalog, config({}), 'pole')
     expect(new Set(poles.map((p) => p.family)).size).toBe(1)
@@ -797,7 +797,7 @@ describe('pole heights + diameter column (Phase 1.0)', () => {
   })
 })
 
-describe('pole base configuration columns (Phase 1.0)', () => {
+describe('pole base configuration columns (Phase 0.10.5)', () => {
   it('every pole offers Wall Thickness (C/D/E) and no anchor-bolts artifact', () => {
     for (const pole of compatibleParts(catalog, config({}), 'pole')) {
       const keys = (pole.options ?? []).map((o) => o.key)
@@ -809,7 +809,7 @@ describe('pole base configuration columns (Phase 1.0)', () => {
   })
 })
 
-describe('anodized finishes are pole-only (Phase 1.0)', () => {
+describe('anodized finishes are pole-only (Phase 0.10.5)', () => {
   const ANODIZED = ['bronze-anodized', 'black-anodized', 'satin-silver-anodized']
 
   it('poles offer the anodized trio; fixtures/arms/base covers do not', () => {
@@ -832,7 +832,7 @@ describe('anodized finishes are pole-only (Phase 1.0)', () => {
   })
 })
 
-describe('accessory placements (Phase 1.0)', () => {
+describe('accessory placements (Phase 0.10.5)', () => {
   const withFstr = () =>
     config({
       fixture: 'drx-post-top',
@@ -867,7 +867,7 @@ describe('accessory placements (Phase 1.0)', () => {
   })
 })
 
-describe('accessory placement sides (Phase 1.0)', () => {
+describe('accessory placement sides (Phase 0.10.5)', () => {
   it('side sets come from what the accessory is', () => {
     expect(accessorySideOptions('24" Wind Shedding Banner Arm Kit, ... (Specify Pole Height & Orientation)')).toEqual([1, 2, 4])
     expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toEqual([1, 2])

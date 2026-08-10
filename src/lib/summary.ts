@@ -4,7 +4,7 @@ import { configStatus, finishFor, optionLabel, partById, specCodes } from './com
 import { shareUrl } from './url'
 
 /**
- * Phase 1.0: the part's full ordering part number, assembled the way the spec
+ * Phase 0.10.5: the part's full ordering part number, assembled the way the spec
  * sheet's ordering example does (e.g. WD-DRX-80-30-MV-3M-3T-BK): every base
  * configuration column in sheet order joined with `-`, then each selected
  * option/accessory code appended with `-`. Columns the customer hasn't chosen
@@ -96,7 +96,7 @@ export function armArrangementLabel(count: number): string {
 
 /**
  * Human-readable config block — attached to quote requests and copyable from
- * the output tray. Phase 1.0: each part carries its own finish and its own
+ * the output tray. Phase 0.10.5: each part carries its own finish and its own
  * spec-sheet choices (indented under the part), with a quote flag on anything
  * not confirmed buildable online.
  */

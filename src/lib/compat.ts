@@ -11,7 +11,7 @@ function isSlot(s: PartSlot): s is Slot {
 }
 
 /**
- * Phase 1.0 (concierge steps): the finish a part in `slot` renders in — the
+ * Phase 0.10.5 (concierge steps): the finish a part in `slot` renders in — the
  * per-slot override when set, else the base `config.finish`. Non-assembly
  * slots (banner accessories) always use the base finish.
  */
@@ -215,7 +215,7 @@ export function attachSocket(part: CatalogPart, host: CatalogPart) {
  * official 3@90 layout (SS3/AR3 ordering codes) — [0,90,180], not even 120°
  * spacing. Position 0° is the single-arm reference, so armCount=1 is unchanged.
  */
-/** Phase 1.0: the orientations an arm arrangement may rotate to about the pole. */
+/** Phase 0.10.5: the orientations an arm arrangement may rotate to about the pole. */
 export const ARM_ORIENTATIONS = [0, 90, 180, 270]
 
 export function armAzimuths(count: number): number[] {
@@ -263,7 +263,7 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
     next.finish = catalog.finishes[0].id
   }
-  // Phase 1.0: per-slot finish overrides — keep only known finish ids the
+  // Phase 0.10.5: per-slot finish overrides — keep only known finish ids the
   // selected part actually offers (anodized colors are pole/aluminum-only).
   if (next.finishes) {
     const cleaned: Partial<Record<Slot, string>> = {}
@@ -276,7 +276,7 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     }
     next.finishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
-  // Phase 1.1: custom RAL colors — keep only well-formed hex values on slots
+  // Phase 0.10.5: custom RAL colors — keep only well-formed hex values on slots
   // whose finish actually is custom-ral.
   if (next.finishRal) {
     const cleaned: Partial<Record<Slot, string>> = {}
@@ -288,7 +288,7 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     }
     next.finishRal = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
-  // Phase 1.0: prune spec options to the columns + codes the currently selected
+  // Phase 0.10.5: prune spec options to the columns + codes the currently selected
   // part's ordering table actually offers (a part swap drops stale choices).
   // Ordering columns normalize to a single string; options & accessories to a
   // string[] holding at most one code per exclusive family (first one wins,
@@ -333,13 +333,13 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const allowed = allowedArmCounts(catalog, next)
   const count = next.armCount ?? 1
   next.armCount = allowed.includes(count) ? count : 1
-  // Phase 1.0: arm orientation is one of the four compass rotations; anything
+  // Phase 0.10.5: arm orientation is one of the four compass rotations; anything
   // else (tampered URL) resets to 0, and 0 stays unset to keep URLs clean.
   if (next.armOrientation !== undefined) {
     next.armOrientation = ARM_ORIENTATIONS.includes(next.armOrientation) ? next.armOrientation : 0
     if (next.armOrientation === 0) next.armOrientation = undefined
   }
-  // Phase 1.0: accessory placements exist only while their code is selected
+  // Phase 0.10.5: accessory placements exist only while their code is selected
   // on the pole; height clamps to the shaft and orientation to the compass set.
   if (next.accessoryPlacements) {
     const placeable = new Set(placeableAccessoryCodes(catalog, next))
@@ -369,7 +369,7 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
-  // Phase 1.0: brands whose pole sheet carries banner-kit accessories
+  // Phase 0.10.5: brands whose pole sheet carries banner-kit accessories
   // (BA24/BA30) configure banners exclusively through those placements — a
   // legacy `banner` from an old share URL would render an unremovable panel.
   if (

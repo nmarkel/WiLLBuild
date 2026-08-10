@@ -57,13 +57,13 @@ export interface CatalogPart {
    */
   arrangements?: number[]
   /**
-   * Phase 1.0: official ordering model code per radial count (arms), e.g.
+   * Phase 0.10.5: official ordering model code per radial count (arms), e.g.
    * {1:"SS1",2:"SS2",3:"SS3",4:"SS4"} — the arm's part number for that
    * configuration. Keys mirror `arrangements`.
    */
   modelCodes?: Record<number, string>
   /**
-   * Phase 1.0: the part's ordering-matrix design code (e.g. "RSAA" = Round
+   * Phase 0.10.5: the part's ordering-matrix design code (e.g. "RSAA" = Round
    * Straight Aluminum Anchor Base), when the design is a property of the part
    * itself rather than a customer choice — e.g. every WiLLstudio decorative
    * pole is the anchor-base variant. `buildPartNumber` reads this instead of
@@ -193,7 +193,7 @@ export interface Catalog {
  * carries a plain placeholder panel only.
  */
 /**
- * Phase 1.0: shaft placement for a pole accessory whose label carries the
+ * Phase 0.10.5: shaft placement for a pole accessory whose label carries the
  * "Specify Pole Height & Orientation" marker (festoon, couplings, extra hand
  * holes, flag/plant holders). Height in feet above grade; orientation is one
  * of the four compass rotations relative to the 0° hand-hole reference.
@@ -223,20 +223,20 @@ export interface PoleConfig {
   fixture: string
   /**
    * Base finish. Kept as the single-finish field the frozen geometry-service
-   * contract and pre-1.0 share URLs expect; the UI no longer offers a global
+   * contract and pre-0.10.5 share URLs expect; the UI no longer offers a global
    * finish step — it acts as the default for any slot without a `finishes`
    * override (see `finishFor` in lib/compat.ts).
    */
   finish: string
   /**
-   * Phase 1.0 (concierge steps): per-part finish overrides, keyed by slot.
+   * Phase 0.10.5 (concierge steps): per-part finish overrides, keyed by slot.
    * Absent slot → the part renders in the base `finish`. The describe-box
    * parser still writes `finish` only, so "in a black finish" colors every
    * part that hasn't been individually overridden.
    */
   finishes?: Partial<Record<Slot, string>>
   /**
-   * Phase 1.1: when a slot's finish is `custom-ral`, the customer's picked
+   * Phase 0.10.5: when a slot's finish is `custom-ral`, the customer's picked
    * color as a #rrggbb hex, keyed by slot. Feeds the swatch + quote text; the
    * render itself stays the neutral custom-ral layer until real RAL-tinted
    * assets exist.
@@ -251,20 +251,20 @@ export interface PoleConfig {
    */
   armCount?: number
   /**
-   * Phase 1.0: rotation of the whole arm arrangement about the pole, in
-   * degrees — 0 | 90 | 180 | 270. Optional so pre-1.0 configs read as 0.
+   * Phase 0.10.5: rotation of the whole arm arrangement about the pole, in
+   * degrees — 0 | 90 | 180 | 270. Optional so pre-0.10.5 configs read as 0.
    */
   armOrientation?: number
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
   /**
-   * Phase 1.0: shaft placements keyed by the selected pole-accessory order
+   * Phase 0.10.5: shaft placements keyed by the selected pole-accessory order
    * code (FSTR, CPL-P-12, FH, …). Only meaningful while the code is selected
    * in the pole's options — repairConfig prunes the rest.
    */
   accessoryPlacements?: Record<string, AccessoryPlacement>
   /**
-   * Phase 0.8 (D), reshaped in 1.0: selected spec-sheet option codes, keyed by
+   * Phase 0.8 (D), reshaped in 0.10.5: selected spec-sheet option codes, keyed by
    * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":
    * {"anchor-bolts-base-type-finish-type":"AB"}}) — each part step carries its
    * own ordering-table choices. Ordering columns are single-choice (string);

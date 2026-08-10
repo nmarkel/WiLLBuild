@@ -64,7 +64,7 @@ export function ScenePicker() {
           </button>
         )
       })}
-      {/* Phase 1.0: user-supplied backdrop. Session-only (never in share URLs);
+      {/* Phase 0.10.5: user-supplied backdrop. Session-only (never in share URLs);
           clicking with a photo already loaded re-activates it, and the 📷
           affordance re-opens the picker to swap photos. */}
       <button

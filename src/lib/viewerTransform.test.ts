@@ -8,7 +8,7 @@ const viewport = { w: 1200, h: 800 }
 const base = { zoom: 2, scale: 1.5, box, viewport, horizonFrac: 0.8 }
 
 describe('clampPan', () => {
-  it('allows placement panning at fit and below (Phase 1.0), still bounded', () => {
+  it('allows placement panning at fit and below (Phase 0.10.5), still bounded', () => {
     // Dragging at any zoom places the product in the backdrop photo — a small
     // pan passes through unchanged even at fit.
     expect(clampPan({ x: 50, y: -30 }, { ...base, zoom: 1, scale: 0.6 })).toEqual({ x: 50, y: -30 })

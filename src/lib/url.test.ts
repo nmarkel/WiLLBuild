@@ -79,7 +79,7 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
   })
 })
 
-describe('spec options <-> URL params (Phase 0.8 D, per-slot in 1.0)', () => {
+describe('spec options <-> URL params (Phase 0.8 D, per-slot in 0.10.5)', () => {
   it('omits absent / empty spec options', () => {
     expect(configToParams(config).get('opts')).toBeNull()
     expect(configToParams({ ...config, specOptions: {} }).get('opts')).toBeNull()
@@ -103,7 +103,7 @@ describe('spec options <-> URL params (Phase 0.8 D, per-slot in 1.0)', () => {
     expect(a.get('opts')).toBe(b.get('opts'))
   })
 
-  it('reads legacy pre-1.0 pairs (no slot prefix) as fixture options', () => {
+  it('reads legacy pre-0.10.5 pairs (no slot prefix) as fixture options', () => {
     const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,mounting:ARM'))
     expect(partial?.specOptions).toEqual({ fixture: { color: 'BK', mounting: 'ARM' } })
   })
@@ -121,7 +121,7 @@ describe('spec options <-> URL params (Phase 0.8 D, per-slot in 1.0)', () => {
   })
 })
 
-describe('per-part finishes <-> URL params (Phase 1.0)', () => {
+describe('per-part finishes <-> URL params (Phase 0.10.5)', () => {
   it('omits absent / empty finish overrides', () => {
     expect(configToParams(config).get('fins')).toBeNull()
     expect(configToParams({ ...config, finishes: {} }).get('fins')).toBeNull()
@@ -242,7 +242,7 @@ describe('product view <-> URL params', () => {
   })
 })
 
-describe('multi-select spec options <-> URL params (Phase 1.0)', () => {
+describe('multi-select spec options <-> URL params (Phase 0.10.5)', () => {
   it('joins multi codes with + and round-trips them as an array', () => {
     const specOptions = { fixture: { options: ['WHP3NP', 'N5P'] } }
     const params = configToParams({ ...config, specOptions })
@@ -261,7 +261,7 @@ describe('multi-select spec options <-> URL params (Phase 1.0)', () => {
   })
 })
 
-describe('custom RAL color <-> URL params (Phase 1.1)', () => {
+describe('custom RAL color <-> URL params (Phase 0.10.5)', () => {
   it('round-trips per-slot RAL hexes without the #', () => {
     const finishRal = { pole: '#1a2b3c', fixture: '#aabbcc' }
     const params = configToParams({ ...config, finishRal })
@@ -275,7 +275,7 @@ describe('custom RAL color <-> URL params (Phase 1.1)', () => {
   })
 })
 
-describe('arm orientation <-> URL params (Phase 1.0)', () => {
+describe('arm orientation <-> URL params (Phase 0.10.5)', () => {
   it('omits the 0° default and round-trips the rest', () => {
     expect(configToParams(config).get('orient')).toBeNull()
     expect(configToParams({ ...config, armOrientation: 0 }).get('orient')).toBeNull()
@@ -289,7 +289,7 @@ describe('arm orientation <-> URL params (Phase 1.0)', () => {
   })
 })
 
-describe('accessory placements <-> URL params (Phase 1.0)', () => {
+describe('accessory placements <-> URL params (Phase 0.10.5)', () => {
   it('round-trips placements as code~ft~deg', () => {
     const accessoryPlacements = { FSTR: { heightFt: 6, orientation: 90 }, FH: { heightFt: 9, orientation: 0 } }
     const params = configToParams({ ...config, accessoryPlacements })
@@ -303,7 +303,7 @@ describe('accessory placements <-> URL params (Phase 1.0)', () => {
   })
 })
 
-describe('accessory placement sides <-> URL (Phase 1.0)', () => {
+describe('accessory placement sides <-> URL (Phase 0.10.5)', () => {
   it('round-trips the optional sides token', () => {
     const accessoryPlacements = { BA24: { heightFt: 10, orientation: 90, sides: 2 } }
     const params = configToParams({ ...config, accessoryPlacements })

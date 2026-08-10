@@ -31,7 +31,7 @@ describe('parseDescription', () => {
   })
 
   it('picks the nearest pole height', () => {
-    // 15 ft is a real height since Phase 1.0; off-catalog heights snap to the
+    // 15 ft is a real height since Phase 0.10.5; off-catalog heights snap to the
     // nearest (equidistant 13 ft breaks low to 12).
     expect(parseDescription(catalog, 'a 15 ft pole').matched.pole).toBe('alum-pole-15')
     expect(parseDescription(catalog, 'a 13 ft pole').matched.pole).toBe('alum-pole-12')

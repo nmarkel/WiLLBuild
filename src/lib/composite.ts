@@ -178,7 +178,7 @@ export function resolveAssemblyLayout(
   manifest: RenderManifest,
   config: PoleConfig,
   /**
-   * Phase 1.0: assembly view rotation in degrees (45° steps). Rotating the
+   * Phase 0.10.5: assembly view rotation in degrees (45° steps). Rotating the
    * view by θ shows each radial part at azimuth (a − θ); poles/base covers
    * are rotationally symmetric so their hero renders serve every view.
    */
@@ -233,7 +233,7 @@ export function resolveAssemblyLayout(
       const armSocket = attachSocket(arm, pole)
       if (armSocket) {
         const count = Math.max(1, Math.floor(config.armCount ?? 1))
-        // Phase 1.0: orientation rotates the whole arrangement about the pole
+        // Phase 0.10.5: orientation rotates the whole arrangement about the pole
         // (0/90/180/270) and the view rotation subtracts on top — each arm
         // just shifts to the matching azimuth render.
         const orientation = config.armOrientation ?? 0
@@ -312,7 +312,7 @@ export function resolveAssemblyLayout(
         })
       }
     }
-    // Phase 1.0: banner-arm KIT accessories (BA24/BA30) render the brand's
+    // Phase 0.10.5: banner-arm KIT accessories (BA24/BA30) render the brand's
     // banner part at their configured placement — the ordering code and the
     // visual are one selection now (the legacy config.banner path above stays
     // for brands still using the Banner Arm box).
@@ -346,7 +346,7 @@ export function resolveAssemblyLayout(
   const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
   for (const { layerId, part, angle, world, z } of placements) {
-    // Phase 1.0: each part renders in its own step's finish (base finish when
+    // Phase 0.10.5: each part renders in its own step's finish (base finish when
     // the slot has no override — see finishFor), at the nearest available
     // angle (exact for rig-rendered parts; real-render parts may lack the
     // 45° compass until re-rendered from their design files).
