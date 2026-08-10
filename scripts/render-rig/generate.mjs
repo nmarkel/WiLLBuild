@@ -96,6 +96,18 @@ export function placeholderGraftChildren(part) {
   return children.filter((c) => c.spec?.kind === 'box')
 }
 
+/**
+ * A page that has gone away mid-render (CDP session/target closed, or the
+ * "Attempted to use detached Frame" error a long-lived renderer throws once
+ * it runs out of memory) surfaces as a distinct Puppeteer error class from an
+ * ordinary render bug. Callers use this to recognize that class once and
+ * recover/report a single time, instead of retrying every remaining
+ * angle/finish combination and printing one identical FAIL line each.
+ */
+export function isPageDeadError(err) {
+  return /detached Frame|Session closed|Target closed/i.test(String(err?.message ?? err))
+}
+
 async function main() {
   const { line, parts: partFilter } = parseArgs(process.argv.slice(2))
 
@@ -156,15 +168,30 @@ async function main() {
   const manifestParts = {}
   const skipped = []
 
-  try {
-    const page = await browser.newPage()
-    page.on('pageerror', (e) => console.error('[page error]', e.message))
-    await page.goto(url, { waitUntil: 'networkidle0' })
-    await page.waitForFunction('window.rigReady === true', { timeout: 60000 })
+  // A single long-lived page accumulates WebGL/GLTF memory across parts —
+  // several real-CAD GLBs are 18-26MB base64'd into the page — and a full
+  // ~117-part run eventually exhausts it, detaching the render frame partway
+  // through. Opening a fresh page per part caps that growth at one part's
+  // worth of geometry regardless of catalog size, so there's no
+  // recycle-every-N magic number to keep tuned as parts are added.
+  async function openRigPage() {
+    const p = await browser.newPage()
+    p.on('pageerror', (e) => console.error('[page error]', e.message))
+    await p.goto(url, { waitUntil: 'networkidle0' })
+    await p.waitForFunction('window.rigReady === true', { timeout: 60000 })
+    return p
+  }
 
+  try {
+    let page = await openRigPage()
     const rig = await page.evaluate(() => window.getRig())
 
     for (const part of parts) {
+      // Fresh page per part (see openRigPage above) — cheap relative to a
+      // part's ~104 renders, and needs no tuning as the catalog grows.
+      await page.close().catch(() => {})
+      page = await openRigPage()
+
       const realEntry = realParts[part.id]
       const realRel = typeof realEntry === 'string' ? realEntry : realEntry?.glb
       const rotateY = typeof realEntry === 'object' ? (realEntry.rotateY ?? 0) : 0
@@ -233,6 +260,7 @@ async function main() {
 
       const angles = {}
       let totalRenders = 0
+      angleLoop:
       for (const { key, yaw } of ANGLES) {
         const finishes = {}
         for (const finishId of finishIds) {
@@ -245,6 +273,15 @@ async function main() {
               yaw,
             )
           } catch (err) {
+            // A dead page (frame detached / session or target closed) kills
+            // every remaining render on it, not just this one — report it
+            // once and abandon the rest of this part rather than repeating
+            // the same failure for every remaining angle/finish combination.
+            if (isPageDeadError(err)) {
+              console.error(`  PAGE DIED on ${part.id} (${err.message}) — abandoning remaining renders for this part; next part gets a fresh page`)
+              failures++
+              break angleLoop
+            }
             console.error(`  FAIL ${part.id} / ${key} / ${finishId}: ${err.message}`)
             failures++
             continue
@@ -269,6 +306,8 @@ async function main() {
         for (const k of Object.keys(finishes).sort()) sortedFinishes[k] = finishes[k]
         angles[key] = { finishes: sortedFinishes }
       }
+      // `angles` holds whatever completed before a page-died abort, if any;
+      // the next loop iteration opens a fresh page unconditionally.
       manifestParts[part.id] = { angles }
       const kind = realLoaded ? 'real' : part.placeholder ? part.placeholder.kind : 'placeholder'
       console.log(`  ${part.id}: ${totalRenders} renders across ${ANGLES.length} angle(s)  (${kind})`)
