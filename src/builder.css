@@ -517,6 +517,12 @@
   padding: 12px 10px;
 }
 
+/* Orientation choosers read better 2-wide (0°/90° over 180°/270°). */
+.builder-app .arm-orientation .arm-count-options,
+.builder-app .orientation-options {
+  grid-template-columns: 1fr 1fr;
+}
+
 .builder-app .finish-chip {
   padding: 8px 14px;
   font-size: 13px;

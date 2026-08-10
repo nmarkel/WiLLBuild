@@ -483,7 +483,7 @@ function AccessoryPlacementBox({
         </>
       )}
       <p className="arm-count-label">Orientation</p>
-      <div className="arm-count-options">
+      <div className="arm-count-options orientation-options">
         {ARM_ORIENTATIONS.map((deg) => (
           <button
             key={deg}
@@ -513,7 +513,7 @@ function ArmOrientationSelector({ catalog, config }: { catalog: Catalog; config:
   if (reach < 0.05) return null
   const current = config.armOrientation ?? 0
   return (
-    <div className="arm-count">
+    <div className="arm-count arm-orientation">
       <p className="arm-count-label">Orientation</p>
       <div className="arm-count-options">
         {ARM_ORIENTATIONS.map((deg) => (
