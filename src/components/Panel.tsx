@@ -245,35 +245,24 @@ function StepSpecOptions({
             onClick={() => setShowBase((v) => !v)}
             aria-expanded={showBase}
           >
-            <span className="step-group-title">Base configuration</span>
+            <span className="step-group-title">Configure Product Spec (Optional)</span>
             <span className="extras-meta">
-              {baseCount > 0 ? (
-                <span className="extras-count">{baseCount} set</span>
-              ) : (
-                <span className="extras-optional">standard</span>
-              )}
+              {baseCount > 0 && <span className="extras-count">{baseCount} set</span>}
               <span className="extras-arrow">{showBase ? '▾' : '▸'}</span>
             </span>
           </button>
           {showBase &&
             baseOpts.map((opt) => {
               // Phase 0.10.5_TO: single-select boxes instead of dropdowns —
-              // every value visible and one tap to pick. "Standard" = the
-              // sheet's unspecified default (clears the column).
+              // every value visible, one tap to pick. Nothing is selected by
+              // default (the whole spec is optional; picking values just
+              // derives more of the part number); tapping the selected value
+              // again clears it back to unspecified.
               const current = specCodes(chosen[opt.key])[0] ?? ''
               return (
                 <div className="spec-option" key={opt.key}>
                   <span className="spec-option-label">{optionLabel(opt)}</span>
                   <div className="spec-choices" role="radiogroup" aria-label={optionLabel(opt)}>
-                    <button
-                      type="button"
-                      role="radio"
-                      aria-checked={current === ''}
-                      className={`spec-choice${current === '' ? ' selected' : ''}`}
-                      onClick={() => setSpecOption(slot, opt.key, '')}
-                    >
-                      Standard
-                    </button>
                     {opt.values.map((v) => (
                       <button
                         key={v.code}
@@ -281,7 +270,9 @@ function StepSpecOptions({
                         role="radio"
                         aria-checked={current === v.code}
                         className={`spec-choice${current === v.code ? ' selected' : ''}`}
-                        onClick={() => setSpecOption(slot, opt.key, v.code)}
+                        onClick={() =>
+                          setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
+                        }
                         title={`${v.code} — ${v.label}`}
                       >
                         {v.label}
@@ -301,13 +292,9 @@ function StepSpecOptions({
             onClick={() => setShowExtras((v) => !v)}
             aria-expanded={showExtras}
           >
-            <span className="step-group-title">Options &amp; accessories</span>
+            <span className="step-group-title">Add Options &amp; Accessories</span>
             <span className="extras-meta">
-              {extrasCount > 0 ? (
-                <span className="extras-count">{extrasCount} selected</span>
-              ) : (
-                <span className="extras-optional">optional</span>
-              )}
+              {extrasCount > 0 && <span className="extras-count">{extrasCount} selected</span>}
               <span className="extras-arrow">{showExtras ? '▾' : '▸'}</span>
             </span>
           </button>
