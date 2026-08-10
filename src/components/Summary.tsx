@@ -1,27 +1,15 @@
-import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import { configStatus, finishFor, partById } from '../lib/compat'
-import { armArrangementLabel, buildPartNumber, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
-import { shareUrl } from '../lib/url'
+import { armArrangementLabel, buildPartNumber, SUMMARY_ROWS } from '../lib/summary'
 
 interface Props {
   catalog: Catalog
   config: PoleConfig
 }
 
-const QUOTE_URL = 'https://willbrands.com/pages/request-a-quote'
-
+// Phase 0.10.5_TO: Share / Request a Quote moved to the builder's BottomBar.
 export function Summary({ catalog, config }: Props) {
-  const [copied, setCopied] = useState(false)
-
   const status = configStatus(catalog, config)
-  const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config))}`
-
-  const copyLink = async () => {
-    await navigator.clipboard.writeText(shareUrl(config))
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1600)
-  }
 
   return (
     <div className="summary">
@@ -86,14 +74,6 @@ export function Summary({ catalog, config }: Props) {
           </li>
         )}
       </ul>
-      <div className="actions">
-        <button className="btn secondary" onClick={copyLink}>
-          {copied ? 'Link Copied ✓' : 'Share'}
-        </button>
-        <a className="btn primary" href={quoteHref} target="_blank" rel="noreferrer">
-          Request a Quote
-        </a>
-      </div>
       <p className="config-id" title={config.configId}>
         Config ID: {config.configId.slice(0, 8)}
       </p>

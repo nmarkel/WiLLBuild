@@ -74,22 +74,22 @@ function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
-  const [openStep, setOpenStep] = useState<Slot>('fixture')
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
 
+  // Phase 0.10.5_TO (Tesla-style): every section always open in one scroll —
+  // no accordion, no "Continue" ceremony. The heavy sub-UI self-collapses
+  // (spec-option groups default closed), so the rail stays digestible.
   return (
     <div className="stepper">
       {steps.map((step, i) => {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
-        const open = openStep === step.key
-        const nextStep = steps[i + 1]
 
         return (
-          <section key={step.key} className={`step ${open ? 'open' : ''}`}>
-            <button className="step-header" onClick={() => setOpenStep(step.key)}>
+          <section key={step.key} className="step">
+            <div className="step-heading">
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">
@@ -101,39 +101,32 @@ export function Panel({ catalog, config }: Props) {
                 )}
                 {part?.name ?? '—'}
               </span>
-            </button>
-            {open && (
-              <div className="step-body">
-                <p className="step-tagline">{step.tagline}</p>
-                <PartChoice
-                  parts={compatibleParts(catalog, config, step.key)}
-                  selectedId={config[step.key]}
-                  onSelect={(id) => select(step.key, id)}
-                />
-                {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
-                    the chosen pole + arm actually support multiples (catalog rule). */}
-                {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
-                {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
-                {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
-                <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
-                {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
-                {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
-                    the Banner Arm box shows only when the pole's sheet has no
-                    banner-kit accessory (BA24/BA30) — those configure banners
-                    through Options & accessories placements instead. */}
-                {step.key === 'pole' &&
-                  !part?.options?.some(
-                    (o) =>
-                      o.group === 'options-accessories' &&
-                      o.values.some((v) => v.label.includes('Banner Arm Kit')),
-                  ) && <BannerPicker catalog={catalog} config={config} />}
-                {nextStep && (
-                  <button className="step-continue" onClick={() => setOpenStep(nextStep.key)}>
-                    Continue to {nextStep.label} →
-                  </button>
-                )}
-              </div>
-            )}
+            </div>
+            <div className="step-body">
+              <p className="step-tagline">{step.tagline}</p>
+              <PartChoice
+                parts={compatibleParts(catalog, config, step.key)}
+                selectedId={config[step.key]}
+                onSelect={(id) => select(step.key, id)}
+              />
+              {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
+                  the chosen pole + arm actually support multiples (catalog rule). */}
+              {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
+              {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
+              {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
+              <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
+              {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
+              {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
+                  the Banner Arm box shows only when the pole's sheet has no
+                  banner-kit accessory (BA24/BA30) — those configure banners
+                  through Options & accessories placements instead. */}
+              {step.key === 'pole' &&
+                !part?.options?.some(
+                  (o) =>
+                    o.group === 'options-accessories' &&
+                    o.values.some((v) => v.label.includes('Banner Arm Kit')),
+                ) && <BannerPicker catalog={catalog} config={config} />}
+            </div>
           </section>
         )
       })}

@@ -1,29 +1,17 @@
 import { useEffect } from 'react'
 import { useConfigurator } from './store'
-import { CompositeViewer } from './components/CompositeViewer'
-import { Panel } from './components/Panel'
-import { Summary } from './components/Summary'
-import { DescribeBox } from './components/DescribeBox'
-import { OutputTray } from './components/OutputTray'
 import { ProductViewer } from './components/ProductViewer'
 import { BrandSwitcher } from './components/BrandSwitcher'
 import { BrandProductList, firstBrandProduct } from './components/BrandProductList'
-import { ScenePicker } from './components/ScenePicker'
+import { BuilderView } from './components/BuilderView'
 
 export default function App() {
   const {
     catalog,
     config,
-    showScale,
-    showCompass,
-    mode,
-    scene,
     view,
     brand,
     loadCatalog,
-    toggleScale,
-    toggleCompass,
-    toggleMode,
     openHome,
   } = useConfigurator()
 
@@ -101,53 +89,6 @@ export default function App() {
     )
   }
 
-  // Builder view (default): existing UI unchanged
-  return (
-    <div className="app">
-      <aside className="panel">
-        <header className="brand">
-          <img className="brand-logo" src="/will-logo.png" alt="WiLL" />
-          <span className="brand-sub">3D Pole Configurator</span>
-        </header>
-        <BrandSwitcher />
-        {brand === 'WiLLstudio' && <DescribeBox />}
-        <Panel catalog={catalog} config={config} />
-        <Summary catalog={catalog} config={config} />
-        <OutputTray catalog={catalog} config={config} />
-      </aside>
-      <main className="viewport">
-        <CompositeViewer
-          catalog={catalog}
-          config={config}
-          showScale={showScale}
-          showCompass={showCompass}
-          mode={mode}
-          scene={scene}
-        />
-        {mode === 'night' && (
-          <div className="night-disclaimer">Conceptual night preview — not a photometric simulation</div>
-        )}
-        <div className="viewport-controls">
-          {mode === 'day' && <ScenePicker />}
-          <button
-            className="scale-toggle"
-            onClick={toggleMode}
-            title="Conceptual preview — not a photometric simulation"
-          >
-            {mode === 'day' ? '☾ Night view' : '☀ Day view'}
-          </button>
-          <button className="scale-toggle" onClick={toggleScale}>
-            {showScale ? 'Hide' : 'Show'} human scale
-          </button>
-          <button
-            className="scale-toggle"
-            onClick={toggleCompass}
-            title="Ground compass at the pole base — 0° marks the hand-hole reference"
-          >
-            {showCompass ? 'Hide' : 'Show'} compass
-          </button>
-        </div>
-      </main>
-    </div>
-  )
+  // Builder view (default): Tesla-style layout (Phase 0.10.5_TO)
+  return <BuilderView catalog={catalog} config={config} />
 }

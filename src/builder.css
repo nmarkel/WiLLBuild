@@ -1,0 +1,451 @@
+/*
+ * Phase 0.10.5_TO — Tesla-style builder layout.
+ * Every rule here is scoped under .builder-app / .builder-header /
+ * .downloads-sheet* so the showroom + standalone-product views (which share
+ * .app/.panel/.brand/.btn/.gate* in index.css) are untouched.
+ * Stacking contract: bottom bar (mobile, z30) < downloads sheet (z40) <
+ * contact gate (.gate-backdrop, z50 in index.css).
+ */
+
+.builder-app {
+  --bottom-bar-h: 64px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 420px;
+  height: 100%;
+}
+
+/* ---- Header: full-width gunmetal bar ---- */
+
+.builder-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--will-gradient-gray);
+}
+
+.builder-header .brand-sub {
+  color: var(--will-silver);
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+
+.builder-header-nav {
+  margin-left: auto;
+}
+
+.builder-header .brand-switcher {
+  padding: 0;
+}
+
+/* Dark-context restyle of the switcher chips (they assume light panels). */
+.builder-header .brand-switcher-link {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--will-silver);
+}
+
+.builder-header .brand-switcher-item.active .brand-switcher-link {
+  background: var(--will-yellow);
+  border-color: var(--will-yellow);
+  color: var(--will-gray);
+}
+
+.builder-header .brand-switcher-item.disabled .brand-switcher-link {
+  color: rgba(230, 231, 232, 0.55);
+}
+
+.builder-header .brand-switcher-soon {
+  background: rgba(230, 231, 232, 0.2);
+  color: var(--will-silver);
+}
+
+/* ---- Stage: viewer + bottom bar ---- */
+
+/* min-width/min-height:0 keep the grid tracks collapsible so the viewer's
+   ResizeObserver always sees a resolved box. */
+.builder-stage {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.builder-stage .viewport {
+  min-height: 0;
+}
+
+/* ---- Bottom bar (a grid row, NOT an overlay — .viewport-controls,
+   .night-disclaimer and .composite-zoom keep their hardcoded offsets) ---- */
+
+.builder-bottom-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: var(--bottom-bar-h);
+  padding: 10px 20px;
+  background: #fff;
+  border-top: 1px solid var(--border);
+}
+
+.bottom-bar-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bottom-bar-summary {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-bar-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bottom-bar-config-id {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.bottom-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.bottom-bar-actions .btn {
+  white-space: nowrap;
+}
+
+/* Brand: no blue anywhere — replace the browser default focus ring. */
+.builder-app .btn:focus-visible,
+.builder-app .scale-toggle:focus-visible,
+.builder-app .option-card:focus-visible,
+.downloads-sheet-close:focus-visible {
+  outline: 2px solid var(--will-dark-yellow);
+  outline-offset: 2px;
+}
+
+/* ---- Right rail ---- */
+
+.builder-rail {
+  overflow-y: auto;
+  background: #fff;
+  border-left: 1px solid var(--border);
+  padding: 24px 22px 48px;
+}
+
+.builder-headline {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.builder-headline h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.builder-headline p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* ---- Step sections: flat, always open, sticky numbered headings ---- */
+
+.builder-app .stepper {
+  gap: 0;
+}
+
+.builder-app .step,
+.builder-app .step.open {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  border-top: 1px solid var(--border);
+  padding: 4px 0 22px;
+}
+
+.builder-app .step:first-child {
+  border-top: none;
+}
+
+.builder-app .step-heading {
+  position: sticky;
+  top: -24px; /* cancels the rail's top padding so the heading pins flush */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 10px;
+  background: #fff;
+}
+
+.builder-app .step-num {
+  background: var(--will-yellow);
+  color: var(--will-gray);
+}
+
+.builder-app .step-label {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.builder-app .step-body {
+  padding: 0;
+}
+
+/* ---- Option choices: full-width Tesla rows ---- */
+
+/* :not(.finishes) — the finish swatch row shares .options but stays a wrap row. */
+.builder-app .options:not(.finishes) {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.builder-app .option-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px 10px;
+  border-width: 2px;
+  border-radius: 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.builder-app .option-card.selected {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.builder-app .option-card .thumb {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+}
+
+.builder-app .option-card .option-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.builder-app .option-card .option-family {
+  font-size: 12px;
+  margin-left: auto;
+  padding-left: 10px;
+}
+
+/* Bigger tap targets on the chip selectors too. */
+.builder-app .arm-count-chip {
+  padding: 12px 10px;
+}
+
+.builder-app .finish-chip {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+/* Summary card as the rail's final section. */
+.builder-app .summary {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+/* ---- Downloads sheet ---- */
+
+.downloads-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: rgba(66, 65, 61, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.downloads-sheet-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
+}
+
+.downloads-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  margin: 0 auto;
+  max-width: 760px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 40px rgba(66, 65, 61, 0.25);
+  padding: 0 20px 24px;
+  transform: translateY(105%);
+  visibility: hidden;
+  transition: transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.downloads-sheet.open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.25s ease;
+}
+
+.downloads-sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 2px;
+  background: #fff;
+}
+
+.downloads-sheet-handle {
+  width: 44px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.downloads-sheet-close {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: var(--will-silver);
+  border: none;
+  border-radius: 50%;
+  color: var(--will-gray);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* The tray inside the sheet is chrome-free — the sheet is the card. */
+.downloads-sheet .output-tray {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ---- Mobile ---- */
+
+@media (max-width: 860px) {
+  .builder-app {
+    --bottom-bar-h: 56px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .builder-header {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+
+  .builder-header .brand-logo {
+    width: 150px;
+  }
+
+  .builder-header-nav {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Viewer pinned in an explicit 48vh box; options scroll beneath it. */
+  .builder-stage {
+    grid-template-rows: 48vh;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .builder-bottom-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    min-height: var(--bottom-bar-h);
+    box-shadow: 0 -2px 12px rgba(66, 65, 61, 0.12);
+  }
+
+  .bottom-bar-summary,
+  .bottom-bar-config-id {
+    display: none;
+  }
+
+  .builder-bottom-bar {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+
+  .bottom-bar-info {
+    flex: 0 0 auto;
+  }
+
+  .bottom-bar-actions {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .bottom-bar-actions .btn {
+    flex: 1;
+    text-align: center;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* The single control row overflows 400px — move it to the top of the
+     viewer as a wrapping strip; zoom cluster + night disclaimer keep the
+     bottom corners to themselves. */
+  .builder-app .viewport-controls {
+    top: 12px;
+    bottom: auto;
+    left: 12px;
+    right: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .builder-rail {
+    border-left: none;
+    padding: 20px 16px calc(var(--bottom-bar-h) + 24px);
+  }
+
+  .builder-app .step-heading {
+    top: -20px;
+  }
+
+  .downloads-sheet {
+    max-width: none;
+    max-height: 88vh;
+  }
+}
