@@ -158,8 +158,9 @@ describe('arm orientation — real assets', () => {
 })
 
 // Phase 1.0: the 8-angle assembly spin — rotated views must composite with
-// nothing missing (rig parts carry the full 45° compass; real-render parts
-// resolve their nearest available angle).
+// nothing missing. Phase 0.10.5: every catalog part (rig- and real-render
+// alike) now ships the full 8-angle compass, so this applies exactly rather
+// than falling back to a nearest angle.
 describe('assembly view rotation — real assets', () => {
   it.each([45, 90, 135, 180, 225, 270, 315])('viewYaw=%i composites with 0 missing', (yaw) => {
     const twin = repairConfig(catalog, { ...base, armCount: 2 })
@@ -187,21 +188,29 @@ describe('assembly view rotation — real assets', () => {
     expect(files).toContain('az315')
   })
 
-  it('assemblies with real-render parts rotate coherently in 90° steps', () => {
-    // The suspension arm + GVX carry only 90°-step renders, so the WHOLE
-    // assembly snaps: a 45° request applies as 90° for every part — parts
-    // never rotate by different amounts and shear apart.
+  it('assemblies with real-render parts rotate coherently: arm and fixture apply the same yaw', () => {
+    // Phase 0.10.5: every part now ships the full 8-angle compass, so a 45°
+    // request applies exactly (no more snapping to 90°). What this test
+    // actually guards is COHERENCE — the arm and its fixture must land on
+    // the SAME applied angle at each radial position, never rotating by
+    // different amounts and shearing apart.
     const twin = repairConfig(catalog, { ...base, armCount: 2 })
     const at45 = resolveAssemblyLayout(catalog, manifest, twin, 45)
-    const at90 = resolveAssemblyLayout(catalog, manifest, twin, 90)
-    expect(at45.appliedViewYaw).toBe(90)
-    expect(at45).toEqual(at90)
-    const files = at45.layers
+    expect(at45.appliedViewYaw).toBe(45)
+
+    const armFiles = at45.layers
       .filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets'))
       .map((l) => l.asset.file)
-      .join(',')
-    expect(files).toContain('az270')
-    expect(files).toContain('az90')
+      .sort()
+    const fixtureFiles = at45.layers
+      .filter((l) => l.partId.startsWith('gvx-pendant'))
+      .map((l) => l.asset.file)
+      .sort()
+    expect(armFiles.some((f) => f.includes('az315'))).toBe(true)
+    expect(armFiles.some((f) => f.includes('az135'))).toBe(true)
+    // Each fixture rides the same angle as the arm it hangs from.
+    expect(fixtureFiles.some((f) => f.includes('az315'))).toBe(true)
+    expect(fixtureFiles.some((f) => f.includes('az135'))).toBe(true)
   })
 
   it('all-rig assemblies apply 45° exactly', () => {
