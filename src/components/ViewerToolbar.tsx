@@ -16,8 +16,6 @@ export function ViewerToolbar() {
   const setCustomScene = useConfigurator((s) => s.setCustomScene)
   const mode = useConfigurator((s) => s.mode)
   const toggleMode = useConfigurator((s) => s.toggleMode)
-  const showScale = useConfigurator((s) => s.showScale)
-  const toggleScale = useConfigurator((s) => s.toggleScale)
   const showCompass = useConfigurator((s) => s.showCompass)
   const toggleCompass = useConfigurator((s) => s.toggleCompass)
 
@@ -131,15 +129,6 @@ export function ViewerToolbar() {
         title="Conceptual preview — not a photometric simulation"
       >
         {night ? '☀ Day' : '☾ Night'}
-      </button>
-      <button
-        type="button"
-        className={`viewer-tool${showScale ? ' active' : ''}`}
-        aria-pressed={showScale}
-        onClick={toggleScale}
-        title="Show a 6 ft human silhouette for scale"
-      >
-        Scale
       </button>
       <button
         type="button"

@@ -258,7 +258,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   viewYaw: 0,
   setViewYaw: (deg) => set({ viewYaw: ((Math.round(deg / 45) * 45) % 360 + 360) % 360 }),
 
-  showCompass: false,
+  showCompass: true,
   toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
 
   customSceneUrl: null,
