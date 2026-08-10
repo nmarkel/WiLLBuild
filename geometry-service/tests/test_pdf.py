@@ -35,6 +35,8 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name
 
+from .conftest import first_base_cover_for
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -47,11 +49,11 @@ _TINY_PNG_B64 = (
 _TINY_PNG_BYTES = base64.b64decode(_TINY_PNG_B64)
 
 
-def _cfg(config_id: str | None = None) -> PoleConfig:
+def _cfg(cat: dict, config_id: str | None = None) -> PoleConfig:
     return PoleConfig(
         configId=config_id or "pdf-test-" + str(uuid.uuid4())[:8],
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -152,8 +154,8 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="session")
-def fixed_cfg() -> PoleConfig:
-    return _cfg("pdf-fixed-test-0001")
+def fixed_cfg(cat) -> PoleConfig:
+    return _cfg(cat, "pdf-fixed-test-0001")
 
 
 @pytest.fixture(scope="session")
@@ -329,7 +331,7 @@ class TestPdfDeterminism:
         cfg = PoleConfig(
             configId="pdf-determinism-check-001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=first_base_cover_for(cat, "alum-pole-20"),
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -352,7 +354,7 @@ class TestPdfDeterminism:
         cfg = PoleConfig(
             configId="pdf-cc-determinism-001",
             pole="alum-pole-20",
-            baseCover="bc-fluted",
+            baseCover=first_base_cover_for(cat, "alum-pole-20"),
             arm="sh1-shepherds-hook",
             fixture="gvx-pendant",
             finish="matte-black",
@@ -392,7 +394,7 @@ class TestPdfModes:
 # ---------------------------------------------------------------------------
 
 class TestPdfGenerateIntegration:
-    def test_generate_pdf_returns_200_with_pdf_file(self) -> None:
+    def test_generate_pdf_returns_200_with_pdf_file(self, cat) -> None:
         from app.main import app
         client = TestClient(app)
         resp = client.post(
@@ -401,7 +403,7 @@ class TestPdfGenerateIntegration:
                 "config": {
                     "configId": "pdf-integration-test-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

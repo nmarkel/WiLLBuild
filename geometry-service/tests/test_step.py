@@ -25,17 +25,19 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name, config_hash
 
+from .conftest import first_base_cover_for
+
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _default_cfg(config_id: str | None = None) -> PoleConfig:
+def _default_cfg(cat: dict, config_id: str | None = None) -> PoleConfig:
     """Return a minimal valid PoleConfig for tests."""
     return PoleConfig(
         configId=config_id or str(uuid.uuid4()),
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(cat, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -61,8 +63,8 @@ def cat() -> dict:
 
 
 @pytest.fixture(scope="module")
-def default_cfg() -> PoleConfig:
-    return _default_cfg("test-cfg-abc12345")
+def default_cfg(cat) -> PoleConfig:
+    return _default_cfg(cat, "test-cfg-abc12345")
 
 
 @pytest.fixture(scope="module")
@@ -288,7 +290,7 @@ class TestHealthShowsStepAdapter:
 # ---------------------------------------------------------------------------
 
 class TestGenerateStepIntegration:
-    def test_generate_step_returns_200_with_file_entry(self):
+    def test_generate_step_returns_200_with_file_entry(self, cat):
         """POST /generate with format=step returns 200 and a file entry."""
         from fastapi.testclient import TestClient
         from app.main import app
@@ -299,7 +301,7 @@ class TestGenerateStepIntegration:
                 "config": {
                     "configId": "integ-test-12345678",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

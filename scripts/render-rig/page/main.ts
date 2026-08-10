@@ -23,19 +23,41 @@ function b64ToArrayBuffer(b64: string): ArrayBuffer {
   return bytes.buffer
 }
 
+/** A placeholder child to graft onto real geometry (spec D8a) — see
+ *  `placeholderGraftChildren` in generate.mjs, which selects these straight
+ *  out of the catalog placeholder and passes them across the Puppeteer
+ *  boundary as plain JSON. */
+interface GraftChild {
+  spec: PlaceholderSpec
+  position: Vec3
+}
+
 async function loadRealModel(
   partId: string,
   base64: string,
   rotateYDeg = 0,
+  graftChildren: GraftChild[] = [],
 ): Promise<void> {
   const buf = b64ToArrayBuffer(base64)
   const gltf = await gltfLoader.parseAsync(buf, '')
+  if (graftChildren.length) {
+    // Reuse the same 'group' path specToObject already uses for the
+    // placeholder pole itself: each child gets its own sub-group at its
+    // catalog position, so the box lands at native size regardless of any
+    // scale baked into the real mesh (there is none applied here — the
+    // axial scale for derived pole heights is baked into the GLB offline,
+    // never applied to gltf.scene at load time — so grafting a sibling at a
+    // fixed local position can't inherit a stretch that never happens).
+    const graftMaterial = new THREE.MeshStandardMaterial()
+    const graft = specToObject({ kind: 'group', children: graftChildren }, graftMaterial)
+    gltf.scene.add(graft)
+  }
   realModels.set(partId, gltf.scene)
   realRotations.set(partId, (rotateYDeg * Math.PI) / 180)
 }
 
 // ---- Rig constants (shared across every part → layer coherence) -------------
-const PX_PER_M = 180
+const PX_PER_M = 360 // 2x supersample — assets downscale crisply in the viewer
 const MAX_CANVAS = 4096
 const AZIMUTH_DEG = 35
 const ELEVATION_DEG = 6
@@ -123,19 +145,19 @@ function specToObject(spec: PlaceholderSpec, material: THREE.Material): THREE.Ob
   switch (spec.kind) {
     case 'pole':
     case 'baseCover': {
-      const geo = new THREE.CylinderGeometry(spec.radiusTopM, spec.radiusBottomM, spec.heightM, 32)
+      const geo = new THREE.CylinderGeometry(spec.radiusTopM, spec.radiusBottomM, spec.heightM, 96)
       const mesh = new THREE.Mesh(geo, material)
       mesh.position.y = spec.heightM / 2
       return mesh
     }
     case 'tube': {
       const curve = new THREE.CatmullRomCurve3(spec.points.map((p) => new THREE.Vector3(...p)))
-      const geo = new THREE.TubeGeometry(curve, 32, spec.radiusM, 12, false)
+      const geo = new THREE.TubeGeometry(curve, 96, spec.radiusM, 24, false)
       return new THREE.Mesh(geo, material)
     }
     case 'lathe': {
       const pts = spec.profile.map(([r, y]) => new THREE.Vector2(r, y))
-      const geo = new THREE.LatheGeometry(pts, 48)
+      const geo = new THREE.LatheGeometry(pts, 96)
       return new THREE.Mesh(geo, material)
     }
     case 'prism': {
@@ -158,7 +180,7 @@ function specToObject(spec: PlaceholderSpec, material: THREE.Material): THREE.Ob
     }
     case 'cone': {
       const up = spec.direction === 'up'
-      const geo = new THREE.ConeGeometry(spec.radiusM, spec.heightM, 32)
+      const geo = new THREE.ConeGeometry(spec.radiusM, spec.heightM, 64)
       const mesh = new THREE.Mesh(geo, material)
       mesh.position.y = up ? spec.heightM / 2 : -spec.heightM / 2
       mesh.rotation.x = up ? 0 : Math.PI

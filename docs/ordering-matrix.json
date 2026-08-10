@@ -1,0 +1,345 @@
+{
+  "source": "WiLLstudio Ordering Matrix & Part Numbers (Tyler, 2026-08-03) \u2014 decoded from the WiLLstudio decorative-arms ordering sheet",
+  "structure": "[Product Family]-[Design]-[Pole/Tenon Fit]-[Finish][-Options]",
+  "example": "WP-AR2-50F-BK",
+  "provenance": "Transcribed from the ordering-matrix reference note (the arms sheet Tyler supplied on 2026-08-03) \u2014 the ONLY hand-transcribed ordering data in the repo. Fixture + decorative-pole numbers are built from the machine-parsed spec sheets instead (docs/spec-options.json). Parts with neither source resolve to no part number rather than a fabricated one.",
+  "finishCodes": {
+    "matte-black": "BK",
+    "statuary-bronze": "DB",
+    "forest-green": "DG",
+    "gloss-white": "WH",
+    "silver": "NA"
+  },
+  "finishCodeNote": "BK/WH/NA are exact; DB (Dark Bronze) and DG (Dark Green) are the inferred nearest matches already flagged in docs/spec-options.md \u2014 confirm with Tyler/Cole alongside catalog.finishesProvisional.",
+  "socketOdIn": {
+    "tenon-3in": 3.0,
+    "tenon-2-3/8": 2.375
+  },
+  "socketOdNote": "Nominal OD (inches) of the host socket an arm slips over \u2014 drives the Pole/Tenon Fit segment. Sockets absent from this map (nafco-tenon, sport-pole-top, pendant, arm-mount) have no published fit vocabulary, so the fit segment stays unresolved instead of guessed.",
+  "fitToleranceIn": 0.5,
+  "fitToleranceNote": "A derived OD must land within this many inches of a code's nominal OD, else the fit segment stays unresolved. 'hostPoleShaftOd' reads the host pole's shaft OD from its placeholder radiusTopM (the shaft above the decorative base flare), so a 4\" nominal shaft resolves to the 4\" fit code.",
+  "fitCodes": {
+    "tenon": [
+      {
+        "code": "24E",
+        "odIn": 2.375,
+        "label": "2.38\" OD tenon (external fit)"
+      },
+      {
+        "code": "30E",
+        "odIn": 3.0,
+        "label": "3\" OD tenon (external fit)"
+      },
+      {
+        "code": "35E",
+        "odIn": 3.5,
+        "label": "3.5\" OD tenon (external fit)"
+      },
+      {
+        "code": "40E",
+        "odIn": 4.0,
+        "label": "4\" OD tenon (external fit)"
+      }
+    ],
+    "poleFlush": [
+      {
+        "code": "40F",
+        "odIn": 4.0,
+        "label": "4\" OD round light pole (flush fit)"
+      },
+      {
+        "code": "50F",
+        "odIn": 5.0,
+        "label": "5\" OD round light pole (flush fit)"
+      },
+      {
+        "code": "60F",
+        "odIn": 6.0,
+        "label": "6\" OD round light pole (flush fit)"
+      }
+    ],
+    "poleOd": [
+      {
+        "code": "40",
+        "odIn": 4.0,
+        "label": "4\" OD pole fit"
+      },
+      {
+        "code": "50",
+        "odIn": 5.0,
+        "label": "5\" OD pole fit"
+      },
+      {
+        "code": "60",
+        "odIn": 6.0,
+        "label": "6\" OD pole fit"
+      }
+    ],
+    "plate": [
+      {
+        "code": "WM",
+        "odIn": null,
+        "label": "Wall-mount flat plate"
+      },
+      {
+        "code": "OC",
+        "odIn": null,
+        "label": "Overhead/ceiling flat plate"
+      }
+    ]
+  },
+  "armOptions": [
+    {
+      "code": "CF1",
+      "label": "Center Shepherds Hook Decorative Feature"
+    },
+    {
+      "code": "CF2",
+      "label": "Center Shepherds Hook Brand/Logo/City Round Feature"
+    },
+    {
+      "code": "CF3",
+      "label": "Center Shepherds Hook Brand/Logo Feature (variant)"
+    }
+  ],
+  "armOptionsNote": "The arms sheet's Options column. These append to the part number (CF = Custom is omitted here \u2014 a custom feature is a quote conversation, not a code the configurator can assemble).",
+  "families": {
+    "arm-shepherds-hook": {
+      "label": "Shepherds Hook",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "SH1",
+          "armCount": 1,
+          "label": "Single shepherds hook"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "sh1-shepherds-hook"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-side-shepherds-hook": {
+      "label": "Side Shepherds Hook",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "SS1",
+          "armCount": 1,
+          "label": "Single"
+        },
+        {
+          "code": "SS2",
+          "armCount": 2,
+          "label": "2 @ 180 deg"
+        },
+        {
+          "code": "SS3",
+          "armCount": 3,
+          "label": "3 @ 90 deg"
+        },
+        {
+          "code": "SS4",
+          "armCount": 4,
+          "label": "4 @ 90 deg"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-side-shepherds-hook-pole-top-brackets"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-suspension": {
+      "label": "Suspension Arm",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "AR1",
+          "armCount": 1,
+          "label": "Single"
+        },
+        {
+          "code": "AR2",
+          "armCount": 2,
+          "label": "2 @ 180 deg"
+        },
+        {
+          "code": "AR3",
+          "armCount": 3,
+          "label": "3 @ 90 deg"
+        },
+        {
+          "code": "AR4",
+          "armCount": 4,
+          "label": "4 @ 90 deg"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-suspension-arm-pole-top-brackets"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-supported-decorative": {
+      "label": "Supported Decorative Arm",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "SD1",
+          "armCount": 1,
+          "label": "Single"
+        },
+        {
+          "code": "SD2",
+          "armCount": 2,
+          "label": "2 @ 180 deg"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-supported-decorative-arms"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-deco-upsweep": {
+      "label": "Deco Upsweep",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "HS1",
+          "armCount": 1,
+          "label": "Single"
+        },
+        {
+          "code": "HS2",
+          "armCount": 2,
+          "label": "2 @ 180 deg"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-hsx-decorative-upsweep-arms"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-upsweep-no-gusset": {
+      "label": "Upsweep Arm (No Gusset)",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "BR12",
+          "armCount": 1,
+          "label": "Single, 24\" arm"
+        },
+        {
+          "code": "BR13",
+          "armCount": 1,
+          "label": "Single, 36\" arm"
+        },
+        {
+          "code": "BR22",
+          "armCount": 2,
+          "label": "2 @ 180 deg, 24\" arm"
+        },
+        {
+          "code": "BR23",
+          "armCount": 2,
+          "label": "2 @ 180 deg, 36\" arm"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "upsweep"
+      ],
+      "note": "ASSUMPTION TO CONFIRM: the curated 'Decorative Upsweep' wizard arm is mapped to the sheet's Upsweep Arm (No Gusset) BR family; the HSX catalog product takes the Deco Upsweep HS codes. Second digit = arm count, third = arm length.",
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-crossarm": {
+      "label": "Crossarm",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "CR2",
+          "armCount": 2,
+          "label": "Fixed 2 @ 180 deg"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-cr2-decorative-crossarm"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-crossarm-finial": {
+      "label": "Crossarm w/ Finial",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "FR2",
+          "armCount": 2,
+          "label": "Fixed 2 @ 180 deg, finial"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "willstudio-fr2-decorative-crossarm"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-pendant-gusset": {
+      "label": "Pendant Arm (w/ Gusset)",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "PA1",
+          "armCount": 1,
+          "label": "Single, gusseted"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "pa1-pendant-arm"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    },
+    "arm-pendant": {
+      "label": "Pendant Arm",
+      "family": "WP",
+      "fit": "poleFlush",
+      "designs": [
+        {
+          "code": "PM1",
+          "armCount": 1,
+          "label": "Single"
+        }
+      ],
+      "options": "armOptions",
+      "parts": [
+        "pm1-pendant-arm"
+      ],
+      "fitFrom": "hostPoleShaftOd"
+    }
+  },
+  "unmapped": {
+    "note": "Products with no supplied ordering matrix resolve to NO part number (surfaced as 'ordering matrix pending'), never a guessed one.",
+    "families": [
+      "Wall Mount (WM1/WM2) and Pendant Ceiling Mount (PC1-3) \u2014 on the sheet, but no catalog part exists yet",
+      "WiLLstudio decorative bullhorn brackets \u2014 a catalog product, not on the supplied arms sheet",
+      "All NAFCO and WiLLsport arms/poles/fixtures \u2014 separate brand matrices, not yet supplied",
+      "Curated fluted/round base covers \u2014 style codes not on the supplied sheet",
+      "aluminum-light-pole-base-covers (dropship 'Aluminum Light Pole Base Covers' product) \u2014 this hand-transcribed matrix originally assigned it CL2 ('Two-piece aluminum base cover'), but the machine-parsed 8/4 spec sheet (docs/spec-options.json) and the real-CAD ingest (docs/real-geometry.json) both confirm CL2 = Medium Clamshell = catalog part bc-cl2-medium-clamshell, a DIFFERENT part. The CL2 assignment here was a transcription error and has been removed rather than guessed at; this part's real design code (if it has one) is unconfirmed \u2014 see docs/part-numbers.md."
+    ]
+  },
+  "fitEvidenceNote": "Engineering's released CAD names every WiLLstudio arm with a FLUSH pole fit (SH1-40F, SS1-40F..SS4-40F, AR1-40F..AR4-40F) and the released pole is a 4\" OD straight (RSAA-4040-12), so the arm families resolve their fit from the host pole's shaft OD against the flush-fit table: a 4\" pole gives 40F. The catalog's `tenon-3in` socket type is Phase-0 placeholder vocabulary, not an ordering code; the tenon fit table stays for arms that really are tenon-mounted. See docs/real-geometry.json for the file-level provenance."
+}

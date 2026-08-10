@@ -32,7 +32,20 @@ from app.main import app
 from app.models import PoleConfig
 from app.naming import DISCLAIMER
 
+from .conftest import first_base_cover_for
+
 client = TestClient(app)
+
+
+@pytest.fixture(scope="module")
+def bc_alum20(catalog: dict) -> str:
+    """The baseCover derived for alum-pole-20.
+
+    Phase 0.10.5 re-slotted bc-fluted/bc-round to 'standalone'; derive the
+    regression-test baseCover instead of hardcoding a part that no longer
+    lives in that slot.
+    """
+    return first_base_cover_for(catalog, "alum-pole-20")
 
 
 # ---------------------------------------------------------------------------
@@ -284,7 +297,7 @@ class TestStandaloneGenerate:
 # ---------------------------------------------------------------------------
 
 class TestNormalConfigRegression:
-    def test_normal_pdf_still_works(self) -> None:
+    def test_normal_pdf_still_works(self, bc_alum20) -> None:
         """Normal assembly config + pdf must still return 200."""
         resp = client.post(
             "/generate",
@@ -292,7 +305,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-pdf-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
@@ -304,7 +317,7 @@ class TestNormalConfigRegression:
         )
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
-    def test_normal_step_still_works(self) -> None:
+    def test_normal_step_still_works(self, bc_alum20) -> None:
         """Normal assembly config + step must still return 200."""
         resp = client.post(
             "/generate",
@@ -312,7 +325,7 @@ class TestNormalConfigRegression:
                 "config": {
                     "configId": "regression-step-001",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": bc_alum20,
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",

@@ -4,161 +4,220 @@
 
 ## What these are
 
-These are **interim rig assets**: WebP renders produced by the Phase 0.5 render rig (`scripts/render-rig/`) from the same photo-informed placeholder solids used for the 3D preview — not the Sales-drive `17.Renderings` directory, which is not reachable from this repo/machine. Every entry below is a stand-in.
+WebP layers produced by the render rig (`scripts/render-rig/`). Two geometry sources feed it:
 
-Cole's SolidWorks render-rig outputs will replace these files **in place** — same manifest slots (`public/renders/manifest-<brand>.json` → merged `public/renders/manifest.json`, keyed by part id → `angles.hero.finishes.<finishId>`) — so no app code changes when the real renders land.
+- **real CAD** — Engineering's released WiLLstudio STEP (`STEP-Website/WiLLstudio`), ingested in Phase 0.10 via `scripts/step-to-glb/ingest.py`. Provenance per file (source path, sha256, part + ordering code) is in `docs/real-geometry.json`; the STEP/GLB binaries stay offline (gitignored) — only these ~4 KB layers ship.
+- **placeholder** — the photo-informed parametric solids from Phase 0.5, still standing in for every part whose real CAD has not been released yet.
+
+Both land in the same manifest slots (`public/renders/manifest-<brand>.json` → merged `public/renders/manifest.json`, keyed by part id → `angles.hero.finishes.<finishId>`), so replacing a placeholder with real CAD needs **no app code change** — re-ingest, re-render, done.
 
 ## Coverage by brand
 
 ### NAFCO
 
-| product | type | angle | finishes | status |
-|---------|------|-------|----------|--------|
-| Aluminum Cross Arm Brackets, Wood Pole Mount (`aluminum-cross-arm-brackets-wood-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Tapered Elliptical Mast Arms, Round Pole Mount (`aluminum-tapered-elliptical-mast-arms-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Tapered Elliptical Truss Arm, Round Pole Mount (`aluminum-tapered-elliptical-truss-arm-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Tenon Adapters (`aluminum-tenon-adapters`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Transformer Bases (`aluminum-transformer-bases`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Anchor Bolt Kit, 0.625" x 16" x 2", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Anchor Bolt Kit, 0.75" x 17" x 3", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-0-75-x-17-x-3-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Anchor Bolt Kit, 1.0" x 36" x 4", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-1-0-x-36-x-4-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Light Pole Bolt Circle Adapters (`light-pole-bolt-circle-adapters`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Light Pole Top Caps (`light-pole-top-caps`) | standalone | hero | 5/5 | rendered (interim rig) |
-| NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets (`nafco-abh-1-single-arm-aluminum-bullhorn-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets (`nafco-abh-2-double-arm-aluminum-bullhorn-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets (`nafco-abh-3-triple-arm-aluminum-bullhorn-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets (`nafco-abh-4-quad-arm-aluminum-bullhorn-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® CHX Cobrahead (`nafco-chx-cobrahead`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Direct / Slipfitter Mount (`nafco-direct-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® NTX Pole + Slim Area Light (`nafco-ntx-pole-slim-area-light`) | standalone | hero | 5/5 | rendered (interim rig) |
-| NAFCO® Pre-Cast Concrete Light Pole Bases (`nafco-pre-cast-concrete-light-pole-bases`) | standalone | hero | 5/5 | rendered (interim rig) |
-| NAFCO® SHX Shoebox (`nafco-shx-shoebox`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets (`nafco-spx-1-aluminum-spoke-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets (`nafco-spx-2-aluminum-spoke-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets (`nafco-spx-3-aluminum-spoke-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets (`nafco-spx-4-aluminum-spoke-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets (`nafco-upx-1-aluminum-upsweep-arms`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets (`nafco-upx-2-aluminum-upsweep-arms`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO® WCX Wall Mount (`nafco-wcx-wall-mount`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Round Straight Aluminum 3-Bolt Base Light Poles (`round-straight-aluminum-3-bolt-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Straight Aluminum Anchor Base Light Poles (`round-straight-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Straight Aluminum Direct Burial Light Poles (`round-straight-aluminum-direct-burial-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Straight Aluminum Hinged Base Light Poles (`round-straight-aluminum-hinged-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Straight Steel Anchor Base Light Poles (`round-straight-steel-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Aluminum 3-Bolt Base Light Poles (`round-tapered-aluminum-3-bolt-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Aluminum Anchor Base + Davit Arm Light Poles (`round-tapered-aluminum-anchor-base-davit-arm-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Aluminum Anchor Base Light Poles (`round-tapered-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Aluminum Direct Burial Light Poles (`round-tapered-aluminum-direct-burial-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Aluminum Hinged Base Light Poles (`round-tapered-aluminum-hinged-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Steel 3-Bolt Base Light Poles (`round-tapered-steel-3-bolt-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Steel Anchor Base Light Poles (`round-tapered-steel-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Steel Direct Burial Light Poles (`round-tapered-steel-direct-burial-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Steel Pedestal Base Light Poles (`round-tapered-steel-pedestal-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| NAFCO®  SLX SLIM LED LIGHTING (`slx`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Straight Aluminum Anchor Base Light Poles (`square-straight-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Straight Aluminum Direct Burial Light Poles (`square-straight-aluminum-direct-burial-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Straight Aluminum Hinged Base Light Poles (`square-straight-aluminum-hinged-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Straight Steel Anchor Base Light Poles (`square-straight-steel-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Tapered Steel Anchor Base Light Poles (`square-tapered-steel-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Square Tapered Steel External Hinged Light Poles (`square-tapered-steel-external-hinged-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Steel Bullhorn Brackets, Round Pole Mount (`steel-bullhorn-brackets-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Steel Spoke Brackets, Round Pole Mount (`steel-spoke-brackets-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Steel Upsweep Brackets, Round Pole Mount (`steel-upsweep-brackets-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
+| product | type | angle | finishes | geometry source | status |
+|---------|------|-------|----------|-----------------|--------|
+| Aluminum Cross Arm Brackets, Wood Pole Mount (`aluminum-cross-arm-brackets-wood-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Tapered Elliptical Mast Arms, Round Pole Mount (`aluminum-tapered-elliptical-mast-arms-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Tapered Elliptical Truss Arm, Round Pole Mount (`aluminum-tapered-elliptical-truss-arm-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Tenon Adapters (`aluminum-tenon-adapters`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Transformer Bases (`aluminum-transformer-bases`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Anchor Bolt Kit, 0.625" x 16" x 2", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-0-625-x-16-x-2-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Anchor Bolt Kit, 0.75" x 17" x 3", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-0-75-x-17-x-3-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Anchor Bolt Kit, 1.0" x 36" x 4", Set of (4) Bolts, Double Nuts & Double Washers (`anchor-bolt-kit-1-0-x-36-x-4-set-of-4-bolts-double-nuts-double-washers`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Light Pole Bolt Circle Adapters (`light-pole-bolt-circle-adapters`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Light Pole Top Caps (`light-pole-top-caps`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets (`nafco-abh-1-single-arm-aluminum-bullhorn-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets (`nafco-abh-2-double-arm-aluminum-bullhorn-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets (`nafco-abh-3-triple-arm-aluminum-bullhorn-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets (`nafco-abh-4-quad-arm-aluminum-bullhorn-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® BA1 Banner Arm (`nafco-ba1-banner-arm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® CHX Cobrahead (`nafco-chx-cobrahead`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Direct / Slipfitter Mount (`nafco-direct-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® NTX Pole + Slim Area Light (`nafco-ntx-pole-slim-area-light`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® Pre-Cast Concrete Light Pole Bases (`nafco-pre-cast-concrete-light-pole-bases`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® SHX Shoebox (`nafco-shx-shoebox`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets (`nafco-spx-1-aluminum-spoke-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets (`nafco-spx-2-aluminum-spoke-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets (`nafco-spx-3-aluminum-spoke-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets (`nafco-spx-4-aluminum-spoke-brackets`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets (`nafco-upx-1-aluminum-upsweep-arms`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets (`nafco-upx-2-aluminum-upsweep-arms`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO® WCX Wall Mount (`nafco-wcx-wall-mount`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Round Straight Aluminum 3-Bolt Base Light Poles (`round-straight-aluminum-3-bolt-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Straight Aluminum Anchor Base Light Poles (`round-straight-aluminum-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Straight Aluminum Direct Burial Light Poles (`round-straight-aluminum-direct-burial-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Straight Aluminum Hinged Base Light Poles (`round-straight-aluminum-hinged-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Straight Steel Anchor Base Light Poles (`round-straight-steel-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Aluminum 3-Bolt Base Light Poles (`round-tapered-aluminum-3-bolt-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Aluminum Anchor Base + Davit Arm Light Poles (`round-tapered-aluminum-anchor-base-davit-arm-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Aluminum Anchor Base Light Poles (`round-tapered-aluminum-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Aluminum Direct Burial Light Poles (`round-tapered-aluminum-direct-burial-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Aluminum Hinged Base Light Poles (`round-tapered-aluminum-hinged-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Steel 3-Bolt Base Light Poles (`round-tapered-steel-3-bolt-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Steel Anchor Base Light Poles (`round-tapered-steel-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Steel Direct Burial Light Poles (`round-tapered-steel-direct-burial-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Steel Pedestal Base Light Poles (`round-tapered-steel-pedestal-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| NAFCO®  SLX SLIM LED LIGHTING (`slx`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Straight Aluminum Anchor Base Light Poles (`square-straight-aluminum-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Straight Aluminum Direct Burial Light Poles (`square-straight-aluminum-direct-burial-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Straight Aluminum Hinged Base Light Poles (`square-straight-aluminum-hinged-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Straight Steel Anchor Base Light Poles (`square-straight-steel-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Tapered Steel Anchor Base Light Poles (`square-tapered-steel-anchor-base-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Square Tapered Steel External Hinged Light Poles (`square-tapered-steel-external-hinged-light-poles`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Steel Bullhorn Brackets, Round Pole Mount (`steel-bullhorn-brackets-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Steel Spoke Brackets, Round Pole Mount (`steel-spoke-brackets-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Steel Upsweep Brackets, Round Pole Mount (`steel-upsweep-brackets-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
 
-**NAFCO totals:** 50 rendered, 0 fallback, 50 total.
+**NAFCO totals:** 51 rendered (0 from real CAD, 51 placeholder), 0 fallback, 51 total.
 
 ### WiLLcloud
 
-| product | type | angle | finishes | status |
-|---------|------|-------|----------|--------|
-| GFD Wireless Lighting Controls (`gfd-wireless-controls`) | standalone | hero | 5/5 | rendered (interim rig) |
+| product | type | angle | finishes | geometry source | status |
+|---------|------|-------|----------|-----------------|--------|
+| GFD Wireless Lighting Controls (`gfd-wireless-controls`) | standalone | hero | 13/13 | placeholder solid | rendered |
 
-**WiLLcloud totals:** 1 rendered, 0 fallback, 1 total.
+**WiLLcloud totals:** 1 rendered (0 from real CAD, 1 placeholder), 0 fallback, 1 total.
 
 ### WiLLev
 
-| product | type | angle | finishes | status |
-|---------|------|-------|----------|--------|
-| Tesla HSS -  Lower 48 Shipping Only (`tesla-hss`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Tesla HSS - AK, HI, CAN Shipping Only (`tesla-hss-ak-hi-can-shipping-only`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Tesla NTX  (3000K) - Lower 48 Shipping Only (`tesla-ntx`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Tesla SLX (3000K) - Lower 48 Shipping Only (`tesla-slx`) | standalone | hero | 5/5 | rendered (interim rig) |
-| Tesla SLX (3000K) - AK, HI, CAN Shipping Only (`tesla-slx-ak-hi-can-shipping-only`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLev™ EVSE L2 Charging Pedestals (`willev-evse-charging-pedestals`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLev™ NTX Pole + Slim Area Light (`willev-ntx-pole-slim-area-light`) | standalone | hero | 5/5 | rendered (interim rig) |
+| product | type | angle | finishes | geometry source | status |
+|---------|------|-------|----------|-----------------|--------|
+| Tesla HSS -  Lower 48 Shipping Only (`tesla-hss`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Tesla HSS - AK, HI, CAN Shipping Only (`tesla-hss-ak-hi-can-shipping-only`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Tesla NTX  (3000K) - Lower 48 Shipping Only (`tesla-ntx`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Tesla SLX (3000K) - Lower 48 Shipping Only (`tesla-slx`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Tesla SLX (3000K) - AK, HI, CAN Shipping Only (`tesla-slx-ak-hi-can-shipping-only`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLev™ EVSE L2 Charging Pedestals (`willev-evse-charging-pedestals`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLev™ NTX Pole + Slim Area Light (`willev-ntx-pole-slim-area-light`) | standalone | hero | 13/13 | placeholder solid | rendered |
 
-**WiLLev totals:** 7 rendered, 0 fallback, 7 total.
+**WiLLev totals:** 7 rendered (0 from real CAD, 7 placeholder), 0 fallback, 7 total.
 
 ### WiLLsport
 
-| product | type | angle | finishes | status |
-|---------|------|-------|----------|--------|
-| Sports Poles & Cross Arms (`sports-poles-cross-arms`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® EBX Slim High Bay (`willsport-ebx-slim-high-bay`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WILLsport® GTX High-Output Area (`willsport-gtx-high-output-area`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® HDX Area / Flood / Sports (`willsport-hdx-area-flood-sports`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® HDX High Bay & Sports (`willsport-hdx-high-bay-sports`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® HSX Sportslighter (`willsport-hsx-sportslighter`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Integrated Crossarm (included with pole) (`willsport-integrated-crossarm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® KBX Lighting System (`willsport-kbx-lighting-system`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub (`willsport-pdx-sports-large-area-power-distribution-controls-hub`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® RPCX Sports & Large Area Remote Power Control (`willsport-rpcx-sports-large-area-remote-power-control`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® Sports & Large Area Brackets & Arms (`willsport-sports-large-area-brackets-arms`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLsport® Wrestling Dual Light Packages (`willsport-wrestling-dual-light-packages`) | standalone | hero | 5/5 | rendered (interim rig) |
+| product | type | angle | finishes | geometry source | status |
+|---------|------|-------|----------|-----------------|--------|
+| Sports Poles & Cross Arms (`sports-poles-cross-arms`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport BA1 Banner Arm (`willsport-ba1-banner-arm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® EBX Slim High Bay (`willsport-ebx-slim-high-bay`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WILLsport® GTX High-Output Area (`willsport-gtx-high-output-area`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® HDX Area / Flood / Sports (`willsport-hdx-area-flood-sports`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® HDX High Bay & Sports (`willsport-hdx-high-bay-sports`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® HSX Sportslighter (`willsport-hsx-sportslighter`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Integrated Crossarm (included with pole) (`willsport-integrated-crossarm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® KBX Lighting System (`willsport-kbx-lighting-system`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub (`willsport-pdx-sports-large-area-power-distribution-controls-hub`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® RPCX Sports & Large Area Remote Power Control (`willsport-rpcx-sports-large-area-remote-power-control`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® Sports & Large Area Brackets & Arms (`willsport-sports-large-area-brackets-arms`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLsport® Wrestling Dual Light Packages (`willsport-wrestling-dual-light-packages`) | standalone | hero | 13/13 | placeholder solid | rendered |
 
-**WiLLsport totals:** 12 rendered, 0 fallback, 12 total.
+**WiLLsport totals:** 13 rendered (0 from real CAD, 13 placeholder), 0 fallback, 13 total.
 
 ### WiLLstudio
 
-| product | type | angle | finishes | status |
-|---------|------|-------|----------|--------|
-| 12 ft Decorative Aluminum (`alum-pole-12`) | assembly | hero | 5/5 | rendered (interim rig) |
-| 14 ft Decorative Aluminum (`alum-pole-14`) | assembly | hero | 5/5 | rendered (interim rig) |
-| 16 ft Decorative Aluminum (`alum-pole-16`) | assembly | hero | 5/5 | rendered (interim rig) |
-| 20 ft Decorative Aluminum (`alum-pole-20`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Decorative Bullhorn Brackets, Round Pole Mount (`aluminum-decorative-bullhorn-brackets-round-pole-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Aluminum Light Pole Base Covers (`aluminum-light-pole-base-covers`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Fluted Base Cover (`bc-fluted`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Base Cover (`bc-round`) | assembly | hero | 5/5 | rendered (interim rig) |
-| No Arm — Direct Pole Mount (`direct-mount`) | assembly | hero | 5/5 | rendered (interim rig) |
-| DRX Post Top & Area (`drx-post-top`) | assembly | hero | 5/5 | rendered (interim rig) |
-| GVX Pendant (`gvx-pendant`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Huntington Decorative Aluminum Anchor Base Light Poles (`huntington-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| MVX Coach (`mvx-coach`) | assembly | hero | 5/5 | rendered (interim rig) |
-| PA1 Pendant Arm (`pa1-pendant-arm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| PM1 Pendant Arm (`pm1-pendant-arm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Fiberglass Anchor Base Light Poles (`round-tapered-fiberglass-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Fiberglass Direct Burial Light Poles (`round-tapered-fiberglass-direct-burial-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Round Tapered Steel Fluted Anchor Base Light Poles (`round-tapered-steel-fluted-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Sacramento Decorative Aluminum Anchor Base Light Poles (`sacramento-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| SH1 Shepherds Hook (`sh1-shepherds-hook`) | assembly | hero | 5/5 | rendered (interim rig) |
-| TEX Post Top & Area (`tex-post-top`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Decorative Upsweep (`upsweep`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Washington Decorative Aluminum Anchor Base Light Poles (`washington-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| Williamsburg Decorative Aluminum Anchor Base Light Poles (`williamsburg-decorative-aluminum-anchor-base-light-poles`) | assembly | hero | 5/5 | rendered (interim rig) |
-| BA1 Banner Arm (`willstudio-ba1-banner-arm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® CR2 Decorative Crossarm (`willstudio-cr2-decorative-crossarm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® DWX Flood & Spot (`willstudio-dwx-flood-spot`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® FR2 Decorative Crossarm (`willstudio-fr2-decorative-crossarm`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® HSX Decorative Upsweep Arms (`willstudio-hsx-decorative-upsweep-arms`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® Pendant Ceiling Mounts (`willstudio-pendant-ceiling-mounts`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® RXB / SXB Bollard (`willstudio-rxb-sxb-bollard`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® Side Shepherds Hook Pole Top Brackets (`willstudio-side-shepherds-hook-pole-top-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® Supported Decorative Arms (`willstudio-supported-decorative-arms`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® Suspension Arm Pole Top Brackets (`willstudio-suspension-arm-pole-top-brackets`) | assembly | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® WM1 Single Wall Mount Pendant (`willstudio-wm1-single-wall-mount-pendant`) | standalone | hero | 5/5 | rendered (interim rig) |
-| WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial (`willstudio-wm2-single-wall-tenon-mount-w-finial`) | standalone | hero | 5/5 | rendered (interim rig) |
+| product | type | angle | finishes | geometry source | status |
+|---------|------|-------|----------|-----------------|--------|
+| 10 ft Decorative Aluminum (`alum-pole-10`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 12 ft Decorative Aluminum (`alum-pole-12`) | assembly | hero | 13/13 | **real CAD** — `RSAA-4040-12.STEP` (RSAA-4040-12) | rendered |
+| 14 ft Decorative Aluminum (`alum-pole-14`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 15 ft Decorative Aluminum (`alum-pole-15`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 16 ft Decorative Aluminum (`alum-pole-16`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 18 ft Decorative Aluminum (`alum-pole-18`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 20 ft Decorative Aluminum (`alum-pole-20`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| 8 ft Decorative Aluminum (`alum-pole-8`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Decorative Bullhorn Brackets, Round Pole Mount (`aluminum-decorative-bullhorn-brackets-round-pole-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Aluminum Light Pole Base Covers (`aluminum-light-pole-base-covers`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Small Clamshell Cast Base Cover (`bc-cl1-small-clamshell`) | assembly | hero | 13/13 | **real CAD** — `CL1-4R.STEP` (CL1) | rendered |
+| Medium Clamshell Cast Base Cover (`bc-cl2-medium-clamshell`) | assembly | hero | 13/13 | **real CAD** — `CL2-4R.STEP` (CL2) | rendered |
+| Large Clamshell Cast Base Cover (`bc-cl3-large-clamshell`) | assembly | hero | 13/13 | **real CAD** — `CL3-4R.STEP` (CL3) | rendered |
+| Fluted Base Cover (`bc-fluted`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Round Base Cover (`bc-round`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Spun Base Collar (1pc Design) (`bc-sc1-spun-collar`) | assembly | hero | 13/13 | **real CAD** — `SC1-4R.STEP` (SC1) | rendered |
+| Spun Base Collar (Split Design) (`bc-sc2-spun-collar-split`) | assembly | hero | 13/13 | **real CAD** — `SC2-4R.STEP` (SC2) | rendered |
+| No Arm — Direct Pole Mount (`direct-mount`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| DRX Post Top & Area (`drx-post-top`) | assembly | hero | 13/13 | **real CAD** — `DRX-Post-Top.STEP` (DRX) | rendered |
+| GVX Pendant (`gvx-pendant`) | assembly | hero | 13/13 | **real CAD** — `WD-GVX-PM` (GVX) | rendered |
+| Huntington Decorative Aluminum Anchor Base Light Poles (`huntington-decorative-aluminum-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| MVX Coach (`mvx-coach`) | assembly | hero | 13/13 | **real CAD** — `MXV.STEP` (MVX) | rendered |
+| PA1 Pendant Arm (`pa1-pendant-arm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| PM1 Pendant Arm (`pm1-pendant-arm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Fiberglass Anchor Base Light Poles (`round-tapered-fiberglass-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Fiberglass Direct Burial Light Poles (`round-tapered-fiberglass-direct-burial-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Round Tapered Steel Fluted Anchor Base Light Poles (`round-tapered-steel-fluted-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Sacramento Decorative Aluminum Anchor Base Light Poles (`sacramento-decorative-aluminum-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| SH1 Shepherds Hook (`sh1-shepherds-hook`) | assembly | hero | 13/13 | **real CAD** — `SH1-40F.STEP` (SH1) | rendered |
+| TEX Post Top & Area (`tex-post-top`) | assembly | hero | 13/13 | **real CAD** — `TEX.STEP` (TEX) | rendered |
+| Decorative Upsweep (`upsweep`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| Washington Decorative Aluminum Anchor Base Light Poles (`washington-decorative-aluminum-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| Williamsburg Decorative Aluminum Anchor Base Light Poles (`williamsburg-decorative-aluminum-anchor-base-light-poles`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| BA1 Banner Arm (`willstudio-ba1-banner-arm`) | assembly | hero | 13/13 | **real CAD** — `BA24-4R.STEP` (BA24) | rendered |
+| WiLLstudio® CR2 Decorative Crossarm (`willstudio-cr2-decorative-crossarm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® DWX Flood & Spot (`willstudio-dwx-flood-spot`) | assembly | hero | 13/13 | **real CAD** — `DWX.STEP` (DWX) | rendered |
+| WiLLstudio® FR2 Decorative Crossarm (`willstudio-fr2-decorative-crossarm`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® HSX Decorative Upsweep Arms (`willstudio-hsx-decorative-upsweep-arms`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® Pendant Ceiling Mounts (`willstudio-pendant-ceiling-mounts`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® RXB / SXB Bollard (`willstudio-rxb-sxb-bollard`) | standalone | hero | 13/13 | **real CAD** — `RXB.STEP` (RXB) | rendered |
+| WiLLstudio® Side Shepherds Hook Pole Top Brackets (`willstudio-side-shepherds-hook-pole-top-brackets`) | assembly | hero | 13/13 | **real CAD** — `SS1-40F.STEP` (SS1) | rendered |
+| WiLLstudio® Supported Decorative Arms (`willstudio-supported-decorative-arms`) | assembly | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® Suspension Arm Pole Top Brackets (`willstudio-suspension-arm-pole-top-brackets`) | assembly | hero | 13/13 | **real CAD** — `AR1-40F.STEP` (AR1) | rendered |
+| WiLLstudio® WM1 Single Wall Mount Pendant (`willstudio-wm1-single-wall-mount-pendant`) | standalone | hero | 13/13 | placeholder solid | rendered |
+| WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial (`willstudio-wm2-single-wall-tenon-mount-w-finial`) | standalone | hero | 13/13 | placeholder solid | rendered |
 
-**WiLLstudio totals:** 36 rendered, 0 fallback, 36 total.
+**WiLLstudio totals:** 45 rendered (16 from real CAD, 29 placeholder), 0 fallback, 45 total.
 
 ## Overall totals
 
-| brand | rendered | fallback | total |
-|-------|----------|----------|-------|
-| NAFCO | 50 | 0 | 50 |
-| WiLLcloud | 1 | 0 | 1 |
-| WiLLev | 7 | 0 | 7 |
-| WiLLsport | 12 | 0 | 12 |
-| WiLLstudio | 36 | 0 | 36 |
-| **All brands** | **106** | **0** | **106** |
+| brand | rendered | real CAD | placeholder | fallback | total |
+|-------|----------|----------|-------------|----------|-------|
+| NAFCO | 51 | 0 | 51 | 0 | 51 |
+| WiLLcloud | 1 | 0 | 1 | 0 | 1 |
+| WiLLev | 7 | 0 | 7 | 0 | 7 |
+| WiLLsport | 13 | 0 | 13 | 0 | 13 |
+| WiLLstudio | 45 | 16 | 29 | 0 | 45 |
+| **All brands** | **117** | **16** | **101** | **0** | **117** |
+
+## Real-CAD ingest (Phase 0.10)
+
+Source: `/Volumes/WiLLdrive/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio` · ingested by `scripts/step-to-glb/ingest.py` · full provenance in `docs/real-geometry.json`.
+
+### Files used as a part's geometry
+
+| STEP file | part | design | fit | origin mode | GLB |
+|-----------|------|--------|-----|-------------|-----|
+| `AR1-40F.STEP` | `willstudio-suspension-arm-pole-top-brackets` | AR1 | 40F | mount | 0.4 MB |
+| `BA24-4R.STEP` | `willstudio-ba1-banner-arm` | BA24 | 4R | mount-center | 2.0 MB |
+| `CL1-4R.STEP` | `bc-cl1-small-clamshell` | CL1 | 4R | base | — |
+| `CL2-4R.STEP` | `bc-cl2-medium-clamshell` | CL2 | 4R | base | — |
+| `CL3-4R.STEP` | `bc-cl3-large-clamshell` | CL3 | 4R | base | — |
+| `DRX-Post-Top.STEP` | `drx-post-top` | DRX | 3T | base | 23.9 MB |
+| `DWX.STEP` | `willstudio-dwx-flood-spot` | DWX | C | base | 18.7 MB |
+| `MXV.STEP` | `mvx-coach` | MVX | 3T | base | 22.8 MB |
+| `RSAA-4040-12.STEP` | `alum-pole-12` | RSAA-4040-12 | 40 | base | 0.0 MB |
+| `RXB.STEP` | `willstudio-rxb-sxb-bollard` | RXB | C | base | 4.2 MB |
+| `SC1-4R.STEP` | `bc-sc1-spun-collar` | SC1 | 4R | base | — |
+| `SC2-4R.STEP` | `bc-sc2-spun-collar-split` | SC2 | 4R | base | — |
+| `SH1-40F.STEP` | `sh1-shepherds-hook` | SH1 | 40F | mount | 0.2 MB |
+| `SS1-40F.STEP` | `willstudio-side-shepherds-hook-pole-top-brackets` | SS1 | 40F | mount | 0.4 MB |
+| `TEX.STEP` | `tex-post-top` | TEX | 3T | base | 22.2 MB |
+| `WD-GVX-PM` | `gvx-pendant` | GVX | PM | top | 26.2 MB |
+
+### Whole-assembly / variant files (shipped in the download bundle, not a layer source)
+
+| STEP file | part | design | arms | note |
+|-----------|------|--------|------|------|
+| `AR2-40F.STEP` | `willstudio-suspension-arm-pole-top-brackets` | AR2 | 2 |  |
+| `AR3-40F.STEP` | `willstudio-suspension-arm-pole-top-brackets` | AR3 | 3 |  |
+| `AR4-40F.STEP` | `willstudio-suspension-arm-pole-top-brackets` | AR4 | 4 |  |
+| `DRX-Area-4R-Side-Mount.STEP` | `drx-post-top` | DRX | — | Area/side-mount variant of the DRX (mounting code SMR). |
+| `SS2-40F.STEP` | `willstudio-side-shepherds-hook-pole-top-brackets` | SS2 | 2 |  |
+| `SS3-40F.STEP` | `willstudio-side-shepherds-hook-pole-top-brackets` | SS3 | 3 |  |
+| `SS4-40F.STEP` | `willstudio-side-shepherds-hook-pole-top-brackets` | SS4 | 4 |  |
+| `SXB.STEP` | `willstudio-rxb-sxb-bollard` | SXB | — | Second bollard variant sharing the RXB/SXB catalog entry. |
+
+### Unmapped — real CAD with no confirmed catalog part
+
+| STEP file | why |
+|-----------|-----|
+| `FH-4R.STEP` | Flag Holder — Single Flag Holder Kit. An Accessory adder, not a slot part. |
+| `PH-4R.STEP` | Plant Holder — Single Plant Holder Kit. An Accessory adder, not a slot part. |
 

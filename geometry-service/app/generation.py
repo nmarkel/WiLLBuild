@@ -20,6 +20,7 @@ Two entry points
 from __future__ import annotations
 
 import base64
+import math
 import threading
 from pathlib import Path
 from typing import Callable
@@ -148,25 +149,93 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             arm_count, f"{arm_count} arms"
         )
 
-    # Banner arm (Phase 0.8 C) — one summary line matching src/lib/summary.ts:
-    # "Banner arm: <name> - <count>-side @ <heightFt> ft". Only when present, so
-    # no-banner spec sheets / hero cards are byte-identical.
+    # Banner arm (Phase 0.8 C / 0.10 C) — one summary line mirroring
+    # bannerSummaryLine in src/lib/banner.ts: the banner is defined by its two
+    # mounting bars, so the line LABELS the banner height and both bar heights
+    # above grade.  Only emitted when a banner is present, so no-banner spec
+    # sheets / hero cards are byte-identical to earlier output.
+    #
+    # Uses an em dash (—), matching banner.ts's bannerSummaryLine exactly at the
+    # source-code level. _latin1() in app/adapters/_spec_template.py transliterates
+    # it to a plain hyphen before it ever reaches fpdf2 (_LATIN1_MAP maps
+    # "—" -> "-"), so the rendered PDF bytes are unchanged either way — this is
+    # about not having two "mirror" strings disagree at the source, not a
+    # customer-visible fix.
     banner = getattr(req.config, "banner", None)
     if banner is not None:
         banner_part = part_map.get(banner.armId)
         banner_name = banner_part.get("name", banner.armId) if banner_part else banner.armId
-        h = banner.heightFt
-        h_txt = str(int(h)) if float(h).is_integer() else str(h)
-        summary["banner"] = f"{banner_name} - {banner.count}-side @ {h_txt} ft"
+        sides = "opposite pair" if banner.count == 2 else f"{banner.count}-side"
+        geom = _banner_geometry(banner_part, banner.heightFt) if banner_part else None
+        if geom is None:
+            h = banner.heightFt
+            h_txt = str(int(h)) if float(h).is_integer() else str(h)
+            summary["banner"] = f"{banner_name} — {sides} @ {h_txt} ft"
+        else:
+            panel_mm, top_mm, bottom_mm = geom
+            summary["banner"] = (
+                f"{banner_name} — {sides}, banner height {round(panel_mm / 25.4)} in "
+                f"(top bar {_ft_in(top_mm)} / bottom bar {_ft_in(bottom_mm)} above grade)"
+            )
     return summary
 
 
+def _ft_in(mm: float) -> str:
+    """Millimetres -> ``9'-2"`` (mirrors formatFtIn in src/lib/banner.ts).
+
+    Uses ``floor(x + 0.5)`` rather than Python's builtin ``round()`` (which is
+    round-half-to-even) so this matches JS ``Math.round`` (round-half-away-
+    from-zero) exactly on a .5 inch remainder — the two "mirror" functions
+    must agree on every input, not just the ones the current catalog happens
+    to produce.
+    """
+    total_inches = mm / 25.4
+    feet = int(total_inches // 12)
+    inches = math.floor(total_inches % 12 + 0.5)
+    if inches == 12:
+        feet += 1
+        inches = 0
+    return f"{feet}'-{inches}\""
+
+
+def _banner_geometry(banner_part: dict, height_ft: float) -> tuple[float, float, float] | None:
+    """(panel height, top-bar height, bottom-bar height) in mm, above grade.
+
+    Derived from the banner arm's placeholder geometry exactly like
+    ``bannerGeometry`` in src/lib/banner.ts: the tallest box child is the panel,
+    the others are the two mounting bars.
+    """
+    placeholder = banner_part.get("placeholder") or {}
+    if placeholder.get("kind") != "group":
+        return None
+    boxes = [c for c in placeholder.get("children", []) if c.get("spec", {}).get("kind") == "box"]
+    if not boxes:
+        return None
+
+    def height_of(child: dict) -> float:
+        return child["spec"]["sizeM"][1]
+
+    def center_y(child: dict) -> float:
+        return child["position"][1] + height_of(child) / 2
+
+    panel = max(boxes, key=height_of)
+    bars = [c for c in boxes if c is not panel]
+    mount_mm = height_ft * 304.8  # ft -> mm
+    bar_ys = [center_y(c) for c in bars]
+    panel_y = center_y(panel)
+    panel_h = height_of(panel)
+    top_m = max(bar_ys) if bar_ys else panel_y + panel_h / 2
+    bottom_m = min(bar_ys) if bar_ys else panel_y - panel_h / 2
+    return panel_h * 1000.0, mount_mm + top_m * 1000.0, mount_mm + bottom_m * 1000.0
+
+
 # Arm-arrangement labels — mirror src/lib/summary.ts armArrangementLabel.
+# Phase 0.10.5: arms mount on a 90-degree drilled tenon, so a triple is 3@90.
 _ARM_ARRANGEMENT_LABELS: dict[int, str] = {
     1: "Single",
-    2: "Twin (180 deg)",
-    3: "Triple (120 deg)",
-    4: "Quad (90 deg)",
+    2: "Twin (2 @ 180 deg)",
+    3: "Triple (3 @ 90 deg)",
+    4: "Quad (4 @ 90 deg)",
 }
 
 

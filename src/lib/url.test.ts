@@ -13,7 +13,7 @@ const config: PoleConfig = {
   configId: 'test',
   brand: 'WiLLstudio',
   pole: 'alum-pole-14',
-  baseCover: 'bc-fluted',
+  baseCover: 'bc-cl2-medium-clamshell',
   arm: 'upsweep',
   fixture: 'drx-post-top',
   finish: 'forest-green',
@@ -25,7 +25,7 @@ describe('config <-> URL params', () => {
     const partial = paramsToPartialConfig(configToParams(config))
     expect(partial).toEqual({
       pole: 'alum-pole-14',
-      baseCover: 'bc-fluted',
+      baseCover: 'bc-cl2-medium-clamshell',
       arm: 'upsweep',
       fixture: 'drx-post-top',
       finish: 'forest-green',
@@ -79,24 +79,33 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
   })
 })
 
-describe('spec options <-> URL params (Phase 0.8 D)', () => {
+describe('spec options <-> URL params (Phase 0.8 D, per-slot in 0.10.5)', () => {
   it('omits absent / empty spec options', () => {
     expect(configToParams(config).get('opts')).toBeNull()
     expect(configToParams({ ...config, specOptions: {} }).get('opts')).toBeNull()
+    expect(configToParams({ ...config, specOptions: { fixture: {} } }).get('opts')).toBeNull()
   })
 
-  it('round-trips selected spec options', () => {
-    const specOptions = { color: 'BK', mounting: 'ARM' }
+  it('round-trips selected spec options across slots', () => {
+    const specOptions = {
+      fixture: { 'lumen-output': '80', mounting: 'ARM' },
+      pole: { 'fixture-mounting': 'T23' },
+    }
     const params = configToParams({ ...config, specOptions })
     expect(paramsToPartialConfig(params)?.specOptions).toEqual(specOptions)
   })
 
   it('serializes spec options deterministically (keys sorted)', () => {
     // Same map, different insertion order -> identical string (share-link stability).
-    const a = configToParams({ ...config, specOptions: { mounting: 'ARM', color: 'BK' } })
-    const b = configToParams({ ...config, specOptions: { color: 'BK', mounting: 'ARM' } })
-    expect(a.get('opts')).toBe('color:BK,mounting:ARM')
+    const a = configToParams({ ...config, specOptions: { fixture: { mounting: 'ARM', color: 'BK' } } })
+    const b = configToParams({ ...config, specOptions: { fixture: { color: 'BK', mounting: 'ARM' } } })
+    expect(a.get('opts')).toBe('fixture.color:BK,fixture.mounting:ARM')
     expect(a.get('opts')).toBe(b.get('opts'))
+  })
+
+  it('reads legacy pre-0.10.5 pairs (no slot prefix) as fixture options', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,mounting:ARM'))
+    expect(partial?.specOptions).toEqual({ fixture: { color: 'BK', mounting: 'ARM' } })
   })
 
   it('ignores a malformed opts param (no valid key:code pairs)', () => {
@@ -105,8 +114,30 @@ describe('spec options <-> URL params (Phase 0.8 D)', () => {
   })
 
   it('keeps only well-formed pairs from a partially-malformed opts param', () => {
-    const partial = paramsToPartialConfig(new URLSearchParams('?opts=color:BK,junk,mounting:ARM'))
-    expect(partial?.specOptions).toEqual({ color: 'BK', mounting: 'ARM' })
+    const partial = paramsToPartialConfig(
+      new URLSearchParams('?opts=fixture.color:BK,junk,notaslot.k:V,pole.mounting:ARM'),
+    )
+    expect(partial?.specOptions).toEqual({ fixture: { color: 'BK' }, pole: { mounting: 'ARM' } })
+  })
+})
+
+describe('per-part finishes <-> URL params (Phase 0.10.5)', () => {
+  it('omits absent / empty finish overrides', () => {
+    expect(configToParams(config).get('fins')).toBeNull()
+    expect(configToParams({ ...config, finishes: {} }).get('fins')).toBeNull()
+  })
+
+  it('round-trips per-slot finish overrides (base finish param unchanged)', () => {
+    const finishes = { fixture: 'matte-black', pole: 'silver' }
+    const params = configToParams({ ...config, finishes })
+    expect(params.get('finish')).toBe('forest-green')
+    expect(params.get('fins')).toBe('fixture:matte-black,pole:silver')
+    expect(paramsToPartialConfig(params)?.finishes).toEqual(finishes)
+  })
+
+  it('drops unknown slots from a fins param', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?fins=fixture:silver,evil:hack'))
+    expect(partial?.finishes).toEqual({ fixture: 'silver' })
   })
 })
 
@@ -161,12 +192,12 @@ describe('scene <-> URL params', () => {
 
   it('non-default scene is serialized', () => {
     expect(configToParams(config, 'street').get('scene')).toBe('street')
-    expect(configToParams(config, 'courtyard').get('scene')).toBe('courtyard')
+    expect(configToParams(config, 'parking').get('scene')).toBe('parking')
   })
 
   it('non-default scene round-trips through params', () => {
-    const params = configToParams(config, 'courtyard')
-    expect(paramsToScene(params)).toBe('courtyard')
+    const params = configToParams(config, 'parking')
+    expect(paramsToScene(params)).toBe('parking')
   })
 
   it('absent scene param reads back as the default', () => {
@@ -208,5 +239,75 @@ describe('product view <-> URL params', () => {
   it('builder view when no params present', () => {
     const view = paramsToViewMode(new URLSearchParams(''))
     expect(view).toEqual({ kind: 'builder' })
+  })
+})
+
+describe('multi-select spec options <-> URL params (Phase 0.10.5)', () => {
+  it('joins multi codes with + and round-trips them as an array', () => {
+    const specOptions = { fixture: { options: ['WHP3NP', 'N5P'] } }
+    const params = configToParams({ ...config, specOptions })
+    expect(params.get('opts')).toBe('fixture.options:WHP3NP+N5P')
+    expect(paramsToPartialConfig(params)?.specOptions).toEqual(specOptions)
+  })
+
+  it('a single-code multi column parses as a plain string (repairConfig normalizes)', () => {
+    const params = configToParams({ ...config, specOptions: { fixture: { options: ['WHP3NP'] } } })
+    expect(params.get('opts')).toBe('fixture.options:WHP3NP')
+    expect(paramsToPartialConfig(params)?.specOptions).toEqual({ fixture: { options: 'WHP3NP' } })
+  })
+
+  it('omits empty arrays', () => {
+    expect(configToParams({ ...config, specOptions: { fixture: { options: [] } } }).get('opts')).toBeNull()
+  })
+})
+
+describe('custom RAL color <-> URL params (Phase 0.10.5)', () => {
+  it('round-trips per-slot RAL hexes without the #', () => {
+    const finishRal = { pole: '#1a2b3c', fixture: '#aabbcc' }
+    const params = configToParams({ ...config, finishRal })
+    expect(params.get('ral')).toBe('fixture:aabbcc,pole:1a2b3c')
+    expect(paramsToPartialConfig(params)?.finishRal).toEqual(finishRal)
+  })
+
+  it('drops malformed ral pairs', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?ral=pole:xyz,fixture:112233'))
+    expect(partial?.finishRal).toEqual({ fixture: '#112233' })
+  })
+})
+
+describe('arm orientation <-> URL params (Phase 0.10.5)', () => {
+  it('omits the 0° default and round-trips the rest', () => {
+    expect(configToParams(config).get('orient')).toBeNull()
+    expect(configToParams({ ...config, armOrientation: 0 }).get('orient')).toBeNull()
+    const params = configToParams({ ...config, armOrientation: 180 })
+    expect(params.get('orient')).toBe('180')
+    expect(paramsToPartialConfig(params)?.armOrientation).toBe(180)
+  })
+
+  it('ignores an out-of-set orientation', () => {
+    expect(paramsToPartialConfig(new URLSearchParams('?orient=45'))?.armOrientation).toBeUndefined()
+  })
+})
+
+describe('accessory placements <-> URL params (Phase 0.10.5)', () => {
+  it('round-trips placements as code~ft~deg', () => {
+    const accessoryPlacements = { FSTR: { heightFt: 6, orientation: 90 }, FH: { heightFt: 9, orientation: 0 } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('FH~9~0,FSTR~6~90')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
+  })
+
+  it('drops malformed placement entries', () => {
+    const partial = paramsToPartialConfig(new URLSearchParams('?place=FSTR~x~90,FH~9~0'))
+    expect(partial?.accessoryPlacements).toEqual({ FH: { heightFt: 9, orientation: 0 } })
+  })
+})
+
+describe('accessory placement sides <-> URL (Phase 0.10.5)', () => {
+  it('round-trips the optional sides token', () => {
+    const accessoryPlacements = { BA24: { heightFt: 10, orientation: 90, sides: 2 } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('BA24~10~90~2')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
   })
 })

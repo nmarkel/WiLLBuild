@@ -252,11 +252,56 @@ body {
   text-align: right;
 }
 
+/* Phase 0.10.5: the expanded step's body — one concierge "chapter" per part. */
+.step-body {
+  padding: 0 14px 14px;
+}
+
+.step-tagline {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+/* A titled section inside a step (Finish / Base configuration / Options & accessories). */
+.step-group {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.step-group-title {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.step-continue {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px 12px;
+  background: var(--will-yellow);
+  border: none;
+  border-radius: 8px;
+  color: var(--will-gray);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.step-continue:hover {
+  filter: brightness(0.96);
+}
+
 .options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  padding: 0 12px 12px;
 }
 
 .option-card {
@@ -316,21 +361,24 @@ body {
   font-size: 11px;
 }
 
+/* Phase 0.10.5: per-step finish swatches — a compact wrap row, not a full list. */
 .options.finishes {
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .finish-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
+  gap: 7px;
+  padding: 6px 10px;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   color: var(--text);
   font: inherit;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -353,6 +401,31 @@ body {
   height: 12px;
   margin-right: 6px;
   vertical-align: -1px;
+}
+
+/* Phase 0.10.5: Custom RAL Match — rainbow swatch until a color is picked. */
+.swatch.ral-rainbow {
+  background: conic-gradient(#e33, #e93, #ed3, #4c4, #36c, #93c, #e33);
+}
+
+.ral-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.ral-picker input[type='color'] {
+  width: 44px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* ---- Arm-count / arrangement selector (Phase 0.8 A1) ---- */
@@ -407,10 +480,10 @@ body {
   color: var(--muted-text, #58595b);
 }
 
-/* ---- Banner picker + spec options (Phase 0.8 C/D) ---- */
+/* ---- Banner picker + spec options (Phase 0.8 C/D; options moved into the
+   step chapters in Phase 0.10.5) ---- */
 
-.banner-picker,
-.spec-options {
+.banner-picker {
   margin-top: 14px;
   padding: 14px 16px;
   background: var(--panel-raised);
@@ -423,49 +496,6 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-}
-
-/* Phase 0.9 (A3): collapsible Product Options header. */
-.spec-options-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font: inherit;
-}
-
-.spec-options-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.spec-options-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.spec-options-count {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text);
-  background: var(--will-yellow);
-  border-radius: 999px;
-  padding: 1px 8px;
-}
-
-.spec-options-arrow {
-  font-size: 12px;
-  color: var(--muted-text, #58595b);
-}
-
-.spec-options-body {
-  margin-top: 10px;
 }
 
 .spec-options-note {
@@ -508,6 +538,104 @@ body {
   font: inherit;
 }
 
+/* Phase 0.10.5: shaft placement box under a checked, placeable pole accessory. */
+.placement-box {
+  margin: 4px 0 8px 24px;
+  padding: 8px 10px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--will-yellow);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.placement-box .arm-count-label {
+  margin: 8px 0 4px;
+}
+
+/* Phase 0.10.5: collapsed-by-default Options & accessories disclosure. */
+.extras-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.extras-toggle .step-group-title {
+  margin: 0;
+}
+
+.extras-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.extras-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--will-yellow);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.extras-optional {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.extras-arrow {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* Phase 0.10.5: multi-select options & accessories — one checkbox row per code. */
+.spec-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.spec-check + .spec-check {
+  margin-top: 4px;
+}
+
+.spec-check.checked {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.spec-check input[type='checkbox'] {
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--will-yellow);
+}
+
+.spec-check-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.spec-check-code {
+  font-weight: 700;
+}
+
 .banner-toggle {
   display: flex;
   align-items: center;
@@ -534,6 +662,32 @@ body {
   gap: 4px;
   margin-top: 8px;
   font-size: 12px;
+  color: var(--text);
+}
+
+/* Phase 0.10 (C): derived banner dimensions — panel height + both bar
+   heights above grade, computed from catalog geometry in src/lib/banner.ts. */
+.banner-dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  background: var(--will-silver);
+  border-radius: 8px;
+}
+
+.banner-dims dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted-text, #58595b);
+}
+
+.banner-dims dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text);
 }
 
@@ -591,15 +745,6 @@ body {
   font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
 }
 
-.finish-note {
-  grid-column: 1 / -1;
-  font-size: 11px;
-  color: var(--will-gray);
-  margin: 0 0 4px;
-  padding: 8px 10px;
-  background: var(--yellow-soft);
-  border-radius: 6px;
-}
 
 .summary ul {
   list-style: none;
@@ -619,6 +764,23 @@ body {
 
 .summary-label {
   color: var(--text-dim);
+}
+
+/* Phase 0.10.5: part name + full ordering part number stacked on the right. */
+.summary-part {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.summary-pn {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--text-dim);
+  text-align: right;
+  word-break: break-all;
 }
 
 .summary a {
@@ -1450,7 +1612,12 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  /* Phase 0.10.5: backdrops keep their aspect ratio — cover crops instead of
+     stretching, anchored to the bottom so the ground plane stays in frame.
+     The JS ground pin computes where the photo's ground line lands for the
+     live viewport shape. */
+  object-fit: cover;
+  object-position: center bottom;
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -1540,8 +1707,51 @@ body {
   bottom: 64px;
   right: 16px;
   display: flex;
+  align-items: center;
   gap: 6px;
   z-index: 10;
+}
+
+/* Phase 0.10.5: ground compass ring at the pole base (0/90/180/270 reference). */
+.composite-compass {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.composite-compass-ring {
+  fill: none;
+  stroke: rgba(66, 65, 61, 0.55);
+  stroke-width: 3;
+  stroke-dasharray: 10 8;
+}
+
+.composite-compass line {
+  stroke: rgba(66, 65, 61, 0.8);
+  stroke-width: 4;
+}
+
+.composite-compass text {
+  font: 700 34px 'Roboto', sans-serif;
+  fill: #42413d;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 6;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.composite-compass-zero line {
+  stroke: #d9a800;
+  stroke-width: 5;
+}
+
+.composite-compass-zero text {
+  fill: #7f6717;
 }
 
 .composite-zoom button {

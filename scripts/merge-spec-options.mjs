@@ -29,6 +29,24 @@
  *   node scripts/merge-spec-options.mjs                 # writes public/catalog.json
  *   node scripts/merge-spec-options.mjs --catalog <p>   # write a different catalog file (temp-copy testing)
  *   node scripts/merge-spec-options.mjs --dry-run       # report only, write nothing
+ *
+ * ============================================================================
+ * HAZARD (Phase 0.10.5): this script UNCONDITIONALLY OVERWRITES `options` on
+ * every matched part with the RAW parser output from docs/spec-options.json
+ * every time it runs (see the "Recompute from source each run" delete-then-
+ * inject above). That raw output is still polluted for the WiLLstudio
+ * decorative-pole sheet (see docs/part-numbers.md, "Known spec-parse
+ * artifacts"): the `alum-pole-*` parts in public/catalog.json currently carry
+ * a HAND-FIXED `design` column (trimmed to RSAA/RSAD/C) plus a HAND-ADDED
+ * `length` column (position 1.5) that `buildPartNumber` (src/lib/summary.ts)
+ * depends on to build correct pole part numbers. Neither fix lives in
+ * spec-options.json or in this script's logic — they were edited directly
+ * into public/catalog.json. Rerunning this script will SILENTLY REVERT both
+ * back to the raw merged columns (length/wall-thickness cells bleeding into
+ * `design`), with no error and no diff worth noticing in a quick review.
+ * Before rerunning this script for any reason, re-apply (or teach this script
+ * to preserve) the `alum-pole-*` `design`/`length` hand-fixes afterward.
+ * ============================================================================
  */
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';

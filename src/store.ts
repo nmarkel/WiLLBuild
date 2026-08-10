@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
-import { defaultConfig, repairConfig } from './lib/compat'
+import { defaultConfig, defaultSpecOptions, exclusiveFamily, partById, repairConfig, specCodes } from './lib/compat'
 import { parseDescription } from './lib/parse'
 import {
   configToParams,
@@ -34,16 +34,44 @@ interface ConfiguratorState {
   scene: Scene
   /** Current view mode: builder (3D wizard) or product (standalone product page). */
   view: ViewMode
+  /**
+   * Phase 0.10.5: assembly view rotation in 45° steps (0..315). A viewer-state
+   * axis like `scene` — spins the whole composited assembly via the
+   * per-azimuth renders; it never changes the config.
+   */
+  viewYaw: number
+  setViewYaw: (deg: number) => void
+  /** Phase 0.10.5: ground compass at the pole base (0/90/180/270 reference). */
+  showCompass: boolean
+  toggleCompass: () => void
+  /** Phase 0.10.5: object URL of the user-uploaded custom backdrop (session-only). */
+  customSceneUrl: string | null
+  /** Store an uploaded backdrop photo and switch to it. */
+  setCustomScene: (url: string) => void
   /** Active brand — drives routing and catalog scoping. */
   brand: ProductLine
   loadCatalog: () => Promise<void>
-  select: (slot: Slot | 'finish', id: string) => void
+  select: (slot: Slot, id: string) => void
+  /** Phase 0.10.5: set one part's finish (per-slot override on the base finish). */
+  setFinish: (slot: Slot, id: string) => void
+  /** Phase 0.10.5: set one part's custom RAL color (#rrggbb) — only meaningful when its finish is custom-ral. */
+  setFinishRal: (slot: Slot, hex: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
   setArmCount: (count: number) => void
+  /** Phase 0.10.5: rotate the arm arrangement about the pole (0 / 90 / 180 / 270°). */
+  setArmOrientation: (deg: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
-  /** Phase 0.8 (D): pick a spec-sheet ordering-matrix option (by SpecOption.key). */
-  setSpecOption: (key: string, code: string) => void
+  /** Phase 0.10.5: place a selected pole accessory (FSTR/CPL/FH/PH/…) on the shaft. */
+  setAccessoryPlacement: (code: string, placement: import('./types').AccessoryPlacement) => void
+  /** Phase 0.8 (D), reshaped in 0.10.5: pick a single-choice ordering column value for one part's step. */
+  setSpecOption: (slot: Slot, key: string, code: string) => void
+  /**
+   * Phase 0.10.5: toggle a multi-select options/accessories code for one part's
+   * step. Checking a code in an exclusive family (cord/surge/photocontrol)
+   * unchecks that family's previous code across all of the part's columns.
+   */
+  toggleSpecOption: (slot: Slot, key: string, code: string) => void
   /** Describe-your-product box: parse keywords, pre-select matching steps. */
   applyDescription: (text: string) => string[]
   toggleScale: () => void
@@ -111,7 +139,11 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (!catalog || !config || config[slot] === id) return
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
-    const next = repairConfig(catalog, { ...config, [slot]: id, rev: config.rev + 1 })
+    // Phase 0.10.5: choosing a different part resets that slot's spec choices to
+    // the part's defaults (e.g. the 6' cord) — the old choices belonged to a
+    // different product's ordering table.
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: defaultSpecOptions(partById(catalog, id)) }
+    const next = repairConfig(catalog, { ...config, [slot]: id, specOptions, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },
@@ -125,6 +157,15 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
   },
 
+  setArmOrientation: (deg) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || (config.armOrientation ?? 0) === deg) return
+    if (view.kind === 'product') return
+    const next = repairConfig(catalog, { ...config, armOrientation: deg, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
   setBanner: (banner) => {
     const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config) return
@@ -134,10 +175,68 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
   },
 
-  setSpecOption: (key, code) => {
+  setFinish: (slot, id) => {
     const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config || view.kind === 'product') return
-    const specOptions = { ...(config.specOptions ?? {}), [key]: code }
+    if ((config.finishes?.[slot] ?? config.finish) === id) return
+    const finishes = { ...(config.finishes ?? {}), [slot]: id }
+    const next = repairConfig(catalog, { ...config, finishes, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setAccessoryPlacement: (code, placement) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const accessoryPlacements = { ...(config.accessoryPlacements ?? {}), [code]: placement }
+    const next = repairConfig(catalog, { ...config, accessoryPlacements, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setFinishRal: (slot, hex) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    if (config.finishRal?.[slot] === hex) return
+    const finishRal = { ...(config.finishRal ?? {}), [slot]: hex }
+    const next = repairConfig(catalog, { ...config, finishRal, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setSpecOption: (slot, key, code) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const forSlot = { ...(config.specOptions?.[slot] ?? {}), [key]: code }
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: forSlot }
+    const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  toggleSpecOption: (slot, key, code) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    const forSlot: Record<string, string | string[]> = { ...(config.specOptions?.[slot] ?? {}) }
+    const current = specCodes(forSlot[key])
+    if (current.includes(code)) {
+      forSlot[key] = current.filter((c) => c !== code)
+    } else {
+      // One per exclusive family: strip the family's previous code from every
+      // multi-select column before adding (repairConfig keeps first-in-sheet,
+      // so the stale one must go here for the new pick to survive).
+      const family = exclusiveFamily(code)
+      if (family) {
+        for (const k of Object.keys(forSlot)) {
+          const codes = specCodes(forSlot[k])
+          if (Array.isArray(forSlot[k]) || k === key) {
+            forSlot[k] = codes.filter((c) => exclusiveFamily(c) !== family)
+          }
+        }
+      }
+      forSlot[key] = [...specCodes(forSlot[key]), code]
+    }
+    const specOptions = { ...(config.specOptions ?? {}), [slot]: forSlot }
     const next = repairConfig(catalog, { ...config, specOptions, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
@@ -154,6 +253,19 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     syncUrl(brand, next, scene)
     set({ config: next })
     return matchedTerms
+  },
+
+  viewYaw: 0,
+  setViewYaw: (deg) => set({ viewYaw: ((Math.round(deg / 45) * 45) % 360 + 360) % 360 }),
+
+  showCompass: false,
+  toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
+
+  customSceneUrl: null,
+  setCustomScene: (url) => {
+    const prev = get().customSceneUrl
+    if (prev && prev !== url) URL.revokeObjectURL(prev)
+    set({ customSceneUrl: url, scene: 'custom' })
   },
 
   toggleScale: () => set((s) => ({ showScale: !s.showScale })),

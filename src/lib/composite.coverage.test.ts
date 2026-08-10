@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig, ProductLine } from '../types'
 import { compatibleParts, partsForSlot, repairConfig, defaultConfig } from './compat'
-import { HERO_ANGLE, resolveAssemblyLayout, resolveRenderAsset, type RenderManifest } from './composite'
+import {
+  nearestAngleKey,
+  resolveAssemblyLayout,
+  resolveRenderAsset,
+  type RenderManifest,
+} from './composite'
 
 // Real catalog + merged render manifest — this is the Phase 0.5 coverage gate.
 // It must fail if any part or valid combo lacks a rendered asset.
@@ -12,21 +17,60 @@ const manifest: RenderManifest = JSON.parse(
 )
 
 const FINISH_IDS = catalog.finishes.map((f) => f.id)
+const COMPASS = ['hero', 'az45', 'az90', 'az135', 'az180', 'az225', 'az270', 'az315']
 
+// Phase 0.10.5 (spec D9): NO exemptions. The former REAL_RENDER_PARTS /
+// CORE_FINISH_IDS carve-out let 7 real-CAD parts ship with 5 of 13 finishes
+// and no az45 — which silently substituted finishes and degraded the
+// 8-position rotation to 4. If a GLB genuinely goes missing again, this gate
+// must REPORT the degradation, never accept it.
 describe('render manifest coverage', () => {
-  it('has a hero-angle asset for every catalog finish, on every catalog part', () => {
+  it('has every angle × every finish for every catalog part', () => {
     const gaps: string[] = []
     for (const part of catalog.parts) {
-      const finishes = manifest.parts[part.id]?.angles[HERO_ANGLE]?.finishes
-      if (!finishes) {
-        gaps.push(`${part.id}: no hero angle entry`)
+      const entry = manifest.parts[part.id]
+      if (!entry) {
+        gaps.push(`${part.id}: absent from the manifest`)
         continue
       }
-      for (const finishId of FINISH_IDS) {
-        if (!finishes[finishId]) gaps.push(`${part.id}: missing finish ${finishId}`)
+      for (const angle of COMPASS) {
+        const finishes = entry.angles[angle]?.finishes
+        if (!finishes) {
+          gaps.push(`${part.id}: missing angle ${angle}`)
+          continue
+        }
+        for (const finishId of FINISH_IDS) {
+          if (!finishes[finishId]) gaps.push(`${part.id}/${angle}: missing finish ${finishId}`)
+        }
       }
     }
     expect(gaps).toEqual([])
+  })
+
+  it('never needs a nearest-angle fallback for the shipped manifest', () => {
+    // nearestAngleKey stays as defensive code, but the manifest we ship must
+    // resolve every compass angle exactly.
+    const fallbacks: string[] = []
+    for (const part of catalog.parts) {
+      for (const angle of COMPASS) {
+        const resolved = nearestAngleKey(manifest, part.id, angle)
+        if (resolved !== angle) fallbacks.push(`${part.id}: ${angle} -> ${resolved}`)
+      }
+    }
+    expect(fallbacks).toEqual([])
+  })
+
+  it('never degrades the assembly rotation below 45° steps', () => {
+    // composite.ts snaps to 90° if any rotating part lacks az45. With full
+    // coverage that path must be unreachable for every valid assembly.
+    const brands: ProductLine[] = ['WiLLstudio', 'NAFCO', 'WiLLsport']
+    for (const brand of brands) {
+      const config = repairConfig(catalog, defaultConfig(catalog, brand))
+      for (const yaw of [45, 135, 225, 315]) {
+        const layout = resolveAssemblyLayout(catalog, manifest, config, yaw)
+        expect(layout.appliedViewYaw).toBe(yaw)
+      }
+    }
   })
 })
 

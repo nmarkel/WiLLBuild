@@ -1,7 +1,7 @@
 # Viewer backdrop scenes — sources & license
 
 Daytime backdrop photos for the compositing viewer's scene picker (Park /
-Street side / Courtyard). Each is cropped to **1600×1000** so its near, flat
+Street side / Parking lot). Each is cropped to **1600×1000** so its near, flat
 foreground ground plane falls across the pin fraction **`HORIZON_FRAC = 0.80`**
 (base sits 80% down) — so the product's foot + contact shadow land on the near
 foreground ground of every backdrop and one placement grounds identically
@@ -20,7 +20,7 @@ free for commercial and personal use, no attribution required, no sign-up.
 |-------|------|--------------|-------------|
 | Park | `park.jpg` | ID 17952424 | https://www.pexels.com/photo/17952424/ |
 | Street side | `street.jpg` | ID 38336361 | https://www.pexels.com/photo/38336361/ |
-| Courtyard | `courtyard.jpg` | ID 7109805 | https://www.pexels.com/photo/7109805/ |
+| Parking lot | `parking.jpg` | ID 250659 | https://www.pexels.com/photo/250659/ |
 
 ## Processing
 

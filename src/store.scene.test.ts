@@ -22,8 +22,8 @@ describe('scene store persistence', () => {
   it('setScene updates the scene', () => {
     useConfigurator.getState().setScene('street')
     expect(useConfigurator.getState().scene).toBe('street')
-    useConfigurator.getState().setScene('courtyard')
-    expect(useConfigurator.getState().scene).toBe('courtyard')
+    useConfigurator.getState().setScene('parking')
+    expect(useConfigurator.getState().scene).toBe('parking')
   })
 
   it('scene survives unrelated state changes (day/night + human scale)', () => {

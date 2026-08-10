@@ -34,6 +34,14 @@ from build123d import (
     sweep,
 )
 
+from .detail import (
+    chamfer_all_edges,
+    chamfer_length,
+    fillet_sketch_corners,
+    profile_fillet_radius,
+    step_down_box,
+)
+
 M = 1000.0  # catalog meters -> mm
 
 
@@ -194,11 +202,16 @@ def build_arm(p: dict):
 # Fixtures: dispatch on placeholder kind
 # ---------------------------------------------------------------------------
 
-def build_fixture_lathe(profile: list[list[float]]):
+def build_fixture_lathe(profile: list[list[float]], detail: bool = False):
     """Revolve a (radius, height) profile about the vertical axis.
 
     Points are closed back to the axis; consecutive duplicates are dropped so a
     profile that already ends on the axis (e.g. DRX ``[0, 0.53]``) is valid.
+
+    ``detail=True`` (fixtures only, Phase 0.10 Workstream D) fillets the profile
+    corners first, so the rings between profile segments read as flush
+    transitions rather than hard steps.  Poles/base covers/banners call with
+    ``detail=False`` and are byte-identical to 0.9.
     """
     pts = [(r * M, y * M) for r, y in profile]
     seq = pts + [(0.0, pts[-1][1]), (0.0, pts[0][1])]
@@ -206,17 +219,23 @@ def build_fixture_lathe(profile: list[list[float]]):
     for q in seq[1:]:
         if abs(q[0] - ded[-1][0]) > 1e-6 or abs(q[1] - ded[-1][1]) > 1e-6:
             ded.append(q)
+    radius = profile_fillet_radius(ded) if detail else 0.0
     with BuildPart() as bp:
-        with BuildSketch(Plane.XZ):
+        with BuildSketch(Plane.XZ) as sk:
             with BuildLine():
                 Polyline(*ded, close=True)
             make_face()
+            fillet_sketch_corners(sk, radius)
         revolve(axis=Axis.Z)
     return bp.part
 
 
-def _build_prism(spec: dict):
-    """Regular-polygon loft between bottom and top faces; origin at base."""
+def _build_prism(spec: dict, detail: bool = False):
+    """Regular-polygon loft between bottom and top faces; origin at base.
+
+    ``detail=True`` chamfers the rim edges (Phase 0.10 D) — faceted lantern
+    bodies and pyramid roofs otherwise read as sharp-cornered blocks.
+    """
     rb, rt, h = spec["radiusBottomM"] * M, spec["radiusTopM"] * M, spec["heightM"] * M
     sides = spec["sides"]
     with BuildPart() as bp:
@@ -225,7 +244,9 @@ def _build_prism(spec: dict):
         with BuildSketch(Plane.XY.offset(h)):
             RegularPolygon(radius=rt, side_count=sides)
         loft()
-    return bp.part
+    if not detail:
+        return bp.part
+    return chamfer_all_edges(bp.part, chamfer_length((rb * 2, rt * 2 or rb * 2, h)))
 
 
 def _build_cone(spec: dict):
@@ -241,58 +262,88 @@ def _build_cone(spec: dict):
     return bp.part
 
 
-def _build_group_child(spec: dict):
+def _build_group_child(spec: dict, detail: bool = False):
     """Build a single group child by its inner kind."""
     kind = spec["kind"]
     if kind in ("baseCover", "pole"):
         return _tapered_cylinder(spec["radiusBottomM"], spec["radiusTopM"], spec["heightM"])
     if kind == "prism":
-        return _build_prism(spec)
+        return _build_prism(spec, detail)
     if kind == "cone":
         return _build_cone(spec)
     if kind == "box":
-        return _build_box(spec)
+        return _build_box(spec, detail)
     if kind == "lathe":
-        return build_fixture_lathe(spec["profile"])
+        return build_fixture_lathe(spec["profile"], detail)
     raise ValueError(f"unknown group child kind: {kind!r}")
 
 
-def build_fixture_group(children: list[dict]):
-    """Union of group children, each translated by its viewer position."""
+def build_fixture_group(children: list[dict], detail: bool = False):
+    """Union of group children, each translated by its viewer position.
+
+    ``detail`` is forwarded to the children (fixtures only — see kit/detail.py).
+    """
     from build123d import Location
 
     solid = None
     for child in children:
-        part_solid = _build_group_child(child["spec"])
+        part_solid = _build_group_child(child["spec"], detail)
         placed = Location(viewer_to_cad(child["position"])) * part_solid
         solid = placed if solid is None else solid + placed
     return solid
 
 
-def _build_box(spec: dict):
-    """Rectangular fixture housing; origin at the base center (viewer y-up -> CAD z-up)."""
+def _build_box(spec: dict, detail: bool = False):
+    """Rectangular fixture housing; origin at the base center (viewer y-up -> CAD z-up).
+
+    ``detail=True`` (Phase 0.10 D) adds the housing detail Tyler asked for: a
+    stepped-down lower band (the lens/door step) on housing-sized boxes, plus
+    chamfered edges so the STEP no longer reads as a slab.  Small/thin boxes
+    (brackets, banner bars, accent panels) are size-gated out and unchanged.
+    """
     w, h, d = (v * M for v in spec["sizeM"])
-    with BuildPart() as bp:
-        Box(w, d, h, align=(Align.CENTER, Align.CENTER, Align.MIN))
-    return bp.part
+    stepped = step_down_box(w, d, h) if detail else None
+    if stepped is None:
+        with BuildPart() as bp:
+            Box(w, d, h, align=(Align.CENTER, Align.CENTER, Align.MIN))
+        solid = bp.part
+    else:
+        solid = stepped
+    if not detail:
+        return solid
+    return chamfer_all_edges(solid, chamfer_length((w, d, h)))
 
 
 def build_fixture(p: dict):
-    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union, box -> housing."""
+    """Fixture dispatch on placeholder kind: lathe -> revolve, group -> union, box -> housing.
+
+    Fixtures — and only fixtures — build with the Phase 0.10 detail pass
+    (step-downs + flush transitions, see kit/detail.py).
+    """
     ph = p["placeholder"]
     kind = ph["kind"]
     if kind == "lathe":
-        return build_fixture_lathe(ph["profile"])
+        return build_fixture_lathe(ph["profile"], detail=True)
     if kind == "group":
-        return build_fixture_group(ph["children"])
+        return build_fixture_group(ph["children"], detail=True)
     if kind == "box":
-        return _build_box(ph)
+        return _build_box(ph, detail=True)
     raise ValueError(f"unknown fixture kind: {kind!r}")
 
 
 # ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
+
+def _real_solid(p: dict, design_code: str | None):
+    """Real-CAD solid for this part when available, else None (Phase 0.10 ingest)."""
+    try:
+        from app.realgeom import load_real_solid
+
+        return load_real_solid(p["id"], design_code)
+    except Exception:  # noqa: BLE001 — never let CAD ingest break a download
+        return None
+
 
 def build_banner(p: dict):
     """Banner arm: a mid-shaft bracket set (placeholder PANEL only, no artwork).
@@ -308,8 +359,20 @@ def build_banner(p: dict):
     raise ValueError(f"unsupported banner placeholder kind: {ph['kind']!r}")
 
 
-def build_part(p: dict):
-    """Build any catalog part, dispatching on its slot."""
+def build_part(p: dict, design_code: str | None = None):
+    """Build any catalog part, dispatching on its slot.
+
+    Phase 0.10 ingest: when Engineering's real STEP for this part is present
+    locally, that geometry is used instead of the parametric placeholder — so
+    STEP/DWG/IFC/RFA downloads carry factory CAD.  ``design_code`` lets a
+    configured design pick its own file (``SS3`` → the real 3-arm cluster).  With
+    no real CAD present (any deploy — real files are gitignored) this is a no-op
+    and the parametric kit builds exactly as it did in 0.9.
+    """
+    real = _real_solid(p, design_code)
+    if real is not None:
+        return real
+
     slot = p["slot"]
     if slot == "pole":
         return build_pole(p)

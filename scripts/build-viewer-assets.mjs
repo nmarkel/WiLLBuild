@@ -19,6 +19,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const CATALOG_PATH = resolve(ROOT, 'public/catalog.json')
 const MANIFEST_PATH = resolve(ROOT, 'public/renders/manifest.json')
+// Phase 0.10 ingest provenance: which parts are backed by Engineering's real CAD.
+// Tracked (the STEP/GLB binaries are not), so this table is reproducible anywhere.
+const REAL_GEOM_PATH = resolve(ROOT, 'docs/real-geometry.json')
 const OUT_PATH = resolve(ROOT, 'viewer-assets.md')
 
 const HERO_ANGLE = 'hero'
@@ -30,6 +33,15 @@ function escapeCell(s) {
 async function main() {
   const catalog = JSON.parse(await readFile(CATALOG_PATH, 'utf8'))
   const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8'))
+  let realGeom = { components: [], clusters: [], unmapped: [] }
+  try {
+    realGeom = JSON.parse(await readFile(REAL_GEOM_PATH, 'utf8'))
+  } catch { /* no ingest manifest yet */ }
+  // part id -> the real STEP + ordering code its layers were rendered from
+  const realByPart = new Map()
+  for (const c of realGeom.components ?? []) {
+    if (c.partId) realByPart.set(c.partId, c)
+  }
 
   const finishCount = catalog.finishes.length
 
@@ -52,15 +64,23 @@ async function main() {
   lines.push('## What these are')
   lines.push('')
   lines.push(
-    'These are **interim rig assets**: WebP renders produced by the Phase 0.5 render rig (`scripts/render-rig/`) ' +
-      'from the same photo-informed placeholder solids used for the 3D preview — not the Sales-drive `17.Renderings` ' +
-      'directory, which is not reachable from this repo/machine. Every entry below is a stand-in.',
+    'WebP layers produced by the render rig (`scripts/render-rig/`). Two geometry sources feed it:',
   )
   lines.push('')
   lines.push(
-    "Cole's SolidWorks render-rig outputs will replace these files **in place** — same manifest slots " +
-      '(`public/renders/manifest-<brand>.json` → merged `public/renders/manifest.json`, keyed by part id → `angles.hero.finishes.<finishId>`) — ' +
-      'so no app code changes when the real renders land.',
+    '- **real CAD** — Engineering\'s released WiLLstudio STEP (`STEP-Website/WiLLstudio`), ingested in Phase 0.10 ' +
+      'via `scripts/step-to-glb/ingest.py`. Provenance per file (source path, sha256, part + ordering code) is in ' +
+      '`docs/real-geometry.json`; the STEP/GLB binaries stay offline (gitignored) — only these ~4 KB layers ship.',
+  )
+  lines.push(
+    '- **placeholder** — the photo-informed parametric solids from Phase 0.5, still standing in for every part whose ' +
+      'real CAD has not been released yet.',
+  )
+  lines.push('')
+  lines.push(
+    'Both land in the same manifest slots (`public/renders/manifest-<brand>.json` → merged ' +
+      '`public/renders/manifest.json`, keyed by part id → `angles.hero.finishes.<finishId>`), so replacing a ' +
+      'placeholder with real CAD needs **no app code change** — re-ingest, re-render, done.',
   )
   lines.push('')
   lines.push('## Coverage by brand')
@@ -72,11 +92,12 @@ async function main() {
     const brandParts = byBrand.get(brand)
     lines.push(`### ${brand}`)
     lines.push('')
-    lines.push('| product | type | angle | finishes | status |')
-    lines.push('|---------|------|-------|----------|--------|')
+    lines.push('| product | type | angle | finishes | geometry source | status |')
+    lines.push('|---------|------|-------|----------|-----------------|--------|')
 
     let rendered = 0
     let fallback = 0
+    let real = 0
 
     for (const part of brandParts) {
       const type = part.slot === 'standalone' ? 'standalone' : 'assembly'
@@ -85,33 +106,94 @@ async function main() {
       const isRendered = presentCount >= 1
       if (isRendered) rendered++
       else fallback++
-      const status = isRendered ? 'rendered (interim rig)' : 'fallback (photo card)'
+      const status = isRendered ? 'rendered' : 'fallback (photo card)'
+      const realEntry = realByPart.get(part.id)
+      if (realEntry) real++
+      const source = realEntry
+        ? `**real CAD** — \`${realEntry.file}\`${realEntry.designCode ? ` (${realEntry.designCode})` : ''}`
+        : 'placeholder solid'
       lines.push(
-        `| ${escapeCell(part.name)} (\`${part.id}\`) | ${type} | ${HERO_ANGLE} | ${presentCount}/${finishCount} | ${status} |`,
+        `| ${escapeCell(part.name)} (\`${part.id}\`) | ${type} | ${HERO_ANGLE} | ${presentCount}/${finishCount} | ${source} | ${status} |`,
       )
     }
 
     lines.push('')
-    lines.push(`**${brand} totals:** ${rendered} rendered, ${fallback} fallback, ${brandParts.length} total.`)
+    lines.push(
+      `**${brand} totals:** ${rendered} rendered (${real} from real CAD, ${rendered - real} placeholder), ` +
+        `${fallback} fallback, ${brandParts.length} total.`,
+    )
     lines.push('')
-    totals.push({ brand, rendered, fallback, total: brandParts.length })
+    totals.push({ brand, rendered, fallback, real, total: brandParts.length })
   }
 
   lines.push('## Overall totals')
   lines.push('')
-  lines.push('| brand | rendered | fallback | total |')
-  lines.push('|-------|----------|----------|-------|')
+  lines.push('| brand | rendered | real CAD | placeholder | fallback | total |')
+  lines.push('|-------|----------|----------|-------------|----------|-------|')
   let grandRendered = 0
   let grandFallback = 0
   let grandTotal = 0
+  let grandReal = 0
   for (const t of totals) {
-    lines.push(`| ${t.brand} | ${t.rendered} | ${t.fallback} | ${t.total} |`)
+    lines.push(
+      `| ${t.brand} | ${t.rendered} | ${t.real} | ${t.rendered - t.real} | ${t.fallback} | ${t.total} |`,
+    )
     grandRendered += t.rendered
     grandFallback += t.fallback
     grandTotal += t.total
+    grandReal += t.real
   }
-  lines.push(`| **All brands** | **${grandRendered}** | **${grandFallback}** | **${grandTotal}** |`)
+  lines.push(
+    `| **All brands** | **${grandRendered}** | **${grandReal}** | **${grandRendered - grandReal}** | ` +
+      `**${grandFallback}** | **${grandTotal}** |`,
+  )
   lines.push('')
+
+  // --- Real-CAD ingest detail (Phase 0.10) ---
+  const clusters = realGeom.clusters ?? []
+  const unmapped = realGeom.unmapped ?? []
+  if (realByPart.size || clusters.length || unmapped.length) {
+    lines.push('## Real-CAD ingest (Phase 0.10)')
+    lines.push('')
+    lines.push(
+      `Source: \`${realGeom.source ?? 'unknown'}\` · ingested by \`${realGeom.ingestedBy ?? ''}\` · ` +
+        'full provenance in `docs/real-geometry.json`.',
+    )
+    lines.push('')
+    lines.push('### Files used as a part\'s geometry')
+    lines.push('')
+    lines.push('| STEP file | part | design | fit | origin mode | GLB |')
+    lines.push('|-----------|------|--------|-----|-------------|-----|')
+    for (const c of [...(realGeom.components ?? [])].sort((a, b) => a.file.localeCompare(b.file))) {
+      const glb = c.glbBytes ? `${(c.glbBytes / 1e6).toFixed(1)} MB` : '—'
+      lines.push(
+        `| \`${c.file}\` | \`${c.partId}\` | ${c.designCode ?? '—'} | ${c.fitCode ?? '—'} | ${c.origin ?? '—'} | ${glb} |`,
+      )
+    }
+    lines.push('')
+    if (clusters.length) {
+      lines.push('### Whole-assembly / variant files (shipped in the download bundle, not a layer source)')
+      lines.push('')
+      lines.push('| STEP file | part | design | arms | note |')
+      lines.push('|-----------|------|--------|------|------|')
+      for (const c of [...clusters].sort((a, b) => a.file.localeCompare(b.file))) {
+        lines.push(
+          `| \`${c.file}\` | \`${c.partId}\` | ${c.designCode ?? '—'} | ${c.armCount ?? '—'} | ${c.note ?? ''} |`,
+        )
+      }
+      lines.push('')
+    }
+    if (unmapped.length) {
+      lines.push('### Unmapped — real CAD with no confirmed catalog part')
+      lines.push('')
+      lines.push('| STEP file | why |')
+      lines.push('|-----------|-----|')
+      for (const c of [...unmapped].sort((a, b) => a.file.localeCompare(b.file))) {
+        lines.push(`| \`${c.file}\` | ${c.note ?? 'needs Engineering confirmation'} |`)
+      }
+      lines.push('')
+    }
+  }
 
   await writeFile(OUT_PATH, lines.join('\n') + '\n')
   console.log(

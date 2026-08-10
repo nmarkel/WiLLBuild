@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
-import { configStatus, partById } from '../lib/compat'
-import { armArrangementLabel, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
+import { configStatus, finishFor, partById } from '../lib/compat'
+import { armArrangementLabel, buildPartNumber, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
 import { shareUrl } from '../lib/url'
 
 interface Props {
@@ -14,7 +14,6 @@ const QUOTE_URL = 'https://willbrands.com/pages/request-a-quote'
 export function Summary({ catalog, config }: Props) {
   const [copied, setCopied] = useState(false)
 
-  const finish = catalog.finishes.find((f) => f.id === config.finish)
   const status = configStatus(catalog, config)
   const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config))}`
 
@@ -33,13 +32,32 @@ export function Summary({ catalog, config }: Props) {
       <ul>
         {SUMMARY_ROWS.map((r) => {
           const part = partById(catalog, config[r.key])
+          // Phase 0.10.5: each part shows its own finish (per-slot override or base).
+          const finish = catalog.finishes.find((f) => f.id === finishFor(config, r.key))
+          const partNumber = buildPartNumber(catalog, config, r.key)
           return (
-            <li key={r.label}>
+            <li key={r.label} className={partNumber ? 'has-pn' : undefined}>
               <span className="summary-label">{r.label}</span>
               {part ? (
-                <a href={part.productUrl} target="_blank" rel="noreferrer">
-                  {part.name}
-                </a>
+                <span className="summary-part">
+                  <span>
+                    {finish && (
+                      <span
+                        className="swatch inline"
+                        style={{ background: config.finishRal?.[r.key] ?? finish.hex }}
+                        title={finish.name}
+                      />
+                    )}
+                    <a href={part.productUrl} target="_blank" rel="noreferrer">
+                      {part.name}
+                    </a>
+                  </span>
+                  {partNumber && (
+                    <code className="summary-pn" title="Full ordering part number">
+                      {partNumber}
+                    </code>
+                  )}
+                </span>
               ) : (
                 <span>—</span>
               )}
@@ -52,6 +70,12 @@ export function Summary({ catalog, config }: Props) {
             <span>{armArrangementLabel(config.armCount ?? 1)}</span>
           </li>
         )}
+        {!!config.armOrientation && (
+          <li>
+            <span className="summary-label">Orientation</span>
+            <span>{config.armOrientation}°</span>
+          </li>
+        )}
         {config.banner && (
           <li>
             <span className="summary-label">Banner Arm</span>
@@ -61,13 +85,6 @@ export function Summary({ catalog, config }: Props) {
             </span>
           </li>
         )}
-        <li>
-          <span className="summary-label">Finish</span>
-          <span>
-            <span className="swatch inline" style={{ background: finish?.hex }} />
-            {finish?.name}
-          </span>
-        </li>
       </ul>
       <div className="actions">
         <button className="btn secondary" onClick={copyLink}>

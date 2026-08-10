@@ -1,7 +1,14 @@
-import type { PoleConfig, ProductLine } from '../types'
+import type { PoleConfig, ProductLine, Slot } from '../types'
 import type { ViewMode } from '../store'
 
 const PART_KEYS = ['pole', 'baseCover', 'arm', 'fixture', 'finish'] as const
+
+/** Slots that may carry a per-part finish override / spec-option set (Phase 0.10.5). */
+const OPTION_SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
+
+function isOptionSlot(v: string): v is Slot {
+  return (OPTION_SLOTS as readonly string[]).includes(v)
+}
 
 const DEFAULT_BRAND: ProductLine = 'WiLLstudio'
 
@@ -14,8 +21,12 @@ const VALID_BRANDS = ['NAFCO', 'WiLLsport', 'WiLLstudio', 'WiLLev', 'WiLLcloud',
  * product. Persisted in store state (survives config changes) and, when
  * non-default, in the share URL (same "omit the default" rule as `brand`).
  */
-export const SCENES = ['park', 'street', 'courtyard', 'blank'] as const
-export type Scene = (typeof SCENES)[number]
+export const SCENES = ['park', 'street', 'parking', 'blank'] as const
+/**
+ * 'custom' is a session-only scene backed by a user-uploaded photo (object
+ * URL in the store) — it can't ride a share URL, so it's outside SCENES.
+ */
+export type Scene = (typeof SCENES)[number] | 'custom'
 export const DEFAULT_SCENE: Scene = 'park'
 
 function isScene(v: string | null): v is Scene {
@@ -41,6 +52,10 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   if (config.armCount && config.armCount > 1) {
     params.set('arms', String(config.armCount))
   }
+  // Phase 0.10.5: arm orientation — omit the 0° default.
+  if (config.armOrientation) {
+    params.set('orient', String(config.armOrientation))
+  }
   // Phase 0.8 (C/A4): banner accessory encoded as `armId~count~heightFt`.
   if (config.banner) {
     params.set(
@@ -48,15 +63,51 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}`,
     )
   }
-  // Phase 0.8 (D): selected spec-sheet options as `key:code,key:code`.
-  if (config.specOptions && Object.keys(config.specOptions).length > 0) {
-    const opts = Object.entries(config.specOptions)
+  // Phase 0.10.5: per-slot finish overrides as `slot:finishId,slot:finishId`
+  // (base `finish` stays its own param for pre-0.10.5 link compatibility).
+  if (config.finishes) {
+    const fins = Object.entries(config.finishes)
+      .filter(([, v]) => v)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
       .join(',')
-    params.set('opts', opts)
+    if (fins) params.set('fins', fins)
   }
-  if (scene !== DEFAULT_SCENE) {
+  // Phase 0.10.5: accessory placements as `code~heightFt~orientation[~sides]`.
+  if (config.accessoryPlacements) {
+    const place = Object.entries(config.accessoryPlacements)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(
+        ([code, p]) =>
+          `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}${p.sides !== undefined ? `~${p.sides}` : ''}`,
+      )
+      .join(',')
+    if (place) params.set('place', place)
+  }
+  // Phase 0.10.5: custom RAL colors as `slot:rrggbb` (hex without the #).
+  if (config.finishRal) {
+    const rals = Object.entries(config.finishRal)
+      .filter(([, v]) => v)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v.replace('#', '')}`)
+      .join(',')
+    if (rals) params.set('ral', rals)
+  }
+  // Phase 0.8 (D), reshaped in 0.10.5: spec options as `slot.key:code,slot.key:code`;
+  // multi-select columns join their codes with `+` (`fixture.options:WHP3NP+N5P`).
+  if (config.specOptions) {
+    const opts = Object.entries(config.specOptions)
+      .flatMap(([slot, chosen]) =>
+        Object.entries(chosen ?? {})
+          .map(([k, v]) => [k, Array.isArray(v) ? v.filter(Boolean).join('+') : v] as const)
+          .filter(([, v]) => v)
+          .map(([k, v]) => `${slot}.${k}:${v}`),
+      )
+      .sort((a, b) => a.localeCompare(b))
+      .join(',')
+    if (opts) params.set('opts', opts)
+  }
+  if (scene !== DEFAULT_SCENE && isScene(scene)) {
     params.set('scene', scene)
   }
   return params
@@ -97,6 +148,15 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
+  // Phase 0.10.5: arm orientation — whitelist 90/180/270 (0 is the omitted default).
+  const orientValue = params.get('orient')
+  if (orientValue) {
+    const deg = Number(orientValue)
+    if ([90, 180, 270].includes(deg)) {
+      partial.armOrientation = deg
+      found = true
+    }
+  }
   // Phase 0.8 (C/A4): banner `armId~count~heightFt`; repairConfig validates the part.
   const bannerValue = params.get('banner')
   if (bannerValue) {
@@ -108,13 +168,75 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
       found = true
     }
   }
-  // Phase 0.8 (D): spec options `key:code,key:code`.
+  // Phase 0.10.5: per-slot finish overrides `slot:finishId,...`; repairConfig
+  // validates the finish ids.
+  const finsValue = params.get('fins')
+  if (finsValue) {
+    const finishes: Partial<Record<Slot, string>> = {}
+    for (const pair of finsValue.split(',')) {
+      const [slot, id] = pair.split(':')
+      if (slot && id && isOptionSlot(slot)) finishes[slot] = id
+    }
+    if (Object.keys(finishes).length > 0) {
+      partial.finishes = finishes
+      found = true
+    }
+  }
+  // Phase 0.10.5: accessory placements `code~heightFt~orientation`; repairConfig
+  // clamps values and drops codes not actually selected on the pole.
+  const placeValue = params.get('place')
+  if (placeValue) {
+    const accessoryPlacements: NonNullable<PoleConfig['accessoryPlacements']> = {}
+    for (const entry of placeValue.split(',')) {
+      const [code, ftStr, oStr, sidesStr] = entry.split('~')
+      const heightFt = Number(ftStr)
+      const orientation = Number(oStr)
+      if (code && Number.isFinite(heightFt) && Number.isFinite(orientation)) {
+        const sides = sidesStr !== undefined ? Number(sidesStr) : undefined
+        accessoryPlacements[code] =
+          sides !== undefined && Number.isFinite(sides)
+            ? { heightFt, orientation, sides }
+            : { heightFt, orientation }
+      }
+    }
+    if (Object.keys(accessoryPlacements).length > 0) {
+      partial.accessoryPlacements = accessoryPlacements
+      found = true
+    }
+  }
+  // Phase 0.10.5: custom RAL colors `slot:rrggbb`; repairConfig validates the hex
+  // and drops entries whose slot finish isn't custom-ral.
+  const ralValue = params.get('ral')
+  if (ralValue) {
+    const finishRal: Partial<Record<Slot, string>> = {}
+    for (const pair of ralValue.split(',')) {
+      const [slot, hex] = pair.split(':')
+      if (slot && hex && isOptionSlot(slot) && /^[0-9a-fA-F]{6}$/.test(hex)) {
+        finishRal[slot] = `#${hex.toLowerCase()}`
+      }
+    }
+    if (Object.keys(finishRal).length > 0) {
+      partial.finishRal = finishRal
+      found = true
+    }
+  }
+  // Phase 0.8 (D), reshaped in 0.10.5: spec options `slot.key:code,...` with `+`
+  // joining multi-select codes. Legacy pre-0.10.5 pairs have no slot prefix —
+  // they were always fixture options. repairConfig normalizes shapes (string
+  // for ordering columns, string[] for options & accessories).
   const optsValue = params.get('opts')
   if (optsValue) {
-    const specOptions: Record<string, string> = {}
+    const specOptions: NonNullable<PoleConfig['specOptions']> = {}
     for (const pair of optsValue.split(',')) {
       const [k, v] = pair.split(':')
-      if (k && v) specOptions[k] = v
+      if (!k || !v) continue
+      const dot = k.indexOf('.')
+      const slot = dot > 0 ? k.slice(0, dot) : 'fixture'
+      const key = dot > 0 ? k.slice(dot + 1) : k
+      if (!key || !isOptionSlot(slot)) continue
+      const codes = v.split('+').filter(Boolean)
+      if (codes.length === 0) continue
+      ;(specOptions[slot] ??= {})[key] = codes.length > 1 ? codes : codes[0]
     }
     if (Object.keys(specOptions).length > 0) {
       partial.specOptions = specOptions

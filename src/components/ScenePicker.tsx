@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import type { ChangeEvent } from 'react'
 import { useConfigurator } from '../store'
 import type { Scene } from '../lib/url'
 
@@ -10,7 +12,7 @@ import type { Scene } from '../lib/url'
 export const SCENE_META: { id: Scene; label: string }[] = [
   { id: 'park', label: 'Park' },
   { id: 'street', label: 'Street side' },
-  { id: 'courtyard', label: 'Courtyard' },
+  { id: 'parking', label: 'Parking lot' },
   { id: 'blank', label: 'Blank' },
 ]
 
@@ -34,6 +36,16 @@ export function sceneBackdrop(scene: Scene): string {
 export function ScenePicker() {
   const scene = useConfigurator((s) => s.scene)
   const setScene = useConfigurator((s) => s.setScene)
+  const customSceneUrl = useConfigurator((s) => s.customSceneUrl)
+  const setCustomScene = useConfigurator((s) => s.setCustomScene)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const onCustomFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setCustomScene(URL.createObjectURL(file))
+    e.target.value = ''
+  }
 
   return (
     <div className="scene-picker" role="group" aria-label="Viewer backdrop scene">
@@ -52,6 +64,36 @@ export function ScenePicker() {
           </button>
         )
       })}
+      {/* Phase 0.10.5: user-supplied backdrop. Session-only (never in share URLs);
+          clicking with a photo already loaded re-activates it, and the 📷
+          affordance re-opens the picker to swap photos. */}
+      <button
+        type="button"
+        className={`scale-toggle scene-chip${scene === 'custom' ? ' active' : ''}`}
+        aria-pressed={scene === 'custom'}
+        onClick={() => (customSceneUrl ? setScene('custom') : fileRef.current?.click())}
+        title="Backdrop: your own photo (stays on this device — not part of share links)"
+      >
+        {customSceneUrl ? 'Custom' : 'Custom…'}
+      </button>
+      {customSceneUrl && (
+        <button
+          type="button"
+          className="scale-toggle scene-chip"
+          onClick={() => fileRef.current?.click()}
+          title="Swap the custom backdrop photo"
+          aria-label="Swap the custom backdrop photo"
+        >
+          📷
+        </button>
+      )}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={onCustomFile}
+      />
     </div>
   )
 }

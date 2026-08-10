@@ -56,6 +56,20 @@ export interface CatalogPart {
    * Absent → single only ([1]).
    */
   arrangements?: number[]
+  /**
+   * Phase 0.10.5: official ordering model code per radial count (arms), e.g.
+   * {1:"SS1",2:"SS2",3:"SS3",4:"SS4"} — the arm's part number for that
+   * configuration. Keys mirror `arrangements`.
+   */
+  modelCodes?: Record<number, string>
+  /**
+   * Phase 0.10.5: the part's ordering-matrix design code (e.g. "RSAA" = Round
+   * Straight Aluminum Anchor Base), when the design is a property of the part
+   * itself rather than a customer choice — e.g. every WiLLstudio decorative
+   * pole is the anchor-base variant. `buildPartNumber` reads this instead of
+   * matching against the parsed `design` column's values (see summary.ts).
+   */
+  designCode?: string
   finishes: string[]
   /** Phrases the describe-your-product parser matches against (lowercase). */
   keywords: string[]
@@ -133,6 +147,13 @@ export function isAssemblyPart(
 export interface FinishDef {
   id: string
   name: string
+  /** Spec-sheet order code (BK, DB, WH, NA, LG, SG, DG, DP, GM, BA, BKA, SA, RAL). */
+  code: string
+  /**
+   * Finish-type PN segment this color implies: FP (painted, incl. custom RAL)
+   * or AN (anodized, aluminum only).
+   */
+  typeCode: string
   hex: string
   roughness: number
   metalness: number
@@ -171,6 +192,19 @@ export interface Catalog {
  * `slot: 'banner'`. Custom banner artwork is explicitly deferred — the render
  * carries a plain placeholder panel only.
  */
+/**
+ * Phase 0.10.5: shaft placement for a pole accessory whose label carries the
+ * "Specify Pole Height & Orientation" marker (festoon, couplings, extra hand
+ * holes, flag/plant holders). Height in feet above grade; orientation is one
+ * of the four compass rotations relative to the 0° hand-hole reference.
+ */
+export interface AccessoryPlacement {
+  heightFt: number
+  orientation: number
+  /** Banner-arm kits (BA24/BA30) only: how many radial sides — 1 | 2 (@180) | 4. */
+  sides?: number
+}
+
 export interface BannerConfig {
   armId: string
   /** Number of sides the banner bracket set repeats on (1 | 2 | 4). */
@@ -187,7 +221,27 @@ export interface PoleConfig {
   baseCover: string
   arm: string
   fixture: string
+  /**
+   * Base finish. Kept as the single-finish field the frozen geometry-service
+   * contract and pre-0.10.5 share URLs expect; the UI no longer offers a global
+   * finish step — it acts as the default for any slot without a `finishes`
+   * override (see `finishFor` in lib/compat.ts).
+   */
   finish: string
+  /**
+   * Phase 0.10.5 (concierge steps): per-part finish overrides, keyed by slot.
+   * Absent slot → the part renders in the base `finish`. The describe-box
+   * parser still writes `finish` only, so "in a black finish" colors every
+   * part that hasn't been individually overridden.
+   */
+  finishes?: Partial<Record<Slot, string>>
+  /**
+   * Phase 0.10.5: when a slot's finish is `custom-ral`, the customer's picked
+   * color as a #rrggbb hex, keyed by slot. Feeds the swatch + quote text; the
+   * render itself stays the neutral custom-ral layer until real RAL-tinted
+   * assets exist.
+   */
+  finishRal?: Partial<Record<Slot, string>>
   rev: number
   /**
    * Phase 0.8 (A1): how many arms are mounted radially around the pole top.
@@ -196,12 +250,29 @@ export interface PoleConfig {
    * Optional so pre-0.8 configs and share URLs (which omit it) read as single.
    */
   armCount?: number
+  /**
+   * Phase 0.10.5: rotation of the whole arm arrangement about the pole, in
+   * degrees — 0 | 90 | 180 | 270. Optional so pre-0.10.5 configs read as 0.
+   */
+  armOrientation?: number
   /** Phase 0.8 (C): optional mid-shaft banner-arm accessory; null/absent = none. */
   banner?: BannerConfig | null
   /**
-   * Phase 0.8 (D): selected spec-sheet option codes, keyed by SpecOption.key
-   * (e.g. {"lumen-output":"80","distribution":"5W"}). Drives the ordering-code
-   * summary; values whose SpecOptionValue.buildable !== true route to a quote.
+   * Phase 0.10.5: shaft placements keyed by the selected pole-accessory order
+   * code (FSTR, CPL-P-12, FH, …). Only meaningful while the code is selected
+   * in the pole's options — repairConfig prunes the rest.
    */
-  specOptions?: Record<string, string>
+  accessoryPlacements?: Record<string, AccessoryPlacement>
+  /**
+   * Phase 0.8 (D), reshaped in 0.10.5: selected spec-sheet option codes, keyed by
+   * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":
+   * {"anchor-bolts-base-type-finish-type":"AB"}}) — each part step carries its
+   * own ordering-table choices. Ordering columns are single-choice (string);
+   * options & accessories columns are multi-select (string[]), constrained to
+   * one code per exclusive family — cord/surge/photocontrol (see
+   * EXCLUSIVE_CODE_FAMILIES in lib/compat.ts). Values whose
+   * SpecOptionValue.buildable !== true route to a quote. Legacy flat share
+   * URLs are read as fixture options.
+   */
+  specOptions?: Partial<Record<Slot, Record<string, string | string[]>>>
 }

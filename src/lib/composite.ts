@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, partById } from './compat'
+import { armAzimuths, attachSocket, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel } from './compat'
 
 /** One rendered layer/product image produced by the render rig. */
 export interface RenderAsset {
@@ -85,6 +85,11 @@ export interface CompositeLayout {
   origin: [number, number]
   /** Part ids in the config that have no render asset (→ fallback UI). */
   missing: string[]
+  /**
+   * The view yaw actually applied — the request snapped to the coarsest step
+   * every rotating part renders (overlays like the compass must use this).
+   */
+  appliedViewYaw?: number
   /** Pixel position of the primary fixture's light source (night glow), when known. */
   lightPx?: [number, number]
   /**
@@ -132,6 +137,37 @@ export function resolveRenderAsset(
   return finishes[finishId] ?? Object.values(finishes)[0]
 }
 
+/** Degrees encoded by an angle key ('hero' = 0, 'azN' = N). */
+function angleKeyDeg(key: string): number {
+  return key === HERO_ANGLE ? 0 : Number(key.slice(2)) || 0
+}
+
+/**
+ * The part's available angle key nearest (circularly) to the requested one —
+ * exact when it exists. Covers parts whose render set predates a new angle
+ * (real-design renders lack the 45° compass until re-rendered): a close angle
+ * beats a missing layer.
+ */
+export function nearestAngleKey(
+  manifest: RenderManifest,
+  partId: string,
+  angle: string,
+): string {
+  const angles = manifest.parts[partId]?.angles
+  if (!angles || angles[angle]) return angle
+  const wanted = angleKeyDeg(angle)
+  let best = angle
+  let bestDist = Infinity
+  for (const key of Object.keys(angles)) {
+    const dist = Math.abs((((angleKeyDeg(key) - wanted) % 360) + 540) % 360 - 180)
+    if (dist < bestDist) {
+      bestDist = dist
+      best = key
+    }
+  }
+  return best
+}
+
 /**
  * Compose the current config into positioned image layers. World offsets come
  * from catalog socket data (attachSocket) — the same walk Assembly.tsx did in
@@ -141,11 +177,34 @@ export function resolveAssemblyLayout(
   catalog: Catalog,
   manifest: RenderManifest,
   config: PoleConfig,
+  /**
+   * Phase 0.10.5: assembly view rotation in degrees (45° steps). Rotating the
+   * view by θ shows each radial part at azimuth (a − θ); poles/base covers
+   * are rotationally symmetric so their hero renders serve every view.
+   */
+  viewYaw: number = 0,
 ): CompositeLayout {
   const pole = partById(catalog, config.pole)
   const baseCover = partById(catalog, config.baseCover)
   const arm = partById(catalog, config.arm)
   const fixture = partById(catalog, config.fixture)
+
+  // The assembly rotates as ONE object: snap the requested view yaw to the
+  // coarsest angle step every rotating part can actually render. Per-part
+  // snapping would rotate parts by different amounts and shear the assembly
+  // apart. Parts with only a hero render (real-render poles awaiting their
+  // compass) are treated as rotation-symmetric and don't constrain the step.
+  const rotatingParts = [pole, arm, fixture].filter(
+    (p): p is CatalogPart => !!p,
+  )
+  const supports45 = rotatingParts.every((p) => {
+    const angles = manifest.parts[p.id]?.angles
+    if (!angles) return true
+    const keys = Object.keys(angles)
+    return keys.length <= 1 || 'az45' in angles
+  })
+  const yawStep = supports45 ? 45 : 90
+  viewYaw = ((Math.round(viewYaw / yawStep) * yawStep) % 360 + 360) % 360
 
   // A placement carries a unique layer id, the real part (for missing-render
   // reporting), the render angle key, and the world offset. armCount=1 produces
@@ -161,7 +220,10 @@ export function resolveAssemblyLayout(
   const lightWorlds: [number, number, number][] = []
 
   if (pole) {
-    placements.push({ layerId: pole.id, part: pole, angle: HERO_ANGLE, world: [0, 0, 0], z: SLOT_Z.pole })
+    // The pole rotates with the view too — its hand-hole cover marks the 0°
+    // homing reference (real-render poles without a compass snap to nearest).
+    const poleAngle = angleKeyForAzimuth((((0 - viewYaw) % 360) + 360) % 360)
+    placements.push({ layerId: pole.id, part: pole, angle: poleAngle, world: [0, 0, 0], z: SLOT_Z.pole })
     if (baseCover) {
       const s = attachSocket(baseCover, pole)
       if (s)
@@ -171,17 +233,28 @@ export function resolveAssemblyLayout(
       const armSocket = attachSocket(arm, pole)
       if (armSocket) {
         const count = Math.max(1, Math.floor(config.armCount ?? 1))
-        const azimuths = armAzimuths(count)
+        // Phase 0.10.5: orientation rotates the whole arrangement about the pole
+        // (0/90/180/270) and the view rotation subtracts on top — each arm
+        // just shifts to the matching azimuth render.
+        const orientation = config.armOrientation ?? 0
+        const azimuths = armAzimuths(count).map((a) => (((a + orientation - viewYaw) % 360) + 360) % 360)
         const fixSocket = fixture ? attachSocket(fixture, arm) : undefined
-        azimuths.forEach((deg, i) => {
+        azimuths.forEach((rawDeg, i) => {
           const single = count === 1
-          const angle = angleKeyForAzimuth(deg)
+          // Snap the arm's GEOMETRY to the angle it can actually render:
+          // position math and artwork must rotate together, or a real-render
+          // arm (no 45° compass yet) draws at one angle while its fixture
+          // hangs at another and the assembly visibly disconnects.
+          const angle = nearestAngleKey(manifest, arm.id, angleKeyForAzimuth(rawDeg))
+          const deg = angleKeyDeg(angle)
           // The arm mounts on the pole's vertical axis, so its origin is
           // rotation-invariant; the reach is baked into the per-azimuth render.
           const armWorld: [number, number, number] = [...armSocket.position]
-          // Single-arm keeps the historic fixed z-order; radial arms z-sort by
-          // camera depth so ones reaching behind the pole draw first.
-          const armZ = single ? SLOT_Z.arm : SLOT_Z.pole + armDepthProxy(manifest.rig, deg)
+          // The unrotated single arm keeps the historic fixed z-order; rotated
+          // or radial arms z-sort by camera depth so ones reaching behind the
+          // pole draw first.
+          const armZ =
+            single && deg === 0 ? SLOT_Z.arm : SLOT_Z.pole + armDepthProxy(manifest.rig, deg)
           placements.push({
             layerId: single ? arm.id : `${arm.id}#${i}`,
             part: arm,
@@ -201,7 +274,7 @@ export function resolveAssemblyLayout(
               part: fixture,
               angle,
               world,
-              z: single ? SLOT_Z.fixture : armZ + 0.001,
+              z: single && deg === 0 ? SLOT_Z.fixture : armZ + 0.001,
             })
             // Each radial fixture emits its own night glow (twin/triple/quad
             // all light up, not just the first arm).
@@ -225,7 +298,9 @@ export function resolveAssemblyLayout(
       const bannerPart = partById(catalog, config.banner.armId)
       if (bannerPart) {
         const heightM = config.banner.heightFt * FT_TO_M
-        const sides = armAzimuths(Math.max(1, Math.floor(config.banner.count)))
+        const sides = armAzimuths(Math.max(1, Math.floor(config.banner.count))).map(
+          (a) => (((a - viewYaw) % 360) + 360) % 360,
+        )
         sides.forEach((deg, i) => {
           placements.push({
             layerId: `${bannerPart.id}#${i}`,
@@ -237,12 +312,50 @@ export function resolveAssemblyLayout(
         })
       }
     }
+    // Phase 0.10.5: banner-arm KIT accessories (BA24/BA30) render the brand's
+    // banner part at their configured placement — the ordering code and the
+    // visual are one selection now (the legacy config.banner path above stays
+    // for brands still using the Banner Arm box).
+    const kitCodes = placeableAccessoryCodes(catalog, config).filter((code) =>
+      poleAccessoryLabel(catalog, config, code).includes('Banner Arm Kit'),
+    )
+    if (kitCodes.length > 0) {
+      const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === config.brand)
+      if (bannerPart) {
+        for (const code of kitCodes) {
+          const placement = config.accessoryPlacements?.[code]
+          const heightM = (placement?.heightFt ?? 8) * FT_TO_M
+          const orientation = placement?.orientation ?? 0
+          const azimuths = armAzimuths(Math.max(1, placement?.sides ?? 1)).map(
+            (a) => (((a + orientation - viewYaw) % 360) + 360) % 360,
+          )
+          azimuths.forEach((deg, i) => {
+            placements.push({
+              layerId: `${bannerPart.id}@${code}#${i}`,
+              part: bannerPart,
+              angle: angleKeyForAzimuth(deg),
+              world: [0, heightM, 0],
+              z: SLOT_Z.pole + armDepthProxy(manifest.rig, deg),
+            })
+          })
+        }
+      }
+    }
   }
 
   const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
   for (const { layerId, part, angle, world, z } of placements) {
-    const asset = resolveRenderAsset(manifest, part.id, config.finish, angle)
+    // Phase 0.10.5: each part renders in its own step's finish (base finish when
+    // the slot has no override — see finishFor), at the nearest available
+    // angle (exact for rig-rendered parts; real-render parts may lack the
+    // 45° compass until re-rendered from their design files).
+    const asset = resolveRenderAsset(
+      manifest,
+      part.id,
+      finishFor(config, part.slot),
+      nearestAngleKey(manifest, part.id, angle),
+    )
     if (!asset) {
       missingSet.add(part.id)
       continue
@@ -278,6 +391,7 @@ export function resolveAssemblyLayout(
     height: maxY - minY,
     origin,
     missing,
+    appliedViewYaw: viewYaw,
   }
   if (lightWorlds.length && !missing.length) {
     const lightPxs = lightWorlds.map((w) => pointInLayout(layout, manifest, w))

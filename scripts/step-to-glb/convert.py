@@ -102,13 +102,49 @@ def _normalize(pos_mm: np.ndarray, origin: str) -> np.ndarray:
         # off the mount axis.
         ymin = pos[:,1].min()
         pos = pos - np.array([0.0, ymin, 0.0])
+    elif origin == "mount-center":
+        # Mid-shaft accessory (banner arm): the catalog origin is the shaft mount
+        # point at the part's vertical CENTRE, and — like "mount" — the CAD's
+        # native X/Z already sits on the pole axis, so only Y is re-based.
+        ycenter = (pos[:,1].min() + pos[:,1].max()) / 2
+        pos = pos - np.array([0.0, ycenter, 0.0])
     return pos
 
+def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndarray:
+    """Rotate raw CAD vertices about X then Z (degrees) BEFORE re-basing.
+
+    Most of the WiLLstudio files are modelled Y-up, but a few (the bollard) are
+    modelled lying along a horizontal axis.  Standing the part up has to happen
+    before the origin is re-based, or the "floor Y" step floors the wrong axis.
+    """
+    out = verts_mm
+    if rotate_x:
+        t = np.radians(rotate_x)
+        y, z = out[:, 1].copy(), out[:, 2].copy()
+        out = out.copy()
+        out[:, 1] = y * np.cos(t) - z * np.sin(t)
+        out[:, 2] = y * np.sin(t) + z * np.cos(t)
+    if rotate_z:
+        t = np.radians(rotate_z)
+        x, y = out[:, 0].copy(), out[:, 1].copy()
+        out = out.copy()
+        out[:, 0] = x * np.cos(t) - y * np.sin(t)
+        out[:, 1] = x * np.sin(t) + y * np.cos(t)
+    return out
+
+
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
-                       tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0)) -> dict:
+                       tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
+                       rotate_x: float = 0.0, rotate_z: float = 0.0,
+                       scale_y: float = 1.0) -> dict:
     shape = load_step_shape(step_path)
     verts_mm, tris = tessellate_shape(shape, tol_mm)
+    verts_mm = _stand_up(verts_mm, rotate_x, rotate_z)
     pos = _normalize(verts_mm, origin).astype(np.float32)
+    # Phase 0.10.5 (D10): axial scale for derived pole heights. Applied after
+    # re-basing so the pole's base stays on the floor and only its length grows.
+    if scale_y != 1.0:
+        pos[:, 1] *= scale_y
     write_glb(out_glb, [{
         "positions": pos, "indices": tris.reshape(-1),
         "material_name": "will-body", "base_color": base_color,
@@ -165,7 +201,8 @@ def _read_labeled_solids(step_path: str):
     return results
 
 def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
-                        tol_mm: float = 1.0) -> dict:
+                        tol_mm: float = 1.0, rotate_x: float = 0.0,
+                        rotate_z: float = 0.0) -> dict:
     labeled = _read_labeled_solids(step_path)
     # group solids by rounded color
     groups: dict[tuple, list] = {}
@@ -180,6 +217,7 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
     for solid, _ in labeled:
         builder.Add(comp, solid)
     all_mm, _ = tessellate_shape(comp, tol_mm)
+    all_mm = _stand_up(all_mm, rotate_x, rotate_z)
     all_m = _normalize(all_mm, origin)
     offset_m = (all_mm * MM_TO_M) - all_m  # constant translation per vertex
     off = offset_m[0] if len(offset_m) else np.zeros(3)
@@ -194,6 +232,7 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
         verts_mm, tris = tessellate_shape(c, tol_mm)
         if len(tris) == 0:
             continue
+        verts_mm = _stand_up(verts_mm, rotate_x, rotate_z)
         pos = (verts_mm * MM_TO_M - off).astype(np.float32)
         alu = is_aluminum(key)
         if alu:

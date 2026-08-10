@@ -3,7 +3,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import type { SceneMode } from '../store'
 import { useConfigurator } from '../store'
-import { resolveAssemblyLayout, pointInLayout } from '../lib/composite'
+import { resolveAssemblyLayout, pointInLayout, rotateY } from '../lib/composite'
 import { clampPan } from '../lib/viewerTransform'
 import { useRenderManifest, renderUrl } from '../lib/renders'
 import { compositeToBlob, nightLight } from '../lib/snapshot'
@@ -15,15 +15,24 @@ interface Props {
   catalog: Catalog
   config: PoleConfig
   showScale: boolean
+  showCompass: boolean
   mode: SceneMode
   scene: Scene
 }
 
-// Fit is the floor: zoom only magnifies from the grounded fitted view. Zooming
-// out below fit just shrinks the product low in an empty frame — no purpose —
-// and (with pan) is how the old viewer got "stuck" off-centre.
-const MIN_ZOOM = 1
-const MAX_ZOOM = 4
+/** Ground compass ring radius (meters) and label inset, world units. */
+const COMPASS_R_M = 1.5
+const COMPASS_LABEL_R_M = 1.85
+
+// Phase 0.10.5: zoom doubles as the product's SCALE within the backdrop photo
+// (the backdrop never scales) — 0.2× places a pole far down a lot, 10× is
+// close detail. clampPan keeps the product on screen; Reset restores the
+// grounded, centred, true-scale view.
+const MIN_ZOOM = 0.2
+const MAX_ZOOM = 10
+
+/** Bundled scene photos share this crop (see public/scenes/SOURCES.md). */
+const SCENE_IMG = { w: 1600, h: 1000 }
 /** Exponential step per wheel tick / button click, so zoom feels linear-ish at any level. */
 const WHEEL_SENSITIVITY = 0.0015
 const BUTTON_ZOOM_STEP = 1.25
@@ -69,19 +78,36 @@ function clampZoom(z: number): number {
  * the manifest is unavailable or any part in the current config has no
  * render asset.
  */
-export function CompositeViewer({ catalog, config, showScale, mode, scene }: Props) {
+export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
+  const viewYaw = useConfigurator((s) => s.viewYaw)
+  const setViewYaw = useConfigurator((s) => s.setViewYaw)
+  const customSceneUrl = useConfigurator((s) => s.customSceneUrl)
   const manifest = useRenderManifest()
   const night = mode === 'night'
 
   const layout = useMemo(
-    () => (manifest ? resolveAssemblyLayout(catalog, manifest, config) : null),
-    [catalog, manifest, config],
+    () => (manifest ? resolveAssemblyLayout(catalog, manifest, config, viewYaw) : null),
+    [catalog, manifest, config, viewYaw],
   )
 
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [fitScale, setFitScale] = useState(1)
   const [viewport, setViewport] = useState({ w: 0, h: 0 })
+
+  // Phase 0.10.5: backdrops keep their aspect (object-fit: cover, bottom-anchored),
+  // so the photo's ground line lands at a viewport-shape-dependent height —
+  // compute where, and pin the product's foot there. Blank/custom scenes keep
+  // the classic fraction.
+  const horizonFrac = useMemo(() => {
+    if (scene === 'blank' || scene === 'custom' || viewport.w <= 0 || viewport.h <= 0) {
+      return HORIZON_FRAC
+    }
+    const cover = Math.max(viewport.w / SCENE_IMG.w, viewport.h / SCENE_IMG.h)
+    return (viewport.h - SCENE_IMG.h * (1 - HORIZON_FRAC) * cover) / viewport.h
+  }, [scene, viewport])
+  const horizonFracRef = useRef(horizonFrac)
+  horizonFracRef.current = horizonFrac
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
@@ -125,10 +151,10 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
       const halfExtent = Math.max(ox, box.width - ox) // widest side from the foot
       const upExtent = oy // pixels above the ground line
       const downExtent = box.height - oy // pixels below the ground line
+      const hf = horizonFracRef.current
       const sW = halfExtent > 0 ? ((W / 2) * FIT_WIDTH_FRAC) / halfExtent : Infinity
-      const sUp = upExtent > 0 ? (H * HORIZON_FRAC * FIT_UP_FRAC) / upExtent : Infinity
-      const sDown =
-        downExtent > 1 ? (H * (1 - HORIZON_FRAC) * FIT_DOWN_FRAC) / downExtent : Infinity
+      const sUp = upExtent > 0 ? (H * hf * FIT_UP_FRAC) / upExtent : Infinity
+      const sDown = downExtent > 1 ? (H * (1 - hf) * FIT_DOWN_FRAC) / downExtent : Infinity
       const scale = Math.min(sW, sUp, sDown)
       setFitScale(scale > 0 && Number.isFinite(scale) ? scale : 1)
     }
@@ -136,7 +162,7 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
     const ro = new ResizeObserver(compute)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [layout?.width, layout?.height])
+  }, [layout?.width, layout?.height, horizonFrac])
 
   // Native (non-passive) wheel listener so preventDefault reliably stops page
   // scroll — React's synthetic onWheel can be attached passive by the browser.
@@ -160,7 +186,10 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   }, [layout, manifest, night, showScale, registerSnapshot])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (zoom <= 1) return
+    // Presses on the viewer's own controls (rotate/zoom/reset) must stay
+    // clicks — capturing the pointer here would retarget their events to the
+    // wrapper and swallow them.
+    if ((e.target as HTMLElement).closest('button')) return
     e.currentTarget.setPointerCapture(e.pointerId)
     dragRef.current = {
       startX: e.clientX,
@@ -185,7 +214,11 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   const resetView = () => {
     setZoom(1)
     setPan({ x: 0, y: 0 })
+    setViewYaw(0)
   }
+  // Phase 0.10.5: spin the assembly in 45° steps (the per-azimuth render compass).
+  const rotateLeft = () => setViewYaw(viewYaw - 45)
+  const rotateRight = () => setViewYaw(viewYaw + 45)
 
   if (manifest === undefined) {
     return <div className="composite-loading">Loading render…</div>
@@ -201,6 +234,8 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   }
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
+  // The yaw the layout actually drew (snapped to the assembly's shared step).
+  const appliedYaw = layout.appliedViewYaw ?? viewYaw
   const shadowWidthPx = GROUND_SHADOW_M[0] * pxPerMeterY
   const shadowHeightPx = GROUND_SHADOW_M[1] * pxPerMeterY
 
@@ -240,10 +275,10 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
   // back to grounded/centred at fit (zoom <= 1) — the view can never get stuck
   // off-screen no matter how zoom/pan/reset are combined. Derived every render
   // (raw `pan` state stays untouched) and cached for the next drag's base.
-  const effPan = clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac: HORIZON_FRAC })
+  const effPan = clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac })
   effPanRef.current = effPan
   const targetX = viewport.w / 2
-  const targetY = viewport.h * HORIZON_FRAC
+  const targetY = viewport.h * horizonFrac
   const translateX = targetX - s * layout.origin[0] + effPan.x
   const translateY = targetY - s * layout.origin[1] + effPan.y
   const stageTransform = `translate(${translateX}px, ${translateY}px) scale(${s})`
@@ -265,9 +300,13 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
           stays at HORIZON_FRAC for any viewport aspect ratio. The 'blank' scene
           renders no photo — the clean studio background of .composite-viewer
           (a soft gradient, dark at night) shows through instead. */}
-      {scene !== 'blank' && (
-        <img className="composite-backdrop" src={sceneBackdrop(scene)} alt="" draggable={false} />
-      )}
+      {scene === 'custom'
+        ? customSceneUrl && (
+            <img className="composite-backdrop" src={customSceneUrl} alt="" draggable={false} />
+          )
+        : scene !== 'blank' && (
+            <img className="composite-backdrop" src={sceneBackdrop(scene)} alt="" draggable={false} />
+          )}
 
       <div
         className="composite-stage"
@@ -319,6 +358,34 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
           />
         ))}
 
+        {/* Phase 0.10.5: ground compass — a projected ring at the pole base with
+            the four orientation azimuths. 0° tracks the hand-hole homing
+            reference, so it rotates with the assembly spin. Projected through
+            the same rig map as everything else, so it lies on the ground
+            plane in correct perspective. */}
+        {showCompass && (
+          <svg className="composite-compass" style={{ overflow: 'visible' }} aria-hidden="true">
+            <polygon
+              points={Array.from({ length: 48 }, (_, i) => {
+                const p = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], i * 7.5 - appliedYaw))
+                return `${p[0]},${p[1]}`
+              }).join(' ')}
+              className="composite-compass-ring"
+            />
+            {[0, 90, 180, 270].map((a) => {
+              const tickIn = pointInLayout(layout, manifest, rotateY([COMPASS_R_M * 0.88, 0, 0], a - appliedYaw))
+              const tickOut = pointInLayout(layout, manifest, rotateY([COMPASS_R_M, 0, 0], a - appliedYaw))
+              const label = pointInLayout(layout, manifest, rotateY([COMPASS_LABEL_R_M, 0, 0], a - appliedYaw))
+              return (
+                <g key={a} className={a === 0 ? 'composite-compass-zero' : undefined}>
+                  <line x1={tickIn[0]} y1={tickIn[1]} x2={tickOut[0]} y2={tickOut[1]} />
+                  <text x={label[0]} y={label[1]}>{a}°</text>
+                </g>
+              )
+            })}
+          </svg>
+        )}
+
         {showScale && (
           <svg
             className="composite-scale-figure"
@@ -341,6 +408,12 @@ export function CompositeViewer({ catalog, config, showScale, mode, scene }: Pro
       </div>
 
       <div className="composite-zoom">
+        <button type="button" onClick={rotateLeft} title="Rotate view 45° left" aria-label="Rotate view left">
+          ⟲
+        </button>
+        <button type="button" onClick={rotateRight} title="Rotate view 45° right" aria-label="Rotate view right">
+          ⟳
+        </button>
         <button type="button" onClick={zoomOut} title="Zoom out" aria-label="Zoom out">
           −
         </button>

@@ -29,6 +29,8 @@ from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name, config_hash
 
+from .conftest import first_base_cover_for
+
 if TYPE_CHECKING:
     pass
 
@@ -37,12 +39,19 @@ if TYPE_CHECKING:
 # Four representative WiLLstudio configs (vary fixture / arm / pole / finish)
 # ---------------------------------------------------------------------------
 
+# Must stay module-scope (not a fixture): REPRESENTATIVE_CONFIGS feeds
+# @pytest.mark.parametrize below, which needs literal values at collection
+# time, before any fixture (including a `catalog` fixture) can run. This is
+# the one exception to threading `catalog`/`first_base_cover_for` through a
+# fixture — don't "fix" it to match the other files in this suite.
+_CATALOG_FOR_CONFIGS = load_catalog()
+
 REPRESENTATIVE_CONFIGS = [
     PoleConfig(
         configId="p04-integ-config-A",
         brand="WiLLstudio",
         pole="alum-pole-20",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(_CATALOG_FOR_CONFIGS, "alum-pole-20"),
         arm="sh1-shepherds-hook",
         fixture="gvx-pendant",
         finish="matte-black",
@@ -52,7 +61,7 @@ REPRESENTATIVE_CONFIGS = [
         configId="p04-integ-config-B",
         brand="WiLLstudio",
         pole="alum-pole-16",
-        baseCover="bc-round",
+        baseCover=first_base_cover_for(_CATALOG_FOR_CONFIGS, "alum-pole-16"),
         arm="pa1-pendant-arm",
         fixture="gvx-pendant",
         finish="statuary-bronze",
@@ -62,7 +71,7 @@ REPRESENTATIVE_CONFIGS = [
         configId="p04-integ-config-C",
         brand="WiLLstudio",
         pole="alum-pole-14",
-        baseCover="bc-fluted",
+        baseCover=first_base_cover_for(_CATALOG_FOR_CONFIGS, "alum-pole-14"),
         arm="upsweep",
         fixture="mvx-coach",
         finish="forest-green",
@@ -72,7 +81,7 @@ REPRESENTATIVE_CONFIGS = [
         configId="p04-integ-config-D",
         brand="WiLLstudio",
         pole="alum-pole-12",
-        baseCover="bc-round",
+        baseCover=first_base_cover_for(_CATALOG_FOR_CONFIGS, "alum-pole-12"),
         arm="direct-mount",
         fixture="drx-post-top",
         finish="gloss-white",
@@ -307,7 +316,7 @@ class TestP04RfaSlice:
 class TestP04BothFormatsViaAPI:
     """Integration: POST /generate with herocard + rfa returns both files + mock warning."""
 
-    def test_both_formats_returned(self, monkeypatch):
+    def test_both_formats_returned(self, cat, monkeypatch):
         """herocard and rfa both appear in response.files; mock APS warning present."""
         monkeypatch.delenv("APS_CLIENT_ID", raising=False)
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
@@ -323,7 +332,7 @@ class TestP04BothFormatsViaAPI:
                     "configId": "p04-both-formats-test-001",
                     "brand": "WiLLstudio",
                     "pole": "alum-pole-20",
-                    "baseCover": "bc-fluted",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
                     "arm": "sh1-shepherds-hook",
                     "fixture": "gvx-pendant",
                     "finish": "matte-black",
