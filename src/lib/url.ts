@@ -27,7 +27,7 @@ export const SCENES = ['park', 'street', 'parking', 'blank'] as const
  * URL in the store) — it can't ride a share URL, so it's outside SCENES.
  */
 export type Scene = (typeof SCENES)[number] | 'custom'
-export const DEFAULT_SCENE: Scene = 'park'
+export const DEFAULT_SCENE: Scene = 'blank'
 
 function isScene(v: string | null): v is Scene {
   return v != null && (SCENES as readonly string[]).includes(v)
@@ -113,7 +113,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   return params
 }
 
-/** Read the viewer scene from query params; unknown/absent → default (Park). */
+/** Read the viewer scene from query params; unknown/absent → default (Blank). */
 export function paramsToScene(params: URLSearchParams): Scene {
   const value = params.get('scene')
   return isScene(value) ? value : DEFAULT_SCENE

@@ -181,8 +181,8 @@ describe('brand round-trip', () => {
 })
 
 describe('scene <-> URL params', () => {
-  it('default scene (Park) is omitted from params', () => {
-    const params = configToParams(config, 'park')
+  it('default scene (Blank) is omitted from params', () => {
+    const params = configToParams(config, 'blank')
     expect(params.get('scene')).toBeNull()
   })
 
@@ -191,6 +191,7 @@ describe('scene <-> URL params', () => {
   })
 
   it('non-default scene is serialized', () => {
+    expect(configToParams(config, 'park').get('scene')).toBe('park')
     expect(configToParams(config, 'street').get('scene')).toBe('street')
     expect(configToParams(config, 'parking').get('scene')).toBe('parking')
   })
@@ -202,7 +203,7 @@ describe('scene <-> URL params', () => {
 
   it('absent scene param reads back as the default', () => {
     expect(paramsToScene(configToParams(config))).toBe(DEFAULT_SCENE)
-    expect(paramsToScene(new URLSearchParams(''))).toBe('park')
+    expect(paramsToScene(new URLSearchParams(''))).toBe('blank')
   })
 
   it('unknown scene value falls back to the default (not trusted)', () => {

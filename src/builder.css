@@ -132,11 +132,271 @@
 
 /* Brand: no blue anywhere — replace the browser default focus ring. */
 .builder-app .btn:focus-visible,
-.builder-app .scale-toggle:focus-visible,
+.builder-app .viewer-tool:focus-visible,
+.builder-app .viewer-scene-item:focus-visible,
+.builder-app .viewer-callout-label:focus-visible,
+.builder-app .viewer-view-switcher button:focus-visible,
+.builder-app .spec-choice:focus-visible,
 .builder-app .option-card:focus-visible,
 .downloads-sheet-close:focus-visible {
   outline: 2px solid var(--will-dark-yellow);
   outline-offset: 2px;
+}
+
+/* ---- Viewer toolbar: one grouped control bar (replaces the pill row) ---- */
+
+.builder-app .viewer-toolbar {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 2px 14px rgba(66, 65, 61, 0.18);
+}
+
+.builder-app .viewer-tool {
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.builder-app .viewer-tool:hover {
+  background: var(--will-silver);
+}
+
+.builder-app .viewer-tool.active {
+  background: var(--will-yellow);
+  color: var(--will-gray);
+}
+
+.builder-app .viewer-tool-dim {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.builder-app .viewer-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.builder-app .viewer-toolbar-scene {
+  position: relative;
+}
+
+.builder-app .viewer-scene-menu {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(66, 65, 61, 0.22);
+}
+
+.builder-app .viewer-scene-item {
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.builder-app .viewer-scene-item:hover {
+  background: var(--will-silver);
+}
+
+.builder-app .viewer-scene-item.active {
+  background: var(--yellow-soft);
+  font-weight: 600;
+}
+
+.builder-app .viewer-scene-upload {
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  margin-top: 4px;
+  padding-top: 11px;
+  color: var(--text-dim);
+}
+
+/* ---- View carousel: bold headline + ‹ › (replaces rotate/zoom buttons) ---- */
+
+.viewer-view-switcher {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.viewer-view-headline {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--will-gray);
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  min-width: 178px;
+  text-align: center;
+}
+
+.viewer-view-switcher button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--will-gray);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(66, 65, 61, 0.15);
+}
+
+.viewer-view-switcher button:hover {
+  background: var(--will-yellow);
+}
+
+/* Night preview is dark — the headline flips to the light brand silver. */
+.composite-viewer.night .viewer-view-headline {
+  color: var(--will-silver);
+  text-shadow: none;
+}
+
+/* ---- Base configuration: single-select boxes (replace the dropdowns) ---- */
+
+.builder-app .spec-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.builder-app .spec-choice {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 10px;
+  padding: 9px 13px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.builder-app .spec-choice:hover {
+  border-color: var(--text-dim);
+}
+
+.builder-app .spec-choice.selected {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+  font-weight: 600;
+}
+
+/* ---- Tesla-style part callouts (leader line + label, viewport space) ---- */
+
+.viewer-callout {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Left-side callouts hang their whole strip to the LEFT of the anchor:
+   row-reverse puts the dot at the container's right edge, and the -100%
+   shift parks that edge exactly on the anchor point. */
+.viewer-callout.left {
+  flex-direction: row-reverse;
+  transform: translate(-100%, -50%);
+}
+
+.viewer-callout-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--will-gray);
+  flex-shrink: 0;
+}
+
+.viewer-callout-line {
+  width: 46px;
+  height: 1.5px;
+  background: rgba(66, 65, 61, 0.55);
+  flex-shrink: 0;
+}
+
+.viewer-callout-label {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 6px rgba(66, 65, 61, 0.15);
+}
+
+.viewer-callout-label:hover {
+  background: var(--will-yellow);
+}
+
+.viewer-callout-plus {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--will-gray);
+  color: var(--will-yellow);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Callout targets: keep the section heading clear of the rail edge on arrival. */
+.builder-app .step {
+  scroll-margin-top: 8px;
 }
 
 /* ---- Right rail ---- */
@@ -423,16 +683,44 @@
     padding-right: 8px;
   }
 
-  /* The single control row overflows 400px — move it to the top of the
-     viewer as a wrapping strip; zoom cluster + night disclaimer keep the
-     bottom corners to themselves. */
-  .builder-app .viewport-controls {
-    top: 12px;
-    bottom: auto;
-    left: 12px;
-    right: 12px;
+  /* With the button cluster gone the viewer's bottom edge is free again —
+     compact toolbar bottom-center; headline switcher keeps the top-left. */
+  .builder-app .viewer-toolbar {
+    bottom: 12px;
+    max-width: calc(100% - 24px);
     flex-wrap: wrap;
     justify-content: center;
+    border-radius: 22px;
+  }
+
+  .builder-app .night-disclaimer {
+    bottom: 64px;
+  }
+
+  .viewer-view-switcher {
+    top: 12px;
+    left: 12px;
+    gap: 6px;
+  }
+
+  .viewer-view-headline {
+    font-size: 17px;
+    min-width: 126px;
+  }
+
+  .viewer-view-switcher button {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Sticky 48vh viewer sits over the scrolling rail — callout jumps must
+     land sections below it. */
+  .builder-app .step {
+    scroll-margin-top: calc(48vh + 8px);
+  }
+
+  .viewer-callout-line {
+    width: 26px;
   }
 
   .builder-rail {

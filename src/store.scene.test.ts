@@ -14,9 +14,9 @@ afterEach(() => {
 })
 
 describe('scene store persistence', () => {
-  it('defaults to Park', () => {
+  it('defaults to Blank', () => {
     expect(useConfigurator.getState().scene).toBe(DEFAULT_SCENE)
-    expect(useConfigurator.getState().scene).toBe('park')
+    expect(useConfigurator.getState().scene).toBe('blank')
   })
 
   it('setScene updates the scene', () => {

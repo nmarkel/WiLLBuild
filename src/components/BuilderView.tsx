@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import type { Catalog, PoleConfig } from '../types'
+import { useCallback, useState } from 'react'
+import type { Catalog, PoleConfig, Slot } from '../types'
 import { useConfigurator } from '../store'
 import { CompositeViewer } from './CompositeViewer'
 import { Panel } from './Panel'
 import { Summary } from './Summary'
-import { ScenePicker } from './ScenePicker'
+import { ViewerToolbar } from './ViewerToolbar'
 import { BuilderHeader } from './BuilderHeader'
 import { BottomBar } from './BottomBar'
 import { DownloadsSheet } from './DownloadsSheet'
@@ -22,17 +22,16 @@ interface Props {
  * Serves every builder brand (WiLLstudio / NAFCO / WiLLsport).
  */
 export function BuilderView({ catalog, config }: Props) {
-  const {
-    showScale,
-    showCompass,
-    mode,
-    scene,
-    brand,
-    toggleScale,
-    toggleCompass,
-    toggleMode,
-  } = useConfigurator()
+  const { showScale, showCompass, mode, scene, brand } = useConfigurator()
   const [downloadsOpen, setDownloadsOpen] = useState(false)
+
+  // Callout click → scroll that step's rail section into view (scroll-margin
+  // in builder.css keeps it clear of the sticky viewer on mobile).
+  const scrollToStep = useCallback((slot: Slot) => {
+    document
+      .getElementById(`builder-step-${slot}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   return (
     <div className="builder-app">
@@ -46,32 +45,14 @@ export function BuilderView({ catalog, config }: Props) {
             showCompass={showCompass}
             mode={mode}
             scene={scene}
+            onSlotClick={scrollToStep}
           />
           {mode === 'night' && (
             <div className="night-disclaimer">
               Conceptual night preview — not a photometric simulation
             </div>
           )}
-          <div className="viewport-controls">
-            {mode === 'day' && <ScenePicker />}
-            <button
-              className="scale-toggle"
-              onClick={toggleMode}
-              title="Conceptual preview — not a photometric simulation"
-            >
-              {mode === 'day' ? '☾ Night view' : '☀ Day view'}
-            </button>
-            <button className="scale-toggle" onClick={toggleScale}>
-              {showScale ? 'Hide' : 'Show'} human scale
-            </button>
-            <button
-              className="scale-toggle"
-              onClick={toggleCompass}
-              title="Ground compass at the pole base — 0° marks the hand-hole reference"
-            >
-              {showCompass ? 'Hide' : 'Show'} compass
-            </button>
-          </div>
+          <ViewerToolbar />
         </main>
         <BottomBar
           catalog={catalog}

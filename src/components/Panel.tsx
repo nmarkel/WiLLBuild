@@ -88,7 +88,7 @@ export function Panel({ catalog, config }: Props) {
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
 
         return (
-          <section key={step.key} className="step">
+          <section key={step.key} id={`builder-step-${step.key}`} className="step">
             <div className="step-heading">
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
@@ -256,22 +256,41 @@ function StepSpecOptions({
             </span>
           </button>
           {showBase &&
-            baseOpts.map((opt) => (
-              <label className="spec-option" key={opt.key}>
-                <span className="spec-option-label">{optionLabel(opt)}</span>
-                <select
-                  value={specCodes(chosen[opt.key])[0] ?? ''}
-                  onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
-                >
-                  <option value="">Standard / not specified</option>
-                  {opt.values.map((v) => (
-                    <option key={v.code} value={v.code}>
-                      {v.code} — {v.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
+            baseOpts.map((opt) => {
+              // Phase 0.10.5_TO: single-select boxes instead of dropdowns —
+              // every value visible and one tap to pick. "Standard" = the
+              // sheet's unspecified default (clears the column).
+              const current = specCodes(chosen[opt.key])[0] ?? ''
+              return (
+                <div className="spec-option" key={opt.key}>
+                  <span className="spec-option-label">{optionLabel(opt)}</span>
+                  <div className="spec-choices" role="radiogroup" aria-label={optionLabel(opt)}>
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={current === ''}
+                      className={`spec-choice${current === '' ? ' selected' : ''}`}
+                      onClick={() => setSpecOption(slot, opt.key, '')}
+                    >
+                      Standard
+                    </button>
+                    {opt.values.map((v) => (
+                      <button
+                        key={v.code}
+                        type="button"
+                        role="radio"
+                        aria-checked={current === v.code}
+                        className={`spec-choice${current === v.code ? ' selected' : ''}`}
+                        onClick={() => setSpecOption(slot, opt.key, v.code)}
+                        title={`${v.code} — ${v.label}`}
+                      >
+                        {v.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
         </div>
       )}
       {extraOpts.length > 0 && (
