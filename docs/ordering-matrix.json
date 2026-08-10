@@ -329,22 +329,6 @@
         "pm1-pendant-arm"
       ],
       "fitFrom": "hostPoleShaftOd"
-    },
-    "base-cover-aluminum": {
-      "label": "Aluminum Base Cover",
-      "family": "WP",
-      "fit": "poleOd",
-      "fitFrom": "hostPoleShaftOd",
-      "designs": [
-        {
-          "code": "CL2",
-          "label": "Two-piece aluminum base cover"
-        }
-      ],
-      "parts": [
-        "aluminum-light-pole-base-covers"
-      ],
-      "note": "From the base-cover ordering block on the decorative-pole sheet (Ex: WP-CL2-50-BK): Product Family / Design / Pole Fit / Finish Color / Accessories. The curated fluted + round wizard covers are deliberately left without a design code \u2014 their style codes are not on the supplied sheet."
     }
   },
   "unmapped": {
@@ -353,7 +337,8 @@
       "Wall Mount (WM1/WM2) and Pendant Ceiling Mount (PC1-3) \u2014 on the sheet, but no catalog part exists yet",
       "WiLLstudio decorative bullhorn brackets \u2014 a catalog product, not on the supplied arms sheet",
       "All NAFCO and WiLLsport arms/poles/fixtures \u2014 separate brand matrices, not yet supplied",
-      "Curated fluted/round base covers \u2014 style codes not on the supplied sheet"
+      "Curated fluted/round base covers \u2014 style codes not on the supplied sheet",
+      "aluminum-light-pole-base-covers (dropship 'Aluminum Light Pole Base Covers' product) \u2014 this hand-transcribed matrix originally assigned it CL2 ('Two-piece aluminum base cover'), but the machine-parsed 8/4 spec sheet (docs/spec-options.json) and the real-CAD ingest (docs/real-geometry.json) both confirm CL2 = Medium Clamshell = catalog part bc-cl2-medium-clamshell, a DIFFERENT part. The CL2 assignment here was a transcription error and has been removed rather than guessed at; this part's real design code (if it has one) is unconfirmed \u2014 see docs/part-numbers.md."
     ]
   },
   "fitEvidenceNote": "Engineering's released CAD names every WiLLstudio arm with a FLUSH pole fit (SH1-40F, SS1-40F..SS4-40F, AR1-40F..AR4-40F) and the released pole is a 4\" OD straight (RSAA-4040-12), so the arm families resolve their fit from the host pole's shaft OD against the flush-fit table: a 4\" pole gives 40F. The catalog's `tenon-3in` socket type is Phase-0 placeholder vocabulary, not an ordering code; the tenon fit table stays for arms that really are tenon-mounted. See docs/real-geometry.json for the file-level provenance."

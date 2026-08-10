@@ -3130,92 +3130,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -3692,6 +3629,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -3703,7 +3704,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-14",
@@ -3814,92 +3816,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -4376,6 +4315,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -4387,7 +4390,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-16",
@@ -4498,92 +4502,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -5060,6 +5001,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -5071,7 +5076,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-20",
@@ -5182,92 +5188,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -5744,6 +5687,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -5755,7 +5762,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-8",
@@ -5866,92 +5874,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -6428,6 +6373,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -6439,7 +6448,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-10",
@@ -6550,92 +6560,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -7112,6 +7059,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -7123,7 +7134,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-15",
@@ -7234,92 +7246,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -7796,6 +7745,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -7807,7 +7820,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "alum-pole-18",
@@ -7918,92 +7932,29 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "design",
           "label": "Design",
+          "group": "ordering",
           "orderPosition": 1,
           "values": [
             {
-              "buildable": null,
               "code": "RSAA",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Anchor Base Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "8",
-              "label": "8' Poles Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "RSAD",
-              "label": "Round Straight",
+              "label": "Round Straight Aluminum Embedded Light Pole",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
-              "code": "10",
-              "label": "10' Light Pole",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
               "code": "C",
               "label": "Custom",
-              "mapsTo": null,
-              "note": null
-            },
-            {
               "buildable": null,
-              "code": "12",
-              "label": "12'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "14",
-              "label": "14'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "15",
-              "label": "15'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "16",
-              "label": "16'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "18",
-              "label": "18'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "20",
-              "label": "20'",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "C",
-              "label": "Custom",
               "mapsTo": null,
               "note": null
             }
@@ -8480,6 +8431,70 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "length",
+          "label": "Length",
+          "group": "ordering",
+          "orderPosition": 1.5,
+          "values": [
+            {
+              "code": "8",
+              "label": "8'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "10",
+              "label": "10'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "12",
+              "label": "12'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "14",
+              "label": "14'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "15",
+              "label": "15'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "16",
+              "label": "16'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "18",
+              "label": "18'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "20",
+              "label": "20'",
+              "buildable": true,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "optionsMeta": {
@@ -8491,7 +8506,8 @@
           "Column 'anchor-bolts-base-type-finish-type' header repeats token(s) ['type']; adjacent columns were likely merged (9 values). Needs human review.",
           "Duplicate column header 'options' -> keyed as 'options-2'. Layout likely splits this option across sub-columns; needs human review."
         ]
-      }
+      },
+      "designCode": "RSAA"
     },
     {
       "id": "bc-cl1-small-clamshell",

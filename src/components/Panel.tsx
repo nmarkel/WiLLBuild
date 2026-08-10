@@ -60,7 +60,10 @@ function isFinishColumn(opt: SpecOption): boolean {
  * catalog data so the part number still carries their codes.
  */
 // finish-type is derived from the picked color (FP painted / AN anodized).
-const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type'])
+// length is derived from the chosen pole's own heightFt (Phase 1.0/summary.ts
+// buildPartNumber) — a customer-facing "Length" dropdown independent of the
+// pole height they already picked would let the two disagree.
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
   // Single-value columns (fixed segments like AB anchor bolts / SB base type /

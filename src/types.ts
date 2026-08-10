@@ -62,6 +62,14 @@ export interface CatalogPart {
    * configuration. Keys mirror `arrangements`.
    */
   modelCodes?: Record<number, string>
+  /**
+   * Phase 1.0: the part's ordering-matrix design code (e.g. "RSAA" = Round
+   * Straight Aluminum Anchor Base), when the design is a property of the part
+   * itself rather than a customer choice — e.g. every WiLLstudio decorative
+   * pole is the anchor-base variant. `buildPartNumber` reads this instead of
+   * matching against the parsed `design` column's values (see summary.ts).
+   */
+  designCode?: string
   finishes: string[]
   /** Phrases the describe-your-product parser matches against (lowercase). */
   keywords: string[]

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
-import { armAzimuths } from './compat'
+import { armAzimuths, defaultConfig, repairConfig } from './compat'
 import { armArrangementLabel, buildPartNumber, buildSummaryText } from './summary'
 import { paramsToPartialConfig } from './url'
 
@@ -166,13 +166,58 @@ describe('pole part number — fixed and derived segments (Phase 1.0)', () => {
       finishes: { pole: 'slate-gray' },
       specOptions: { pole: { 'pole-diameter': '5050', 'wall-thickness': 'D' } },
     })
-    // product-family(WP) design(_) diameter wall AB SB FP color(SG) mounting(_)
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-_-5050-D-AB-SB-FP-SG-_')
+    // product-family(WP) design(RSAA) length(14, from part.heightFt) diameter
+    // wall AB SB FP color(SG) mounting(_)
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG-_')
   })
 
   it('an anodized color flips the finish type to AN', () => {
     const cfg = config({ finishes: { pole: 'black-anodized' } })
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-_-_-_-AB-SB-AN-BKA-_')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA-_')
+  })
+})
+
+describe('buildPartNumber — pole (8/4 spec sheet target)', () => {
+  // WP-RSAA-16-5050-D-AB-SB-FP-BK-PL
+  //  |    |    |    |  |  |  |  |  |
+  //  |    |    |    |  |  |  |  |  fixture-mounting
+  //  |    |    |    |  |  |  |  finish-color
+  //  |    |    |    |  |  |  finish-type
+  //  |    |    |    |  |  base-type
+  //  |    |    |    |  anchor-bolts
+  //  |    |    |    wall-thickness
+  //  |    |    pole-diameter
+  //  |    length (from part.heightFt)
+  //  design
+  it('fills design and length from the pole itself', () => {
+    const base = repairConfig(catalog, defaultConfig(catalog, 'WiLLstudio'))
+    const config = repairConfig(catalog, {
+      ...base,
+      pole: 'alum-pole-16',
+      finish: 'matte-black',
+      specOptions: {
+        ...base.specOptions,
+        pole: {
+          'pole-diameter': '5050',
+          'wall-thickness': 'D',
+          'fixture-mounting': 'PL',
+        },
+      },
+    })
+    expect(buildPartNumber(catalog, config, 'pole')).toBe(
+      'WP-RSAA-16-5050-D-AB-SB-FP-BK-PL',
+    )
+  })
+
+  it('reflects the height in the length segment', () => {
+    const base = repairConfig(catalog, defaultConfig(catalog, 'WiLLstudio'))
+    for (const [poleId, expectedLength] of [
+      ['alum-pole-12', '12'],
+      ['alum-pole-20', '20'],
+    ] as const) {
+      const config = repairConfig(catalog, { ...base, pole: poleId })
+      expect(buildPartNumber(catalog, config, 'pole')).toContain(`-${expectedLength}-`)
+    }
   })
 })
 

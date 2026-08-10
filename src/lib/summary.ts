@@ -48,6 +48,17 @@ export function buildPartNumber(
     } else if (opt.key === 'finish-type') {
       // Finish type is a function of the picked color: FP painted / AN anodized.
       segments.push(catalog.finishes.find((f) => f.id === finishId)?.typeCode ?? opt.values[0].code)
+    } else if (opt.key === 'design' && part.designCode) {
+      // The pole's design code (RSAA = Round Straight Aluminum Anchor Base) is a
+      // property of the part, not a customer choice. It lives on the catalog part
+      // rather than being matched against opt.values, because the parsed `design`
+      // column mixes design codes with lengths and wall codes — see
+      // docs/part-numbers.md.
+      segments.push(part.designCode)
+    } else if (opt.key === 'length' && part.heightFt) {
+      // Likewise: length is implied by which pole the customer picked, not a
+      // dropdown choice within that pole's own options.
+      segments.push(String(part.heightFt))
     } else if (opt.values.length === 1) {
       segments.push(opt.values[0].code)
     } else if (opt.values.some((v) => v.code === part.family)) {
