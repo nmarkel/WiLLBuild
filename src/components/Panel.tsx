@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
 import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
+import type { FocusTarget } from '../lib/composite'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
 const SIDE_LABELS: Record<number, string> = {
@@ -18,6 +19,7 @@ function ftLabel(ft: number): string {
   return i === 0 ? `${f} ft` : `${f}′ ${i}″`
 }
 import { useConfigurator } from '../store'
+import { displayPartName } from '../lib/display'
 import { BannerPicker } from './BannerPicker'
 
 /** Phase 0.8 (A1): labels for the radial arm-count selector (official layouts: 2@180, 3@90, 4@90). */
@@ -75,35 +77,51 @@ function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
-  const [openStep, setOpenStep] = useState<Slot>('fixture')
   const setFocus = useConfigurator((s) => s.setFocus)
 
   /**
-   * Phase 0.11 (Workstream E): "zoom in on the part being configured." The
-   * open step drives the viewer's focus view, so opening Arm frames the arm.
+   * Phase 0.11 (Workstream E): "zoom in on the part being configured."
    *
-   * The pole maps to 'assembly', not a focus of its own: the pole IS most of
-   * the assembly, so framing it tightly is the whole-product view. That is
-   * also why the spec's focus list is fixture / arm / base and not four.
+   * 0.11 hung this off the accordion's open step. Tyler's 0.10.5_TO rail has no
+   * accordion — every section is open in one scroll — so there is no "opening"
+   * left to hook, and the coupling is re-anchored to the act of PICKING a part:
+   * choose a fixture and the viewer frames the pole top, choose a base cover and
+   * it frames the pole bottom. Same intent, and it needs no extra affordance.
+   *
+   * The pole maps to 'assembly' because the pole IS most of the assembly, so
+   * framing it tightly just is the whole-product view.
+   *
+   * Slot → view, in the carousel's own vocabulary (see ASSEMBLY_VIEWS): the
+   * fixture and arm both live in the Pole Top framing, which is why picking
+   * either lands on the same view rather than a per-slot focus of its own.
    */
-  useEffect(() => {
-    setFocus(openStep === 'pole' ? 'assembly' : openStep)
-  }, [openStep, setFocus])
+  const focusForSlot: Record<Slot, FocusTarget> = {
+    fixture: 'poleTop',
+    arm: 'poleTop',
+    pole: 'assembly',
+    baseCover: 'poleBottom',
+  }
+
+  const selectAndFrame = (slot: Slot, id: string) => {
+    select(slot, id)
+    setFocus(focusForSlot[slot])
+  }
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
 
+  // Phase 0.10.5_TO (Tesla-style): every section always open in one scroll —
+  // no accordion, no "Continue" ceremony. The heavy sub-UI self-collapses
+  // (spec-option groups default closed), so the rail stays digestible.
   return (
     <div className="stepper">
       {steps.map((step, i) => {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
-        const open = openStep === step.key
-        const nextStep = steps[i + 1]
 
         return (
-          <section key={step.key} className={`step ${open ? 'open' : ''}`}>
-            <button className="step-header" onClick={() => setOpenStep(step.key)}>
+          <section key={step.key} id={`builder-step-${step.key}`} className="step">
+            <div className="step-heading">
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">
@@ -113,43 +131,37 @@ export function Panel({ catalog, config }: Props) {
                     style={{ background: config.finishRal?.[step.key] ?? finish.hex }}
                   />
                 )}
-                {part?.name ?? '—'}
+                {part ? displayPartName(part.name) : '—'}
               </span>
-            </button>
-            {open && (
-              <div className="step-body">
-                <p className="step-tagline">{step.tagline}</p>
-                <PartChoice
-                  parts={compatibleParts(catalog, config, step.key)}
-                  selectedId={config[step.key]}
-                  onSelect={(id) => select(step.key, id)}
-                />
-                {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
-                    the chosen pole + arm actually support multiples (catalog rule). */}
-                {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
-                {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
-                {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
-                <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
-                {part && (
-                  <StepSpecOptions catalog={catalog} config={config} slot={step.key} part={part} />
-                )}
-                {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
-                    the Banner Arm box shows only when the pole's sheet has no
-                    banner-kit accessory (BA24/BA30) — those configure banners
-                    through Options & accessories placements instead. */}
-                {step.key === 'pole' &&
-                  !part?.options?.some(
-                    (o) =>
-                      o.group === 'options-accessories' &&
-                      o.values.some((v) => v.label.includes('Banner Arm Kit')),
-                  ) && <BannerPicker catalog={catalog} config={config} />}
-                {nextStep && (
-                  <button className="step-continue" onClick={() => setOpenStep(nextStep.key)}>
-                    Continue to {nextStep.label} →
-                  </button>
-                )}
-              </div>
-            )}
+            </div>
+            <div className="step-body">
+              <p className="step-tagline">{step.tagline}</p>
+              {/* Picking a part also frames it in the viewer — see selectAndFrame. */}
+              <PartChoice
+                parts={compatibleParts(catalog, config, step.key)}
+                selectedId={config[step.key]}
+                onSelect={(id) => selectAndFrame(step.key, id)}
+              />
+              {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
+                  the chosen pole + arm actually support multiples (catalog rule). */}
+              {step.key === 'arm' && <ArmCountSelector catalog={catalog} config={config} onSelect={setArmCount} />}
+              {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
+              {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
+              <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
+              {part && (
+                <StepSpecOptions catalog={catalog} config={config} slot={step.key} part={part} />
+              )}
+              {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
+                  the Banner Arm box shows only when the pole's sheet has no
+                  banner-kit accessory (BA24/BA30) — those configure banners
+                  through Options & accessories placements instead. */}
+              {step.key === 'pole' &&
+                !part?.options?.some(
+                  (o) =>
+                    o.group === 'options-accessories' &&
+                    o.values.some((v) => v.label.includes('Banner Arm Kit')),
+                ) && <BannerPicker catalog={catalog} config={config} />}
+            </div>
           </section>
         )
       })}
@@ -294,33 +306,43 @@ function StepSpecOptions({
             onClick={() => setShowBase((v) => !v)}
             aria-expanded={showBase}
           >
-            <span className="step-group-title">Base configuration</span>
+            <span className="step-group-title">Configure Product Spec (Optional)</span>
             <span className="extras-meta">
-              {baseCount > 0 ? (
-                <span className="extras-count">{baseCount} set</span>
-              ) : (
-                <span className="extras-optional">standard</span>
-              )}
+              {baseCount > 0 && <span className="extras-count">{baseCount} set</span>}
               <span className="extras-arrow">{showBase ? '▾' : '▸'}</span>
             </span>
           </button>
           {showBase &&
-            baseOpts.map((opt) => (
-              <label className="spec-option" key={opt.key}>
-                <span className="spec-option-label">{optionLabel(opt)}</span>
-                <select
-                  value={specCodes(chosen[opt.key])[0] ?? ''}
-                  onChange={(e) => setSpecOption(slot, opt.key, e.target.value)}
-                >
-                  <option value="">Standard / not specified</option>
-                  {opt.values.map((v) => (
-                    <option key={v.code} value={v.code}>
-                      {v.code} — {v.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
+            baseOpts.map((opt) => {
+              // Phase 0.10.5_TO: single-select boxes instead of dropdowns —
+              // every value visible, one tap to pick. Nothing is selected by
+              // default (the whole spec is optional; picking values just
+              // derives more of the part number); tapping the selected value
+              // again clears it back to unspecified.
+              const current = specCodes(chosen[opt.key])[0] ?? ''
+              return (
+                <div className="spec-option" key={opt.key}>
+                  <span className="spec-option-label">{optionLabel(opt)}</span>
+                  <div className="spec-choices" role="radiogroup" aria-label={optionLabel(opt)}>
+                    {opt.values.map((v) => (
+                      <button
+                        key={v.code}
+                        type="button"
+                        role="radio"
+                        aria-checked={current === v.code}
+                        className={`spec-choice${current === v.code ? ' selected' : ''}`}
+                        onClick={() =>
+                          setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
+                        }
+                        title={`${v.code} — ${v.label}`}
+                      >
+                        {v.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
         </div>
       )}
       {/* Gate on the groups that actually have something to show: a column
@@ -334,13 +356,9 @@ function StepSpecOptions({
             onClick={() => setShowExtras((v) => !v)}
             aria-expanded={showExtras}
           >
-            <span className="step-group-title">Options &amp; accessories</span>
+            <span className="step-group-title">Add Options &amp; Accessories</span>
             <span className="extras-meta">
-              {extrasCount > 0 ? (
-                <span className="extras-count">{extrasCount} selected</span>
-              ) : (
-                <span className="extras-optional">optional</span>
-              )}
+              {extrasCount > 0 && <span className="extras-count">{extrasCount} selected</span>}
               <span className="extras-arrow">{showExtras ? '▾' : '▸'}</span>
             </span>
           </button>
@@ -482,7 +500,7 @@ function PartChoice({
               p.family.slice(0, 2).toUpperCase()
             )}
           </span>
-          <span className="option-name">{p.name}</span>
+          <span className="option-name">{displayPartName(p.name)}</span>
           <span className="option-family">{partDesignCode(p)}</span>
         </button>
       ))}
@@ -596,7 +614,7 @@ function AccessoryPlacementBox({
         </>
       )}
       <p className="arm-count-label">Orientation</p>
-      <div className="arm-count-options">
+      <div className="arm-count-options orientation-options">
         {ARM_ORIENTATIONS.map((deg) => (
           <button
             key={deg}
@@ -626,7 +644,7 @@ function ArmOrientationSelector({ catalog, config }: { catalog: Catalog; config:
   if (reach < 0.05) return null
   const current = config.armOrientation ?? 0
   return (
-    <div className="arm-count">
+    <div className="arm-count arm-orientation">
       <p className="arm-count-label">Orientation</p>
       <div className="arm-count-options">
         {ARM_ORIENTATIONS.map((deg) => (

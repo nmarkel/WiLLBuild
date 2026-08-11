@@ -219,7 +219,7 @@ describe('assembly view rotation — real assets', () => {
     expect(fixtureFiles.some((f) => f.includes('hero'))).toBe(true)
   })
 
-  it('snaps any requested yaw to one of the two canonical views', () => {
+  it('snaps any requested yaw to one of the canonical views', () => {
     const twin = repairConfig(catalog, {
       ...base,
       fixture: 'mvx-coach',
@@ -228,13 +228,15 @@ describe('assembly view rotation — real assets', () => {
     })
     const applied = (yaw: number) =>
       resolveAssemblyLayout(catalog, manifest, twin, yaw).appliedViewYaw
-    // Retired orbit steps resolve to the nearer canonical view, never to
+    // Retired 45° orbit steps resolve to the nearer canonical view, never to
     // themselves — the manifest no longer carries az45/az135/az225/az315.
+    // 90 IS a canonical view again since the 0.10.5_TO carousel merge, so it
+    // resolves to itself; 45 and 135 still fold onto neighbours.
     expect(applied(0)).toBe(0)
     expect(applied(45)).toBe(0)
-    expect(applied(90)).toBe(180)
+    expect(applied(90)).toBe(90)
+    expect(applied(135)).toBe(90)
     expect(applied(180)).toBe(180)
-    expect(applied(270)).toBe(0)
     expect(applied(360)).toBe(0)
   })
 })

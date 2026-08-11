@@ -28,10 +28,14 @@ export const SCENES = ['park', 'street', 'parking', 'blank'] as const
  */
 export type Scene = (typeof SCENES)[number] | 'custom'
 /**
- * Phase 0.11 (F1): the default backdrop is Blank — the clean studio background,
- * product first. NOTE the behaviour change: a pre-0.11 share URL with no `scene`
- * param used to restore Park and now restores Blank (the "omit the default"
- * rule means the param was never written for the then-default Park).
+ * The default backdrop is Blank — the clean studio background, product first.
+ * Phase 0.11 (F1) and Tyler's 0.10.5_TO viewer pass changed this from Park
+ * independently and identically, which is why the merge conflicted here on
+ * comments alone.
+ *
+ * NOTE the behaviour change: a pre-0.11 share URL with no `scene` param used to
+ * restore Park and now restores Blank (the "omit the default" rule means the
+ * param was never written for the then-default Park).
  */
 export const DEFAULT_SCENE: Scene = 'blank'
 

@@ -285,7 +285,7 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   focus: 'assembly',
   setFocus: (target) => set({ focus: target }),
 
-  showCompass: false,
+  showCompass: true,
   toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
 
   customSceneUrl: null,

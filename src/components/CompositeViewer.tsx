@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
-import type { Catalog, PoleConfig } from '../types'
+import type { Catalog, PoleConfig, Slot } from '../types'
 import type { SceneMode } from '../store'
 import { useConfigurator } from '../store'
 import {
-  availableFocusTargets,
+  availableViews,
+  currentViewIndex,
   focusBox,
   resolveAssemblyLayout,
   pointInLayout,
   rotateY,
-  FOCUS_LABELS,
+  type FocusTarget,
 } from '../lib/composite'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
@@ -26,7 +27,25 @@ interface Props {
   showCompass: boolean
   mode: SceneMode
   scene: Scene
+  /** Tesla-style part callouts: when provided, each slot's layer gets a
+      labeled leader-line hotspot; clicking reports the slot (the builder
+      scrolls its rail section into view). Rendered only at fit zoom. */
+  onSlotClick?: (slot: Slot) => void
 }
+
+/** Callout anchors: which side the label sits on and where along the layer's
+    height the leader attaches (fraction of the layer's own box). Sides
+    alternate so labels never stack; vertical spread comes from the parts
+    themselves (fixture top, arm upper, pole mid, base cover bottom). */
+const CALLOUT_DEFS: { slot: Slot; label: string; side: 'left' | 'right'; anchorFrac: number }[] = [
+  { slot: 'fixture', label: 'Fixture', side: 'right', anchorFrac: 0.45 },
+  { slot: 'arm', label: 'Arm', side: 'left', anchorFrac: 0.5 },
+  { slot: 'pole', label: 'Pole', side: 'right', anchorFrac: 0.55 },
+  { slot: 'baseCover', label: 'Base Cover', side: 'left', anchorFrac: 0.5 },
+]
+
+/** Callouts show only near fit zoom — zoomed in is inspection mode. */
+const CALLOUT_MAX_ZOOM = 1.05
 
 /** Ground compass ring radius (meters) and label inset, world units. */
 const COMPASS_R_M = 1.5
@@ -34,8 +53,18 @@ const COMPASS_LABEL_R_M = 1.85
 
 /** Bundled scene photos share this crop (see public/scenes/SOURCES.md). */
 const SCENE_IMG = { w: 1600, h: 1000 }
-/** Multiplicative step per +/- click. The wheel's per-tick factor is `wheelZoomFactor`. */
-const BUTTON_ZOOM_STEP = 1.25
+/**
+ * Zoom has no on-screen +/- cluster any more: Tyler's 0.10.5_TO viewer pass
+ * replaced it (and the rotate pair) with the view carousel, leaving wheel and
+ * drag as the fine controls. The per-tick factor lives in lib/wheelZoom.ts
+ * (`wheelZoomFactor`), so there is no local sensitivity constant here.
+ *
+ * TRADEOFF, flagged not hidden: dropping the buttons leaves no pointer-free
+ * zoom affordance, so a keyboard-only user can reach the carousel presets (real
+ * buttons) but not intermediate zoom levels. The presets cover the intended
+ * inspection cases, which is why this ships, but it is a real accessibility
+ * regression against 0.10.5 and the buttons are a one-component revert.
+ */
 
 /**
  * Shared horizon line for all three backdrop scenes, as a fraction of the
@@ -74,7 +103,7 @@ const GROUND_SHADOW_M: [number, number] = [2.6, 0.6]
  * the manifest is unavailable or any part in the current config has no
  * render asset.
  */
-export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene }: Props) {
+export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene, onSlotClick }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
   const viewYaw = useConfigurator((s) => s.viewYaw)
   const setViewYaw = useConfigurator((s) => s.setViewYaw)
@@ -137,16 +166,17 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // lands in one React batch clamps each step against that step's own bounds
   // instead of the last rendered zoom's — caching the whole PanClampOpts here
   // silently over-clamped every step after the first.
-  const clampBaseRef = useRef<Omit<PanClampOpts, 'zoom' | 'scale'> & { fitScale: number } | null>(
-    null,
-  )
+  // `clamp: false` on photo scenes, where the product is placed freely.
+  const clampBaseRef = useRef<
+    (Omit<PanClampOpts, 'zoom' | 'scale'> & { fitScale: number; clamp: boolean }) | null
+  >(null)
   /**
    * Where the product actually is on screen right now — the clamped pan a drag
    * or a zoom step continues from, computed live rather than read from a cache.
    */
   const currentEffPan = useCallback((): { x: number; y: number } => {
     const b = clampBaseRef.current
-    if (!b) return panRef.current
+    if (!b || !b.clamp) return panRef.current
     const z = zoomRef.current
     return clampPan(panRef.current, {
       zoom: z,
@@ -168,12 +198,50 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // convention: a finish swap shouldn't reset the view, only a part change.
   const assemblyKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.armCount ?? 1}-${config.banner?.armId ?? ''}:${config.banner?.count ?? ''}:${config.banner?.heightFt ?? ''}`
 
+  /**
+   * The view carousel's presets for THIS config, and where the camera currently
+   * sits in them. Both derived — see `ASSEMBLY_VIEWS` in lib/composite.ts for
+   * why the index is not stored: (viewYaw, focus) already is the view, and a
+   * separate `viewIdx` desyncs the moment a callout or the option rail moves the
+   * camera. `viewIdx` is -1 when the customer has zoomed/panned off-preset.
+   */
+  const views = useMemo(() => (layout ? availableViews(layout) : []), [layout])
+  const viewIdx = currentViewIndex(views, viewYaw, focus)
+
+  /**
+   * New assembly or scene swap → drop any accumulated zoom/pan so the next
+   * framing is derived fresh rather than layered on a stale one.
+   *
+   * Deliberately resets the CAMERA ONLY — not `focus`, not `viewYaw`. Both of
+   * those were reset here at first and it broke the option rail: picking a
+   * fixture calls setFocus('poleTop') and also changes assemblyKey, so this
+   * effect fired straight afterwards and yanked the view back to the full
+   * assembly. The customer saw the headline flick to "Assembly (0°)" instead of
+   * framing the part they just chose.
+   *
+   * Nothing is lost by leaving them alone: the focus effect below re-derives the
+   * framing on the same assemblyKey change, and falls back to 'assembly' by
+   * itself when the new config has no such component.
+   */
   useEffect(() => {
     zoomRef.current = 1
     panRef.current = { x: 0, y: 0 }
     setZoom(1)
     setPan({ x: 0, y: 0 })
-  }, [assemblyKey])
+  }, [assemblyKey, scene])
+
+  /**
+   * Step through the carousel. Falls in at the first preset when the camera is
+   * currently off-preset, so ‹ › always does something predictable rather than
+   * appearing dead after a manual zoom.
+   */
+  const cycleView = (dir: number) => {
+    if (views.length === 0) return
+    const from = viewIdx < 0 ? 0 : viewIdx
+    const next = views[(from + dir + views.length) % views.length]
+    setViewYaw(next.yaw)
+    setFocus(next.focus)
+  }
 
   // Ground-aware fit scale from the wrapper's live size. useLayoutEffect so the
   // first paint already has the right scale instead of flashing at scale 1.
@@ -217,10 +285,28 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
    * than only observed in a browser. A focus whose component isn't in this
    * config (no arm on a post-top) falls back to the whole assembly instead of
    * leaving the viewer pointed at nothing.
+   *
+   * Returning to a full-assembly view re-grounds the product. That is load
+   * bearing now that Tyler's carousel is the only view control: with the +/-
+   * and Reset buttons gone, cycling Pole Bottom → Assembly (0°) would otherwise
+   * leave the camera zoomed 3× into the foot with no way back. It is gated on
+   * the focus actually CHANGING so a manual wheel/drag inside an assembly view
+   * still survives the next unrelated re-render.
    */
+  const prevFocusRef = useRef<FocusTarget | null>(null)
   useEffect(() => {
     if (!layout || viewport.w <= 0 || viewport.h <= 0) return
-    if (focus === 'assembly') return
+    const focusChanged = prevFocusRef.current !== focus
+    prevFocusRef.current = focus
+    if (focus === 'assembly') {
+      if (focusChanged) {
+        zoomRef.current = 1
+        panRef.current = { x: 0, y: 0 }
+        setZoom(1)
+        setPan({ x: 0, y: 0 })
+      }
+      return
+    }
     const target = focusBox(layout, focus)
     if (!target) {
       setFocus('assembly')
@@ -320,19 +406,10 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     setPan((p) => (p.x === eff.x && p.y === eff.y ? p : eff))
   }
 
-  const zoomIn = () => applyZoomFactor(BUTTON_ZOOM_STEP)
-  const zoomOut = () => applyZoomFactor(1 / BUTTON_ZOOM_STEP)
-  const resetView = () => {
-    zoomRef.current = 1
-    panRef.current = { x: 0, y: 0 }
-    setZoom(1)
-    setPan({ x: 0, y: 0 })
-    setViewYaw(0)
-    setFocus('assembly')
-  }
-  // Phase 0.11 (Workstream E): the 45° orbit is retired — the canonical set is
-  // 2 full-assembly views 180° apart, so this is a front/back flip.
-  const flipView = () => setViewYaw(viewYaw === 0 ? 180 : 0)
+  // 0.11's zoomIn/zoomOut/resetView/flipView are all gone: the carousel is the
+  // single view control now (cycleView above), and returning to an assembly
+  // preset performs the re-grounding that Reset used to. `applyZoomFactor` — the
+  // one shared zoom transition — stays, driven by the wheel.
 
   if (manifest === undefined) {
     return <div className="composite-loading">Loading render…</div>
@@ -385,17 +462,44 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // horizon. (Panning is only enabled once zoomed in — a deliberate inspection
   // mode — and is the one case the foot can leave the ground line.)
   const s = fitScale * zoom
-  // Bound the pan so the product always stays substantially in view and snaps
-  // back to grounded/centred at fit (zoom <= 1) — the view can never get stuck
-  // off-screen no matter how zoom/pan/reset are combined. Derived every render
-  // (raw `pan` state stays untouched) and cached for the next drag's base.
-  clampBaseRef.current = { fitScale, box: layout, viewport, horizonFrac }
-  const effPan = clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac })
+  // Blank/studio scene: bound the pan so the product always stays substantially
+  // in view and snaps back to grounded/centred at fit — the view can never get
+  // stuck off-screen no matter how zoom/pan/view are combined. Photo scenes
+  // (Tyler, 0.10.5_TO): FREE placement — the product can be dragged and scaled
+  // anywhere so it sits naturally in the photo, and cycling to a view preset
+  // re-grounds it. Derived every render; raw `pan` state stays untouched.
+  //
+  // `clamp` has to travel with the rest of the clamp base, not just gate this
+  // one expression: the pointer handlers ask `currentEffPan()` where the product
+  // is mid-gesture, and if that kept clamping while the render did not, every
+  // free drag would be silently pulled back inside the studio bounds on the next
+  // pointer event — the free placement would look like it fought the cursor.
+  const freePlace = scene !== 'blank'
+  clampBaseRef.current = { fitScale, box: layout, viewport, horizonFrac, clamp: !freePlace }
+  const effPan = freePlace
+    ? pan
+    : clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac })
   const targetX = viewport.w / 2
   const targetY = viewport.h * horizonFrac
   const translateX = targetX - s * layout.origin[0] + effPan.x
   const translateY = targetY - s * layout.origin[1] + effPan.y
   const stageTransform = `translate(${translateX}px, ${translateY}px) scale(${s})`
+
+  // Tesla-style callouts, in viewport space (outside the scaled stage so the
+  // text never zooms). Anchors project each slot's layer box through the same
+  // translate+scale as the stage, so they track pan/rotate exactly.
+  const callouts =
+    onSlotClick && zoom <= CALLOUT_MAX_ZOOM
+      ? CALLOUT_DEFS.flatMap((d) => {
+          const partId = config[d.slot]
+          if (!partId) return []
+          const layer = layout.layers.find((l) => l.partId === partId)
+          if (!layer) return []
+          const ax = layer.left + layer.asset.width / 2
+          const ay = layer.top + layer.asset.height * d.anchorFrac
+          return [{ ...d, x: translateX + s * ax, y: translateY + s * ay }]
+        })
+      : []
 
   return (
     <div
@@ -521,41 +625,41 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         )}
       </div>
 
-      {/* Phase 0.11 (Workstream E): the Tesla view set. Two full-assembly
-          views live on the flip button below; these are the per-component
-          focus shots. A component the config doesn't have is simply not
-          offered (availableFocusTargets), rather than showing a dead chip. */}
-      <div className="composite-views" role="group" aria-label="Viewpoint">
-        {availableFocusTargets(layout).map((target) => (
+      {callouts.map((c) => (
+        <div key={c.slot} className={`viewer-callout ${c.side}`} style={{ left: c.x, top: c.y }}>
+          <span className="viewer-callout-dot" aria-hidden="true" />
+          <span className="viewer-callout-line" aria-hidden="true" />
           <button
-            key={target}
             type="button"
-            className={`composite-view-chip${focus === target ? ' selected' : ''}`}
-            aria-pressed={focus === target}
-            onClick={() => (target === 'assembly' ? resetView() : setFocus(target))}
+            className="viewer-callout-label"
+            onClick={() => onSlotClick?.(c.slot)}
+            title={`Jump to the ${c.label} options`}
           >
-            {FOCUS_LABELS[target]}
+            {c.label} <span className="viewer-callout-plus">+</span>
           </button>
-        ))}
-      </div>
+        </div>
+      ))}
 
-      <div className="composite-zoom">
-        <button
-          type="button"
-          onClick={flipView}
-          title={appliedYaw === 0 ? 'Show the back view' : 'Show the front view'}
-          aria-label={appliedYaw === 0 ? 'Show the back view' : 'Show the front view'}
-        >
-          {appliedYaw === 0 ? '⟳' : '⟲'}
+      {/* Phase 0.10.5_TO: the view carousel — bold headline names the current
+          framing; ‹ › click through the presets. Replaces the rotate/zoom
+          buttons AND 0.11's separate row of focus chips: both were ways to pick
+          a (yaw, focus) pair, and two controls for one axis is how they got out
+          of step with each other.
+
+          A manual wheel/drag does NOT change the headline: it adjusts the camera
+          within the chosen view, and the view is still the one the customer
+          picked. "Custom view" is the safety net for a focus that no preset
+          covers (the per-slot fixture/arm/baseCover targets, which `focusBox`
+          still supports) — not a zoom indicator. */}
+      <div className="viewer-view-switcher">
+        <button type="button" onClick={() => cycleView(-1)} aria-label="Previous view">
+          ‹
         </button>
-        <button type="button" onClick={zoomOut} title="Zoom out" aria-label="Zoom out">
-          −
-        </button>
-        <button type="button" onClick={resetView} title="Reset view" aria-label="Reset view">
-          ⤢
-        </button>
-        <button type="button" onClick={zoomIn} title="Zoom in" aria-label="Zoom in">
-          +
+        <h2 className="viewer-view-headline" aria-live="polite">
+          {viewIdx >= 0 ? views[viewIdx].label : 'Custom view'}
+        </h2>
+        <button type="button" onClick={() => cycleView(1)} aria-label="Next view">
+          ›
         </button>
       </div>
     </div>

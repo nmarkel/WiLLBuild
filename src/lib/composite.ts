@@ -28,17 +28,23 @@ export interface RenderManifest {
 export const HERO_ANGLE = 'hero'
 
 /**
- * Phase 0.11 (Workstream E) — the canonical VIEW set, decided by Tyler + Nick
- * on 8/10: **2 full-assembly views, 180° apart**. This supersedes 0.10.5's
- * 8-position 45° orbit, which both of them judged "more than you need" — 180°
- * already covers symmetric geometry, and the value is in focused per-component
- * shots (see `focusBox`) rather than more orbit steps.
+ * The canonical full-assembly VIEW yaws.
+ *
+ * Phase 0.11 (Workstream E) cut 0.10.5's 8-position 45° orbit down to 2 views
+ * 180° apart. Merging Tyler's 0.10.5_TO viewer pass restores the 90° view as a
+ * third, per Nick's call on 8/11: his carousel offers Assembly 0°/90°/180°, and
+ * a 90° profile is the one that shows arm reach, which neither 0° nor 180° does
+ * on a single-arm build.
+ *
+ * This costs NO new render assets, which is why it was cheap to accept — see
+ * RENDER_AZIMUTHS below: adding 90 to this set leaves the required azimuth set
+ * unchanged at {0,90,180,270}, because every member is still a multiple of 90.
  *
  * Do not confuse this with the RENDER azimuth set below. This is what the
  * customer can rotate the whole assembly to; that is what each part must be
  * drawn at so a radial cluster composites correctly inside one of these views.
  */
-export const ASSEMBLY_VIEW_YAWS = [0, 180] as const
+export const ASSEMBLY_VIEW_YAWS = [0, 90, 180] as const
 
 /**
  * The azimuths every radial part (arm, fixture, banner) must be rendered at.
@@ -47,7 +53,9 @@ export const ASSEMBLY_VIEW_YAWS = [0, 180] as const
  * arm cluster shows arms pointing four different ways *within a single view*.
  * The requirement is the set of `(armAzimuth + armOrientation − viewYaw) mod
  * 360` over armAzimuths ⊆ {0,90,180,270}, armOrientation ∈ {0,90,180,270} and
- * viewYaw ∈ ASSEMBLY_VIEW_YAWS — which is exactly {0,90,180,270}.
+ * viewYaw ∈ ASSEMBLY_VIEW_YAWS — which is exactly {0,90,180,270}. That holds
+ * for ANY ASSEMBLY_VIEW_YAWS whose members are multiples of 90, which is why
+ * adding the 90° view in 0.11 needed no re-render (asserted in composite.test).
  *
  * 0.10.5's 45° members (az45/az135/az225/az315) are retired: no view and no
  * arrangement can now request them. Keep this in step with `COMPASS` in
@@ -58,11 +66,29 @@ export const RENDER_AZIMUTHS = [0, 90, 180, 270] as const
 /** Every manifest angle key the render set must provide, in canonical order. */
 export const RENDER_ANGLE_KEYS = ['hero', 'az90', 'az180', 'az270'] as const
 
-/** Snap an arbitrary yaw to the nearest canonical full-assembly view. */
+/**
+ * Snap an arbitrary yaw to the nearest canonical full-assembly view.
+ *
+ * Nearest by CIRCULAR distance over ASSEMBLY_VIEW_YAWS, so this stays correct
+ * if the view set changes again rather than hard-coding hemisphere boundaries
+ * (which is what it did while the set was exactly {0,180}). Ties resolve to the
+ * earlier view in canonical order — only reachable for 270°, which no carousel
+ * preset produces; it exists so a hand-edited or stale value can't wedge the
+ * viewer on an azimuth with no view.
+ */
 export function snapAssemblyYaw(deg: number): number {
   const d = ((deg % 360) + 360) % 360
-  // Two views 180° apart: anything in the back hemisphere reads as the back view.
-  return d >= 90 && d < 270 ? 180 : 0
+  let best: number = ASSEMBLY_VIEW_YAWS[0]
+  let bestDist = Infinity
+  for (const yaw of ASSEMBLY_VIEW_YAWS) {
+    const raw = Math.abs(d - yaw)
+    const dist = Math.min(raw, 360 - raw)
+    if (dist < bestDist) {
+      bestDist = dist
+      best = yaw
+    }
+  }
+  return best
 }
 
 /** Manifest angle key for a radial azimuth: 0° reuses the existing hero render. */
@@ -461,7 +487,14 @@ export function resolveAssemblyLayout(
  * A config without that component (a post-top with no arm) simply has no
  * focus for it — `focusBox` returns undefined and the caller omits the view.
  */
-export const FOCUS_TARGETS = ['assembly', 'fixture', 'arm', 'baseCover'] as const
+export const FOCUS_TARGETS = [
+  'assembly',
+  'fixture',
+  'arm',
+  'baseCover',
+  'poleTop',
+  'poleBottom',
+] as const
 export type FocusTarget = (typeof FOCUS_TARGETS)[number]
 
 export const FOCUS_LABELS: Record<FocusTarget, string> = {
@@ -469,6 +502,29 @@ export const FOCUS_LABELS: Record<FocusTarget, string> = {
   fixture: 'Fixture',
   arm: 'Arm',
   baseCover: 'Base',
+  poleTop: 'Pole Top',
+  poleBottom: 'Pole Bottom',
+}
+
+/**
+ * The composite focus regions Tyler's 0.10.5_TO carousel names, expressed as
+ * unions of the single-slot boxes above.
+ *
+ * Tyler framed these with two constants — `zoom: 2.6` and "centre 0.8 m above
+ * the foot". Both are guesses that hold only for the pole heights he had open:
+ * on a 25 ft pole 0.8 m is a fifth of the way up nothing in particular, and a
+ * fixed 2.6× frames a CL1 clamshell and an SC2 spun collar at very different
+ * sizes. Deriving each region from the layer boxes that are actually composited
+ * makes the framing correct at every height, and reuses the padding and
+ * fill-fraction logic the single-slot focuses already had.
+ *
+ * "Pole Top" is the fixture + arm cluster rather than the pole's own upper end:
+ * what a customer inspects up there is the light and how it reaches, and on a
+ * post-top with no arm it correctly degrades to just the fixture.
+ */
+const FOCUS_UNIONS: Record<'poleTop' | 'poleBottom', PartSlot[]> = {
+  poleTop: ['fixture', 'arm'],
+  poleBottom: ['baseCover'],
 }
 
 /**
@@ -494,14 +550,21 @@ const FOCUS_PAD_MIN_PX = 40
  * for the focusable parts — noted in the 0.11 execution response as an open
  * call, not silently assumed.
  *
- * Returns undefined when the layout has no layer for that component.
+ * Returns undefined when the layout has no layer for that component — the
+ * caller then omits that view rather than offering a dead one.
  */
 export function focusBox(layout: CompositeLayout, target: FocusTarget): LayoutBox | undefined {
   if (layout.layers.length === 0) return undefined
   if (target === 'assembly') {
     return { left: 0, top: 0, width: layout.width, height: layout.height }
   }
-  const layers = layout.layers.filter((l) => l.slot === target)
+  // Composite regions (Pole Top / Pole Bottom) union several slots; the rest
+  // are a single slot. Either way the box comes from real composited layers.
+  const slots: PartSlot[] =
+    target in FOCUS_UNIONS
+      ? FOCUS_UNIONS[target as 'poleTop' | 'poleBottom']
+      : [target as PartSlot]
+  const layers = layout.layers.filter((l) => slots.includes(l.slot))
   if (layers.length === 0) return undefined
 
   const left = Math.min(...layers.map((l) => l.left))
@@ -522,4 +585,52 @@ export function focusBox(layout: CompositeLayout, target: FocusTarget): LayoutBo
 /** The focus views available for a layout, in canonical order (absent parts omitted). */
 export function availableFocusTargets(layout: CompositeLayout): FocusTarget[] {
   return FOCUS_TARGETS.filter((t) => focusBox(layout, t) !== undefined)
+}
+
+/**
+ * The viewer's named view presets — Tyler's 0.10.5_TO carousel, as data.
+ *
+ * A view is exactly a (yaw, focus) pair, so the carousel needs no state of its
+ * own: the current preset is derived by matching the store's `viewYaw`/`focus`
+ * against this list. That is deliberate. Tyler's version held a `viewIdx`
+ * alongside them, which is a third copy of the same fact and desynced as soon
+ * as anything else moved the camera — his own `onSlotClick` callouts and 0.11's
+ * "configuring this part frames it" coupling both do exactly that, leaving the
+ * headline naming a view the viewer was no longer showing.
+ *
+ * Kept in this module rather than the component so the coverage and unit tests
+ * assert against the same list the UI renders.
+ */
+export interface AssemblyView {
+  id: string
+  label: string
+  yaw: number
+  focus: FocusTarget
+}
+
+export const ASSEMBLY_VIEWS: readonly AssemblyView[] = [
+  { id: 'front', label: 'Assembly (0°)', yaw: 0, focus: 'assembly' },
+  { id: 'profile', label: 'Assembly (90°)', yaw: 90, focus: 'assembly' },
+  { id: 'back', label: 'Assembly (180°)', yaw: 180, focus: 'assembly' },
+  { id: 'top', label: 'Pole Top', yaw: 0, focus: 'poleTop' },
+  { id: 'bottom', label: 'Pole Bottom', yaw: 0, focus: 'poleBottom' },
+] as const
+
+/**
+ * The presets offered for a layout: a focus view whose component this config
+ * doesn't have is dropped rather than shown as a dead carousel stop (NAFCO has
+ * no base covers, so those builds have no Pole Bottom).
+ */
+export function availableViews(layout: CompositeLayout): AssemblyView[] {
+  return ASSEMBLY_VIEWS.filter((v) => focusBox(layout, v.focus) !== undefined)
+}
+
+/**
+ * Which preset the current camera state corresponds to, or -1 when the customer
+ * has zoomed/panned away from all of them. Matching on (yaw, focus) is what
+ * lets the carousel headline stay truthful without storing an index.
+ */
+export function currentViewIndex(views: readonly AssemblyView[], viewYaw: number, focus: FocusTarget): number {
+  const yaw = snapAssemblyYaw(viewYaw)
+  return views.findIndex((v) => v.focus === focus && (focus !== 'assembly' || v.yaw === yaw))
 }
