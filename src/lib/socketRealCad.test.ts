@@ -314,30 +314,58 @@ describe.skipIf(!assetsPresent)('FR2 crossarm sits on the pole and mounts on its
     expect(Math.max(...sockets.map((s) => s.position[0]))).toBeGreaterThan(0)
   })
 
-  it('puts each socket on the top of a real tenon, not on the end finial', () => {
+  /**
+   * A TENON fixture does not perch on the tenon's top — its base is a SLEEVE
+   * that slides DOWN over the tenon (Nick, 8/11). So the socket, which is where
+   * the fixture's origin (its sleeve's bottom rim) lands, is the tenon's BASE:
+   * the host's top face that the sleeve comes to rest on.
+   *
+   * That holds here because the sleeve is deeper than the tenon is tall —
+   * measured off the CAD, TEX's bore runs y 0..0.121 while FR2's tenon stands
+   * 0.4191 - 0.3175 = 0.1016 m (4.000", a standard tenon) proud of the
+   * crossarm. The tenon therefore never bottoms out inside the sleeve, and the
+   * fixture drops the full 4" until sleeve meets crossarm.
+   *
+   * If a future fixture's sleeve were SHALLOWER than the tenon, the seat would
+   * instead be `tenonTop - boreDepth` and this rule would need the fixture's
+   * bore measured too. Not asserted here because it is not the case for any
+   * shipping combination, and parsing TEX's 21 MB GLB per run to prove a
+   * negative is not worth the suite time.
+   */
+  it('seats each fixture at the tenon BASE — the sleeve slides over the tenon', () => {
     if (!pts.length) return
     for (const socket of Object.values(fr2!.sockets ?? {})) {
       const sx = socket.position[0]
-      // The tenon column above the crossarm body, on this socket's side.
-      const column = pts.filter(
-        (p) => Math.sign(p[0]) === Math.sign(sx) && Math.abs(p[0]) > 0.30 && p[1] > 0.36,
-      )
+      const side = (p: [number, number, number]) =>
+        Math.sign(p[0]) === Math.sign(sx) && Math.abs(p[0]) > 0.30
+      // The tenon column standing above the crossarm body, on this socket's side.
+      const column = pts.filter((p) => side(p) && p[1] > 0.36)
       expect(column.length, `no tenon column found near x=${sx}`).toBeGreaterThan(0)
       const top = Math.max(...column.map((p) => p[1]))
       const cap = column.filter((p) => p[1] >= top - 0.004)
-      const cx =
-        (Math.min(...cap.map((p) => p[0])) + Math.max(...cap.map((p) => p[0]))) / 2
+      const cx = (Math.min(...cap.map((p) => p[0])) + Math.max(...cap.map((p) => p[0]))) / 2
+
+      // The crossarm's top face beside that tenon — where the sleeve rests.
+      const axisDist = (p: [number, number, number]) => Math.hypot(p[0] - cx, p[2])
+      const body = pts.filter((p) => side(p) && axisDist(p) > 0.05 && axisDist(p) < 0.2)
+      expect(body.length, `no crossarm body found beside the tenon at x=${sx}`).toBeGreaterThan(0)
+      const seat = Math.max(...body.map((p) => p[1]))
 
       expect(
         Math.abs(sx - cx),
         `FR2 socket x=${sx} is ${(sx - cx).toFixed(4)} m off its tenon centre ` +
           `${cx.toFixed(4)} — the fixture sits beside the tenon`,
       ).toBeLessThanOrEqual(TOL_M)
+
       expect(
-        Math.abs(socket.position[1] - top),
-        `FR2 socket y=${socket.position[1]} is off the tenon top ${top.toFixed(4)} — a ` +
-          `tenon fixture SITS ON the tenon (cf. direct-mount, whose socket is its own top)`,
+        Math.abs(socket.position[1] - seat),
+        `FR2 socket y=${socket.position[1]} should be the tenon BASE ${seat.toFixed(4)} ` +
+          `(tenon top ${top.toFixed(4)}), because the fixture's sleeve slides over the tenon. ` +
+          `Seating it at the top leaves the TEX standing ${(top - seat).toFixed(4)} m proud.`,
       ).toBeLessThanOrEqual(TOL_M)
+
+      // The tenon this rule assumes: a standard 4" one, fully swallowed.
+      expect(top - seat).toBeCloseTo(0.1016, 2)
     }
   })
 
