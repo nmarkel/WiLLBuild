@@ -5,35 +5,54 @@ import catalogJson from '../../public/catalog.json'
 import type { Catalog, CatalogPart } from '../types'
 
 /**
- * Phase 0.12 — catalog sockets must agree with the real CAD they sit on.
+ * Phase 0.12 — a pendant arm's fixture socket must sit on the arm's real
+ * terminal fitting, measured from the CAD.
  *
- * The bug this exists to catch, reported by Nick on 8/11: the GVX pendant hung
- * "way down low" on the side shepherds hook and sat off to the side on the
- * suspension arm. Both arms render from real CAD, but their catalog sockets
- * were authored earlier — SS1's `y` was 0.42 against a real hook whose tip
- * sits at y 0.584..0.840, so the fixture composited about a quarter of a metre
- * below the arm that is supposed to carry it.
+ * WHY THIS IS A POINT RULE NOW, AND NOT AN ENVELOPE
+ * -------------------------------------------------
+ * The first version of this suite (8/11) asserted only that the socket lay
+ * somewhere inside the vertical span of the arm's *maximum-reach* band, with an
+ * 8 cm pad. It shipped believing that was the best available: "the exact hang
+ * point of a curled hook is a judgement call". That was wrong, and it let both
+ * arms ship still misaligned:
  *
- * Nothing could see it. The coverage gate checks that every layer EXISTS, and
- * every layer did; `resolveAssemblyLayout` places them wherever the socket
- * says. A wrong-but-present socket composites happily. This suite closes that
- * hole for the parts where a ground truth exists.
+ *   SS  socket was 2.7 cm outboard and 2.8 cm low — the pendant hung off the
+ *       OUTER WALL of the hook's descending leg instead of its centreline.
+ *   AR  socket was 13.2 cm outboard — pinned to the END CAP of the horizontal
+ *       bar, when the arm's actual mount is a drop nipple several inches in
+ *       from that end. The envelope rule could never have caught this: it was
+ *       DERIVED from max reach, which is precisely the wrong feature on an arm
+ *       whose mounting point is inboard of its tip.
  *
- * The rule is deliberately loose — an envelope, not a point. The exact hang
- * point of a curled hook is a judgement call (SH1's own shipped socket sits
- * ~3 cm from every candidate rule I tried), so asserting an exact value would
- * encode one guess as truth. What is NOT a judgement call is that the socket
- * must lie on the arm's terminal fitting.
+ * The hang point is not a judgement call. All three pendant arms terminate in
+ * the same standard 2-3/8" downward-open bore (measured: 0.0605/0.0605/0.0599 m
+ * across x and z, 108 vertices each — it is the same fitting part). Once the
+ * fitting is found by the right feature, the rule is exact:
  *
- * SCOPE, stated honestly: with an 8 cm pad this catches GROSS misplacement, not
- * fine offsets. It fails on SS1's real 16 cm error. It would NOT have caught
- * AR1's 4 cm one — that was found by measuring, not by this suite. Tightening
- * the pad far enough to catch 4 cm would start failing arms whose fitting is
- * legitimately inset from the extreme vertex, so the pad stays loose and this
- * is a floor, not a proof of correctness.
+ *     socket = (centre of the fitting's open face, face y + stem insertion)
+ *
+ * It reproduces SH1's shipped socket — the anchor Nick confirms looks right —
+ * to 0.4 mm. A rule that lands within half a millimetre of an independently
+ * authored value on the one part with ground truth is the real rule, not a
+ * curve fit, so it is asserted as a point with a 1 cm tolerance.
+ *
+ * FINDING THE FITTING: the downward-open bore nearest the far end — the lowest
+ * face in the outer half of the reach. NOT the extreme vertex, which is the bar
+ * end cap on AR and the outer wall of the curl on SS. That single change of
+ * feature is the whole fix.
+ *
+ * SELF-CALIBRATING: the stem insertion is derived from SH1 at run time rather
+ * than hardcoded, because SH1 is the designated anchor and the customer-visible
+ * rule is literally "the SS family mounts just like the SH arm". SH1 is also
+ * checked against the rule directly (its socket must BE its fitting centre), so
+ * the calibration cannot quietly drift.
+ *
+ * SCOPE: `pendant` sockets only. FR2 carries an upward `tenon-2-3/8` — a
+ * fixture SITS ON it rather than hanging from it, so a downward-open-bore rule
+ * does not describe it and it is deliberately excluded rather than fudged.
  *
  * SKIPS when the GLBs are absent: they are gitignored real-CAD inputs, so a
- * fresh clone or CI has none. That is the same shape as
+ * fresh clone or CI has none. Same shape as
  * `geometry-service/tests/test_realgeom.py`'s `needs_cad` marker.
  */
 
@@ -41,28 +60,56 @@ const catalog = catalogJson as unknown as Catalog
 const GLB_DIR = resolve(__dirname, '../../scripts/render-rig/real-assets/glb')
 const REAL_PARTS = resolve(__dirname, '../../scripts/render-rig/real-parts.json')
 
-interface Tip {
-  /** Vertical span of the arm AT its far end — where a fixture can actually mount. */
-  yMin: number
-  yMax: number
-  /** Maximum horizontal reach. */
-  reach: number
-}
+/** Tolerance on the socket point. Catches SS's 3.9 cm and AR's 14.1 cm errors
+ *  with wide margin, while absorbing decimation noise and the catalog's 3-dp
+ *  rounding (the rule itself lands within 0.4 mm on the anchor). */
+const TOL_M = 0.01
+/** The standard 2-3/8" pendant bore every one of these arms terminates in. */
+const BORE_DIA_M = 0.0602
+const BORE_TOL_M = 0.006
 
 const COMP_SIZE: Record<number, number> = { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 }
 
+type Mat4 = number[]
+
+const IDENTITY: Mat4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+
+/** Column-major 4x4 multiply (glTF's convention). */
+function mul(a: Mat4, b: Mat4): Mat4 {
+  const r = new Array(16).fill(0)
+  for (let c = 0; c < 4; c++)
+    for (let row = 0; row < 4; row++)
+      r[c * 4 + row] = a[row] * b[c * 4] + a[4 + row] * b[c * 4 + 1] + a[8 + row] * b[c * 4 + 2] + a[12 + row] * b[c * 4 + 3]
+  return r
+}
+
 /**
- * Real POSITION vertices, not accessor bounds.
+ * A node's local transform.
  *
- * Bounds alone cannot express "at the tip": a shepherds hook's overall box
- * spans the whole vertical post, so a socket a quarter-metre BELOW the hook
- * still sits inside it. That is exactly why the SS1 defect survived every
- * existing check, and why the first version of this suite passed on the buggy
- * values too.
+ * The previous parser read `translation` and `scale` only. These particular
+ * GLBs happen to carry neither rotation nor nesting, so it got the right answer
+ * — by luck. A re-ingest that bakes a Y-up correction into a node rotation
+ * would have silently moved every measurement, so the full TRS/hierarchy is
+ * composed here instead of relying on that.
  */
-function armTip(path: string, rotateY: number): Tip | null {
+function localMatrix(node: any): Mat4 {
+  if (node.matrix) return node.matrix as Mat4
+  const [tx, ty, tz] = node.translation ?? [0, 0, 0]
+  const [qx, qy, qz, qw] = node.rotation ?? [0, 0, 0, 1]
+  const [sx, sy, sz] = node.scale ?? [1, 1, 1]
+  const m: Mat4 = [
+    (1 - 2 * (qy * qy + qz * qz)) * sx, (2 * (qx * qy + qz * qw)) * sx, (2 * (qx * qz - qy * qw)) * sx, 0,
+    (2 * (qx * qy - qz * qw)) * sy, (1 - 2 * (qx * qx + qz * qz)) * sy, (2 * (qy * qz + qx * qw)) * sy, 0,
+    (2 * (qx * qz + qy * qw)) * sz, (2 * (qy * qz - qx * qw)) * sz, (1 - 2 * (qx * qx + qy * qy)) * sz, 0,
+    tx, ty, tz, 1,
+  ]
+  return m
+}
+
+/** World-space POSITION vertices of a GLB, with the rig's rotateY applied. */
+function glbPoints(path: string, rotateY: number): [number, number, number][] {
   const buf = readFileSync(path)
-  if (buf.readUInt32LE(0) !== 0x46546c67) return null
+  if (buf.readUInt32LE(0) !== 0x46546c67) return []
   const total = buf.readUInt32LE(8)
   let off = 12
   let gltf: any = null
@@ -75,42 +122,79 @@ function armTip(path: string, rotateY: number): Tip | null {
     else if (type === 0x004e4942) bin = chunk
     off += 8 + len + (len % 4 ? 4 - (len % 4) : 0)
   }
-  if (!gltf || !bin) return null
+  if (!gltf || !bin) return []
 
   const rad = (rotateY * Math.PI) / 180
   const cos = Math.cos(rad)
   const sin = Math.sin(rad)
-  const pts: [number, number][] = []
+  const out: [number, number, number][] = []
 
-  for (const node of gltf.nodes ?? []) {
-    if (node.mesh === undefined) continue
-    const t = node.translation ?? [0, 0, 0]
-    const sc = node.scale ?? [1, 1, 1]
-    for (const prim of gltf.meshes[node.mesh].primitives ?? []) {
-      const ai = prim.attributes?.POSITION
-      if (ai === undefined) continue
-      const acc = gltf.accessors[ai]
-      const bv = gltf.bufferViews[acc.bufferView]
-      const stride = bv.byteStride || COMP_SIZE[acc.componentType] * 3
-      const base = (bv.byteOffset ?? 0) + (acc.byteOffset ?? 0)
-      for (let i = 0; i < acc.count; i++) {
-        const o = base + i * stride
-        const x = bin.readFloatLE(o) * sc[0] + t[0]
-        const y = bin.readFloatLE(o + 4) * sc[1] + t[1]
-        const z = bin.readFloatLE(o + 8) * sc[2] + t[2]
-        pts.push([x * cos + z * sin, y])
+  const walk = (ni: number, parent: Mat4) => {
+    const node = gltf.nodes[ni]
+    const m = mul(parent, localMatrix(node))
+    if (node.mesh !== undefined) {
+      for (const prim of gltf.meshes[node.mesh].primitives ?? []) {
+        const ai = prim.attributes?.POSITION
+        if (ai === undefined) continue
+        const acc = gltf.accessors[ai]
+        const bv = gltf.bufferViews[acc.bufferView]
+        const stride = bv.byteStride || COMP_SIZE[acc.componentType] * 3
+        const base = (bv.byteOffset ?? 0) + (acc.byteOffset ?? 0)
+        for (let i = 0; i < acc.count; i++) {
+          const o = base + i * stride
+          const vx = bin!.readFloatLE(o)
+          const vy = bin!.readFloatLE(o + 4)
+          const vz = bin!.readFloatLE(o + 8)
+          const x = m[0] * vx + m[4] * vy + m[8] * vz + m[12]
+          const y = m[1] * vx + m[5] * vy + m[9] * vz + m[13]
+          const z = m[2] * vx + m[6] * vy + m[10] * vz + m[14]
+          // The rig's rotateY, in the same sense composite/render use it.
+          out.push([x * cos + z * sin, y, -x * sin + z * cos])
+        }
       }
     }
+    for (const c of node.children ?? []) walk(c, m)
   }
-  if (pts.length === 0) return null
 
+  const roots = gltf.scenes?.[gltf.scene ?? 0]?.nodes ?? gltf.nodes.map((_: unknown, i: number) => i)
+  for (const r of roots) walk(r, IDENTITY)
+  return out
+}
+
+interface Fitting {
+  /** y of the fitting's downward-open face — where the fixture's stem enters. */
+  faceY: number
+  /** Centre of that face across the arm's reach. */
+  centreX: number
+  /** Face diameter across x and z: proves this is the round bore, not a stray flat. */
+  diaX: number
+  diaZ: number
+  reach: number
+}
+
+/**
+ * The pendant fitting: the downward-open bore nearest the arm's far end.
+ *
+ * Restricting to the outer half of the reach skips the pole clamp and any
+ * mid-span brackets; taking the LOWEST face there (not the furthest vertex)
+ * finds AR's inboard drop nipple, which is the whole point.
+ */
+function pendantFitting(path: string, rotateY: number): Fitting | null {
+  const pts = glbPoints(path, rotateY)
+  if (pts.length === 0) return null
   const reach = Math.max(...pts.map((p) => Math.abs(p[0])))
-  // Vertices within 3 cm of the far end: the terminal fitting the fixture hangs on.
-  const band = pts.filter((p) => Math.abs(p[0]) >= reach - 0.03)
+  const far = pts.filter((p) => Math.abs(p[0]) >= reach * 0.5)
+  if (far.length === 0) return null
+  const faceY = Math.min(...far.map((p) => p[1]))
+  const face = far.filter((p) => p[1] <= faceY + 0.004)
+  const xs = face.map((p) => p[0])
+  const zs = face.map((p) => p[2])
   return {
+    faceY,
+    centreX: (Math.min(...xs) + Math.max(...xs)) / 2,
+    diaX: Math.max(...xs) - Math.min(...xs),
+    diaZ: Math.max(...zs) - Math.min(...zs),
     reach,
-    yMin: Math.min(...band.map((p) => p[1])),
-    yMax: Math.max(...band.map((p) => p[1])),
   }
 }
 
@@ -118,49 +202,78 @@ const realParts: Record<string, string | { glb: string; rotateY?: number }> = ex
   ? JSON.parse(readFileSync(REAL_PARTS, 'utf8'))
   : {}
 
-/** Arms that render from real CAD and carry a fixture socket. */
-const armsWithRealCad = catalog.parts.filter(
+function rotateYFor(id: string): number {
+  const e = realParts[id]
+  return typeof e === 'string' ? 0 : (e?.rotateY ?? 0)
+}
+
+function fittingFor(part: CatalogPart): Fitting | null {
+  const path = resolve(GLB_DIR, `${part.id}.glb`)
+  if (!existsSync(path)) return null
+  return pendantFitting(path, rotateYFor(part.id))
+}
+
+const ANCHOR_ID = 'sh1-shepherds-hook'
+
+/** Real-CAD arms whose fixture hangs from a downward bore. */
+const pendantArms = catalog.parts.filter(
   (p): p is CatalogPart =>
-    p.slot === 'arm' && p.realCad === true && Object.keys(p.sockets ?? {}).length > 0,
+    p.slot === 'arm' && p.realCad === true && p.sockets?.fixture?.type === 'pendant',
 )
 
 const assetsPresent = existsSync(GLB_DIR)
 
-describe.skipIf(!assetsPresent)('catalog sockets sit on the real CAD they mount to', () => {
-  it('has real-CAD arms to check', () => {
-    expect(armsWithRealCad.length).toBeGreaterThan(0)
+describe.skipIf(!assetsPresent)('pendant sockets sit on the real CAD fitting they hang from', () => {
+  const anchor = catalog.parts.find((p) => p.id === ANCHOR_ID) as CatalogPart | undefined
+  const anchorFitting = anchor ? fittingFor(anchor) : null
+
+  it('has pendant arms to check', () => {
+    expect(pendantArms.length).toBeGreaterThan(0)
+    expect(pendantArms.map((p) => p.id)).toContain(ANCHOR_ID)
   })
 
-  for (const arm of armsWithRealCad) {
-    it(`${arm.id}: fixture socket sits on the arm's terminal fitting`, () => {
-      const entry = realParts[arm.id]
-      const rotateY = typeof entry === 'string' ? 0 : (entry?.rotateY ?? 0)
-      const tip = armTip(resolve(GLB_DIR, `${arm.id}.glb`), rotateY)
-      if (!tip) return // no GLB for this arm locally
+  it(`${ANCHOR_ID} is a usable calibration anchor: its socket IS its fitting centre`, () => {
+    if (!anchorFitting) return
+    const socket = anchor!.sockets!.fixture.position
+    expect(
+      Math.abs(socket[0] - anchorFitting.centreX),
+      `the anchor's own socket x=${socket[0]} is off its fitting centre ` +
+        `${anchorFitting.centreX.toFixed(4)} — every other arm is calibrated from it`,
+    ).toBeLessThanOrEqual(TOL_M)
+  })
 
-      const socket = Object.values(arm.sockets!)[0].position
+  for (const arm of pendantArms) {
+    it(`${arm.id}: fixture socket is the centre of its terminal bore`, () => {
+      const fitting = fittingFor(arm)
+      if (!fitting || !anchorFitting) return // no local GLB
 
-      // Reach: the fixture hangs near the far end, never back at the pole clamp.
+      // Same standard bore on every one of these arms — if this fails, the
+      // rule has latched onto some other face and the point check below is
+      // meaningless, so assert it rather than assume it.
       expect(
-        Math.abs(socket[0]),
-        `${arm.id} socket x=${socket[0].toFixed(3)} against a reach of ${tip.reach.toFixed(3)}`,
-      ).toBeGreaterThan(tip.reach * 0.8)
+        fitting.diaX,
+        `${arm.id} terminal face is ${fitting.diaX.toFixed(4)} m across x — not the 2-3/8" bore`,
+      ).toBeCloseTo(BORE_DIA_M, 2)
+      expect(Math.abs(fitting.diaX - fitting.diaZ)).toBeLessThanOrEqual(BORE_TOL_M)
 
-      // Height: the socket must be within the vertical span the arm actually
-      // occupies AT that reach. This is the assertion SS1 failed — its socket
-      // sat 0.164 m below a hook spanning y 0.584..0.840, so the GVX hung a
-      // sixth of a metre under the arm carrying it.
-      const PAD = 0.08
+      // Insertion depth of the pendant's stem, taken from the anchor.
+      const insertion = anchor!.sockets!.fixture.position[1] - anchorFitting.faceY
+      const expected: [number, number] = [fitting.centreX, fitting.faceY + insertion]
+      const socket = arm.sockets!.fixture.position
+
       expect(
-        socket[1],
-        `${arm.id} socket y=${socket[1].toFixed(3)} is below its own tip ` +
-          `(${tip.yMin.toFixed(3)}..${tip.yMax.toFixed(3)}) — the fixture composites off the arm`,
-      ).toBeGreaterThanOrEqual(tip.yMin - PAD)
+        Math.abs(socket[0] - expected[0]),
+        `${arm.id} socket x=${socket[0]} is ${(socket[0] - expected[0]).toFixed(4)} m off the ` +
+          `bore centre ${expected[0].toFixed(3)} (reach ${fitting.reach.toFixed(3)}) — the ` +
+          `fixture hangs beside the fitting instead of in it`,
+      ).toBeLessThanOrEqual(TOL_M)
+
       expect(
-        socket[1],
-        `${arm.id} socket y=${socket[1].toFixed(3)} is above its own tip ` +
-          `(${tip.yMin.toFixed(3)}..${tip.yMax.toFixed(3)})`,
-      ).toBeLessThanOrEqual(tip.yMax + PAD)
+        Math.abs(socket[1] - expected[1]),
+        `${arm.id} socket y=${socket[1]} is ${(socket[1] - expected[1]).toFixed(4)} m off ` +
+          `${expected[1].toFixed(3)} (bore face ${fitting.faceY.toFixed(3)} + ${insertion.toFixed(4)} ` +
+          `stem insertion) — the fixture floats off the fitting vertically`,
+      ).toBeLessThanOrEqual(TOL_M)
     })
   }
 })
