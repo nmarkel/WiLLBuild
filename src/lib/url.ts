@@ -27,7 +27,13 @@ export const SCENES = ['park', 'street', 'parking', 'blank'] as const
  * URL in the store) — it can't ride a share URL, so it's outside SCENES.
  */
 export type Scene = (typeof SCENES)[number] | 'custom'
-export const DEFAULT_SCENE: Scene = 'park'
+/**
+ * Phase 0.11 (F1): the default backdrop is Blank — the clean studio background,
+ * product first. NOTE the behaviour change: a pre-0.11 share URL with no `scene`
+ * param used to restore Park and now restores Blank (the "omit the default"
+ * rule means the param was never written for the then-default Park).
+ */
+export const DEFAULT_SCENE: Scene = 'blank'
 
 function isScene(v: string | null): v is Scene {
   return v != null && (SCENES as readonly string[]).includes(v)
@@ -57,10 +63,14 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
     params.set('orient', String(config.armOrientation))
   }
   // Phase 0.8 (C/A4): banner accessory encoded as `armId~count~heightFt`.
+  // Phase 0.11 (D): plus an optional trailing `~size` panel id. Trailing and
+  // optional so pre-0.11 links (3 fields) still parse; without it a shared
+  // 30x60 banner would silently come back as the 24x48 default.
   if (config.banner) {
+    const size = config.banner.size ? `~${config.banner.size}` : ''
     params.set(
       'banner',
-      `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}`,
+      `${config.banner.armId}~${config.banner.count}~${config.banner.heightFt}${size}`,
     )
   }
   // Phase 0.10.5: per-slot finish overrides as `slot:finishId,slot:finishId`
@@ -74,13 +84,17 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
     if (fins) params.set('fins', fins)
   }
   // Phase 0.10.5: accessory placements as `code~heightFt~orientation[~sides]`.
+  // Phase 0.11 (D): optional trailing `~size` (banner-kit panel id). `sides`
+  // is positional, so a placement with a size but no sides emits an EMPTY
+  // sides field (`FSTR~6~90~~30x60`) rather than shifting size into its slot.
   if (config.accessoryPlacements) {
     const place = Object.entries(config.accessoryPlacements)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(
-        ([code, p]) =>
-          `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}${p.sides !== undefined ? `~${p.sides}` : ''}`,
-      )
+      .map(([code, p]) => {
+        const head = `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}`
+        if (p.size) return `${head}~${p.sides ?? ''}~${p.size}`
+        return p.sides !== undefined ? `${head}~${p.sides}` : head
+      })
       .join(',')
     if (place) params.set('place', place)
   }
@@ -113,7 +127,7 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   return params
 }
 
-/** Read the viewer scene from query params; unknown/absent → default (Park). */
+/** Read the viewer scene from query params; unknown/absent → default (Blank). */
 export function paramsToScene(params: URLSearchParams): Scene {
   const value = params.get('scene')
   return isScene(value) ? value : DEFAULT_SCENE
@@ -160,11 +174,15 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
   // Phase 0.8 (C/A4): banner `armId~count~heightFt`; repairConfig validates the part.
   const bannerValue = params.get('banner')
   if (bannerValue) {
-    const [armId, countStr, heightStr] = bannerValue.split('~')
+    const [armId, countStr, heightStr, sizeStr] = bannerValue.split('~')
     const count = Number(countStr)
     const heightFt = Number(heightStr)
     if (armId && Number.isFinite(count) && Number.isFinite(heightFt)) {
-      partial.banner = { armId, count, heightFt }
+      // Phase 0.11 (D): trailing panel size, absent on pre-0.11 links.
+      // repairConfig resolves an unknown id to the catalog default.
+      partial.banner = sizeStr
+        ? { armId, count, heightFt, size: sizeStr }
+        : { armId, count, heightFt }
       found = true
     }
   }
@@ -188,15 +206,19 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
   if (placeValue) {
     const accessoryPlacements: NonNullable<PoleConfig['accessoryPlacements']> = {}
     for (const entry of placeValue.split(',')) {
-      const [code, ftStr, oStr, sidesStr] = entry.split('~')
+      const [code, ftStr, oStr, sidesStr, sizeStr] = entry.split('~')
       const heightFt = Number(ftStr)
       const orientation = Number(oStr)
       if (code && Number.isFinite(heightFt) && Number.isFinite(orientation)) {
-        const sides = sidesStr !== undefined ? Number(sidesStr) : undefined
-        accessoryPlacements[code] =
-          sides !== undefined && Number.isFinite(sides)
-            ? { heightFt, orientation, sides }
-            : { heightFt, orientation }
+        // `sides` may be an EMPTY field when a size follows it (see the
+        // serializer) — treat '' as absent rather than as Number('') === 0.
+        const sides = sidesStr ? Number(sidesStr) : undefined
+        accessoryPlacements[code] = {
+          heightFt,
+          orientation,
+          ...(sides !== undefined && Number.isFinite(sides) ? { sides } : {}),
+          ...(sizeStr ? { size: sizeStr } : {}),
+        }
       }
     }
     if (Object.keys(accessoryPlacements).length > 0) {
@@ -263,6 +285,12 @@ export function paramsToViewMode(params: URLSearchParams): ViewMode {
   return { kind: 'builder' }
 }
 
+/**
+ * Build the link a customer gets. ALWAYS pass the live viewer scene: omitting
+ * it falls back to DEFAULT_SCENE, which silently drops the backdrop the user is
+ * actually looking at from the shared link (Phase 0.11 F3). UI code should go
+ * through the store's `shareLink()` rather than calling this directly.
+ */
 export function shareUrl(config: PoleConfig, scene: Scene = DEFAULT_SCENE): string {
   if (typeof window === 'undefined') {
     // Test or SSR environment — just return relative URL with params

@@ -394,7 +394,10 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
   }
 
   const copySummary = async () => {
-    await navigator.clipboard.writeText(buildSummaryText(catalog, config))
+    // Phase 0.11 (F3): pass the live scene — omitting it silently pins the
+    // copied link to the default backdrop rather than the one on screen.
+    const { scene } = useConfigurator.getState()
+    await navigator.clipboard.writeText(buildSummaryText(catalog, config, scene))
     setCopied(true)
     const timeoutId = setTimeout(() => setCopied(false), 1600)
     timeoutIdsRef.current.push(timeoutId)

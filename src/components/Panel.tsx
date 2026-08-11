@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, compatibleParts, finishFor, labelMinFt, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
 const SIDE_LABELS: Record<number, string> = {
@@ -75,6 +76,19 @@ export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
   const [openStep, setOpenStep] = useState<Slot>('fixture')
+  const setFocus = useConfigurator((s) => s.setFocus)
+
+  /**
+   * Phase 0.11 (Workstream E): "zoom in on the part being configured." The
+   * open step drives the viewer's focus view, so opening Arm frames the arm.
+   *
+   * The pole maps to 'assembly', not a focus of its own: the pole IS most of
+   * the assembly, so framing it tightly is the whole-product view. That is
+   * also why the spec's focus list is fixture / arm / base and not four.
+   */
+  useEffect(() => {
+    setFocus(openStep === 'pole' ? 'assembly' : openStep)
+  }, [openStep, setFocus])
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
@@ -116,7 +130,9 @@ export function Panel({ catalog, config }: Props) {
                 {/* Phase 0.10.5: rotate the arrangement about the pole (0/90/180/270°). */}
                 {step.key === 'arm' && <ArmOrientationSelector catalog={catalog} config={config} />}
                 <StepFinish catalog={catalog} config={config} slot={step.key} part={part} />
-                {part && <StepSpecOptions config={config} slot={step.key} part={part} />}
+                {part && (
+                  <StepSpecOptions catalog={catalog} config={config} slot={step.key} part={part} />
+                )}
                 {/* Phase 0.9 (A2), retired for accessory-driven brands in 0.10.5:
                     the Banner Arm box shows only when the pole's sheet has no
                     banner-kit accessory (BA24/BA30) — those configure banners
@@ -215,10 +231,12 @@ function StepFinish({
  * are flagged "quote". Parts without a parsed sheet render nothing.
  */
 function StepSpecOptions({
+  catalog,
   config,
   slot,
   part,
 }: {
+  catalog: Catalog
   config: PoleConfig
   slot: Slot
   part: CatalogPart
@@ -241,6 +259,30 @@ function StepSpecOptions({
   const baseCount = baseOpts.reduce((n, o) => n + (specCodes(chosen[o.key])[0] ? 1 : 0), 0)
   const extrasCount = extraOpts.reduce((n, o) => n + specCodes(chosen[o.key]).length, 0)
   const partial = part.optionsMeta?.parseStatus === 'partial'
+
+  // Phase 0.11 (B3): Options and Accessories are different things — an Option
+  // is a configuration choice that bears a part-number code, an Accessory is a
+  // separate add-on product ("adder", the pole sheet's own word). They were
+  // rendered as one flat, undifferentiated checkbox list under a single
+  // hardcoded heading; each column now carries the sheet's own name. Repeated
+  // names (the MVX sheet's parser-split "Options" / "options-2") print once.
+  const voltage = specCodes(chosen['voltage'])[0]
+  let lastLabel = ''
+  const extraGroups = extraOpts
+    .map((opt) => {
+      const values = opt.values.filter(
+        // Phase 0.11 (C3): never offer a code this product may not carry
+        // (CF1/CF2/CF3 outside SH1) — mirrors repairConfig's own guard.
+        (v) => voltageCompatible(voltage, v.label) && codeAllowedOnPart(part, v.code),
+      )
+      return { opt, values, label: optionLabel(opt) }
+    })
+    .filter((g) => g.values.length > 0)
+    .map((g) => {
+      const showLabel = g.label !== lastLabel
+      lastLabel = g.label
+      return { ...g, showLabel }
+    })
 
   return (
     <>
@@ -281,7 +323,10 @@ function StepSpecOptions({
             ))}
         </div>
       )}
-      {extraOpts.length > 0 && (
+      {/* Gate on the groups that actually have something to show: a column
+          whose every value is filtered out (wrong voltage, or a code this part
+          may not carry) must not leave an empty disclosure behind. */}
+      {extraGroups.length > 0 && (
         <div className="step-group">
           <button
             type="button"
@@ -300,40 +345,61 @@ function StepSpecOptions({
             </span>
           </button>
           {showExtras &&
-            extraOpts.map((opt) => (
-              // Multi-select: check any combination; exclusive families
-              // (cord/surge/photocontrol) auto-swap in the store, and a
-              // chosen voltage hides gear rated for the other range.
-              <div className="spec-option" key={opt.key}>
-                {opt.values
-                  .filter((v) => voltageCompatible(specCodes(chosen['voltage'])[0], v.label))
-                  .map((v) => {
-                    const checked = specCodes(chosen[opt.key]).includes(v.code)
-                    const placeable = slot === 'pole' && v.label.includes(PLACEMENT_MARKER)
-                    return (
-                      <div key={v.code}>
-                        <label className={`spec-check ${checked ? 'checked' : ''}`}>
+            extraGroups.map(({ opt, values, label, showLabel }) => (
+              // Multi-select: check any combination. Values in an exclusive
+              // family (cord / surge / photocontrol / shepherds-hook centre
+              // feature) render single-select instead — the store swaps them,
+              // so a checkbox would misrepresent the model.
+              <div className="spec-option spec-option-group" key={opt.key}>
+                {showLabel && <p className="spec-option-group-label">{label}</p>}
+                {values.map((v) => {
+                  const checked = specCodes(chosen[opt.key]).includes(v.code)
+                  const placeable = slot === 'pole' && v.label.includes(PLACEMENT_MARKER)
+                  const family = exclusiveFamily(v.code)
+                  return (
+                    <div key={v.code}>
+                      <label
+                        className={`spec-check ${checked ? 'checked' : ''}`}
+                        title={
+                          family && checked ? 'Click again to clear this choice' : undefined
+                        }
+                      >
+                        {family ? (
+                          // Radio semantics, but de-selectable: none of these
+                          // families is mandatory, and a radio group with no
+                          // "None" row would otherwise be a one-way door.
+                          // Clicking the checked radio fires no change event,
+                          // so the toggle hangs off onClick.
+                          <input
+                            type="radio"
+                            name={`${slot}-${family}`}
+                            checked={checked}
+                            readOnly
+                            onClick={() => toggleSpecOption(slot, opt.key, v.code)}
+                          />
+                        ) : (
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={() => toggleSpecOption(slot, opt.key, v.code)}
                           />
-                          <span className="spec-check-text">
-                            <span className="spec-check-code">{v.code}</span> {v.label}
-                          </span>
-                        </label>
-                        {checked && placeable && (
-                          <AccessoryPlacementBox
-                            code={v.code}
-                            config={config}
-                            poleFt={part.heightFt ?? 20}
-                            minFt={labelMinFt(v.label) ?? 2}
-                            sideOptions={accessorySideOptions(v.label)}
-                          />
                         )}
-                      </div>
-                    )
-                  })}
+                        <span className="spec-check-text">
+                          <span className="spec-check-code">{v.code}</span> {v.label}
+                        </span>
+                      </label>
+                      {checked && placeable && (
+                        <AccessoryPlacementBox
+                          catalog={catalog}
+                          code={v.code}
+                          config={config}
+                          poleFt={part.heightFt ?? 20}
+                          label={v.label}
+                        />
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             ))}
         </div>
@@ -432,40 +498,86 @@ function PartChoice({
  * layer from this same data.
  */
 function AccessoryPlacementBox({
+  catalog,
   code,
   config,
   poleFt,
-  minFt,
-  sideOptions,
+  label,
 }: {
+  catalog: Catalog
   code: string
   config: PoleConfig
   poleFt: number
-  minFt: number
-  sideOptions?: number[]
+  label: string
 }) {
   const setAccessoryPlacement = useConfigurator((s) => s.setAccessoryPlacement)
-  const maxFt = Math.max(2, Math.round(poleFt - 1))
-  // A label-declared minimum (FSTR's 37") is also the default placement.
+  const sideOptions = accessorySideOptions(label)
+  const bannerKit = isBannerKitLabel(label)
+  const existing = config.accessoryPlacements?.[code]
+  // Phase 0.11 (D3): the height window comes from the same function
+  // repairConfig clamps with. Before 0.11 this box floored banner kits at 2 ft
+  // while repairConfig floored them at 8 ft, so the slider offered heights the
+  // store immediately overrode.
+  const { minFt, maxFt, fits } = accessoryHeightRange(catalog, poleFt, label, existing?.size)
+  // A label-declared minimum (FSTR's 37", a banner kit's 8 ft floor) is also
+  // the default placement.
   const defaultFt = minFt > 2 ? minFt : Math.min(4, maxFt)
-  const placement = config.accessoryPlacements?.[code] ?? {
+  const placement = existing ?? {
     heightFt: defaultFt,
     orientation: 0,
     ...(sideOptions ? { sides: 1 } : {}),
   }
   return (
     <div className="placement-box">
+      {/* Phase 0.11 (D2): panel size on a banner kit — only the sizes this
+          kit's arms can carry (BA24's 24" arms can't fly a 30" banner). */}
+      {bannerKit && (
+        <>
+          <p className="arm-count-label">Banner size (W × H)</p>
+          <div className="arm-count-options">
+            {bannerSizesForLabel(catalog, label).map((s) => (
+              <button
+                key={s.id}
+                className={`arm-count-chip ${
+                  bannerPanelSize(catalog, placement.size).id === s.id ? 'selected' : ''
+                }`}
+                onClick={() => setAccessoryPlacement(code, { ...placement, size: s.id })}
+              >
+                <span className="arm-count-name">{formatPanelSize(s)}</span>
+                {s.default && <span className="arm-count-sub">Most common</span>}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       <label className="banner-height">
-        <span>Height up shaft: {ftLabel(placement.heightFt)}</span>
+        {/* Phase 0.11 (D1): name the reference point. "Height up shaft"
+            disclosed nothing; a banner's height is measured to its bottom. */}
+        <span>
+          {bannerKit ? 'Height to bottom of banner' : 'Height up shaft'}:{' '}
+          {ftLabel(placement.heightFt)} above grade
+        </span>
         <input
           type="range"
           min={minFt}
           max={maxFt}
           step={1 / 12}
-          value={Math.min(placement.heightFt, maxFt)}
+          value={Math.min(Math.max(placement.heightFt, minFt), maxFt)}
           onChange={(e) => setAccessoryPlacement(code, { ...placement, heightFt: Number(e.target.value) })}
         />
       </label>
+      {!fits &&
+        (bannerKit ? (
+          <p className="spec-options-note">
+            A {formatPanelSize(bannerPanelSize(catalog, placement.size))} banner does not clear a{' '}
+            {poleFt} ft pole above the {minFt} ft minimum — choose a smaller panel or a taller pole.
+          </p>
+        ) : (
+          <p className="spec-options-note">
+            This accessory’s {ftLabel(minFt)} minimum leaves no room on a {poleFt} ft pole — we’ll
+            confirm the placement with your quote.
+          </p>
+        ))}
       {sideOptions && (
         <>
           <p className="arm-count-label">Sides</p>

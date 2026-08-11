@@ -1,5 +1,5 @@
 {
-  "source": "/Volumes/WiLLdrive/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio",
+  "source": "~/Library/CloudStorage/SynologyDrive-NickSynology206/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio",
   "ingestedBy": "scripts/step-to-glb/ingest.py",
   "localStepDir": "scripts/render-rig/real-assets/step (gitignored)",
   "localGlbDir": "scripts/render-rig/real-assets/glb (gitignored)",
@@ -77,8 +77,8 @@
       "origin": "base",
       "converter": "mono",
       "tolMm": 0.5,
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/bc-cl1-small-clamshell.glb",
+      "glbBytes": 935252
     },
     {
       "file": "CL2-4R.STEP",
@@ -92,8 +92,8 @@
       "origin": "base",
       "converter": "mono",
       "tolMm": 0.5,
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/bc-cl2-medium-clamshell.glb",
+      "glbBytes": 1575932
     },
     {
       "file": "CL3-4R.STEP",
@@ -107,8 +107,8 @@
       "origin": "base",
       "converter": "mono",
       "tolMm": 0.5,
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/bc-cl3-large-clamshell.glb",
+      "glbBytes": 1438848
     },
     {
       "file": "SC1-4R.STEP",
@@ -122,8 +122,8 @@
       "origin": "base",
       "converter": "mono",
       "tolMm": 0.5,
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/bc-sc1-spun-collar.glb",
+      "glbBytes": 73120
     },
     {
       "file": "SC2-4R.STEP",
@@ -137,8 +137,8 @@
       "origin": "base",
       "converter": "mono",
       "tolMm": 0.5,
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/bc-sc2-spun-collar-split.glb",
+      "glbBytes": 661772
     },
     {
       "file": "BA24-4R.STEP",
@@ -336,6 +336,28 @@
       "designCode": "SXB",
       "fitCode": "C",
       "note": "Second bollard variant sharing the RXB/SXB catalog entry."
+    },
+    {
+      "file": "SD2-40F.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 9374356,
+      "sha256": "c6268c6931bafeed52b6bdcd3ee9fe30c4333a527950d333aec13ac0967a06ab",
+      "partId": "willstudio-supported-decorative-arms",
+      "designCode": "SD2",
+      "fitCode": "40F",
+      "armCount": 2
+    },
+    {
+      "file": "BA30-4R.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 4407934,
+      "sha256": "e0b93773bc41726a07a003a195d2565a6a92aa258ad4e3da3f77c0c7e491ac2e",
+      "partId": "willstudio-ba1-banner-arm",
+      "designCode": "BA30",
+      "fitCode": "4R",
+      "note": "30in banner-arm kit \u2014 the BA30 order code's own CAD. The rig renders the banner layer from BA24; this is the second size variant."
     }
   ],
   "unmapped": [
@@ -360,6 +382,226 @@
       "designCode": "PH",
       "fitCode": "4R",
       "note": "Plant Holder \u2014 Single Plant Holder Kit. An Accessory adder, not a slot part."
+    },
+    {
+      "file": "PA1-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 507764,
+      "sha256": "0bd2791cd2d2c72949efa0d8483d08a0d766563a53112d79e969fad41aeb5ebf",
+      "partId": null,
+      "designCode": "PA1",
+      "fitCode": "40F",
+      "note": "Intended part pa1-pendant-arm (modelCodes {1: PA1}). Converted OK (8,932 tris). Blocked on axis + socket alignment \u2014 see above."
+    },
+    {
+      "file": "PM1-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 3634756,
+      "sha256": "805c2a0b619d2830bbd19fb98a69951a52a0a426a680e0bc24ddec5cb3c274c2",
+      "partId": null,
+      "designCode": "PM1",
+      "fitCode": "40F",
+      "note": "Intended part pm1-pendant-arm (modelCodes {1: PM1}). Converted OK (13,508 tris). Blocked on axis + socket alignment \u2014 see above."
+    },
+    {
+      "file": "FR2-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 1248777,
+      "sha256": "a0c0515fb41b01d0773c968a7db3382b229856f0171863bc4173c4cf1a06aa59",
+      "partId": null,
+      "designCode": "FR2",
+      "fitCode": "40F",
+      "note": "Intended part willstudio-fr2-decorative-crossarm (modelCodes {1: FR2}). Converted OK (19,726 tris). Closest of the five \u2014 its symmetric \u00b10.61 m reach matches the catalog socket x=0.62; likely needs only the rotateY. Blocked on alignment \u2014 see above."
+    },
+    {
+      "file": "HS1-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 4277823,
+      "sha256": "948fcb2022d38437c9d508bc536cdd6343bc8663462ce0aa0e6436815481ef39",
+      "partId": null,
+      "designCode": "HS1",
+      "fitCode": "40F",
+      "note": "Intended part willstudio-hsx-decorative-upsweep-arms (modelCodes {1: HS1, 2: HS2}). Converted OK (24,111 tris). Blocked on axis + socket alignment \u2014 see above."
+    },
+    {
+      "file": "SD1-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 4674986,
+      "sha256": "6fc52c4ed83d1cbee560b150c134e2d4cdcab20c16b7cc43a41aff67a0af2f5f",
+      "partId": null,
+      "designCode": "SD1",
+      "fitCode": "40F",
+      "note": "Intended part willstudio-supported-decorative-arms (modelCodes {1: SD1, 2: SD2}). Converted OK (22,832 tris). Blocked on axis + socket alignment \u2014 see above."
+    },
+    {
+      "file": "CR1-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 4917290,
+      "sha256": "0da63e3415c816bf17b79748c8a487f72b6e792468a1bc757f07b396a5f5c1c6",
+      "partId": null,
+      "designCode": "CR2",
+      "fitCode": "40F",
+      "note": "\u26a0\ufe0f THE FILE IS MISLABELLED: 'CR1-40F.STEP' is actually a CR2 (confirmed by Nick, 2026-08-10). Intended part willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}); the design code recorded here is the CORRECTED CR2, not the filename. The file name is left untouched so it still matches the Synology source. Blocked on the same axis + socket alignment as the five below \u2014 this is a naming correction, not a mapping that can ship yet."
+    },
+    {
+      "file": "BR12-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 684423,
+      "sha256": "7cc4aa27bac8c90b12c132578dbda8aae4e5ad471fe0627d7d83517ed36844ad",
+      "partId": null,
+      "designCode": "BR12",
+      "fitCode": "40F",
+      "note": "Upsweep, no gusset. docs/part-numbers.md maps the curated 'Decorative Upsweep' (catalog id `upsweep`) to the BR family with BR12/BR13 as the 24in/36in reaches, but that mapping is explicitly UNCONFIRMED pending Cole, and `upsweep` carries no modelCodes to check it against."
+    },
+    {
+      "file": "BR13-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 2959722,
+      "sha256": "4965fdd6e48c5ed99f9195dc8b8bf111a3afea314f993b37fdda7df21222a11b",
+      "partId": null,
+      "designCode": "BR13",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 same unconfirmed upsweep family, the other reach."
+    },
+    {
+      "file": "BR22-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 735231,
+      "sha256": "e13b4de0c5a4502df9039e1af68f4658609cad91c14e585b1c7ad73df262c0f4",
+      "partId": null,
+      "designCode": "BR22",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 two-arm sibling of the unconfirmed upsweep family."
+    },
+    {
+      "file": "BR23-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 5712450,
+      "sha256": "d26b8b4db42601ecde1905ca870a6116957a1f6c120ebc479be32d993fa35330",
+      "partId": null,
+      "designCode": "BR23",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 two-arm sibling of the unconfirmed upsweep family."
+    },
+    {
+      "file": "CF1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 176047,
+      "sha256": "e9c5842abc8160e5c7dc394cc3c8ee41776a40fdf7942ae03528f2365cde9635",
+      "partId": null,
+      "designCode": "CF1",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Decorative Feature. Phase 0.11 Workstream C makes CF1/CF2/CF3 single-select order codes on SH1 \u2014 an option adder, not a slot part, so no render layer of its own."
+    },
+    {
+      "file": "CF2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 446747,
+      "sha256": "51b5f7ec851d9e9f1dde7052fcc2266764f91e11b73324a185b2fc813900f1ed",
+      "partId": null,
+      "designCode": "CF2",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Brand/Logo/City Round Feature. See CF1."
+    },
+    {
+      "file": "CF3.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 466487,
+      "sha256": "c907c7a1e2ebcddc49a799aef40c2d69fec824b12a91dd5cfc21b3b4bb5fbe39",
+      "partId": null,
+      "designCode": "CF3",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Brand/Logo Feature. See CF1."
+    },
+    {
+      "file": "CPL-P-12.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 1829079,
+      "sha256": "9f8d4ef8fb032cd16e03e3ce8a2bea7392bd1996015cd5ad2295d5d8028248e8",
+      "partId": null,
+      "designCode": "CPL-P-12",
+      "fitCode": null,
+      "note": "Coupling, 12in painted. A placeable pole Accessory adder (accessoryPlacements), not a slot part."
+    },
+    {
+      "file": "PC1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 229836,
+      "sha256": "4e75a02759d1f664caa4d29f77f8a6d887d743b265ddf5b2fb20fd6750dab092",
+      "partId": null,
+      "designCode": "PC1",
+      "fitCode": null,
+      "note": "Pendant Ceiling Mount. On the ordering sheet but has NO catalog part yet (docs/part-numbers.md, 'Open confirmations')."
+    },
+    {
+      "file": "PC2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 238661,
+      "sha256": "94d71ecd6c4d63bfa42721429378cff41eb579e7d1339bacd7687867db30807a",
+      "partId": null,
+      "designCode": "PC2",
+      "fitCode": null,
+      "note": "See PC1."
+    },
+    {
+      "file": "PC3.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 238439,
+      "sha256": "44fc08fc408d54b6bde97dd165045c3bbac8437ccad4d6fbaa1de100cf88c983",
+      "partId": null,
+      "designCode": "PC3",
+      "fitCode": null,
+      "note": "See PC1."
+    },
+    {
+      "file": "WM1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 2410724,
+      "sha256": "2300dafe06caa46d25059296c66c17aeb19714ba5d30a4f2f36c2c1a020ed146",
+      "partId": null,
+      "designCode": "WM1",
+      "fitCode": null,
+      "note": "Wall Mount. On the ordering sheet but has NO catalog part yet (docs/part-numbers.md, 'Open confirmations')."
+    },
+    {
+      "file": "WM2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 3193016,
+      "sha256": "c6d5e4a7a3c9647bdd9512b8939cc288654e37f73c23faeabe7d6fe85add188e",
+      "partId": null,
+      "designCode": "WM2",
+      "fitCode": null,
+      "note": "See WM1."
+    },
+    {
+      "file": "GVX-Simple.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 27057296,
+      "sha256": "4708049da00e1ab60d1a82109a495d9819949a6ca5cc47f743629ea2b6fa0010",
+      "partId": null,
+      "designCode": "GVX",
+      "fitCode": "PM",
+      "note": "\u26a0\ufe0f NEEDS A HUMAN CALL. A 27 MB GVX against the 88 MB WD-GVX-PM master already ingested \u2014 the name and the size are consistent with Cole's de-featured shell, which is the thing the customer STEP download is GATED on. Deliberately NOT wired into anything: gvx-pendant already renders from the full master, and treating this as the approved stripped shell without confirmation is exactly the assumption the gate exists to prevent. If Cole confirms it, it un-gates factory-cad for GVX."
     }
   ],
   "derived": [
@@ -370,8 +612,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 0.8333333333333334,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 10 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-10.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -380,8 +622,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 1.1666666666666667,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 14 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-14.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -390,8 +632,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 1.25,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 15 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-15.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -400,8 +642,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 1.3333333333333333,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 16 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-16.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -410,8 +652,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 1.5,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 18 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-18.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -420,8 +662,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 1.6666666666666667,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 20 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-20.glb",
+      "glbBytes": 7064
     },
     {
       "kind": "derived",
@@ -430,8 +672,8 @@
       "sourceFile": "RSAA-4040-12.STEP",
       "scaleY": 0.6666666666666666,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 8 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
-      "glb": null,
-      "glbBytes": null
+      "glb": "render-rig/real-assets/glb/alum-pole-8.glb",
+      "glbBytes": 7064
     }
   ]
 }

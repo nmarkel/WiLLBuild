@@ -2741,6 +2741,45 @@
       "productUrl": "https://willbrands.com/collections/decorative-brackets-arms",
       "modelCodes": {
         "1": "SH1"
+      },
+      "options": [
+        {
+          "key": "center-feature",
+          "label": "Options",
+          "group": "options-accessories",
+          "orderPosition": 0,
+          "values": [
+            {
+              "code": "CF1",
+              "label": "Center Shepherds Hook Decorative Feature",
+              "buildable": null,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "CF2",
+              "label": "Center Shepherds Hook Brand/Logo/City Round Feature",
+              "buildable": null,
+              "mapsTo": null,
+              "note": null
+            },
+            {
+              "code": "CF3",
+              "label": "Center Shepherds Hook Brand/Logo Feature (variant)",
+              "buildable": null,
+              "mapsTo": null,
+              "note": null
+            }
+          ]
+        }
+      ],
+      "optionsMeta": {
+        "source": "https://docs.willbrands.com/willstudio-decorative-brackets-arms.pdf",
+        "sourcePage": null,
+        "parseStatus": "partial",
+        "gaps": [
+          "Center-feature codes transcribed from docs/ordering-matrix.json armOptions (the arms sheet's Options column). Bare 'CF' (Custom) is deliberately excluded per armOptionsNote — a custom feature is a quote conversation, not an assemblable code. Offered on SH1 only until Tyler confirms whether SS crossarms carry a logo feature."
+        ]
       }
     },
     {
@@ -9408,7 +9447,7 @@
       "id": "bc-fluted",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "base-cover",
+      "category": "Decorative Base Covers",
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
@@ -9445,7 +9484,7 @@
       "id": "bc-round",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "base-cover",
+      "category": "Decorative Base Covers",
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
@@ -14849,7 +14888,7 @@
       "id": "aluminum-light-pole-base-covers",
       "slot": "standalone",
       "line": "WiLLstudio",
-      "category": "Base Covers",
+      "category": "Decorative Base Covers",
       "productClass": "standalone",
       "dropShip": true,
       "tier": 2,
@@ -17382,5 +17421,23 @@
       "GFD Sports & Entertainment Controls",
       "WiLLcloud+ Lighting Management Platform"
     ]
-  }
+  },
+  "bannerPanelSizes": [
+    {
+      "id": "18x36",
+      "widthIn": 18,
+      "heightIn": 36
+    },
+    {
+      "id": "24x48",
+      "widthIn": 24,
+      "heightIn": 48,
+      "default": true
+    },
+    {
+      "id": "30x60",
+      "widthIn": 30,
+      "heightIn": 60
+    }
+  ]
 }

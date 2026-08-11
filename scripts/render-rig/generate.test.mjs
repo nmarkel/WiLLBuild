@@ -10,19 +10,32 @@ const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 const realParts = JSON.parse(readFileSync('scripts/render-rig/real-parts.json', 'utf-8'))
 const realGeometry = JSON.parse(readFileSync('docs/real-geometry.json', 'utf-8'))
 
-describe('render rig angle coverage (spec D9)', () => {
-  it('gives every slot the full 8-angle compass', () => {
+describe('render rig angle coverage (spec D9, view set reworked in 0.11 E)', () => {
+  it('gives every slot the four canonical render azimuths', () => {
+    // Phase 0.11 (E): 2 full-assembly views 180° apart + component focuses
+    // replaced the 45° orbit. Four azimuths remain because a radial cluster
+    // shows arms pointing four ways INSIDE one view — see composite.ts
+    // RENDER_AZIMUTHS. No slot is exempt (spec D9 is unchanged).
     for (const slot of ['fixture', 'arm', 'pole', 'baseCover', 'banner', 'standalone']) {
       const keys = ANGLES_FOR_SLOT(slot).map((a) => a.key)
-      expect(keys).toEqual([
-        'hero', 'az45', 'az90', 'az135', 'az180', 'az225', 'az270', 'az315',
-      ])
+      expect(keys).toEqual(['hero', 'az90', 'az180', 'az270'])
     }
   })
 
   it('covers every catalog part', () => {
     const slots = new Set(catalog.parts.map((p) => p.slot))
-    for (const slot of slots) expect(ANGLES_FOR_SLOT(slot)).toHaveLength(8)
+    for (const slot of slots) expect(ANGLES_FOR_SLOT(slot)).toHaveLength(4)
+  })
+
+  it('renders exactly the azimuths the compositor can request', () => {
+    // The rig and the app must not drift: every yaw the rig bakes must be an
+    // angle key composite.ts can ask for, and vice versa.
+    const rigKeys = ANGLES_FOR_SLOT('arm').map((a) => a.key).sort()
+    const appKeys = ['hero', 'az90', 'az180', 'az270'].sort()
+    expect(rigKeys).toEqual(appKeys)
+    for (const { key, yaw } of ANGLES_FOR_SLOT('arm')) {
+      expect(key).toBe(yaw === 0 ? 'hero' : `az${yaw}`)
+    }
   })
 })
 

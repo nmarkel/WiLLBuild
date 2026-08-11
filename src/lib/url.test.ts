@@ -6,6 +6,7 @@ import {
   productToParams,
   paramsToViewMode,
   paramsToScene,
+  shareUrl,
   DEFAULT_SCENE,
 } from './url'
 
@@ -76,6 +77,48 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
 
   it('ignores a malformed banner param', () => {
     expect(paramsToPartialConfig(new URLSearchParams('?banner=~~'))?.banner).toBeUndefined()
+  })
+
+  // Phase 0.11 (D): the panel size is part of the order. Without it in the
+  // link, a shared 30x60 banner silently came back as the 24x48 default.
+  it('round-trips the ordered panel size', () => {
+    const banner = { armId: 'ba1-banner-arm', count: 2, heightFt: 8, size: '30x60' }
+    const params = configToParams({ ...config, banner })
+    expect(params.get('banner')).toBe('ba1-banner-arm~2~8~30x60')
+    expect(paramsToPartialConfig(params)?.banner).toEqual(banner)
+  })
+
+  it('still reads a pre-0.11 three-field banner link', () => {
+    const parsed = paramsToPartialConfig(new URLSearchParams('?banner=ba1-banner-arm~2~8'))
+    expect(parsed?.banner).toEqual({ armId: 'ba1-banner-arm', count: 2, heightFt: 8 })
+    expect(parsed?.banner?.size).toBeUndefined()
+  })
+})
+
+describe('accessory placement size <-> URL params (Phase 0.11 D)', () => {
+  it('round-trips a banner kit with both sides and size', () => {
+    const accessoryPlacements = { BA24: { heightFt: 12, orientation: 90, sides: 2, size: '18x36' } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('BA24~12~90~2~18x36')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
+  })
+
+  it('emits an empty sides field when a size follows but sides is absent', () => {
+    // `sides` is positional — shifting the size into its slot would parse the
+    // panel id as a side count.
+    const accessoryPlacements = { BA24: { heightFt: 12, orientation: 0, size: '30x60' } }
+    const params = configToParams({ ...config, accessoryPlacements })
+    expect(params.get('place')).toBe('BA24~12~0~~30x60')
+    expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
+  })
+
+  it('still reads pre-0.11 three- and four-field placement links', () => {
+    expect(
+      paramsToPartialConfig(new URLSearchParams('?place=FSTR~6~90'))?.accessoryPlacements,
+    ).toEqual({ FSTR: { heightFt: 6, orientation: 90 } })
+    expect(
+      paramsToPartialConfig(new URLSearchParams('?place=BA24~12~90~4'))?.accessoryPlacements,
+    ).toEqual({ BA24: { heightFt: 12, orientation: 90, sides: 4 } })
   })
 })
 
@@ -181,8 +224,14 @@ describe('brand round-trip', () => {
 })
 
 describe('scene <-> URL params', () => {
-  it('default scene (Park) is omitted from params', () => {
-    const params = configToParams(config, 'park')
+  // Phase 0.11 (F1): the default backdrop is Blank, so Blank is the value that
+  // gets omitted from the URL and Park now has to be written out explicitly.
+  it('the default scene is Blank', () => {
+    expect(DEFAULT_SCENE).toBe('blank')
+  })
+
+  it('default scene (Blank) is omitted from params', () => {
+    const params = configToParams(config, 'blank')
     expect(params.get('scene')).toBeNull()
   })
 
@@ -191,18 +240,30 @@ describe('scene <-> URL params', () => {
   })
 
   it('non-default scene is serialized', () => {
+    expect(configToParams(config, 'park').get('scene')).toBe('park')
     expect(configToParams(config, 'street').get('scene')).toBe('street')
     expect(configToParams(config, 'parking').get('scene')).toBe('parking')
   })
 
   it('non-default scene round-trips through params', () => {
-    const params = configToParams(config, 'parking')
-    expect(paramsToScene(params)).toBe('parking')
+    for (const scene of ['park', 'street', 'parking'] as const) {
+      expect(paramsToScene(configToParams(config, scene))).toBe(scene)
+    }
   })
 
-  it('absent scene param reads back as the default', () => {
+  it('absent scene param reads back as the default (Blank)', () => {
     expect(paramsToScene(configToParams(config))).toBe(DEFAULT_SCENE)
-    expect(paramsToScene(new URLSearchParams(''))).toBe('park')
+    expect(paramsToScene(new URLSearchParams(''))).toBe('blank')
+  })
+
+  it('a pre-0.11 link with no scene param now restores Blank, not Park', () => {
+    // Intended behaviour change: "omit the default" means old Park links carried
+    // no scene param, so they read back as the new default.
+    expect(paramsToScene(new URLSearchParams('?pole=alum-pole-14'))).toBe('blank')
+  })
+
+  it('the session-only custom scene never rides a share URL', () => {
+    expect(configToParams(config, 'custom').get('scene')).toBeNull()
   })
 
   it('unknown scene value falls back to the default (not trusted)', () => {
@@ -212,6 +273,30 @@ describe('scene <-> URL params', () => {
   it('scene param does not leak into the parsed config', () => {
     const partial = paramsToPartialConfig(configToParams(config, 'street'))
     expect(partial).not.toHaveProperty('scene')
+  })
+})
+
+describe('shareUrl carries the viewer scene (Phase 0.11 F3)', () => {
+  it('keeps the scene the customer is looking at', () => {
+    expect(new URL(shareUrl(config, 'street'), 'https://x.test').searchParams.get('scene')).toBe('street')
+  })
+
+  it('omits the scene param for the default backdrop', () => {
+    expect(new URL(shareUrl(config, DEFAULT_SCENE), 'https://x.test').searchParams.get('scene')).toBeNull()
+  })
+
+  it('drops the scene when the caller forgets to pass one — do not call it this way', () => {
+    // Documents the trap: the scene argument is optional, so a caller that omits
+    // it silently shares the default backdrop instead of the chosen one.
+    // UI code goes through the store's shareLink() to avoid exactly this.
+    expect(new URL(shareUrl(config), 'https://x.test').searchParams.get('scene')).toBeNull()
+  })
+
+  it('still serializes the whole config alongside the scene', () => {
+    const params = new URL(shareUrl(config, 'parking'), 'https://x.test').searchParams
+    expect(params.get('pole')).toBe('alum-pole-14')
+    expect(params.get('fixture')).toBe('drx-post-top')
+    expect(params.get('scene')).toBe('parking')
   })
 })
 

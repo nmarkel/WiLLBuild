@@ -86,9 +86,49 @@ CLUSTER_FILES: dict[tuple[str, str], str] = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Phase 0.11 (Workstream I) — the customer-download allowlist.
+#
+# part id -> the STEP file CLEARED to leave the building.
+#
+# Deliberately a SEPARATE, opt-in table rather than a reuse of BASE_FILES.
+# BASE_FILES holds Engineering's FULL masters (WD-GVX-PM is 88 MB of internal
+# detail); shipping one to a customer leaks exactly the IP that de-featuring
+# exists to protect.  Phase 0.10's bundle attachment resolved downloads from
+# "any part with real CAD", which is why it had to be dropped wholesale in
+# 0.10.5 rather than fixed in place.
+#
+# This table is FAIL-CLOSED: a new real STEP does not become downloadable just
+# by existing.  A part joins only once Cole has supplied a de-featured shell
+# AND it has been confirmed by a human.
+# ---------------------------------------------------------------------------
+CUSTOMER_STEP_FILES: dict[str, str] = {
+    # Confirmed by Nick, 2026-08-10: GVX-Simple.STEP is Cole's simplified export
+    # for the GVX (27 MB, against the 88 MB WD-GVX-PM master). The master stays
+    # the VIEWER source — it has more detail and only images ship from it — while
+    # this shell is what a customer actually receives.
+    "gvx-pendant": "GVX-Simple.STEP",
+}
+
+
 def step_dir() -> Path:
     """Where the real STEP files live (``REAL_STEP_DIR`` overrides the default)."""
     return Path(os.environ.get("REAL_STEP_DIR", _DEFAULT_STEP_DIR))
+
+
+def customer_step_path(part_id: str) -> Path | None:
+    """The de-featured STEP cleared for customer download, or None.
+
+    None means "not cleared" — never "fall back to the master".  Callers must
+    not substitute ``real_step_path`` here.
+    """
+    if os.environ.get("DISABLE_REAL_GEOMETRY"):
+        return None
+    name = CUSTOMER_STEP_FILES.get(part_id)
+    if not name:
+        return None
+    candidate = step_dir() / name
+    return candidate if candidate.is_file() else None
 
 
 def real_step_path(part_id: str, design_code: str | None = None) -> Path | None:

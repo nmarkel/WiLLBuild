@@ -1,14 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import type { Catalog, PoleConfig } from '../types'
 import {
+  ASSEMBLY_VIEW_YAWS,
   HERO_ANGLE,
+  RENDER_ANGLE_KEYS,
+  RENDER_AZIMUTHS,
   angleKeyForAzimuth,
   armDepthProxy,
+  availableFocusTargets,
+  focusBox,
   projectOffset,
   resolveRenderAsset,
   resolveAssemblyLayout,
   rotateY,
   pointInLayout,
+  snapAssemblyYaw,
   type RenderManifest,
 } from './composite'
 
@@ -282,5 +288,105 @@ describe('view rotation + nearest-angle fallback (Phase 0.10.5)', () => {
     const a = resolveAssemblyLayout(catalog, manifest, config, 0)
     const b = resolveAssemblyLayout(catalog, manifest, config, 360)
     expect(b).toEqual(a)
+  })
+})
+
+/**
+ * Phase 0.11 (Workstream E) — component focus regions.
+ *
+ * The focus views are a FRAMING over the composited layers rather than a new
+ * set of rendered assets (the rig alpha-crops each part individually at a
+ * fixed pxPerMeter, so a "tighter framing" of one part is the same image).
+ * What has to be right is which pixels belong to which component.
+ */
+describe('focusBox (Phase 0.11 E)', () => {
+  const layout = resolveAssemblyLayout(catalog, manifest, config)
+
+  it('the assembly focus is the whole box', () => {
+    expect(focusBox(layout, 'assembly')).toEqual({
+      left: 0,
+      top: 0,
+      width: layout.width,
+      height: layout.height,
+    })
+  })
+
+  it('a component focus is tighter than the whole assembly', () => {
+    const whole = focusBox(layout, 'assembly')!
+    const fixture = focusBox(layout, 'fixture')!
+    expect(fixture.height).toBeLessThan(whole.height)
+    expect(fixture.width).toBeLessThanOrEqual(whole.width)
+  })
+
+  it('the focus contains every layer of that component', () => {
+    for (const target of ['fixture', 'arm', 'baseCover'] as const) {
+      const box = focusBox(layout, target)!
+      for (const layer of layout.layers.filter((l) => l.slot === target)) {
+        expect(layer.left).toBeGreaterThanOrEqual(box.left)
+        expect(layer.top).toBeGreaterThanOrEqual(box.top)
+        expect(layer.left + layer.asset.width).toBeLessThanOrEqual(box.left + box.width)
+        expect(layer.top + layer.asset.height).toBeLessThanOrEqual(box.top + box.height)
+      }
+    }
+  })
+
+  it('never frames outside the assembly box', () => {
+    for (const target of ['assembly', 'fixture', 'arm', 'baseCover'] as const) {
+      const box = focusBox(layout, target)!
+      expect(box.left).toBeGreaterThanOrEqual(0)
+      expect(box.top).toBeGreaterThanOrEqual(0)
+      expect(box.left + box.width).toBeLessThanOrEqual(layout.width + 1e-9)
+      expect(box.top + box.height).toBeLessThanOrEqual(layout.height + 1e-9)
+    }
+  })
+
+  it('a component the config does not have has no focus', () => {
+    // A pole-only config: no arm, no fixture, no base cover to frame.
+    const poleOnly = resolveAssemblyLayout(catalog, manifest, {
+      ...config,
+      arm: '',
+      fixture: '',
+      baseCover: '',
+    })
+    expect(focusBox(poleOnly, 'arm')).toBeUndefined()
+    expect(focusBox(poleOnly, 'fixture')).toBeUndefined()
+    expect(availableFocusTargets(poleOnly)).toEqual(['assembly'])
+  })
+
+  it('offers every present component, in canonical order', () => {
+    expect(availableFocusTargets(layout)).toEqual(['assembly', 'fixture', 'arm', 'baseCover'])
+  })
+
+  it('an empty layout offers nothing', () => {
+    const empty = { layers: [], width: 0, height: 0, origin: [0, 0] as [number, number], missing: [] }
+    expect(focusBox(empty, 'assembly')).toBeUndefined()
+    expect(availableFocusTargets(empty)).toEqual([])
+  })
+})
+
+describe('the canonical view set (Phase 0.11 E)', () => {
+  it('snaps any yaw to one of the two full-assembly views', () => {
+    expect(snapAssemblyYaw(0)).toBe(0)
+    expect(snapAssemblyYaw(44)).toBe(0)
+    expect(snapAssemblyYaw(90)).toBe(180)
+    expect(snapAssemblyYaw(180)).toBe(180)
+    expect(snapAssemblyYaw(269)).toBe(180)
+    expect(snapAssemblyYaw(270)).toBe(0)
+    expect(snapAssemblyYaw(-90)).toBe(0)
+    expect(snapAssemblyYaw(360)).toBe(0)
+    expect(snapAssemblyYaw(540)).toBe(180)
+  })
+
+  it('the render angle keys match the render azimuths', () => {
+    expect(RENDER_ANGLE_KEYS.map((k) => (k === HERO_ANGLE ? 0 : Number(k.slice(2))))).toEqual([
+      ...RENDER_AZIMUTHS,
+    ])
+  })
+
+  it('every view yaw is itself a render azimuth', () => {
+    // The pole is drawn at (0 − viewYaw), so each view must be renderable.
+    for (const yaw of ASSEMBLY_VIEW_YAWS) {
+      expect(RENDER_AZIMUTHS).toContain(((360 - yaw) % 360) as (typeof RENDER_AZIMUTHS)[number])
+    }
   })
 })

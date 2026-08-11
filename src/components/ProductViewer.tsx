@@ -164,7 +164,7 @@ export function ProductViewer({ part, catalog }: Props) {
   useEffect(() => {
     if (!asset || !manifest) return
     const layout: CompositeLayout = {
-      layers: [{ partId: part.id, asset, left: 0, top: 0, z: 1 }],
+      layers: [{ partId: part.id, asset, left: 0, top: 0, z: 1, slot: part.slot }],
       width: asset.width,
       height: asset.height,
       origin: asset.anchor,
@@ -174,7 +174,7 @@ export function ProductViewer({ part, catalog }: Props) {
       compositeToBlob(layout, { night: false, pxPerMeterY: manifest.rig.pxPerMeterY, showScale: false }),
     )
     return () => registerSnapshot(null)
-  }, [asset, manifest, part.id, registerSnapshot])
+  }, [asset, manifest, part.id, part.slot, registerSnapshot])
 
   let mainContent: ReactNode
   if (manifest === undefined) {

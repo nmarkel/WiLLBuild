@@ -1,0 +1,284 @@
+{
+  "note": "Phase 0.11 Workstream Z1 — the cross-language drift guard for the part-number resolver. Neither language owns this file. `src/lib/partNumber.contract.test.ts` asserts the TypeScript resolver (buildPartNumber in src/lib/summary.ts, the reference implementation) produces `expected`; `geometry-service/tests/test_partnumber.py` asserts the Python mirror (app/partnumber.py) produces the same strings from the same catalog. Changing resolution behaviour in one language breaks the other's suite until both are updated together — which is the entire point, and is what 0.10.5 lost when it dropped the Python side.",
+  "regenerate": "UPDATE_PN_CASES=1 npx vitest run src/lib/partNumber.contract.test.ts — rewrites only the `expected` blocks, from the TypeScript resolver. Review the diff: a change here is a change to a customer-facing SKU.",
+  "expectedIsNullWhen": "The selected part has no machine-parsed ordering sheet and no modelCodes, so it resolves to NO part number at all (rendered as 'part number pending matrix'). Never a fabricated code — see docs/part-numbers.md.",
+  "cases": [
+    {
+      "name": "default WiLLstudio assembly, nothing configured",
+      "why": "Every ordering column unanswered still yields a number with '_' placeholders, so the baseline shape is pinned.",
+      "config": {
+        "configId": "pn-case-0001",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "GVX with every ordering column chosen",
+      "why": "The full happy path: the fixture sheet's own ordering example must reproduce exactly.",
+      "config": {
+        "configId": "pn-case-0002",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "fixture": {
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W"
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-80-30-MV-5W-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "per-slot finishes (Workstream A)",
+      "why": "Each component's own finish must drive its own finish segment — the headline 0.11 behaviour, and the reason config_hash had to learn about `finishes`.",
+      "config": {
+        "configId": "pn-case-0003",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "fixture": "gloss-white",
+          "pole": "forest-green",
+          "baseCover": "statuary-bronze"
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-WH",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-DG-_",
+        "baseCover": "WP-CL1-_-DB"
+      }
+    },
+    {
+      "name": "anodized finish drives the pole's finish-type segment",
+      "why": "finish-type is derived from the picked colour (FP painted / AN anodized), never a dropdown.",
+      "config": {
+        "configId": "pn-case-0004",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "bronze-anodized",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BA",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-AN-BA-_",
+        "baseCover": "WP-CL1-_-BA"
+      }
+    },
+    {
+      "name": "custom RAL on the pole",
+      "why": "custom-ral is a real palette entry with code RAL — it must resolve, not fall through to '_'.",
+      "config": {
+        "configId": "pn-case-0005",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "pole": "custom-ral"
+        },
+        "finishRal": {
+          "pole": "#7a1f3d"
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-RAL-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "arm model code follows the radial count",
+      "why": "Arms with modelCodes resolve straight to the official code for that count (SS3 = 3 arms), bypassing the column walk.",
+      "config": {
+        "configId": "pn-case-0006",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "willstudio-side-shepherds-hook-pole-top-brackets",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "armCount": 3
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SS3",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "arm has no model code for the requested count",
+      "why": "SH1 is single-only; asking for 3 must yield NO number rather than an invented one.",
+      "config": {
+        "configId": "pn-case-0007",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "armCount": 3
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "part with neither a sheet nor model codes",
+      "why": "The tenon-adapter pseudo-arm has no ordering data at all — the resolver must return nothing.",
+      "config": {
+        "configId": "pn-case-0008",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "direct-mount",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "pole accessories append after the ordering columns",
+      "why": "Options/accessories codes are appended in column order after every ordering segment — this is what Z2 makes the cache aware of.",
+      "config": {
+        "configId": "pn-case-0009",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "pole": {
+            "accessories": [
+              "BA24",
+              "FH"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-BA24-FH",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "pole length and design come from the part, not a dropdown",
+      "why": "Which pole you picked already answers both; the parsed `design` column is polluted, so designCode/heightFt are read off the part (docs/part-numbers.md).",
+      "config": {
+        "configId": "pn-case-0010",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-15",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-15-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "multi-select code order is significant",
+      "why": "The same accessory codes in the opposite order print a different number — which is why config_hash must not sort them.",
+      "config": {
+        "configId": "pn-case-0011",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "pole": {
+            "accessories": [
+              "FH",
+              "BA24"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-FH-BA24",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "DRX post top resolves its design from the part family",
+      "why": "A design column whose values include the part's own family is answered by the part card, not the customer.",
+      "config": {
+        "configId": "pn-case-0012",
+        "brand": "WiLLstudio",
+        "fixture": "drx-post-top",
+        "arm": "direct-mount",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-DRX-_-_-_-_-_-BK",
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    }
+  ]
+}

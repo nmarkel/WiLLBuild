@@ -1,6 +1,6 @@
 import type { Catalog, PoleConfig } from '../types'
-import { bannerGeometry, formatFtIn, formatIn } from '../lib/banner'
-import { BANNER_MIN_FT, partById } from '../lib/compat'
+import { bannerGeometry, formatFtIn, formatIn, formatPanelSize } from '../lib/banner'
+import { bannerHeightRange, bannerPanelSize, bannerPanelSizes, partById } from '../lib/compat'
 import { useConfigurator } from '../store'
 
 interface Props {
@@ -17,10 +17,16 @@ const SIDE_LABELS: Record<number, string> = {
 
 /**
  * Phase 0.8 (Workstream C): choose a mid-shaft banner-arm accessory — the
- * bracket set, how many radial sides it repeats on, and its height up the
- * shaft. Banner *hardware* only; custom banner artwork is deferred (the render
- * shows a plain placeholder panel). Valid side counts come from the catalog
- * part's `arrangements`, so the UI only offers real layouts.
+ * bracket set, how many radial sides it repeats on, the panel size, and the
+ * height up the shaft. Banner *hardware* only; custom banner artwork is
+ * deferred (the render shows a plain placeholder panel). Valid side counts come
+ * from the catalog part's `arrangements` and panel sizes from
+ * `catalog.bannerPanelSizes`, so the UI only offers real, orderable choices.
+ *
+ * Phase 0.11 (D1/D3): the height is measured to the BOTTOM of the banner and
+ * the slider bounds come from `bannerHeightRange` — the same function
+ * `repairConfig` clamps with, so the widget can't offer a height the store
+ * would then silently move.
  */
 export function BannerPicker({ catalog, config }: Props) {
   const setBanner = useConfigurator((s) => s.setBanner)
@@ -29,17 +35,21 @@ export function BannerPicker({ catalog, config }: Props) {
 
   const pole = partById(catalog, config.pole)
   const poleFt = pole?.heightFt ?? 20
-  const maxFt = Math.max(BANNER_MIN_FT, Math.round(poleFt - 2))
   const active = config.banner
   const part = active ? (partById(catalog, active.armId) ?? bannerParts[0]) : bannerParts[0]
   const sides = part?.arrangements ?? [1, 2, 4]
+  // The legacy BA1 banner arms declare no arm length in their name, so every
+  // catalog panel size is orderable on them (BA24/BA30 kits, which do declare
+  // one, are filtered in AccessoryPlacementBox instead).
+  const sizes = bannerPanelSizes(catalog)
+  const size = bannerPanelSize(catalog, active?.size)
+  const { minFt, maxFt, fits } = bannerHeightRange(catalog, poleFt, active?.size)
   // Phase 0.10 (C): the banner's labelled dimensions — a banner is defined by
   // the two bars that hold it — derived from the part's catalog placeholder
-  // geometry rather than a new free variable (see src/lib/banner.ts).
-  const geom = active && part ? bannerGeometry(part, active.heightFt) : null
+  // geometry plus the ordered panel size (see src/lib/banner.ts).
+  const geom = active && part ? bannerGeometry(part, active.heightFt, size) : null
 
-  const enable = () =>
-    setBanner({ armId: part.id, count: sides[0] ?? 1, heightFt: Math.min(BANNER_MIN_FT, maxFt) })
+  const enable = () => setBanner({ armId: part.id, count: sides[0] ?? 1, heightFt: minFt })
 
   return (
     <div className="banner-picker">
@@ -82,17 +92,41 @@ export function BannerPicker({ catalog, config }: Props) {
             ))}
           </div>
 
+          <p className="arm-count-label">Banner size (W × H)</p>
+          <div className="arm-count-options">
+            {sizes.map((s) => (
+              <button
+                key={s.id}
+                className={`arm-count-chip ${size.id === s.id ? 'selected' : ''}`}
+                onClick={() => setBanner({ ...active, size: s.id })}
+              >
+                <span className="arm-count-name">{formatPanelSize(s)}</span>
+                {s.default && <span className="arm-count-sub">Most common</span>}
+              </button>
+            ))}
+          </div>
+
           <label className="banner-height">
-            <span>Height up shaft: {active.heightFt} ft</span>
+            {/* Phase 0.11 (D1): say what the number measures to. "Height up
+                shaft" disclosed nothing and hid a reference-point bug. */}
+            <span>Height to bottom of banner: {active.heightFt} ft above grade</span>
             <input
               type="range"
-              min={BANNER_MIN_FT}
+              min={minFt}
               max={maxFt}
               step={1}
-              value={Math.min(active.heightFt, maxFt)}
+              value={Math.min(Math.max(active.heightFt, minFt), maxFt)}
               onChange={(e) => setBanner({ ...active, heightFt: Number(e.target.value) })}
             />
           </label>
+
+          {!fits && (
+            <p className="spec-options-note">
+              A {formatPanelSize(size)} banner does not clear a {poleFt} ft pole above the{' '}
+              {minFt} ft minimum — choose a smaller panel or a taller pole. We’ll flag it on the
+              quote.
+            </p>
+          )}
 
           {geom && (
             <dl className="banner-dims">
@@ -102,6 +136,10 @@ export function BannerPicker({ catalog, config }: Props) {
                   {formatIn(geom.panelHeightM)}{' '}
                   <span className="subtle">({formatFtIn(geom.panelHeightM)})</span>
                 </dd>
+              </div>
+              <div>
+                <dt>Bottom of banner above grade</dt>
+                <dd>{formatFtIn(geom.bottomM)}</dd>
               </div>
               <div>
                 <dt>Top bar above grade</dt>

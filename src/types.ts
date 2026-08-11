@@ -175,6 +175,23 @@ export interface ReferenceAssembly {
   fixture: string
 }
 
+/**
+ * Phase 0.11 (D2): a banner panel the customer can order, in inches (W × H).
+ * Panel sizes are product-offering data, so they live in `public/catalog.json`
+ * (core architecture rule 1) rather than in a component or lib constant — the
+ * banner UI, the clamp math and the quote text all read them from there.
+ */
+export interface BannerPanelSize {
+  /** Stable id used in the config object and share URLs, e.g. "24x48". */
+  id: string
+  /** Panel width in inches (across the pole). */
+  widthIn: number
+  /** Panel height in inches — the drop from the top bar to the bottom bar. */
+  heightIn: number
+  /** Exactly one size is the default; 24" width is the most commonly ordered. */
+  default?: boolean
+}
+
 export interface Catalog {
   parts: CatalogPart[]
   finishes: FinishDef[]
@@ -183,6 +200,8 @@ export interface Catalog {
   referenceAssemblies: ReferenceAssembly[]
   /** Official category order per product line (willbrands.com/pages/products) — drives brand-showroom category order. */
   categories?: Record<string, string[]>
+  /** Phase 0.11 (D2): the fixed banner panel sizes offered on banner-arm kits. */
+  bannerPanelSizes?: BannerPanelSize[]
 }
 
 /**
@@ -199,18 +218,51 @@ export interface Catalog {
  * of the four compass rotations relative to the 0° hand-hole reference.
  */
 export interface AccessoryPlacement {
+  /**
+   * Mounting height up the pole shaft, in feet above grade.
+   *
+   * REFERENCE POINT (Phase 0.11, D1 — this was undefined before and is now
+   * pinned): the height is measured to the accessory's own MOUNTING POINT, and
+   * for banner-arm kits (BA24/BA30) that mounting point is the BOTTOM OF THE
+   * BANNER — the same reference `BannerConfig.heightFt` uses, so the legacy
+   * banner path and the accessory path can never disagree. Puddy's spec
+   * measures banner mounting height to the bottom of the banner; measuring to
+   * the vertical centre (the pre-0.11 behaviour) reported a 24×48 banner at the
+   * 8 ft floor as compliant when its bottom edge actually sat at ~6 ft.
+   */
   heightFt: number
   orientation: number
   /** Banner-arm kits (BA24/BA30) only: how many radial sides — 1 | 2 (@180) | 4. */
   sides?: number
+  /**
+   * Banner-arm kits only (Phase 0.11, D2): the ordered panel size, as a
+   * `Catalog.bannerPanelSizes[].id`. Optional — absent means the catalog
+   * default (24×48), so pre-0.11 share URLs keep loading.
+   */
+  size?: string
 }
 
 export interface BannerConfig {
   armId: string
   /** Number of sides the banner bracket set repeats on (1 | 2 | 4). */
   count: number
-  /** Height up the pole shaft, in feet, where the banner's vertical center sits. */
+  /**
+   * Height up the pole shaft, in feet above grade.
+   *
+   * REFERENCE POINT (Phase 0.11, D1 — CHANGED): this is the BOTTOM OF THE
+   * BANNER, not its vertical centre. Puddy's spec measures banner mounting
+   * height to the bottom edge; the pre-0.11 centre reference made a 24×48
+   * banner placed at the 8 ft minimum hang down to ~6 ft while the app still
+   * reported it compliant. `AccessoryPlacement.heightFt` uses the same
+   * reference for BA24/BA30 kits, so the two banner paths agree.
+   */
   heightFt: number
+  /**
+   * Phase 0.11 (D2): the ordered panel size, as a `Catalog.bannerPanelSizes[].id`
+   * (18x36 | 24x48 | 30x60). Optional — absent means the catalog default
+   * (24×48), so pre-0.11 share URLs keep loading.
+   */
+  size?: string
 }
 
 /** The single serializable configuration object — becomes the platform's structured config JSON. */

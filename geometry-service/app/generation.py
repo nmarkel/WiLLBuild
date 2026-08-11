@@ -31,6 +31,7 @@ from .catalog import is_standalone_config, load_catalog, validate_config
 from .kit.assembly import build_assembly
 from .models import GenerateRequest
 from .naming import base_name, config_hash
+from .partnumber import build_part_number, finish_for, is_complete, part_number_text
 
 # ---------------------------------------------------------------------------
 # Geometric formats — when any of these are requested, build assembly once.
@@ -129,15 +130,38 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             continue
         part_obj = part_map.get(part_id)
         if part_obj:
+            # Phase 0.11 (Z1): each component's own WiLL part number, resolved
+            # from the same catalog data the browser uses (app/partnumber.py
+            # mirrors buildPartNumber), so the sheet prints the number the
+            # customer saw.  '' when the product has no published ordering
+            # sheet — the sheet shows a dash, never a fabricated code.
+            number = build_part_number(catalog, req.config, slot_field)
+            # Phase 0.11 (A): every component carries its OWN finish.
+            slot_finish_id = finish_for(req.config, slot_field)
+            slot_finish = finish_map.get(slot_finish_id, {})
+            slot_finish_name = slot_finish.get("name", slot_finish_id)
+            ral_hex = (req.config.finishRal or {}).get(slot_field, "")
+            if slot_finish_id == "custom-ral" and ral_hex:
+                slot_finish_name = f"{slot_finish_name} ({ral_hex.upper()})"
             parts_list.append(
                 {
                     "slot": slot_name,
                     "id": part_id,
                     "name": part_obj.get("name", part_id),
                     "productUrl": part_obj.get("productUrl", ""),
+                    "partNumber": number or "",
+                    "partNumberComplete": is_complete(number),
+                    "finish": slot_finish_name,
+                    "finishId": slot_finish_id,
                 }
             )
     summary["parts"] = parts_list
+    summary["part_numbers"] = [
+        part_number_text(catalog, req.config, p["slot"]) for p in parts_list
+    ]
+    # True when the assembly is not all one colour — lets an adapter decide
+    # whether a single assembly-wide "Finish" line would be misleading.
+    summary["per_slot_finish"] = len({p["finishId"] for p in parts_list}) > 1
 
     # Arm arrangement (Phase 0.8) — only surfaced when >1 arm so single-arm
     # spec sheets / hero cards are byte-identical to pre-0.8 output. Label text
@@ -166,16 +190,23 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
         banner_part = part_map.get(banner.armId)
         banner_name = banner_part.get("name", banner.armId) if banner_part else banner.armId
         sides = "opposite pair" if banner.count == 2 else f"{banner.count}-side"
-        geom = _banner_geometry(banner_part, banner.heightFt) if banner_part else None
+        size = _banner_panel_size(catalog, banner.size)
+        geom = _banner_geometry(banner_part, banner.heightFt, size) if banner_part else None
         if geom is None:
             h = banner.heightFt
             h_txt = str(int(h)) if float(h).is_integer() else str(h)
             summary["banner"] = f"{banner_name} — {sides} @ {h_txt} ft"
         else:
             panel_mm, top_mm, bottom_mm = geom
+            # Wording mirrors bannerSummaryLine in src/lib/banner.ts exactly,
+            # including the ordered-panel clause and the bottom-edge reference.
+            panel_txt = f"{size['widthIn']} × {size['heightIn']} in panel, " if size else ""
+            bottom_edge_mm = banner.heightFt * 304.8
             summary["banner"] = (
-                f"{banner_name} — {sides}, banner height {round(panel_mm / 25.4)} in "
-                f"(top bar {_ft_in(top_mm)} / bottom bar {_ft_in(bottom_mm)} above grade)"
+                f"{banner_name} — {sides}, {panel_txt}"
+                f"banner height {round(panel_mm / 25.4)} in "
+                f"(bottom of banner {_ft_in(bottom_edge_mm)}; "
+                f"top bar {_ft_in(top_mm)} / bottom bar {_ft_in(bottom_mm)} above grade)"
             )
     return summary
 
@@ -198,12 +229,37 @@ def _ft_in(mm: float) -> str:
     return f"{feet}'-{inches}\""
 
 
-def _banner_geometry(banner_part: dict, height_ft: float) -> tuple[float, float, float] | None:
+_IN_PER_M = 1 / 0.0254
+
+
+def _banner_panel_size(catalog: dict, size_id: str | None) -> dict | None:
+    """Resolve a BannerConfig.size id to its panel dims (mirrors bannerPanelSize)."""
+    sizes = catalog.get("bannerPanelSizes") or []
+    if not sizes:
+        return None
+    for s in sizes:
+        if s.get("id") == size_id:
+            return s
+    for s in sizes:
+        if s.get("default"):
+            return s
+    return sizes[0]
+
+
+def _banner_geometry(
+    banner_part: dict, height_ft: float, size: dict | None = None
+) -> tuple[float, float, float] | None:
     """(panel height, top-bar height, bottom-bar height) in mm, above grade.
 
-    Derived from the banner arm's placeholder geometry exactly like
-    ``bannerGeometry`` in src/lib/banner.ts: the tallest box child is the panel,
-    the others are the two mounting bars.
+    Mirrors ``bannerGeometry`` in src/lib/banner.ts.
+
+    Phase 0.11 (Workstream D): ``height_ft`` is the BOTTOM EDGE of the banner,
+    not its vertical centre.  That was a real defect, not a labelling nicety —
+    a 24x48 banner at the 8 ft minimum used to hang to ~6 ft while the app
+    called it compliant.  The panel is now the ORDERED size when one is given;
+    what stays derived from the placeholder is the bar OVERHANG (how far each
+    mounting bar sits beyond the panel edge), because that is bracket hardware
+    geometry and inventing it would put an unbacked number in the quote.
     """
     placeholder = banner_part.get("placeholder") or {}
     if placeholder.get("kind") != "group":
@@ -220,13 +276,22 @@ def _banner_geometry(banner_part: dict, height_ft: float) -> tuple[float, float,
 
     panel = max(boxes, key=height_of)
     bars = [c for c in boxes if c is not panel]
-    mount_mm = height_ft * 304.8  # ft -> mm
+
+    model_panel_h = height_of(panel)
+    model_panel_y = center_y(panel)
+    model_top = model_panel_y + model_panel_h / 2
+    model_bottom = model_panel_y - model_panel_h / 2
     bar_ys = [center_y(c) for c in bars]
-    panel_y = center_y(panel)
-    panel_h = height_of(panel)
-    top_m = max(bar_ys) if bar_ys else panel_y + panel_h / 2
-    bottom_m = min(bar_ys) if bar_ys else panel_y - panel_h / 2
-    return panel_h * 1000.0, mount_mm + top_m * 1000.0, mount_mm + bottom_m * 1000.0
+    # One bar (or none) modelled -> zero overhang, bar labels fall back to the
+    # panel's own edges. Honest, not invented.
+    top_overhang = max(0.0, max(bar_ys) - model_top) if bar_ys else 0.0
+    bottom_overhang = max(0.0, model_bottom - min(bar_ys)) if bar_ys else 0.0
+
+    panel_h = (size["heightIn"] / _IN_PER_M) if size else model_panel_h
+    bottom_m = height_ft * 0.3048
+    top_bar_m = bottom_m + panel_h + top_overhang
+    bottom_bar_m = bottom_m - bottom_overhang
+    return panel_h * 1000.0, top_bar_m * 1000.0, bottom_bar_m * 1000.0
 
 
 # Arm-arrangement labels — mirror src/lib/summary.ts armArrangementLabel.

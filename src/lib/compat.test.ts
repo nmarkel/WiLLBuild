@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, specCodes, voltageCompatible } from './compat'
+import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible } from './compat'
+import { bannerGeometry } from './banner'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
 
@@ -342,6 +343,31 @@ describe('standalone product class (two-product-class model)', () => {
   })
 })
 
+describe('base-cover taxonomy (Phase 0.11, Workstream B1)', () => {
+  it('base cover is a first-class build step, ahead of Finish', () => {
+    expect(SLOT_ORDER).toContain('baseCover')
+    expect(compatibleParts(catalog, config({}), 'baseCover').length).toBeGreaterThan(0)
+  })
+
+  it('standalone base covers share one official site category', () => {
+    // Before 0.11 these carried 'base-cover' / 'Base Covers', neither of which
+    // is in catalog.categories.WiLLstudio, so all three fell to the alphabetical
+    // tail of the brand showroom instead of grouping as their own category.
+    const ids = ['bc-fluted', 'bc-round', 'aluminum-light-pole-base-covers']
+    for (const id of ids) {
+      const part = partById(catalog, id)!
+      expect(part.category).toBe('Decorative Base Covers')
+      // Re-slotting is what broke the geometry-service fixtures in 0.10.5 —
+      // the taxonomy fix must not touch `slot`.
+      expect(part.slot).toBe('standalone')
+    }
+  })
+
+  it('the category is one the official taxonomy already lists', () => {
+    expect(catalog.categories?.WiLLstudio).toContain('Decorative Base Covers')
+  })
+})
+
 describe('mount-type rules (H3b)', () => {
   const base: PoleConfig = {
     configId: 'test',
@@ -442,11 +468,17 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path,
     catalog,
     config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
   )
+  // NAFCO pole entries carry no heightFt, so the 20 ft fallback applies.
   const poleFt = partById(catalog, nafcoCfg.pole)?.heightFt ?? 20
-  const maxFt = Math.max(8, Math.round(poleFt - 2))
+  // Phase 0.11 (D3): the ceiling now reserves the panel's own height above the
+  // bottom-edge mounting point — 20 ft pole, default 48 in panel, 1 ft of
+  // pole-top clearance → 15 ft (it was poleFt − 2 = 18 ft when the height meant
+  // the panel's centre).
+  const maxFt = 15
 
   it('clamps an out-of-range height from a crafted share link down to the pole max', () => {
     const cfg = { ...nafcoCfg, banner: { armId: bannerId, count: 2, heightFt: 9999 } }
+    expect(poleFt).toBe(20)
     expect(repairConfig(catalog, cfg).banner?.heightFt).toBe(maxFt)
   })
 
@@ -463,6 +495,267 @@ describe('repairConfig — banner shaft-height clamping (Phase 0.9; legacy path,
   it('strips a legacy banner on brands with banner-kit accessories (WiLLstudio)', () => {
     const cfg = config({ pole: 'alum-pole-14', banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt: 10 } })
     expect(repairConfig(catalog, cfg).banner).toBeNull()
+  })
+
+  it('keeps a catalog panel size and drops an invented one (Phase 0.11, D2)', () => {
+    const keep = repairConfig(catalog, {
+      ...nafcoCfg,
+      banner: { armId: bannerId, count: 1, heightFt: 8, size: '30x60' },
+    })
+    expect(keep.banner?.size).toBe('30x60')
+    const drop = repairConfig(catalog, {
+      ...nafcoCfg,
+      banner: { armId: bannerId, count: 1, heightFt: 8, size: '99x99' },
+    })
+    expect(drop.banner?.size).toBeUndefined()
+  })
+
+  it('a taller panel lowers the ceiling (the panel has to stay on the pole)', () => {
+    const tall = repairConfig(catalog, {
+      ...nafcoCfg,
+      banner: { armId: bannerId, count: 1, heightFt: 9999, size: '30x60' },
+    })
+    // 20 ft pole − 5 ft panel − 1 ft clearance.
+    expect(tall.banner?.heightFt).toBe(14)
+    const short = repairConfig(catalog, {
+      ...nafcoCfg,
+      banner: { armId: bannerId, count: 1, heightFt: 9999, size: '18x36' },
+    })
+    // 20 ft pole − 3 ft panel − 1 ft clearance.
+    expect(short.banner?.heightFt).toBe(16)
+  })
+})
+
+describe('banner mounting rules (Phase 0.11, Workstream D)', () => {
+  const BA24 =
+    '24" Wind Shedding Banner Arm Kit, For Banners Less Than 17.5 sq ft, 24" Fiberglass Arms, Bolt Mounted or Banded to Pole, Finished to Match Pole (Field Installed) (Specify Pole Height & Orientation)'
+  const BA30 = BA24.replace(/24"/g, '30"')
+
+  it('the floor is 8 ft, and 10 ft once the pole reaches 25 ft', () => {
+    // No catalog pole reaches 25 ft today (8–20 ft), so the rule is written as
+    // a function of pole height and will start applying by itself.
+    expect(catalog.parts.filter((p) => p.slot === 'pole').every((p) => (p.heightFt ?? 0) < 25)).toBe(true)
+    for (const ft of [8, 10, 15, 20, 24, 24.99]) expect(bannerMinFt(ft)).toBe(8)
+    for (const ft of [25, 30, 39]) expect(bannerMinFt(ft)).toBe(10)
+    expect(bannerHeightRange(catalog, 25, '24x48').minFt).toBe(10)
+    expect(bannerHeightRange(catalog, 20, '24x48').minFt).toBe(8)
+  })
+
+  it('the ceiling keeps the whole panel on the pole', () => {
+    // 25 ft pole, 60 in panel, 1 ft clearance → bottom no higher than 19 ft.
+    expect(bannerHeightRange(catalog, 25, '30x60')).toEqual({ minFt: 10, maxFt: 19, fits: true })
+  })
+
+  it('the panel never runs past the pole top at the maximum height', () => {
+    const arm = catalog.parts.find((p) => p.id === 'willstudio-ba1-banner-arm')!
+    for (const poleFt of [8, 10, 12, 14, 15, 16, 18, 20, 25, 39]) {
+      for (const id of ['18x36', '24x48', '30x60']) {
+        const range = bannerHeightRange(catalog, poleFt, id)
+        if (!range.fits) continue
+        const geom = bannerGeometry(arm, range.maxFt, bannerPanelSize(catalog, id))!
+        expect(geom.topBarM).toBeLessThanOrEqual(poleFt * 0.3048)
+      }
+    }
+  })
+
+  it('flags — rather than silently allows — a panel a short pole cannot carry', () => {
+    // An 8 ft pole cannot hold any banner above the 8 ft floor. The range
+    // collapses onto the floor and `fits` says so, so the UI can warn.
+    const range = bannerHeightRange(catalog, 8, '30x60')
+    expect(range).toEqual({ minFt: 8, maxFt: 8, fits: false })
+    expect(bannerHeightRange(catalog, 14, '24x48').fits).toBe(true)
+  })
+
+  it('both banner paths agree on the same pole', () => {
+    // The legacy config.banner path and the BA24/BA30 accessory path must not
+    // drift apart again — they resolve through one function.
+    for (const poleFt of [12, 15, 20, 25]) {
+      for (const id of [undefined, '18x36', '24x48']) {
+        expect(accessoryHeightRange(catalog, poleFt, BA24, id)).toEqual(
+          bannerHeightRange(catalog, poleFt, id),
+        )
+      }
+    }
+  })
+
+  it('a banner kit only offers panels its own arms can carry', () => {
+    // Derived from the kit's own label text ("24" Fiberglass Arms"), not a
+    // hardcoded code→size table.
+    expect(bannerSizesForLabel(catalog, BA24).map((s) => s.id)).toEqual(['18x36', '24x48'])
+    expect(bannerSizesForLabel(catalog, BA30).map((s) => s.id)).toEqual(['18x36', '24x48', '30x60'])
+    // A label with no declared arm length (legacy BA1 parts) offers everything.
+    expect(bannerSizesForLabel(catalog, 'BA1 Banner Arm').map((s) => s.id)).toHaveLength(3)
+  })
+
+  it('non-banner accessories keep the generic 1 ft pole-top clearance', () => {
+    expect(accessoryHeightRange(catalog, 12, 'Festoon Provision, Electrical by Others')).toEqual({
+      minFt: 2,
+      maxFt: 11,
+      fits: true,
+    })
+  })
+})
+
+describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
+  const withKit = (code: string, size?: string, heightFt = 9) =>
+    repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        pole: 'alum-pole-20',
+        specOptions: { pole: { accessories: [code] } },
+        accessoryPlacements: { [code]: { heightFt, orientation: 0, sides: 1, ...(size ? { size } : {}) } },
+      }),
+    )
+
+  it('applies the 8 ft banner floor a placement UI once ignored', () => {
+    // Pre-0.11 divergence: repairConfig floored banner kits at BANNER_MIN_FT
+    // while Panel's slider floored them at 2 ft. Both now use one function.
+    expect(withKit('BA24', undefined, 3).accessoryPlacements?.BA24?.heightFt).toBe(8)
+  })
+
+  it('reserves the panel height under the pole top', () => {
+    // 20 ft pole − 4 ft default panel − 1 ft clearance.
+    expect(withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt).toBe(15)
+    // 20 ft pole − 5 ft panel − 1 ft clearance.
+    expect(withKit('BA30', '30x60', 99).accessoryPlacements?.BA30?.heightFt).toBe(14)
+  })
+
+  it('keeps a size the kit can carry and drops one it cannot', () => {
+    expect(withKit('BA30', '30x60').accessoryPlacements?.BA30?.size).toBe('30x60')
+    // BA24's 24 in arms can't fly a 30 in banner — falls back to the default.
+    expect(withKit('BA24', '30x60').accessoryPlacements?.BA24?.size).toBeUndefined()
+  })
+
+  it('never stores a panel size on a non-banner accessory', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({
+        fixture: 'drx-post-top',
+        arm: 'direct-mount',
+        pole: 'alum-pole-12',
+        specOptions: { pole: { options: ['FSTR'] } },
+        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 0, size: '24x48' } },
+      }),
+    )
+    expect(repaired.accessoryPlacements?.FSTR?.size).toBeUndefined()
+  })
+
+  it('a banner reads the same height whichever path configured it', () => {
+    // 20 ft pole either way: alum-pole-20 for the kit path, the NAFCO fallback
+    // for the legacy path.
+    const kit = withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt
+    const nafcoCfg = repairConfig(
+      catalog,
+      config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
+    )
+    const legacy = repairConfig(catalog, {
+      ...nafcoCfg,
+      banner: { armId: 'nafco-ba1-banner-arm', count: 1, heightFt: 99 },
+    }).banner?.heightFt
+    expect(kit).toBe(legacy)
+  })
+})
+
+describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
+  const cfValues = (partId: string) =>
+    (partById(catalog, partId)?.options ?? [])
+      .flatMap((o) => o.values)
+      .filter((v) => /^CF[123]$/.test(v.code))
+      .map((v) => v.code)
+
+  it('are transcribed from the arms ordering matrix onto SH1', () => {
+    expect(cfValues('sh1-shepherds-hook')).toEqual(['CF1', 'CF2', 'CF3'])
+    const column = partById(catalog, 'sh1-shepherds-hook')!.options!.find(
+      (o) => o.key === 'center-feature',
+    )!
+    expect(column.group).toBe('options-accessories')
+    expect(column.values.map((v) => v.label)).toEqual([
+      'Center Shepherds Hook Decorative Feature',
+      'Center Shepherds Hook Brand/Logo/City Round Feature',
+      'Center Shepherds Hook Brand/Logo Feature (variant)',
+    ])
+    // Bare `CF` = Custom is deliberately excluded (docs/ordering-matrix.json
+    // armOptionsNote): a custom feature is a quote conversation, not a code.
+    expect(column.values.some((v) => v.code === 'CF')).toBe(false)
+  })
+
+  it('appear on no other part in the catalog', () => {
+    const carriers = catalog.parts
+      .filter((p) => (p.options ?? []).some((o) => o.values.some((v) => /^CF[123]$/.test(v.code))))
+      .map((p) => p.id)
+    expect(carriers).toEqual(['sh1-shepherds-hook'])
+  })
+
+  it('are one exclusive family — and the bare CF on mvx-coach is not in it', () => {
+    expect(exclusiveFamily('CF1')).toBe('center-feature')
+    expect(exclusiveFamily('CF2')).toBe('center-feature')
+    expect(exclusiveFamily('CF3')).toBe('center-feature')
+    // mvx-coach's `CF` = "Custom" is a different concept and must not be swept
+    // into the family by a loose `^CF` prefix match.
+    expect(exclusiveFamily('CF')).toBeUndefined()
+    expect(exclusiveFamily('CF4')).toBeUndefined()
+    expect(exclusiveFamily('CFL')).toBeUndefined()
+  })
+
+  it('repairConfig keeps only one CF code', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({ arm: 'sh1-shepherds-hook', specOptions: { arm: { 'center-feature': ['CF2', 'CF3'] } } }),
+    )
+    expect(repaired.specOptions?.arm?.['center-feature']).toEqual(['CF2'])
+  })
+
+  it('repairConfig keeps a single CF code untouched', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({ arm: 'sh1-shepherds-hook', specOptions: { arm: { 'center-feature': ['CF3'] } } }),
+    )
+    expect(repaired.specOptions?.arm?.['center-feature']).toEqual(['CF3'])
+  })
+
+  it('the mvx-coach bare CF still coexists with its own column-mates', () => {
+    const repaired = repairConfig(
+      catalog,
+      config({ fixture: 'mvx-coach', arm: 'upsweep', specOptions: { fixture: { options: ['CF'] } } }),
+    )
+    expect(repaired.specOptions?.fixture?.options).toEqual(['CF'])
+  })
+
+  it('is offered on SH1 only — guarded, not merely absent elsewhere', () => {
+    expect(codeAllowedOnPart(partById(catalog, 'sh1-shepherds-hook'), 'CF1')).toBe(true)
+    // "Nick pretty sure SS has no logo; Tyler to confirm" → SS stays no-logo.
+    const ss = partById(catalog, 'willstudio-side-shepherds-hook-pole-top-brackets')
+    expect(codeAllowedOnPart(ss, 'CF1')).toBe(false)
+    expect(codeAllowedOnPart(partById(catalog, 'upsweep'), 'CF1')).toBe(false)
+    expect(codeAllowedOnPart(undefined, 'CF1')).toBe(false)
+    // The guard is scoped to the family: unrelated codes stay unaffected.
+    expect(codeAllowedOnPart(partById(catalog, 'upsweep'), 'CF')).toBe(true)
+    expect(codeAllowedOnPart(partById(catalog, 'drx-post-top'), 'WHP3NP')).toBe(true)
+  })
+
+  it('a catalog edit that offers CF on another arm is rejected by repairConfig', () => {
+    // Simulates scripts/merge-ordering.mjs fanning the arms sheet's Options
+    // column across all 10 arm families — the exact way this could regress.
+    const sh1Column = partById(catalog, 'sh1-shepherds-hook')!.options![0]
+    const tampered: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) =>
+        p.id === 'willstudio-side-shepherds-hook-pole-top-brackets'
+          ? { ...p, options: [sh1Column] }
+          : p,
+      ),
+    }
+    const repaired = repairConfig(
+      tampered,
+      config({
+        arm: 'willstudio-side-shepherds-hook-pole-top-brackets',
+        specOptions: { arm: { 'center-feature': ['CF1'] } },
+      }),
+    )
+    expect(repaired.arm).toBe('willstudio-side-shepherds-hook-pole-top-brackets')
+    expect(repaired.specOptions?.arm).toBeUndefined()
   })
 })
 

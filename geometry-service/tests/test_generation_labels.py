@@ -12,7 +12,13 @@ import uuid
 
 import pytest
 
-from app.generation import _ARM_ARRANGEMENT_LABELS, _banner_geometry, _build_summary, _ft_in
+from app.generation import (
+    _ARM_ARRANGEMENT_LABELS,
+    _banner_geometry,
+    _banner_panel_size,
+    _build_summary,
+    _ft_in,
+)
 from app.models import BannerConfig, GenerateRequest, PoleConfig
 
 from .conftest import first_base_cover_for
@@ -25,31 +31,52 @@ BANNER_ID = "willstudio-ba1-banner-arm"
 # ---------------------------------------------------------------------------
 
 
-def test_banner_geometry_matches_known_ba1_catalog_geometry(catalog):
-    """BA1: a 1.25 m panel between bars centred at +/-0.64 m of the mount
-    point (public/catalog.json willstudio-ba1-banner-arm placeholder), at an
-    8 ft mount height. Same numbers src/lib/banner.test.ts asserts in TS."""
+def test_banner_geometry_measures_to_the_bottom_of_the_banner(catalog):
+    """Phase 0.11 (Workstream D): the configured height is the banner's BOTTOM
+    EDGE, not its vertical centre.
+
+    This test previously asserted the centre model (bars straddling the mount
+    height at +/-640 mm). That was the bug: a 24x48 banner at the 8 ft minimum
+    hung down to ~6 ft while the app reported it compliant. Mirrors
+    src/lib/banner.test.ts.
+    """
     part_map = {p["id"]: p for p in catalog["parts"]}
     banner_part = part_map[BANNER_ID]
 
+    # No ordered size -> the placeholder solid's own 1.25 m panel.
     geom = _banner_geometry(banner_part, 8)
     assert geom is not None
     panel_mm, top_mm, bottom_mm = geom
 
-    mount_mm = 8 * 304.8
+    bottom_edge_mm = 8 * 304.8
     assert panel_mm == pytest.approx(1250.0, abs=0.5)
-    assert top_mm == pytest.approx(mount_mm + 640.0, abs=0.5)
-    assert bottom_mm == pytest.approx(mount_mm - 640.0, abs=0.5)
-    assert top_mm - bottom_mm == pytest.approx(1280.0, abs=0.5)
+    # Both bars now sit at or above the configured bottom edge, not around it.
+    assert bottom_mm == pytest.approx(bottom_edge_mm - 15.0, abs=1.0)
+    assert top_mm == pytest.approx(bottom_edge_mm + 1250.0 + 15.0, abs=1.0)
+    assert top_mm > bottom_edge_mm
 
 
-def test_banner_geometry_bars_straddle_the_configured_shaft_height(catalog):
+def test_banner_geometry_uses_the_ordered_panel_size(catalog):
+    """The panel is the ORDERED size (24x48 default), not the placeholder solid."""
+    part_map = {p["id"]: p for p in catalog["parts"]}
+    banner_part = part_map[BANNER_ID]
+    size = _banner_panel_size(catalog, None)
+    assert size["id"] == "24x48"
+
+    panel_mm, top_mm, bottom_mm = _banner_geometry(banner_part, 8, size)
+    assert panel_mm == pytest.approx(48 * 25.4, abs=0.5)
+    # Top bar tracks the ordered panel height off the configured bottom edge.
+    assert top_mm - bottom_mm == pytest.approx(48 * 25.4 + 30.0, abs=1.5)
+
+
+def test_banner_geometry_rises_with_the_configured_height(catalog):
     part_map = {p["id"]: p for p in catalog["parts"]}
     banner_part = part_map[BANNER_ID]
 
-    _, top_mm, bottom_mm = _banner_geometry(banner_part, 10)
-    mount_mm = 10 * 304.8
-    assert bottom_mm < mount_mm < top_mm
+    _, top_8, bottom_8 = _banner_geometry(banner_part, 8)
+    _, top_10, bottom_10 = _banner_geometry(banner_part, 10)
+    assert bottom_10 - bottom_8 == pytest.approx(2 * 304.8, abs=0.5)
+    assert top_10 - top_8 == pytest.approx(2 * 304.8, abs=0.5)
 
 
 def test_banner_geometry_returns_none_for_a_non_group_placeholder(catalog):
@@ -129,5 +156,10 @@ def test_build_summary_banner_line_carries_the_derived_dimensions(catalog):
     summary = _build_summary(catalog, req, None)
     banner_line = summary["banner"]
     assert "opposite pair" in banner_line
-    assert "banner height 49 in" in banner_line
+    # Phase 0.11 (D): the line names the ORDERED panel (24x48 default), not the
+    # placeholder solid's 49 in, and states the bottom-edge reference. Must
+    # stay word-for-word identical to bannerSummaryLine in src/lib/banner.ts.
+    assert "24 \u00d7 48 in panel" in banner_line
+    assert "banner height 48 in" in banner_line
+    assert "bottom of banner 8'-0\"" in banner_line
     assert "top bar" in banner_line and "bottom bar" in banner_line

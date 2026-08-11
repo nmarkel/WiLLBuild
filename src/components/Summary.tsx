@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
-import { configStatus, finishFor, partById } from '../lib/compat'
+import { bannerPanelSize, configStatus, finishFor, partById } from '../lib/compat'
+import { bannerSummaryLine } from '../lib/banner'
 import { armArrangementLabel, buildPartNumber, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
-import { shareUrl } from '../lib/url'
+import { useConfigurator } from '../store'
 
 interface Props {
   catalog: Catalog
@@ -13,12 +14,18 @@ const QUOTE_URL = 'https://willbrands.com/pages/request-a-quote'
 
 export function Summary({ catalog, config }: Props) {
   const [copied, setCopied] = useState(false)
+  // Phase 0.11 (F3): share the build the customer is actually looking at —
+  // `shareLink()` carries the live viewer scene, which `shareUrl(config)` alone
+  // silently replaced with the default backdrop.
+  const shareLink = useConfigurator((s) => s.shareLink)
+  const scene = useConfigurator((s) => s.scene)
 
   const status = configStatus(catalog, config)
-  const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config))}`
+  // The quote body embeds the same link, so it needs the same live scene.
+  const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config, scene))}`
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(shareUrl(config))
+    await navigator.clipboard.writeText(shareLink())
     setCopied(true)
     setTimeout(() => setCopied(false), 1600)
   }
@@ -52,10 +59,22 @@ export function Summary({ catalog, config }: Props) {
                       {part.name}
                     </a>
                   </span>
+                  {/* Phase 0.11 (F2): one part number PER PART, never merged into a
+                      combined assembly number. The "Part No." tag makes it readable as
+                      an ordering number (matches buildSummaryText's `Part No:` lines)
+                      instead of an unlabeled code, and the aria-label ties it to its
+                      part for screen readers. */}
                   {partNumber && (
-                    <code className="summary-pn" title="Full ordering part number">
-                      {partNumber}
-                    </code>
+                    <span className="summary-pn-row">
+                      <span className="summary-pn-tag">Part No.</span>
+                      <code
+                        className="summary-pn"
+                        aria-label={`${r.label} part number`}
+                        title={`${r.label} ordering part number`}
+                      >
+                        {partNumber}
+                      </code>
+                    </span>
                   )}
                 </span>
               ) : (
@@ -79,9 +98,22 @@ export function Summary({ catalog, config }: Props) {
         {config.banner && (
           <li>
             <span className="summary-label">Banner Arm</span>
+            {/* Phase 0.11 (D): "N-side @ X ft" named neither the ordered panel
+                nor what the height measures to — the same class of bug as the
+                arm-arrangement label fixed in 0.10.5. Route it through the one
+                function the quote text and the PDF already share. */}
             <span>
-              {partById(catalog, config.banner.armId)?.name ?? config.banner.armId} · {config.banner.count}-side @{' '}
-              {config.banner.heightFt} ft
+              {(() => {
+                const part = partById(catalog, config.banner.armId)
+                return part
+                  ? bannerSummaryLine(
+                      part,
+                      config.banner.count,
+                      config.banner.heightFt,
+                      bannerPanelSize(catalog, config.banner.size),
+                    )
+                  : `${config.banner.armId} · ${config.banner.count}-side, ${config.banner.heightFt} ft to bottom`
+              })()}
             </span>
           </li>
         )}
