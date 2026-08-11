@@ -84,6 +84,24 @@ export interface CatalogPart {
   /** Sockets this part exposes for other parts to attach to. Optional for standalone. */
   sockets?: Record<string, SocketDef>
   /**
+   * Phase 0.12: correction applied to this part's ORIGIN when it is attached to
+   * its host, in the part's own frame (metres, +Y up).
+   *
+   * `ASSETS.md` requires a part's origin to be its lower attachment point, and
+   * every arm honours that — except FR2, whose real CAD puts y=0 at the tips of
+   * the decorative finials that hang BELOW the crossarm, leaving its pole collar
+   * 0.0889 m up. Placed by the book, the crossarm floated 3.5" off the pole.
+   *
+   * Kept as a placement correction rather than baked into the socket positions
+   * on purpose: the sockets stay in the GLB's own frame, so a number measured
+   * off the CAD can be written straight into the catalog with no rebasing, and
+   * exactly one field carries the discrepancy. The alternative — a translate at
+   * ingest in `real-parts.json`, alongside `rotateY` — is arguably more correct
+   * (it would make the asset obey ASSETS.md rather than compensating for it),
+   * but it moves the rig's recorded anchor and so needs the part re-rendered.
+   */
+  mountOffset?: [number, number, number]
+  /**
    * Phase 0.8 (A2): the arm counts / banner side-counts this part supports in a
    * radial arrangement, e.g. [1,2,3,4]. On a pole it's the counts the pole top
    * can host; on an arm it's the counts that arm can cluster into; on a banner

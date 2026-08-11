@@ -16327,12 +16327,25 @@
       "name": "WiLLstudio\u00ae FR2 Decorative Crossarm",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
+      "mountOffset": [
+        0,
+        -0.0889,
+        0
+      ],
       "sockets": {
         "fixture": {
           "type": "tenon-2-3/8",
           "position": [
-            0.62,
-            0.3,
+            0.4572,
+            0.4191,
+            0
+          ]
+        },
+        "fixtureOpposite": {
+          "type": "tenon-2-3/8",
+          "position": [
+            -0.4572,
+            0.4191,
             0
           ]
         }

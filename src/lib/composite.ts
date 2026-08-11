@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel } from './compat'
+import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -120,6 +120,24 @@ export function rotateY(
  */
 export function armDepthProxy(rig: RenderManifest['rig'], deg: number): number {
   return Math.sin(((rig.azimuthDeg - deg) * Math.PI) / 180)
+}
+
+/**
+ * The same depth proxy for an arbitrary horizontal offset already rotated into
+ * view space — used to order the two fixtures of a crossarm, where one end
+ * reaches toward the camera and the other away.
+ *
+ * This is `armDepthProxy` generalized, not a second convention: substituting a
+ * reach at azimuth `deg` (whose rotated offset is `[cos deg, ·, -sin deg]`)
+ * gives `sin(az)cos(deg) - cos(az)sin(deg)` = `sin(az - deg)`, exactly the arm
+ * form. Asserted in composite.test.ts so the two cannot drift apart.
+ */
+export function offsetDepthProxy(
+  rig: RenderManifest['rig'],
+  offset: readonly [number, number, number],
+): number {
+  const az = (rig.azimuthDeg * Math.PI) / 180
+  return Math.sin(az) * offset[0] + Math.cos(az) * offset[2]
 }
 
 /** Draw order for assembly layers (base cover covers the pole root, fixture tops the arm). */
@@ -306,7 +324,9 @@ export function resolveAssemblyLayout(
         // just shifts to the matching azimuth render.
         const orientation = config.armOrientation ?? 0
         const azimuths = armAzimuths(count).map((a) => (((a + orientation - viewYaw) % 360) + 360) % 360)
-        const fixSocket = fixture ? attachSocket(fixture, arm) : undefined
+        // A crossarm carries a fixture at EACH end, so every matching socket
+        // gets one — not just the first (see `attachSockets`).
+        const fixSockets = fixture ? attachSockets(fixture, arm) : []
         azimuths.forEach((rawDeg, i) => {
           const single = count === 1
           // Snap the arm's GEOMETRY to the angle it can actually render:
@@ -317,7 +337,17 @@ export function resolveAssemblyLayout(
           const deg = angleKeyDeg(angle)
           // The arm mounts on the pole's vertical axis, so its origin is
           // rotation-invariant; the reach is baked into the per-azimuth render.
-          const armWorld: [number, number, number] = [...armSocket.position]
+          //
+          // `mountOffset` corrects a real-CAD part whose origin is not its lower
+          // attachment point (FR2 — see the field's note in types.ts). It is
+          // applied here, at the mount, so the arm's own sockets stay in the
+          // part's native frame and ride along with it.
+          const mo = arm.mountOffset ?? [0, 0, 0]
+          const armWorld: [number, number, number] = [
+            armSocket.position[0] + mo[0],
+            armSocket.position[1] + mo[1],
+            armSocket.position[2] + mo[2],
+          ]
           // The unrotated single arm keeps the historic fixed z-order; rotated
           // or radial arms z-sort by camera depth so ones reaching behind the
           // pole draw first.
@@ -330,19 +360,30 @@ export function resolveAssemblyLayout(
             world: armWorld,
             z: armZ,
           })
-          if (fixture && fixSocket) {
+          const oneSocket = fixSockets.length === 1
+          fixSockets.forEach((fixSocket, s) => {
+            if (!fixture) return
             const rot = rotateY(fixSocket.position, deg)
             const world: [number, number, number] = [
               armWorld[0] + rot[0],
               armWorld[1] + rot[1],
               armWorld[2] + rot[2],
             ]
+            // A single-socket arm keeps the historic id and fixed z exactly.
+            // A crossarm's two ends straddle the pole, so each fixture sorts by
+            // its own camera depth — otherwise the far one draws ON TOP of the
+            // crossarm it hangs behind.
+            const suffix = `${single ? '' : `#${i}`}${oneSocket ? '' : `@${s}`}`
             placements.push({
-              layerId: single ? fixture.id : `${fixture.id}#${i}`,
+              layerId: `${fixture.id}${suffix}`,
               part: fixture,
               angle,
               world,
-              z: single && deg === 0 ? SLOT_Z.fixture : armZ + 0.001,
+              z: oneSocket
+                ? single && deg === 0
+                  ? SLOT_Z.fixture
+                  : armZ + 0.001
+                : armZ + offsetDepthProxy(manifest.rig, rot),
             })
             // Each radial fixture emits its own night glow (twin/triple/quad
             // all light up, not just the first arm).
@@ -353,7 +394,7 @@ export function resolveAssemblyLayout(
                 world[2] + fixture.lightOffset[2],
               ])
             }
-          }
+          })
         })
       }
     }

@@ -162,19 +162,32 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     expect(adapter?.productClass).toBe('standalone')
   })
 
-  it('every promoted arm exposes exactly one fixture socket (multi-head out of scope)', () => {
-    const promotedArms = [
-      'aluminum-decorative-bullhorn-brackets-round-pole-mount',
-      'willstudio-cr2-decorative-crossarm',
-      'willstudio-fr2-decorative-crossarm',
-      'willstudio-hsx-decorative-upsweep-arms',
-      'willstudio-side-shepherds-hook-pole-top-brackets',
-      'willstudio-suspension-arm-pole-top-brackets',
-      'willstudio-supported-decorative-arms',
-    ]
-    for (const id of promotedArms) {
+  /**
+   * Phase 0.12: this used to assert every promoted arm had exactly ONE socket,
+   * "multi-head out of scope". That was a scope decision, not an invariant, and
+   * it silently locked in the FR2 bug — FR2 is "Fixed 2 @ 180 deg, finial" in
+   * the ordering matrix and its real CAD is a symmetric double-ended crossarm,
+   * so one socket meant one tenon always rendered bare.
+   *
+   * The real rule is that the socket count matches the geometry.
+   */
+  it('each promoted arm exposes as many fixture sockets as it has mounts', () => {
+    const expected: Record<string, number> = {
+      'aluminum-decorative-bullhorn-brackets-round-pole-mount': 1,
+      // CR2 is also a "Fixed 2 @ 180 deg" crossarm, but it is still on a
+      // SINGLE-ENDED placeholder tube and is Coming Soon. Giving it a second
+      // socket before its real CAD lands would composite a fixture onto an end
+      // its artwork does not have. Bump to 2 with the geometry, not before.
+      'willstudio-cr2-decorative-crossarm': 1,
+      'willstudio-fr2-decorative-crossarm': 2,
+      'willstudio-hsx-decorative-upsweep-arms': 1,
+      'willstudio-side-shepherds-hook-pole-top-brackets': 1,
+      'willstudio-suspension-arm-pole-top-brackets': 1,
+      'willstudio-supported-decorative-arms': 1,
+    }
+    for (const [id, count] of Object.entries(expected)) {
       const arm = partById(catalog, id)!
-      expect(Object.keys(arm.sockets ?? {})).toHaveLength(1)
+      expect(Object.keys(arm.sockets ?? {}), id).toHaveLength(count)
     }
   })
 })

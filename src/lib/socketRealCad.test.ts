@@ -277,3 +277,83 @@ describe.skipIf(!assetsPresent)('pendant sockets sit on the real CAD fitting the
     })
   }
 })
+
+/**
+ * Phase 0.12 — the same class of bug on a TENON arm, found on FR2.
+ *
+ * FR2's single fixture socket was [0.62, 0.30]: derived from the arm's furthest
+ * feature, which on this part is the DECORATIVE END FINIAL, not a mount. The
+ * real fixture tenons are the upward columns at x = ±0.4572 topping out at
+ * y = 0.4191, so the TEX composited 16 cm outboard and 12 cm low — hanging off
+ * the end of the crossarm rather than sitting on it. Same root cause as SS/AR:
+ * the extreme vertex is not the mounting feature.
+ *
+ * Two further facts this pins, both CAD-measured:
+ *   - the crossarm is SYMMETRIC (x -0.611..+0.610), so it carries a fixture at
+ *     each end. One socket = one bare tenon, forever.
+ *   - its pole collar starts 0.0889 m ABOVE the GLB origin (every other arm's
+ *     starts at 0), which is why it floated off the pole and why it needs
+ *     `mountOffset`.
+ */
+describe.skipIf(!assetsPresent)('FR2 crossarm sits on the pole and mounts on its tenons', () => {
+  const FR2 = 'willstudio-fr2-decorative-crossarm'
+  const fr2 = catalog.parts.find((p) => p.id === FR2) as CatalogPart | undefined
+  const path = resolve(GLB_DIR, `${FR2}.glb`)
+  const pts = existsSync(path) && fr2 ? glbPoints(path, rotateYFor(FR2)) : []
+
+  it('carries a fixture socket at BOTH ends of a symmetric crossarm', () => {
+    if (!pts.length) return
+    const xs = pts.map((p) => p[0])
+    // Symmetric about the pole: both ends reach within a centimetre of each other.
+    expect(Math.abs(Math.abs(Math.min(...xs)) - Math.max(...xs))).toBeLessThan(0.01)
+
+    const sockets = Object.values(fr2!.sockets ?? {}).filter((s) => s.type === 'tenon-2-3/8')
+    expect(sockets, 'a two-ended crossarm needs a socket per end').toHaveLength(2)
+    // One either side of the pole axis.
+    expect(Math.min(...sockets.map((s) => s.position[0]))).toBeLessThan(0)
+    expect(Math.max(...sockets.map((s) => s.position[0]))).toBeGreaterThan(0)
+  })
+
+  it('puts each socket on the top of a real tenon, not on the end finial', () => {
+    if (!pts.length) return
+    for (const socket of Object.values(fr2!.sockets ?? {})) {
+      const sx = socket.position[0]
+      // The tenon column above the crossarm body, on this socket's side.
+      const column = pts.filter(
+        (p) => Math.sign(p[0]) === Math.sign(sx) && Math.abs(p[0]) > 0.30 && p[1] > 0.36,
+      )
+      expect(column.length, `no tenon column found near x=${sx}`).toBeGreaterThan(0)
+      const top = Math.max(...column.map((p) => p[1]))
+      const cap = column.filter((p) => p[1] >= top - 0.004)
+      const cx =
+        (Math.min(...cap.map((p) => p[0])) + Math.max(...cap.map((p) => p[0]))) / 2
+
+      expect(
+        Math.abs(sx - cx),
+        `FR2 socket x=${sx} is ${(sx - cx).toFixed(4)} m off its tenon centre ` +
+          `${cx.toFixed(4)} — the fixture sits beside the tenon`,
+      ).toBeLessThanOrEqual(TOL_M)
+      expect(
+        Math.abs(socket.position[1] - top),
+        `FR2 socket y=${socket.position[1]} is off the tenon top ${top.toFixed(4)} — a ` +
+          `tenon fixture SITS ON the tenon (cf. direct-mount, whose socket is its own top)`,
+      ).toBeLessThanOrEqual(TOL_M)
+    }
+  })
+
+  it('lands its pole collar on the pole top via mountOffset', () => {
+    if (!pts.length) return
+    // The collar that swallows the pole tenon, i.e. geometry on the pole axis.
+    const collar = pts.filter((p) => Math.abs(p[0]) < 0.08 && Math.abs(p[2]) < 0.08)
+    const collarBottom = Math.min(...collar.map((p) => p[1]))
+    const offset = fr2!.mountOffset ?? [0, 0, 0]
+
+    // Every other arm's collar bottom IS its origin; FR2's is 0.0889 m up, so
+    // the offset must cancel exactly that or the crossarm floats.
+    expect(
+      collarBottom + offset[1],
+      `FR2 collar bottom ${collarBottom.toFixed(4)} + mountOffset ${offset[1]} must land on ` +
+        `the pole top (0) — a non-zero result is the visible float`,
+    ).toBeCloseTo(0, 3)
+  })
+})

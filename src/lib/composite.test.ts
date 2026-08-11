@@ -9,6 +9,7 @@ import {
   RENDER_AZIMUTHS,
   angleKeyForAzimuth,
   armDepthProxy,
+  offsetDepthProxy,
   availableFocusTargets,
   currentViewIndex,
   focusBox,
@@ -539,6 +540,138 @@ describe('the canonical view set (Phase 0.11 E)', () => {
     // The pole is drawn at (0 − viewYaw), so each view must be renderable.
     for (const yaw of ASSEMBLY_VIEW_YAWS) {
       expect(RENDER_AZIMUTHS).toContain(((360 - yaw) % 360) as (typeof RENDER_AZIMUTHS)[number])
+    }
+  })
+})
+
+/**
+ * Phase 0.12 — a crossarm carries a fixture at EACH end.
+ *
+ * FR2 is "Fixed 2 @ 180 deg, finial" in the ordering matrix and its real CAD is
+ * a symmetric double-ended crossarm with an upward tenon at x = ±0.457. The
+ * compositor placed exactly one fixture on it, because `attachSocket` returns
+ * the FIRST socket matching the fixture's mount — so the second tenon rendered
+ * bare no matter what the catalog declared.
+ *
+ * This is NOT the radial multi-arm mechanic: that repeats a whole ARM around
+ * the pole (armCount 2 -> two arm layers at 0 deg/180 deg). A crossarm is ONE
+ * arm asset with two ends, so repeating it would draw the crossarm — finial and
+ * all — twice on top of itself.
+ */
+describe('multi-socket arms (crossarms)', () => {
+  /** Rig with a real 35 deg azimuth so front/back depth is expressible. */
+  const depthRig: RenderManifest['rig'] = {
+    ...rig,
+    azimuthDeg: 35,
+  }
+  const depthManifest: RenderManifest = { ...manifest, rig: depthRig }
+
+  const crossCatalog: Catalog = {
+    ...catalog,
+    parts: catalog.parts.map((p) =>
+      p.id === 'arm'
+        ? {
+            ...p,
+            sockets: {
+              // Deliberately NOT named `fixture`/`fixture2` in the test, to pin
+              // that placement keys off socket TYPE and not socket name.
+              right: { type: 'pendant' as const, position: [1, 0.5, 0] as [number, number, number] },
+              left: { type: 'pendant' as const, position: [-1, 0.5, 0] as [number, number, number] },
+            },
+          }
+        : p,
+    ),
+  }
+
+  const layout = resolveAssemblyLayout(crossCatalog, depthManifest, config)
+  const fixtures = layout.layers.filter((l) => l.slot === 'fixture')
+
+  it('places one fixture per matching socket, not just the first', () => {
+    expect(fixtures).toHaveLength(2)
+    expect(layout.missing).toEqual([])
+  })
+
+  it('gives each fixture a distinct layer id', () => {
+    expect(new Set(fixtures.map((l) => l.partId)).size).toBe(2)
+  })
+
+  it('places them at both sockets, one either side of the pole', () => {
+    const xs = fixtures.map((l) => l.left).sort((a, b) => a - b)
+    // +-1 m either side of the pole axis, projected through the rig map.
+    const [right] = projectOffset(depthManifest, [1, 0, 0])
+    const [left] = projectOffset(depthManifest, [-1, 0, 0])
+    expect(xs[1] - xs[0]).toBeCloseTo(right - left, 6)
+  })
+
+  it('draws the far fixture BEHIND the arm and the near one in front', () => {
+    const arm = layout.layers.find((l) => l.slot === 'arm')!
+    const near = fixtures.find((l) => l.left > arm.left)!
+    const far = fixtures.find((l) => l.left < arm.left)!
+    // Under a 35 deg azimuth the +X end is toward the camera.
+    expect(near.z).toBeGreaterThan(arm.z)
+    expect(far.z).toBeLessThan(arm.z)
+  })
+
+  it('emits a night glow per fixture, not one for the arm', () => {
+    expect(layout.lightPxs).toHaveLength(2)
+  })
+
+  it('leaves a single-socket arm exactly as before', () => {
+    const single = resolveAssemblyLayout(catalog, manifest, config)
+    expect(single.layers.map((l) => l.partId)).toEqual(['pole', 'base', 'arm', 'fix'])
+    expect(single.layers.find((l) => l.slot === 'fixture')!.z).toBe(4)
+  })
+})
+
+/**
+ * Phase 0.12 — `mountOffset` corrects a real-CAD part whose origin is not its
+ * lower attachment point (see the field's note in types.ts). FR2's pole collar
+ * sits 0.0889 m above its GLB origin, so the crossarm floated 3.5" off the pole.
+ */
+describe('mountOffset', () => {
+  const OFFSET = -0.25
+  const offsetCatalog: Catalog = {
+    ...catalog,
+    parts: catalog.parts.map((p) =>
+      p.id === 'arm' ? { ...p, mountOffset: [0, OFFSET, 0] as [number, number, number] } : p,
+    ),
+  }
+
+  const base = resolveAssemblyLayout(catalog, manifest, config)
+  const moved = resolveAssemblyLayout(offsetCatalog, manifest, config)
+
+  /** Layer position relative to the layout's world origin — the layout box is
+   *  normalized, so absolute `top` shifts whenever any layer moves. */
+  const rel = (l: ReturnType<typeof resolveAssemblyLayout>, slot: string) => {
+    const layer = l.layers.find((x) => x.slot === slot)!
+    return [layer.left - l.origin[0], layer.top - l.origin[1]]
+  }
+
+  it('lowers the arm onto its host by the offset', () => {
+    expect(rel(moved, 'arm')[1] - rel(base, 'arm')[1]).toBeCloseTo(-OFFSET * 100, 6)
+    expect(rel(moved, 'arm')[0]).toBeCloseTo(rel(base, 'arm')[0], 6)
+  })
+
+  it('carries the fixture down with the arm, preserving their relationship', () => {
+    expect(rel(moved, 'fixture')[1] - rel(base, 'fixture')[1]).toBeCloseTo(-OFFSET * 100, 6)
+  })
+
+  it('does not move the pole or base cover', () => {
+    for (const slot of ['pole', 'baseCover']) {
+      expect(rel(moved, slot)[1]).toBeCloseTo(rel(base, slot)[1], 6)
+      expect(rel(moved, slot)[0]).toBeCloseTo(rel(base, slot)[0], 6)
+    }
+  })
+})
+
+describe('offsetDepthProxy', () => {
+  it('generalizes armDepthProxy — an arm reach agrees at every azimuth', () => {
+    for (const az of [0, 35, 90, 200]) {
+      const r = { ...rig, azimuthDeg: az }
+      for (const deg of [0, 45, 90, 135, 180, 270]) {
+        // The rotated offset of a unit reach along +X at azimuth `deg`.
+        expect(offsetDepthProxy(r, rotateY([1, 0, 0], deg))).toBeCloseTo(armDepthProxy(r, deg), 10)
+      }
     }
   })
 })

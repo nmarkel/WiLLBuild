@@ -404,8 +404,26 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
 
 /** The host socket a part attaches at (position offset comes from catalog data, never hardcoded). */
 export function attachSocket(part: CatalogPart, host: CatalogPart) {
-  if (!host.sockets) return undefined
-  return Object.values(host.sockets).find((s) => s.type === part.mount)
+  return attachSockets(part, host)[0]
+}
+
+/**
+ * EVERY host socket a part can attach at, in catalog order.
+ *
+ * Phase 0.12: a crossarm carries a fixture at each end (FR2 is "Fixed 2 @ 180
+ * deg" in the ordering matrix, and its real CAD has an upward tenon at either
+ * end). `attachSocket` returning only the first match is why the second tenon
+ * always rendered bare — the catalog could declare both and the compositor
+ * would still place one.
+ *
+ * Kept separate from `attachSocket` rather than replacing it: a part mounts to
+ * exactly ONE socket on its host (an arm sits on one pole top), so the singular
+ * form is the right question for the mount side. The plural is the right
+ * question for the carry side — "what can I hang on this?".
+ */
+export function attachSockets(part: CatalogPart, host: CatalogPart) {
+  if (!host.sockets) return []
+  return Object.values(host.sockets).filter((s) => s.type === part.mount)
 }
 
 /**
