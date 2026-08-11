@@ -41,8 +41,12 @@ def config_hash(cfg: PoleConfig) -> str:
     * ``finishes`` — the per-slot finish overrides (Workstream A).  Each slot's
       finish drives its own finish segment in that component's part number.
 
-    Both are included ONLY when non-empty, so every config that predates them
-    keeps its historical hash byte-for-byte and existing caches stay valid.
+    Phase 0.12 adds ``accentFinishes`` for the same reason: TEX orders in TWO
+    finishes, so two configs differing only in the Spider Mount & Accent Line
+    colour print different part numbers and must hash apart.
+
+    All three are included ONLY when non-empty, so every config that predates
+    them keeps its historical hash byte-for-byte and existing caches stay valid.
 
     Deliberately still excluded: ``armOrientation`` and ``accessoryPlacements``.
     They round-trip through the model but reach no generated artifact yet, so
@@ -67,6 +71,17 @@ def config_hash(cfg: PoleConfig) -> str:
     finishes = {slot: fid for slot, fid in sorted((cfg.finishes or {}).items()) if fid}
     if finishes:
         canonical["finishes"] = finishes
+
+    # Phase 0.12: the second finish segment (TEX Housing + Spider/Accent).  Same
+    # reasoning as `finishes` above, and the same coupling lesson: two TEX
+    # configs differing ONLY in accent colour print different part numbers
+    # (…-NA-BK vs …-NA-WH), so omitting this would serve the first one's cached
+    # PDF for the second — a wrong customer-facing SKU on a spec sheet.
+    accent_finishes = {
+        slot: fid for slot, fid in sorted((cfg.accentFinishes or {}).items()) if fid
+    }
+    if accent_finishes:
+        canonical["accentFinishes"] = accent_finishes
 
     spec_options = {
         slot: {key: value for key, value in sorted(columns.items()) if value}

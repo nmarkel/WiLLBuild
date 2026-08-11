@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Catalog, PoleConfig, ProductLine, Slot } from './types'
-import { defaultConfig, defaultSpecOptions, exclusiveFamily, partById, repairConfig, specCodes } from './lib/compat'
+import { accentFinishFor, defaultConfig, defaultSpecOptions, exclusiveFamily, partById, repairConfig, specCodes } from './lib/compat'
+import { isComingSoon } from './lib/availability'
 import { parseDescription } from './lib/parse'
 import {
   configToParams,
@@ -64,6 +65,12 @@ interface ConfiguratorState {
   select: (slot: Slot, id: string) => void
   /** Phase 0.10.5: set one part's finish (per-slot override on the base finish). */
   setFinish: (slot: Slot, id: string) => void
+  /**
+   * Phase 0.12: set one part's SECOND finish — the accent segment, for parts
+   * whose sheet carries two finish columns (today: TEX's Spider Mount & Accent
+   * Line). Slots without an accent column never call this.
+   */
+  setAccentFinish: (slot: Slot, id: string) => void
   /** Phase 0.10.5: set one part's custom RAL color (#rrggbb) — only meaningful when its finish is custom-ral. */
   setFinishRal: (slot: Slot, hex: string) => void
   /** Phase 0.8 (A1): set the radial arm count (1 single / 2 twin / 3 triple / 4 quad). */
@@ -157,6 +164,11 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (!catalog || !config || config[slot] === id) return
     // Don't clobber the product URL when in product view
     if (view.kind === 'product') return
+    // Phase 0.12 (D): a Coming Soon part is not selectable. The rail already
+    // disables its button; this is the second line of defence, so a programmatic
+    // caller (describe-box parse, a restored link, a future deep link) cannot
+    // put the config somewhere the UI says it cannot go.
+    if (isComingSoon(partById(catalog, id))) return
     // Phase 0.10.5: choosing a different part resets that slot's spec choices to
     // the part's defaults (e.g. the 6' cord) — the old choices belonged to a
     // different product's ordering table.
@@ -199,6 +211,16 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if ((config.finishes?.[slot] ?? config.finish) === id) return
     const finishes = { ...(config.finishes ?? {}), [slot]: id }
     const next = repairConfig(catalog, { ...config, finishes, rev: config.rev + 1 })
+    syncUrl(brand, next, scene)
+    set({ config: next })
+  },
+
+  setAccentFinish: (slot, id) => {
+    const { catalog, config, view, brand, scene } = get()
+    if (!catalog || !config || view.kind === 'product') return
+    if (accentFinishFor(config, slot) === id) return
+    const accentFinishes = { ...(config.accentFinishes ?? {}), [slot]: id }
+    const next = repairConfig(catalog, { ...config, accentFinishes, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })
   },

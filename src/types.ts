@@ -42,6 +42,26 @@ export interface CatalogPart {
   productClass: ProductClass
   dropShip: boolean
   tier: AssetTier
+  /**
+   * Phase 0.12 (D): true when this part's render layers come from Cole's real
+   * CAD rather than a placeholder solid.
+   *
+   * GENERATED — `scripts/merge-real-cad-flag.mjs` stamps it from the render
+   * rig's `real-parts.json`. Never hand-edit it: the whole point is that a part
+   * stops being "Coming Soon" the moment Workstream A maps its geometry, with
+   * nothing to remember. `src/lib/availability.test.ts` keeps the two in step.
+   */
+  realCad?: boolean
+  /**
+   * Phase 0.12 (D): a configuration concept rather than a manufactured product
+   * — today the `direct-mount` tenon adapter, which is how you say "no arm".
+   *
+   * Pseudo-parts need no CAD ever, so the Coming Soon rule must skip them:
+   * badging one would advertise a future product that will never exist, and
+   * disabling it would remove the only way to configure a post-top fixture with
+   * no arm at all.
+   */
+  pseudoPart?: boolean
   heightFt?: number
   /** Socket type this part attaches to on its host (null for poles, which are the root). Optional for standalone. */
   mount?: string | null
@@ -287,6 +307,21 @@ export interface PoleConfig {
    * part that hasn't been individually overridden.
    */
   finishes?: Partial<Record<Slot, string>>
+  /**
+   * Phase 0.12: the SECOND finish some parts order in, keyed by slot.
+   *
+   * TEX is the first: its sheet carries two finish segments — the Housing
+   * colour and the Spider Mount & Accent Line colour — and requires the accent
+   * designation even on side mounts, where the mounting arm matches the
+   * housing. A part with one finish column ignores this entirely.
+   *
+   * Absent slot → the accent falls back to that slot's own finish, exactly as
+   * an absent `finishes` entry falls back to the base `finish`. That is a
+   * default, not a fabricated choice: the fallback value is a colour the
+   * customer really did pick. Which parts have an accent is data, not code —
+   * see `hasAccentFinish` in lib/compat.ts.
+   */
+  accentFinishes?: Partial<Record<Slot, string>>
   /**
    * Phase 0.10.5: when a slot's finish is `custom-ral`, the customer's picked
    * color as a #rrggbb hex, keyed by slot. Feeds the swatch + quote text; the

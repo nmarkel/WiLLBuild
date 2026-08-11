@@ -31,24 +31,42 @@
  *   node scripts/merge-spec-options.mjs --dry-run       # report only, write nothing
  *
  * ============================================================================
- * HAZARD (Phase 0.10.5): this script UNCONDITIONALLY OVERWRITES `options` on
- * every matched part with the RAW parser output from docs/spec-options.json
- * every time it runs (see the "Recompute from source each run" delete-then-
- * inject above). That raw output is still polluted for the WiLLstudio
- * decorative-pole sheet (see docs/part-numbers.md, "Known spec-parse
- * artifacts"): the `alum-pole-*` parts in public/catalog.json currently carry
- * a HAND-FIXED `design` column (trimmed to RSAA/RSAD/C) plus a HAND-ADDED
- * `length` column (position 1.5) that `buildPartNumber` (src/lib/summary.ts)
- * depends on to build correct pole part numbers. Neither fix lives in
- * spec-options.json or in this script's logic — they were edited directly
- * into public/catalog.json. Rerunning this script will SILENTLY REVERT both
- * back to the raw merged columns (length/wall-thickness cells bleeding into
- * `design`), with no error and no diff worth noticing in a quick review.
- * Before rerunning this script for any reason, re-apply (or teach this script
- * to preserve) the `alum-pole-*` `design`/`length` hand-fixes afterward.
+ * RESOLVED (Phase 0.12): this script used to be idempotent only against its own
+ * RAW source, so re-running it silently reverted the hand-fixes that had been
+ * edited straight into public/catalog.json — the `alum-pole-*` `design`/`length`
+ * columns that buildPartNumber depends on for pole part numbers, with no error
+ * and nothing obviously wrong in a quick diff.
+ *
+ * Those column fixes are now declarative, in docs/spec-option-corrections.json,
+ * and are applied here immediately after the raw injection, so re-running this
+ * script no longer reverts them. A correction whose `rawKey` no longer exists is
+ * a hard error, not a silent no-op — that is what makes a re-parse that renames
+ * or fixes a column impossible to miss.
+ *
+ * ⚠ STILL NOT A FULL REGENERATOR (measured in 0.12, do not assume otherwise).
+ * The corrections file covers the parser's column-MERGE defects only. The shipped
+ * public/catalog.json carries further deliberate curation that lives nowhere but
+ * that file, and that this script would still discard:
+ *   - `gvx-pendant` has its `mounting` column REMOVED (pendant mount is carried
+ *     as the `PM` option code instead — see the sheet example WD-GVX-…-BK-PM);
+ *   - `alum-pole-*` have hand-TRIMMED options/accessories value lists
+ *     (options 16→3, options-2 20→5, accessories 10→4);
+ *   - `merge-ordering.mjs` separately owns `options` on the arms and base covers
+ *     (sh1-shepherds-hook, bc-*), which this script clears if run alone.
+ * So: run this ONLY as `merge-spec-options` → `merge-ordering`, then diff
+ * public/catalog.json and re-apply the curation above. Bringing that curation
+ * into the corrections file is worthwhile follow-up work, deliberately not done
+ * in 0.12. `src/lib/specOptionCorrections.test.ts` pins the corrected columns
+ * that ARE covered, so those cannot drift silently.
+ *
+ * The raw docs/spec-options.json is still deliberately left polluted: the defects
+ * are specific to two sheets' unusual two-line headers, and "fixing" the generic
+ * nearest-centroid clustering risks regressing sheets that parse cleanly today.
+ * See docs/part-numbers.md, "Known spec-parse artifacts".
  * ============================================================================
  */
 import { readFileSync, writeFileSync } from 'fs';
+import { applyCorrections, handleFromUrl } from './lib/spec-option-corrections.mjs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -64,19 +82,18 @@ const getFlag = (name) => {
 const DRY_RUN = argv.includes('--dry-run');
 const CATALOG_PATH = resolve(ROOT, getFlag('--catalog') || 'public/catalog.json');
 const SPEC_OPTIONS_PATH = resolve(ROOT, getFlag('--spec-options') || 'docs/spec-options.json');
+const CORRECTIONS_PATH = resolve(
+  ROOT,
+  getFlag('--corrections') || 'docs/spec-option-corrections.json',
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-/** Extract the product handle from a willbrands.com productUrl. */
-function handleFromUrl(url) {
-  if (!url) return null;
-  const m = url.match(/\/products\/([^/?#]+)/);
-  return m ? m[1] : null;
-}
-
 // ── Load ────────────────────────────────────────────────────────────────────
 const catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
 const spec = JSON.parse(readFileSync(SPEC_OPTIONS_PATH, 'utf8'));
 const products = spec.products || {};
+const corrections = JSON.parse(readFileSync(CORRECTIONS_PATH, 'utf8')).products || {};
+let correctedColumns = 0;
 
 // ── Merge (idempotent) ────────────────────────────────────────────────────
 let injected = 0;
@@ -97,8 +114,11 @@ for (const part of catalog.parts || []) {
     continue;
   }
 
-  // Inject ONLY the options data we own.
-  part.options = entry.options;
+  // Inject ONLY the options data we own, with the reviewed column corrections
+  // applied on top of the raw parse (see docs/spec-option-corrections.json).
+  const corrected = applyCorrections(entry.options, handle, corrections);
+  correctedColumns += corrected.applied;
+  part.options = corrected.options;
   part.optionsMeta = {
     source: entry.sourcePdf,
     sourcePage: entry.sourcePage,
@@ -117,7 +137,9 @@ if (!DRY_RUN) {
 // ── Report ───────────────────────────────────────────────────────────────────
 console.log(`Catalog:       ${CATALOG_PATH}`);
 console.log(`Spec options:  ${SPEC_OPTIONS_PATH}`);
+console.log(`Corrections:   ${CORRECTIONS_PATH}`);
 console.log(`Parts with injected options: ${injected}${DRY_RUN ? ' (dry-run, not written)' : ''}`);
+console.log(`Corrected columns applied:   ${correctedColumns}`);
 if (cleared) console.log(`Stale options cleared from ${cleared} part(s).`);
 for (const [h, n] of Object.entries(perHandle).sort()) {
   const e = products[h];

@@ -67,6 +67,14 @@ class PoleConfig(BaseModel):
     # Workstream A: per-slot finish overrides, keyed by slot
     # (fixture|arm|pole|baseCover).  Absent slot → the base `finish`.
     finishes: dict[str, str] | None = None
+    # Phase 0.12: per-slot SECOND finish, for parts whose sheet carries two
+    # finish segments.  TEX is the first — Housing plus Spider Mount & Accent
+    # Line, with the accent designation required even on side mounts.  Absent
+    # slot → that slot's own finish.  Declared here for exactly the reason the
+    # five fields above were: an undeclared field is silently dropped, so the
+    # generated PDF/bundle would print a different part number than the browser
+    # showed — the 0.10.5 failure mode, not a hypothetical.
+    accentFinishes: dict[str, str] | None = None
     # Workstream A: customer-picked #rrggbb for a slot whose finish is
     # `custom-ral`.  Carried into the spec sheet so the quote knows what to
     # match; it does not change geometry.

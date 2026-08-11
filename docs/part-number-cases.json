@@ -279,6 +279,143 @@
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"
       }
+    },
+    {
+      "name": "TEX reproduces the spec sheet's own ordering example",
+      "why": "The 0.12 anchor case, hand-taken from the TEX sheet (Rev V01072026) rather than from our own output: WD-TEX-80-30-MV-5W-3T-NA-BK. Pins the Design/Lumen split AND the two finish segments at once — before 0.12 the merged columns could emit only one of Design/Lumen, and one finish code for both segments.",
+      "config": {
+        "configId": "pn-case-0013",
+        "brand": "WiLLstudio",
+        "fixture": "tex-post-top",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "fixture": "silver"
+        },
+        "accentFinishes": {
+          "fixture": "matte-black"
+        },
+        "specOptions": {
+          "fixture": {
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "3T"
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-TEX-80-30-MV-5W-3T-NA-BK",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "TEX accent finish defaults to the housing finish",
+      "why": "An untouched accent must resolve to a real colour the customer picked, not '_': the sheet says the accent designation is always required. Mirrors how a slot finish falls back to the base config finish.",
+      "config": {
+        "configId": "pn-case-0014",
+        "brand": "WiLLstudio",
+        "fixture": "tex-post-top",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "fixture": "silver"
+        },
+        "specOptions": {
+          "fixture": {
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "3T"
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-TEX-80-30-MV-5W-3T-NA-NA",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "TEX side mount still carries both finish segments",
+      "why": "'For side mount fixtures, the mounting arm will match the housing color. Accent line finish designation is still required.' SMS must not drop the accent segment.",
+      "config": {
+        "configId": "pn-case-0015",
+        "brand": "WiLLstudio",
+        "fixture": "tex-post-top",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "fixture": "statuary-bronze"
+        },
+        "accentFinishes": {
+          "fixture": "gloss-white"
+        },
+        "specOptions": {
+          "fixture": {
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "SMS"
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-TEX-80-30-MV-5W-SMS-DB-WH",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
+    },
+    {
+      "name": "TEX accent finish outside the sheet's colour column",
+      "why": "The TEX sheet prints 10 colours; the palette carries 13. A finish the column omits must fall back to the palette code (SA), never to '_' — and that fallback must behave identically in both languages.",
+      "config": {
+        "configId": "pn-case-0016",
+        "brand": "WiLLstudio",
+        "fixture": "tex-post-top",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "finishes": {
+          "fixture": "matte-black"
+        },
+        "accentFinishes": {
+          "fixture": "satin-silver-anodized"
+        },
+        "specOptions": {
+          "fixture": {
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "3T"
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-TEX-80-30-MV-5W-3T-BK-SA",
+        "arm": "SH1",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
+        "baseCover": "WP-CL1-_-BK"
+      }
     }
   ]
 }

@@ -8,6 +8,7 @@ import type {
   Slot,
   SpecOption,
 } from '../types'
+import { isComingSoon } from './availability'
 export { isAssemblyPart } from '../types'
 
 const SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
@@ -156,6 +157,35 @@ function isSlot(s: PartSlot): s is Slot {
 export function finishFor(config: PoleConfig, slot: PartSlot): string {
   if (isSlot(slot)) return config.finishes?.[slot] ?? config.finish
   return config.finish
+}
+
+/**
+ * The ordering key of a part's SECOND finish column, when it has one.
+ *
+ * Phase 0.12: TEX's sheet prints two finish columns — Housing, and Spider Mount
+ * & Accent Line. `finish-color-accent` is the corrected key the split produces
+ * (see docs/spec-option-corrections.json). Kept as a constant because the
+ * resolver must test it BEFORE the generic `finish-color` prefix, which it also
+ * matches.
+ */
+export const ACCENT_FINISH_KEY = 'finish-color-accent'
+
+/** Whether this part orders in two finishes — data-driven, never a part-id list. */
+export function hasAccentFinish(part: CatalogPart | undefined): boolean {
+  return (part?.options ?? []).some((o) => o.key === ACCENT_FINISH_KEY)
+}
+
+/**
+ * Phase 0.12: the finish a part's accent / secondary component orders in.
+ *
+ * Falls back to the slot's own finish, mirroring how `finishFor` falls back to
+ * the base `config.finish` — so an untouched accent still resolves to a real
+ * colour the customer picked, and the part number never carries a `_` for a
+ * column the sheet says is always required.
+ */
+export function accentFinishFor(config: PoleConfig, slot: PartSlot): string {
+  if (isSlot(slot)) return config.accentFinishes?.[slot] ?? finishFor(config, slot)
+  return finishFor(config, slot)
 }
 
 /** Display label for a spec-sheet column, minus sheet-jargon suffixes. */
@@ -416,17 +446,32 @@ export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[]
  */
 export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const next = { ...config }
+  // Phase 0.12 (D): a Coming Soon part is not a valid selection, so repair
+  // treats it exactly like an incompatible one. Compatibility alone is not
+  // enough — several disabled arms (the bullhorn brackets, CR2, FR2, the
+  // supported arms) ARE compatible with the default fixture, so a share URL
+  // naming one would otherwise survive repair and leave the builder resting on
+  // a part it simultaneously refuses to configure.
+  //
+  // Coming Soon parts stay in `compatibleParts` (the rail still lists them,
+  // greyed) — this filter applies only to what a repair may LAND on.
+  const selectable = (parts: CatalogPart[]) => {
+    const usable = parts.filter((p) => !isComingSoon(p))
+    // Never strand a slot: if every option is disabled, keep the full list
+    // rather than blanking the selection.
+    return usable.length > 0 ? usable : parts
+  }
   for (const slot of SLOT_ORDER) {
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
-      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
-        next.fixture = partsForSlot(catalog, 'fixture', next.brand)[0]?.id ?? ''
+      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand || isComingSoon(fixture)) {
+        next.fixture = selectable(partsForSlot(catalog, 'fixture', next.brand))[0]?.id ?? ''
       }
       continue
     }
     const options = compatibleParts(catalog, next, slot)
-    if (!options.some((p) => p.id === next[slot])) {
-      next[slot] = options[0]?.id ?? ''
+    if (!options.some((p) => p.id === next[slot]) || isComingSoon(partById(catalog, next[slot]))) {
+      next[slot] = selectable(options)[0]?.id ?? ''
     }
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
@@ -444,6 +489,24 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       cleaned[slot] = id
     }
     next.finishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
+  }
+  // Phase 0.12: accent finishes — same validation as the finish overrides above,
+  // PLUS the part must actually have a second finish column. Swapping TEX out
+  // for a one-finish fixture must not leave an orphan accent behind: it would
+  // ride the share URL and reappear if TEX were reselected, silently changing a
+  // part number the customer never configured.
+  if (next.accentFinishes) {
+    const cleaned: Partial<Record<Slot, string>> = {}
+    for (const slot of SLOT_ORDER) {
+      const id = next.accentFinishes[slot]
+      if (!id || !catalog.finishes.some((f) => f.id === id)) continue
+      const part = partById(catalog, next[slot])
+      if (!hasAccentFinish(part)) continue
+      const offered = part?.finishes
+      if (offered && offered.length > 0 && !offered.includes(id) && id !== 'custom-ral') continue
+      cleaned[slot] = id
+    }
+    next.accentFinishes = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
   // Phase 0.10.5: custom RAL colors — keep only well-formed hex values on slots
   // whose finish actually is custom-ral.

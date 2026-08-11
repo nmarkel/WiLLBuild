@@ -75,7 +75,15 @@ describe('toggleSpecOption — centre-feature single-select (Phase 0.11, C2)', (
     load()
     useConfigurator.getState().toggleSpecOption('arm', 'center-feature', 'CF1')
     expect(armCodes()).toEqual(['CF1'])
-    useConfigurator.getState().select('arm', 'pa1-pendant-arm')
+    // Phase 0.12 (D): this used to switch to pa1-pendant-arm, which is now
+    // Coming Soon — the store refuses to select it, so nothing changed and the
+    // test passed for no reason. The side shepherds hook is GVX-compatible,
+    // real-CAD (so selectable) and has no centre-feature column, which is the
+    // property under test.
+    useConfigurator.getState().select('arm', 'willstudio-side-shepherds-hook-pole-top-brackets')
+    expect(useConfigurator.getState().config?.arm).toBe(
+      'willstudio-side-shepherds-hook-pole-top-brackets',
+    )
     expect(useConfigurator.getState().config?.specOptions?.arm).toBeUndefined()
   })
 })

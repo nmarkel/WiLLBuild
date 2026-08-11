@@ -188,14 +188,15 @@ UNMAPPED: list[dict] = [
     #     has real CAD but NO defensible catalog part, so each is recorded with
     #     the reason rather than mapped. Mapping any of them would put invented
     #     geometry under a real product name. ---
-    dict(file="CR1-40F.STEP", part=None, design="CR2", fit="40F",
-         note="⚠️ THE FILE IS MISLABELLED: 'CR1-40F.STEP' is actually a CR2 "
-              "(confirmed by Nick, 2026-08-10). Intended part "
-              "willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}); the design "
-              "code recorded here is the CORRECTED CR2, not the filename. The file "
-              "name is left untouched so it still matches the Synology source. "
-              "Blocked on the same axis + socket alignment as the five below — this "
-              "is a naming correction, not a mapping that can ship yet."),
+    dict(file="CR2-40F.STEP", part=None, design="CR2", fit="40F",
+         note="Renamed at the source: this was 'CR1-40F.STEP', which Nick "
+              "confirmed on 2026-08-10 was mislabelled — the geometry is a CR2. "
+              "Someone applied the correction on Synology, so the file is now "
+              "CR2-40F.STEP and this record follows it (Phase 0.12, A3). Before "
+              "that it was the only Synology file referenced nowhere in the repo, "
+              "because the name recorded here no longer existed. Intended part "
+              "willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}). Still "
+              "blocked on the same axis + socket alignment as the five below."),
     dict(file="BR12-40F.STEP", part=None, design="BR12", fit="40F",
          note="Upsweep, no gusset. docs/part-numbers.md maps the curated 'Decorative "
               "Upsweep' (catalog id `upsweep`) to the BR family with BR12/BR13 as the "

@@ -47,9 +47,22 @@ BASE_FILES: dict[str, str] = {
     "sh1-shepherds-hook": "SH1-40F.STEP",
     "willstudio-side-shepherds-hook-pole-top-brackets": "SS1-40F.STEP",
     "willstudio-suspension-arm-pole-top-brackets": "AR1-40F.STEP",
-    "bc-round": "CL1-4R.STEP",
-    "aluminum-light-pole-base-covers": "CL2-4R.STEP",
-    "bc-fluted": "CL3-4R.STEP",
+    # Phase 0.12 (A3) — corrected base-cover mapping.
+    #
+    # This table used to read bc-round->CL1, aluminum-light-pole-base-covers->CL2,
+    # bc-fluted->CL3: the pre-spec-sheet GUESS from the 0.10 ingest.  The 8/4
+    # spec sheet and the ingest record both say CL1/CL2/CL3 are the SMALL/MEDIUM/
+    # LARGE clamshells and SC1/SC2 the spun collars — the five base covers a
+    # customer can actually select.  The three ids above are superseded standalone
+    # catalog entries with NO real CAD of their own, so under the old mapping the
+    # five selectable covers downloaded parametric placeholders while three
+    # retired products served real (and wrong) geometry.  Renders were corrected
+    # in 0.10.5; this download path never was.
+    "bc-cl1-small-clamshell": "CL1-4R.STEP",
+    "bc-cl2-medium-clamshell": "CL2-4R.STEP",
+    "bc-cl3-large-clamshell": "CL3-4R.STEP",
+    "bc-sc1-spun-collar": "SC1-4R.STEP",
+    "bc-sc2-spun-collar-split": "SC2-4R.STEP",
     "willstudio-ba1-banner-arm": "BA24-4R.STEP",
     "gvx-pendant": "WD-GVX-PM",
     "drx-post-top": "DRX-Post-Top.STEP",
@@ -66,9 +79,13 @@ DESIGN_FILES: dict[tuple[str, str], str] = {
     ("willstudio-side-shepherds-hook-pole-top-brackets", "SS1"): "SS1-40F.STEP",
     ("willstudio-suspension-arm-pole-top-brackets", "AR1"): "AR1-40F.STEP",
     ("sh1-shepherds-hook", "SH1"): "SH1-40F.STEP",
-    ("bc-round", "CL1"): "CL1-4R.STEP",
-    ("aluminum-light-pole-base-covers", "CL2"): "CL2-4R.STEP",
-    ("bc-fluted", "CL3"): "CL3-4R.STEP",
+    # Phase 0.12 (A3): same correction as BASE_FILES above — the design code is
+    # the base cover's OWN code, on the part that actually carries it.
+    ("bc-cl1-small-clamshell", "CL1"): "CL1-4R.STEP",
+    ("bc-cl2-medium-clamshell", "CL2"): "CL2-4R.STEP",
+    ("bc-cl3-large-clamshell", "CL3"): "CL3-4R.STEP",
+    ("bc-sc1-spun-collar", "SC1"): "SC1-4R.STEP",
+    ("bc-sc2-spun-collar-split", "SC2"): "SC2-4R.STEP",
 }
 
 # (part id, design code) -> real file that already contains the WHOLE cluster
@@ -83,6 +100,26 @@ CLUSTER_FILES: dict[tuple[str, str], str] = {
     ("willstudio-suspension-arm-pole-top-brackets", "AR2"): "AR2-40F.STEP",
     ("willstudio-suspension-arm-pole-top-brackets", "AR3"): "AR3-40F.STEP",
     ("willstudio-suspension-arm-pole-top-brackets", "AR4"): "AR4-40F.STEP",
+    # Phase 0.12 (A3): three variant files that carry real CAD but were
+    # referenced by no table at all — the coverage matrix's "real CAD exists,
+    # nothing serves it" row.  Registering them here puts the order code next to
+    # its released file so the mapping is reviewable and no longer folklore.
+    #
+    # ⚠ This does NOT make them downloadable, and nothing here should be read as
+    # claiming it does.  TWO independent gates are still shut:
+    #   1. Nothing in app/ calls cluster_step_path() — app/kit/assembly.py's
+    #      _design() returns None unconditionally (a tracked 0.10.5 carry-forward),
+    #      so this whole table is unreachable from a request today.
+    #   2. These are Engineering's FULL masters; customer downloads resolve only
+    #      through the fail-closed CUSTOMER_STEP_FILES allowlist below, which
+    #      still contains exactly one entry.
+    ("willstudio-ba1-banner-arm", "BA30"): "BA30-4R.STEP",
+    ("willstudio-rxb-sxb-bollard", "SXB"): "SXB.STEP",
+    # DRX's Area (side-mount) variant.  The catalog's DRX mounting column offers
+    # SMS (square pole/wall) and SMR (round pole); one released side-mount export
+    # covers both, so both codes point at it.
+    ("drx-post-top", "SMS"): "DRX-Area-4R-Side-Mount.STEP",
+    ("drx-post-top", "SMR"): "DRX-Area-4R-Side-Mount.STEP",
 }
 
 

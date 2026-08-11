@@ -1,0 +1,477 @@
+{
+  "note": "Phase 0.12 — declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
+  "rules": "Each entry replaces ONE raw column (matched by `rawKey`) with an ordered list of corrected columns. Fractional orderPosition values keep a split column adjacent to its neighbours without renumbering the sheet. No value here is invented: pole columns were lifted verbatim from the reviewed catalog, TEX columns re-partitioned from the raw parse.",
+  "products": {
+    "willstudio-decorative-aluminum-light-poles": {
+      "reason": "The decorative-pole sheet's two-line 'Length (Above Grade)' header makes nearest-centroid cell assignment bleed Length and Wall Thickness cells into neighbouring columns. Splits below match the sheet as printed.",
+      "replace": [
+        {
+          "rawKey": "design",
+          "why": "Raw `design` carried 12 values: the 3 real design codes plus leaked Length cells and a stray Wall Thickness 'Custom'. Split into the trimmed design column and the real Length column that buildPartNumber resolves from part.heightFt.",
+          "columns": [
+            {
+              "key": "design",
+              "label": "Design",
+              "group": "ordering",
+              "orderPosition": 1,
+              "values": [
+                {
+                  "code": "RSAA",
+                  "label": "Round Straight Aluminum Anchor Base Light Pole",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "RSAD",
+                  "label": "Round Straight Aluminum Embedded Light Pole",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "C",
+                  "label": "Custom",
+                  "buildable": null,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "length",
+              "label": "Length",
+              "group": "ordering",
+              "orderPosition": 1.5,
+              "values": [
+                {
+                  "code": "8",
+                  "label": "8'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "10",
+                  "label": "10'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "12",
+                  "label": "12'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "14",
+                  "label": "14'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "15",
+                  "label": "15'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "16",
+                  "label": "16'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "18",
+                  "label": "18'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "20",
+                  "label": "20'",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "length-pole-base-pole-top-wall-od-od-thickness",
+          "why": "Three sheet columns merged into one by the header clustering; split back into pole diameter and wall thickness.",
+          "columns": [
+            {
+              "key": "pole-diameter",
+              "label": "Pole Diameter",
+              "group": "ordering",
+              "orderPosition": 2,
+              "values": [
+                {
+                  "code": "4040",
+                  "label": "4\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "5050",
+                  "label": "5\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "6060",
+                  "label": "6\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "wall-thickness",
+              "label": "Wall Thickness",
+              "group": "ordering",
+              "orderPosition": 2.5,
+              "values": [
+                {
+                  "code": "C",
+                  "label": "0.125\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "D",
+                  "label": "0.188\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "E",
+                  "label": "0.250\"",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "anchor-bolts-base-type-finish-type",
+          "why": "Three sheet columns merged into one; split back so finish-type (FP/AN) resolves from the picked finish.",
+          "columns": [
+            {
+              "key": "anchor-bolts",
+              "label": "Anchor Bolts",
+              "group": "ordering",
+              "orderPosition": 2.6,
+              "values": [
+                {
+                  "code": "AB",
+                  "label": "Anchor Bolts Included",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "base-type",
+              "label": "Base Type",
+              "group": "ordering",
+              "orderPosition": 2.7,
+              "values": [
+                {
+                  "code": "SB",
+                  "label": "Standard Base",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "finish-type",
+              "label": "Finish Type",
+              "group": "ordering",
+              "orderPosition": 2.8,
+              "values": [
+                {
+                  "code": "FP",
+                  "label": "Finish Painted",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "AN",
+                  "label": "Anodized",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "willstudio-tex-post-top-area": {
+      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number — see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
+      "replace": [
+        {
+          "rawKey": "lumen-output",
+          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-… (no design), with none it resolved WD-TEX-… (no lumen). Split restores both.",
+          "columns": [
+            {
+              "key": "design",
+              "label": "Design",
+              "group": "ordering",
+              "orderPosition": 1,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "TEX",
+                  "label": "Medium",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "CH",
+                  "label": "Custom",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "lumen-output",
+              "label": "Lumen Output (Model Nominal Lumens)",
+              "group": "ordering",
+              "orderPosition": 1.5,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "40",
+                  "label": "5,000",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "70",
+                  "label": "9,000",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "80",
+                  "label": "10,000",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "115",
+                  "label": "15,000",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "155",
+                  "label": "19,000",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "CW",
+                  "label": "Custom & Amber",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "finish-color-finish-color-spider-mount",
+          "why": "The sheet prints TWO finish columns side by side; the parser zipped them into one 20-value column (each colour twice). Split into Housing and Spider Mount & Accent Line. The sheet requires the accent designation even on side mounts, where the mounting arm matches the housing colour.",
+          "columns": [
+            {
+              "key": "finish-color",
+              "label": "Finish Color (Housing)",
+              "group": "ordering",
+              "orderPosition": 6,
+              "values": [
+                {
+                  "buildable": true,
+                  "code": "NA",
+                  "label": "Nat Alum Silver",
+                  "mapsTo": "silver",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "BK",
+                  "label": "Black",
+                  "mapsTo": "matte-black",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "DB",
+                  "label": "Dark Bronze",
+                  "mapsTo": "statuary-bronze",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "WH",
+                  "label": "White",
+                  "mapsTo": "gloss-white",
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "LG",
+                  "label": "Light Gray",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "SG",
+                  "label": "Slate Gray",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "DG",
+                  "label": "Dark Green",
+                  "mapsTo": "forest-green",
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "DP",
+                  "label": "Dark Platinum",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "GM",
+                  "label": "Graphite Metallic",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "RAL",
+                  "label": "Custom RAL Match",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "key": "finish-color-accent",
+              "label": "Finish Color (Spider Mount & Accent Line)",
+              "group": "ordering",
+              "orderPosition": 6.5,
+              "values": [
+                {
+                  "buildable": true,
+                  "code": "NA",
+                  "label": "Nat Alum Silver",
+                  "mapsTo": "silver",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "BK",
+                  "label": "Black",
+                  "mapsTo": "matte-black",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "DB",
+                  "label": "Dark Bronze",
+                  "mapsTo": "statuary-bronze",
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "WH",
+                  "label": "White",
+                  "mapsTo": "gloss-white",
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "LG",
+                  "label": "Light Gray",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "SG",
+                  "label": "Slate Gray",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": true,
+                  "code": "DG",
+                  "label": "Dark Green",
+                  "mapsTo": "forest-green",
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "DP",
+                  "label": "Dark Platinum",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "GM",
+                  "label": "Graphite Metallic",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "RAL",
+                  "label": "Custom RAL Match",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

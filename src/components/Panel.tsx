@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 import type { FocusTarget } from '../lib/composite'
 
@@ -20,6 +20,7 @@ function ftLabel(ft: number): string {
 }
 import { useConfigurator } from '../store'
 import { displayPartName } from '../lib/display'
+import { COMING_SOON_HINT, COMING_SOON_LABEL, isComingSoon } from '../lib/availability'
 import { BannerPicker } from './BannerPicker'
 
 /** Phase 0.8 (A1): labels for the radial arm-count selector (official layouts: 2@180, 3@90, 4@90). */
@@ -189,6 +190,10 @@ function StepFinish({
   const setFinishRal = useConfigurator((s) => s.setFinishRal)
   const current = finishFor(config, slot)
   const ralHex = config.finishRal?.[slot]
+  // Phase 0.12: parts whose sheet carries a second finish column get a second
+  // swatch row. Driven off the part's own options, so a future two-finish sheet
+  // needs no code change here.
+  const accentColumn = part?.options?.find((o) => o.key === ACCENT_FINISH_KEY)
   // Offer the finishes this part comes in; an empty list means unrestricted.
   // Custom RAL is always offered — it's a match-anything order code.
   const offered =
@@ -198,7 +203,7 @@ function StepFinish({
   if (offered.length === 0) return null
   return (
     <div className="step-group">
-      <p className="step-group-title">Finish</p>
+      <p className="step-group-title">{accentColumn ? 'Housing Finish' : 'Finish'}</p>
       <div className="options finishes">
         {offered.map((f) => {
           const isRal = f.id === 'custom-ral'
@@ -232,6 +237,68 @@ function StepFinish({
           </span>
         </label>
       )}
+      {accentColumn && (
+        <StepAccentFinish
+          config={config}
+          slot={slot}
+          offered={offered}
+          label={accentColumn.label}
+        />
+      )}
+    </div>
+  )
+}
+
+/**
+ * Phase 0.12: the SECOND finish swatch row, for a part whose sheet carries two
+ * finish segments — today TEX's Spider Mount & Accent Line.
+ *
+ * The sheet requires the accent designation even on side mounts (where the
+ * mounting arm matches the housing), so this row is never hidden by the
+ * mounting choice. Untouched, the accent follows the housing finish — the same
+ * fallback shape as a slot finish following the base finish, so the part number
+ * always carries a real colour rather than a `_`.
+ */
+function StepAccentFinish({
+  config,
+  slot,
+  offered,
+  label,
+}: {
+  config: PoleConfig
+  slot: Slot
+  offered: Catalog['finishes']
+  label: string
+}) {
+  const setAccentFinish = useConfigurator((s) => s.setAccentFinish)
+  const current = accentFinishFor(config, slot)
+  const explicit = config.accentFinishes?.[slot] !== undefined
+  return (
+    <div className="accent-finish">
+      <p className="step-group-title">{label.replace(/^Finish Color\s*/, '')}</p>
+      {!explicit && (
+        <p className="step-note">Matching the housing finish — pick a colour to differ.</p>
+      )}
+      <div className="options finishes">
+        {offered.map((f) => (
+          <button
+            key={f.id}
+            className={`finish-chip ${current === f.id ? 'selected' : ''}`}
+            onClick={() => setAccentFinish(slot, f.id)}
+            title={f.name}
+          >
+            {f.id === 'custom-ral' ? (
+              <span className="swatch ral-rainbow" />
+            ) : (
+              <span className="swatch" style={{ background: f.hex }} />
+            )}
+            <span>{f.name}</span>
+          </button>
+        ))}
+      </div>
+      <p className="step-note">
+        Ordered as its own finish code — required even when it matches the housing.
+      </p>
     </div>
   )
 }
@@ -468,16 +535,23 @@ function PartChoice({
       <div className="arm-count">
         <p className="arm-count-label">Height</p>
         <div className="arm-count-options">
-          {byHeight.map((p) => (
-            <button
-              key={p.id}
-              className={`arm-count-chip ${selectedId === p.id ? 'selected' : ''}`}
-              onClick={() => onSelect(p.id)}
-              title={p.name}
-            >
-              <span className="arm-count-name">{p.heightFt} ft</span>
-            </button>
-          ))}
+          {byHeight.map((p) => {
+            const soon = isComingSoon(p)
+            return (
+              <button
+                key={p.id}
+                className={`arm-count-chip ${selectedId === p.id ? 'selected' : ''} ${
+                  soon ? 'coming-soon' : ''
+                }`}
+                onClick={() => onSelect(p.id)}
+                disabled={soon}
+                aria-disabled={soon}
+                title={soon ? COMING_SOON_HINT : p.name}
+              >
+                <span className="arm-count-name">{p.heightFt} ft</span>
+              </button>
+            )
+          })}
         </div>
       </div>
     )
@@ -485,25 +559,35 @@ function PartChoice({
 
   return (
     <div className="options">
-      {parts.map((p) => (
-        <button
-          key={p.id}
-          className={`option-card ${selectedId === p.id ? 'selected' : ''}`}
-          onClick={() => onSelect(p.id)}
-        >
-          <span className="thumb">
-            {p.thumbnail ? (
-              <img src={import.meta.env.BASE_URL + p.thumbnail} alt="" />
-            ) : p.photo ? (
-              <img src={p.photo} alt="" loading="lazy" />
-            ) : (
-              p.family.slice(0, 2).toUpperCase()
-            )}
-          </span>
-          <span className="option-name">{displayPartName(p.name)}</span>
-          <span className="option-family">{partDesignCode(p)}</span>
-        </button>
-      ))}
+      {parts.map((p) => {
+        // Phase 0.12 (D): still on placeholder geometry — shown, but inert.
+        const soon = isComingSoon(p)
+        return (
+          <button
+            key={p.id}
+            className={`option-card ${selectedId === p.id ? 'selected' : ''} ${
+              soon ? 'coming-soon' : ''
+            }`}
+            onClick={() => onSelect(p.id)}
+            disabled={soon}
+            aria-disabled={soon}
+            title={soon ? COMING_SOON_HINT : p.name}
+          >
+            <span className="thumb">
+              {p.thumbnail ? (
+                <img src={import.meta.env.BASE_URL + p.thumbnail} alt="" />
+              ) : p.photo ? (
+                <img src={p.photo} alt="" loading="lazy" />
+              ) : (
+                p.family.slice(0, 2).toUpperCase()
+              )}
+            </span>
+            <span className="option-name">{displayPartName(p.name)}</span>
+            <span className="option-family">{partDesignCode(p)}</span>
+            {soon && <span className="coming-soon-badge">{COMING_SOON_LABEL}</span>}
+          </button>
+        )
+      })}
     </div>
   )
 }

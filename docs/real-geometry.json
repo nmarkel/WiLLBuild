@@ -439,7 +439,7 @@
       "note": "Intended part willstudio-supported-decorative-arms (modelCodes {1: SD1, 2: SD2}). Converted OK (22,832 tris). Blocked on axis + socket alignment \u2014 see above."
     },
     {
-      "file": "CR1-40F.STEP",
+      "file": "CR2-40F.STEP",
       "kind": "unmapped",
       "present": true,
       "bytes": 4917290,
@@ -447,7 +447,7 @@
       "partId": null,
       "designCode": "CR2",
       "fitCode": "40F",
-      "note": "\u26a0\ufe0f THE FILE IS MISLABELLED: 'CR1-40F.STEP' is actually a CR2 (confirmed by Nick, 2026-08-10). Intended part willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}); the design code recorded here is the CORRECTED CR2, not the filename. The file name is left untouched so it still matches the Synology source. Blocked on the same axis + socket alignment as the five below \u2014 this is a naming correction, not a mapping that can ship yet."
+      "note": "Renamed at the source: this was 'CR1-40F.STEP', which Nick confirmed on 2026-08-10 was mislabelled \u2014 the geometry is a CR2. Someone applied the correction on Synology, so the file is now CR2-40F.STEP and this record follows it (Phase 0.12, A3). Before that it was the only Synology file referenced nowhere in the repo, because the name recorded here no longer existed. Intended part willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}). Still blocked on the same axis + socket alignment as the five below."
     },
     {
       "file": "BR12-40F.STEP",

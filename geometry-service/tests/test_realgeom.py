@@ -40,6 +40,43 @@ def test_every_mapped_file_name_is_unique():
     assert len(names) == len(set(names))
 
 
+def test_every_selectable_base_cover_resolves_its_own_real_cad():
+    """Phase 0.12 (A3) — the base-cover download mapping.
+
+    BASE_FILES carried the pre-spec-sheet GUESS (bc-round->CL1,
+    aluminum-light-pole-base-covers->CL2, bc-fluted->CL3).  Those three are
+    SUPERSEDED standalone catalog entries with no real CAD of their own, while
+    the five base covers a customer can actually select resolved to nothing and
+    downloaded parametric placeholders.  The renders were corrected in 0.10.5;
+    this table never was.
+
+    The correct mapping is the ingest record's (scripts/step-to-glb/ingest.py):
+    CL1/CL2/CL3 = small/medium/large clamshell, SC1/SC2 = spun collars.
+    """
+    expected = {
+        "bc-cl1-small-clamshell": "CL1-4R.STEP",
+        "bc-cl2-medium-clamshell": "CL2-4R.STEP",
+        "bc-cl3-large-clamshell": "CL3-4R.STEP",
+        "bc-sc1-spun-collar": "SC1-4R.STEP",
+        "bc-sc2-spun-collar-split": "SC2-4R.STEP",
+    }
+    for part_id, filename in expected.items():
+        assert realgeom.BASE_FILES.get(part_id) == filename, (
+            f"{part_id} must resolve its own real CAD, not a placeholder"
+        )
+
+
+def test_superseded_base_cover_entries_claim_no_real_cad():
+    """The three retired entries have no CAD on Synology — awaiting Cole.
+
+    Leaving them mapped is worse than leaving them empty: it hands a customer
+    another base cover's geometry under this product's name.
+    """
+    for part_id in ("bc-round", "bc-fluted", "aluminum-light-pole-base-covers"):
+        assert part_id not in realgeom.BASE_FILES
+        assert not any(p == part_id for (p, _d) in realgeom.DESIGN_FILES)
+
+
 def test_cluster_files_are_never_kit_geometry():
     """A cluster file already contains N arms; the kit would repeat it N times."""
     for (part_id, design) in realgeom.CLUSTER_FILES:

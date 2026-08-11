@@ -211,6 +211,31 @@ class TestConfigHashCoupling:
         b = self._cfg(finishes={"pole": "forest-green"})
         assert config_hash(a) != config_hash(b)
 
+    def test_accent_finish_changes_the_hash(self):
+        """Phase 0.12: TEX orders in TWO finishes.
+
+        Two configs differing only in the Spider Mount & Accent Line colour
+        print different part numbers (…-NA-BK vs …-NA-WH), so they must hash
+        apart — otherwise the cache serves the first one's PDF for the second,
+        showing a SKU the customer did not configure.  Exactly the coupling that
+        made 0.11's Z1 and Z2 inseparable.
+        """
+        a = self._cfg(finishes={"fixture": "silver"})
+        b = self._cfg(
+            finishes={"fixture": "silver"}, accentFinishes={"fixture": "matte-black"}
+        )
+        c = self._cfg(
+            finishes={"fixture": "silver"}, accentFinishes={"fixture": "gloss-white"}
+        )
+        assert config_hash(a) != config_hash(b)
+        assert config_hash(b) != config_hash(c)
+
+    def test_empty_accent_finishes_do_not_change_the_hash(self):
+        """Every pre-0.12 config keeps its historical hash byte-for-byte."""
+        base = config_hash(self._cfg())
+        assert config_hash(self._cfg(accentFinishes={})) == base
+        assert config_hash(self._cfg(accentFinishes={"fixture": ""})) == base
+
     def test_multi_select_order_changes_the_hash(self):
         """Codes append to the part number in stored order, so order matters."""
         a = self._cfg(specOptions={"pole": {"accessories": ["BA24", "FH"]}})

@@ -280,6 +280,72 @@ body {
   color: var(--text-dim);
 }
 
+/* Phase 0.12 (D): products still on placeholder geometry — visible, inert.
+   Muted rather than hidden: they're the roadmap teaser, so they must still read
+   as real products, just clearly not yet orderable. */
+.option-card.coming-soon,
+.arm-count-chip.coming-soon {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.7);
+}
+
+.option-card.coming-soon:hover,
+.arm-count-chip.coming-soon:hover {
+  /* No hover affordance — nothing happens on click. */
+  border-color: var(--border);
+  background: inherit;
+}
+
+.option-card {
+  position: relative;
+}
+
+.product-viewer-soon,
+.coming-soon-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--will-gray);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* On the product page the badge sits inline in the id card, not pinned to a
+   corner — there is no card to pin it to. */
+.product-viewer-soon {
+  position: static;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* Phase 0.12: the second finish row on a two-finish part (TEX Spider Mount &
+   Accent Line). Indented under the housing swatches so it reads as a sibling
+   choice within the same part, not a new step. */
+.accent-finish {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.step-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.accent-finish .step-note:first-of-type {
+  margin: 0 0 8px;
+}
+
 .step-continue {
   display: block;
   width: 100%;

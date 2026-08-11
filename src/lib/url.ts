@@ -87,6 +87,17 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
       .join(',')
     if (fins) params.set('fins', fins)
   }
+  // Phase 0.12: per-slot ACCENT finish overrides (TEX's second finish segment),
+  // same shape as `fins`. Its own param so a pre-0.12 link is unaffected and a
+  // 0.12 link opened by an older build simply ignores it.
+  if (config.accentFinishes) {
+    const accents = Object.entries(config.accentFinishes)
+      .filter(([, v]) => v)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v}`)
+      .join(',')
+    if (accents) params.set('afins', accents)
+  }
   // Phase 0.10.5: accessory placements as `code~heightFt~orientation[~sides]`.
   // Phase 0.11 (D): optional trailing `~size` (banner-kit panel id). `sides`
   // is positional, so a placement with a size but no sides emits an EMPTY
@@ -201,6 +212,19 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
     }
     if (Object.keys(finishes).length > 0) {
       partial.finishes = finishes
+      found = true
+    }
+  }
+  // Phase 0.12: per-slot accent finish overrides `slot:finishId,...`.
+  const afinsValue = params.get('afins')
+  if (afinsValue) {
+    const accentFinishes: Partial<Record<Slot, string>> = {}
+    for (const pair of afinsValue.split(',')) {
+      const [slot, id] = pair.split(':')
+      if (slot && id && isOptionSlot(slot)) accentFinishes[slot] = id
+    }
+    if (Object.keys(accentFinishes).length > 0) {
+      partial.accentFinishes = accentFinishes
       found = true
     }
   }

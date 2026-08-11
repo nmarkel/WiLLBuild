@@ -1,15 +1,19 @@
-import type { Catalog, CatalogPart, PoleConfig, Slot } from '../types'
+import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
 import { bannerSummaryLine, formatPanelSize } from './banner'
 import {
+  ACCENT_FINISH_KEY,
+  accentFinishFor,
   bannerPanelSize,
   configStatus,
   finishFor,
+  hasAccentFinish,
   isBannerKitLabel,
   optionLabel,
   partById,
   specCodes,
 } from './compat'
 import { DEFAULT_SCENE, shareUrl, type Scene } from './url'
+import { isComingSoon } from './availability'
 
 /**
  * Phase 0.10.5: the part's full ordering part number, assembled the way the spec
@@ -35,6 +39,20 @@ function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[]
     .flatMap((o) => specCodes(chosen[o.key]))
 }
 
+/**
+ * A finish column's code for one finish id: the sheet's own code when that
+ * column lists the finish, else the palette code (covers a sheet whose finish
+ * column predates a newly added colour — TEX prints 10 of the palette's 13).
+ * Shared by both finish segments so Housing and Accent resolve identically.
+ */
+function finishCode(catalog: Catalog, opt: SpecOption, finishId: string): string {
+  return (
+    opt.values.find((v) => v.mapsTo === finishId)?.code ??
+    catalog.finishes.find((f) => f.id === finishId)?.code ??
+    '_'
+  )
+}
+
 export function buildPartNumber(
   catalog: Catalog,
   config: PoleConfig,
@@ -42,6 +60,11 @@ export function buildPartNumber(
 ): string | undefined {
   const part = partById(catalog, config[slot])
   if (!part) return undefined
+  // Phase 0.12 (D): a Coming Soon part produces NO part number. It is not
+  // orderable yet, and a spec-able-looking SKU is precisely what a designer
+  // would paste into a project spec — the one thing that must not escape for a
+  // product we cannot build. Mirrored in geometry-service/app/partnumber.py.
+  if (isComingSoon(part)) return undefined
   // Arms carry official per-configuration model codes (SH1, SS3, AR2, …) —
   // that code IS the arm's ordering part number for the chosen count.
   if (slot === 'arm' && part.modelCodes) {
@@ -64,14 +87,14 @@ export function buildPartNumber(
     const selected = specCodes(chosen[opt.key])[0]
     if (selected) {
       segments.push(selected)
+    } else if (opt.key === ACCENT_FINISH_KEY) {
+      // Phase 0.12: TEX's second finish segment (Spider Mount & Accent Line).
+      // MUST be tested before the `finish-color` prefix below, which this key
+      // also matches — otherwise both columns resolve to the housing colour and
+      // the accent silently duplicates it.
+      segments.push(finishCode(catalog, opt, accentFinishFor(config, slot)))
     } else if (opt.key.startsWith('finish-color')) {
-      // The sheet's own code when it lists this finish, else the palette code
-      // (covers sheets whose finish column predates a newly added color).
-      segments.push(
-        opt.values.find((v) => v.mapsTo === finishId)?.code ??
-          catalog.finishes.find((f) => f.id === finishId)?.code ??
-          '_',
-      )
+      segments.push(finishCode(catalog, opt, finishId))
     } else if (opt.key === 'finish-type') {
       // Finish type is a function of the picked color: FP painted / AN anodized.
       segments.push(catalog.finishes.find((f) => f.id === finishId)?.typeCode ?? opt.values[0].code)
@@ -149,6 +172,16 @@ export function buildSummaryText(
     partLines.push(`${r.label}: ${part ? `${part.name}${finishName ? ` — ${finishName}` : ''}` : '—'}`)
     const partNumber = buildPartNumber(catalog, config, r.key)
     if (partNumber) partLines.push(`  Part No: ${partNumber}`)
+    // Phase 0.12: a two-finish part must say BOTH colours, or the quote reads as
+    // one colour while the part number carries two codes.
+    if (hasAccentFinish(part)) {
+      const accent = catalog.finishes.find((f) => f.id === accentFinishFor(config, r.key))
+      const accentCol = part?.options?.find((o) => o.key === ACCENT_FINISH_KEY)
+      if (accent) {
+        const label = accentCol?.label.replace(/^Finish Color\s*/, '') ?? 'Accent'
+        partLines.push(`  ${label}: ${accent.name}`)
+      }
+    }
     const chosen = config.specOptions?.[r.key]
     if (part?.options && chosen) {
       for (const opt of part.options) {

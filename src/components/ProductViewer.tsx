@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { CatalogPart, Catalog, PoleConfig } from '../types'
 import { PhotoCard } from './PhotoCard'
 import { OutputTray } from './OutputTray'
+import { COMING_SOON_LABEL, isComingSoon } from '../lib/availability'
 import { useConfigurator } from '../store'
 import { HERO_ANGLE, resolveRenderAsset, type CompositeLayout, type RenderAsset } from '../lib/composite'
 import { useRenderManifest, renderUrl } from '../lib/renders'
@@ -176,6 +177,11 @@ export function ProductViewer({ part, catalog }: Props) {
     return () => registerSnapshot(null)
   }, [asset, manifest, part.id, part.slot, registerSnapshot])
 
+  // Phase 0.12 (D): still on placeholder geometry — no part number, no
+  // downloads. The render still shows: the product is real, it just isn't
+  // configurable or orderable yet.
+  const soon = isComingSoon(part)
+
   let mainContent: ReactNode
   if (manifest === undefined) {
     mainContent = <div className="product-viewer-loading">Loading render…</div>
@@ -189,6 +195,9 @@ export function ProductViewer({ part, catalog }: Props) {
           <div className="product-viewer-id-card">
             <span className="product-viewer-id-name">{part.name}</span>
             <span className="product-viewer-id-family">{part.category}</span>
+            {/* Phase 0.12 (D): say so on the product page too, not only in the
+                builder rail — this is where a customer lands from the showroom. */}
+            {soon && <span className="product-viewer-soon">{COMING_SOON_LABEL}</span>}
             <a href={part.productUrl} target="_blank" rel="noreferrer">
               Product page ↗
             </a>
@@ -226,8 +235,8 @@ export function ProductViewer({ part, catalog }: Props) {
         <OutputTray
           catalog={catalog}
           config={standaloneConfig}
-          formats={['pdf']}
-          showPngCard={Boolean(asset)}
+          formats={soon ? [] : ['pdf']}
+          showPngCard={Boolean(asset) && !soon}
         />
       </div>
     </div>

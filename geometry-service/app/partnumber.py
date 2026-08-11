@@ -46,6 +46,30 @@ SLOT_LABELS = {
 # placeholder in buildPartNumber — deliberately not '?', which 0.10 used.
 UNSPECIFIED = "_"
 
+# The ordering key of a part's SECOND finish column.  Mirrors
+# ACCENT_FINISH_KEY in src/lib/compat.ts.
+ACCENT_FINISH_KEY = "finish-color-accent"
+
+
+# Lines the Coming Soon rule is switched on for.  Mirrors COMING_SOON_LINES in
+# src/lib/availability.ts — WiLLstudio only, the one line whose real-vs-
+# placeholder split has been audited (the 8/11 coverage matrix).
+COMING_SOON_LINES = ("WiLLstudio",)
+
+
+def _is_coming_soon(part: dict) -> bool:
+    """Whether a part is visible-but-inert.  Mirrors src/lib/availability.ts.
+
+    Three conditions: the line is switched on, the part is not a pseudo-part (a
+    configuration concept needing no CAD, e.g. the direct-mount tenon adapter),
+    and its renders do not come from real CAD.
+    """
+    if part.get("line") not in COMING_SOON_LINES:
+        return False
+    if part.get("pseudoPart"):
+        return False
+    return part.get("realCad") is not True
+
 
 def _find_part(catalog: dict, part_id: str) -> dict | None:
     """Mirrors partById in src/lib/compat.ts."""
@@ -75,6 +99,19 @@ def finish_for(cfg: PoleConfig, slot: str) -> str:
         overrides = cfg.finishes or {}
         return overrides.get(slot) or cfg.finish
     return cfg.finish
+
+
+def accent_finish_for(cfg: PoleConfig, slot: str) -> str:
+    """The finish a part's accent / secondary component orders in.
+
+    Mirrors ``accentFinishFor`` in src/lib/compat.ts.  Phase 0.12: TEX's sheet
+    carries TWO finish segments (Housing, and Spider Mount & Accent Line) and
+    requires the accent designation even on side mounts.  An unset accent falls
+    back to the slot's own finish, exactly as an unset slot finish falls back to
+    the base ``config.finish`` — a default, not an invented code.
+    """
+    overrides = getattr(cfg, "accentFinishes", None) or {}
+    return overrides.get(slot) or finish_for(cfg, slot)
 
 
 def spec_codes(value: str | list[str] | None) -> list[str]:
@@ -109,6 +146,21 @@ def _chosen_for_slot(cfg: PoleConfig, slot: str) -> dict:
     return (cfg.specOptions or {}).get(slot) or {}
 
 
+def _finish_code(catalog: dict, values: list[dict], finish_id: str) -> str:
+    """A finish column's code for one finish id.
+
+    Mirrors ``finishCode`` in src/lib/summary.ts: the sheet's own code when that
+    column lists the finish, else the palette code (TEX prints 10 of the
+    palette's 13 colours).  Shared by both finish segments so Housing and Accent
+    resolve identically.
+    """
+    mapped = next((v for v in values if v.get("mapsTo") == finish_id), None)
+    if mapped and mapped.get("code"):
+        return mapped["code"]
+    finish = _find_finish(catalog, finish_id)
+    return (finish or {}).get("code") or UNSPECIFIED
+
+
 def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     """One component's full ordering part number, or None when it has no sheet.
 
@@ -117,6 +169,14 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     """
     part = _find_part(catalog, getattr(cfg, slot, ""))
     if part is None:
+        return None
+
+    # Phase 0.12 (Workstream D): a Coming Soon part produces NO part number.
+    # Mirrors `isComingSoon` in src/lib/availability.ts.  A part still rendering
+    # from placeholder geometry is not orderable, and this resolver's output is
+    # exactly what a designer pastes into a project spec — so the generated PDF
+    # and bundle must print a dash here, never a plausible-looking SKU.
+    if _is_coming_soon(part):
         return None
 
     # Arms carry official per-configuration model codes (SH1, SS3, AR2, …) —
@@ -148,15 +208,16 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         selected = spec_codes(chosen.get(key))
         if selected:
             segments.append(selected[0])
-        elif key.startswith("finish-color"):
-            # The sheet's own code when it lists this finish, else the palette
-            # code (covers sheets whose finish column predates a new color).
-            mapped = next((v for v in values if v.get("mapsTo") == finish_id), None)
+        elif key == ACCENT_FINISH_KEY:
+            # Phase 0.12: TEX's second finish segment.  MUST be tested before
+            # the "finish-color" prefix below, which this key also matches —
+            # otherwise both columns resolve to the housing colour and the
+            # accent silently duplicates it.
             segments.append(
-                (mapped or {}).get("code")
-                or (finish or {}).get("code")
-                or UNSPECIFIED
+                _finish_code(catalog, values, accent_finish_for(cfg, slot))
             )
+        elif key.startswith("finish-color"):
+            segments.append(_finish_code(catalog, values, finish_id))
         elif key == "finish-type":
             # Finish type is a function of the picked color: FP painted / AN anodized.
             type_code = (finish or {}).get("typeCode")

@@ -176,12 +176,17 @@ describe('assembly view rotation — real assets', () => {
     // back shows its two arms at the SAME pair of azimuths as the front view,
     // swapped — that is what "180° apart" buys, and why 2 views suffice for
     // symmetric geometry.
-    const twin = repairConfig(catalog, {
-      ...base,
-      fixture: 'mvx-coach',
+    // Phase 0.12 (D): HSX is Coming Soon, so repairConfig will not rest on it.
+    // This case is about render azimuths, not availability — pin the arm back.
+    const twin = {
+      ...repairConfig(catalog, {
+        ...base,
+        fixture: 'mvx-coach',
+        arm: 'willstudio-hsx-decorative-upsweep-arms',
+        armCount: 2,
+      }),
       arm: 'willstudio-hsx-decorative-upsweep-arms',
-      armCount: 2,
-    })
+    }
     const front = resolveAssemblyLayout(catalog, manifest, twin, 0)
     const back = resolveAssemblyLayout(catalog, manifest, twin, 180)
     const armFiles = (l: typeof front) =>

@@ -820,22 +820,27 @@ describe('repairConfig — per-slot spec-option pruning (Phase 0.10.5)', () => {
   })
 
   it('a part swap drops stale codes the new part does not offer', () => {
-    // DRX has a `design` ordering column; TEX does not.
+    // Both fixtures have a `design` column, but each offers only its own code:
+    // DRX's lists `DRX`, TEX's lists `TEX`. (Phase 0.12 note: this case used to
+    // key off TEX having no `design` column at all — it did, merged into
+    // `lumen-output` by the spec parser. Splitting that merge gave TEX the same
+    // shape as its siblings, so the stale code here had to become one that is
+    // genuinely DRX-only rather than the `CH` custom code both accept.)
     const valid = repairConfig(
       catalog,
       config({
         fixture: 'drx-post-top',
         arm: 'direct-mount',
-        specOptions: { fixture: { design: 'CH' } },
+        specOptions: { fixture: { design: 'DRX' } },
       }),
     )
-    expect(valid.specOptions?.fixture?.design).toBe('CH')
+    expect(valid.specOptions?.fixture?.design).toBe('DRX')
     const swapped = repairConfig(
       catalog,
       config({
         fixture: 'tex-post-top',
         arm: 'direct-mount',
-        specOptions: { fixture: { design: 'CH' } },
+        specOptions: { fixture: { design: 'DRX' } },
       }),
     )
     expect(swapped.specOptions?.fixture?.design ?? undefined).toBeUndefined()
@@ -1044,7 +1049,12 @@ describe('official arm configuration list (Phase 0.10.5)', () => {
     const socketType = Object.values(arm.sockets ?? {})[0]?.type
     const fixture =
       socketType === 'pendant' ? 'gvx-pendant' : socketType === 'arm-mount' ? 'mvx-coach' : 'drx-post-top'
-    const cfg = repairConfig(catalog, config({ fixture, arm: armId, pole: 'alum-pole-20' }))
+    // Phase 0.12 (D): several of these arms are now Coming Soon, and
+    // repairConfig deliberately refuses to REST on one (see the availability
+    // filter there). This case is about the official arm-count table, not
+    // availability, so the arm is pinned back after the other slots repair.
+    // `availabilityConfig.test.ts` covers the un-selectability itself.
+    const cfg = { ...repairConfig(catalog, config({ fixture, arm: armId, pole: 'alum-pole-20' })), arm: armId }
     expect(cfg.arm).toBe(armId)
     expect(allowedArmCounts(catalog, cfg)).toEqual(counts)
   })
