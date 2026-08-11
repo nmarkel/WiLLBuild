@@ -53,6 +53,22 @@ export interface CatalogPart {
    */
   realCad?: boolean
   /**
+   * Phase 0.12: an EDITORIAL hold — this product is finished enough to render
+   * but is deliberately outside the configurator's current cut.
+   *
+   * Deliberately a separate axis from `realCad`, not an override of it. Tyler's
+   * 8/11 cut is GVX + TEX only, so DRX / MVX / DWX come out even though all
+   * three render from real CAD. Expressing that by clearing `realCad` would be
+   * a lie about the geometry — the flag is generated from the render rig and
+   * still points at each part's real CAD source — and it would silently drag
+   * the render pipeline and the coverage gate along with a merchandising call.
+   *
+   * Hand-set, unlike `realCad`. A part held this way does NOT re-enable itself
+   * when Workstream A lands more geometry: someone has to decide it is in the
+   * cut and delete the flag.
+   */
+  comingSoon?: boolean
+  /**
    * Phase 0.12 (D): a configuration concept rather than a manufactured product
    * — today the `direct-mount` tenon adapter, which is how you say "no arm".
    *

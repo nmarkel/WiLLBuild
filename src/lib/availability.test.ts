@@ -69,7 +69,19 @@ const SECTION_D_AUDITED = [
  */
 const LANDED_SINCE_AUDIT = ['willstudio-fr2-decorative-crossarm']
 
+/**
+ * EDITORIAL holds — parts pulled from the cut by decision, not by a geometry
+ * gap. All three render from real CAD; Tyler's 8/11 call keeps the fixture set
+ * to GVX + TEX, so DRX / MVX / DWX come out anyway.
+ *
+ * Kept as its own list because it behaves differently from the audit above:
+ * these do NOT re-enable themselves when more geometry lands. Someone has to
+ * decide they are back in the cut.
+ */
+const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'willstudio-dwx-flood-spot']
+
 const SECTION_D_BADGED = SECTION_D_AUDITED.filter((id) => !LANDED_SINCE_AUDIT.includes(id))
+const ALL_BADGED = [...SECTION_D_BADGED, ...EDITORIAL_HOLDS]
 
 /** Section E: the 23 parts already rendering from real CAD. */
 const SECTION_E_REAL_CAD = Object.keys(realParts)
@@ -109,14 +121,37 @@ describe('Coming Soon covers exactly the coverage matrix section-D list', () => 
       .filter((p) => isComingSoon(p))
       .map((p) => p.id)
       .sort()
-    expect(badged).toEqual([...SECTION_D_BADGED].sort())
+    expect(badged).toEqual([...ALL_BADGED].sort())
   })
 
-  it('never badges a real-CAD part', () => {
+  it('never badges a real-CAD part for a GEOMETRY reason', () => {
+    // Real CAD means the geometry gap does not apply. An editorial hold still
+    // can — and must not be confused with one: the flag stays true and the
+    // render still comes from that part's real CAD.
     for (const id of SECTION_E_REAL_CAD) {
+      if (EDITORIAL_HOLDS.includes(id)) continue
       expect(isComingSoon(byId(id)), `${id} renders from real CAD`).toBe(false)
       expect(isConfigurable(byId(id))).toBe(true)
     }
+  })
+
+  it('holds DRX / MVX / DWX editorially, without touching their real-CAD flag', () => {
+    // Tyler's 8/11 cut is GVX + TEX. These three are finished enough to render
+    // and their `realCad` must stay true — clearing it would be a lie about the
+    // geometry and would drag the render pipeline and coverage gate along with
+    // a merchandising decision.
+    for (const id of EDITORIAL_HOLDS) {
+      const part = byId(id)
+      expect(part?.comingSoon, `${id} should carry an explicit hold`).toBe(true)
+      expect(part?.realCad, `${id} still renders from real CAD`).toBe(true)
+      expect(isComingSoon(part)).toBe(true)
+    }
+  })
+
+  it('leaves exactly GVX + TEX configurable in the fixture slot', () => {
+    const fixtures = catalog.parts.filter((p) => p.slot === 'fixture' && p.line === 'WiLLstudio')
+    const usable = fixtures.filter((p) => isConfigurable(p)).map((p) => p.id).sort()
+    expect(usable).toEqual(['gvx-pendant', 'tex-post-top'])
   })
 
   it('excludes direct-mount — a pseudo-part, not a future product', () => {

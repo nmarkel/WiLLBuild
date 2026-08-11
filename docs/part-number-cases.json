@@ -261,8 +261,8 @@
       }
     },
     {
-      "name": "DRX post top resolves its design from the part family",
-      "why": "A design column whose values include the part's own family is answered by the part card, not the customer.",
+      "name": "DRX post top is held from the cut — no part number, in both languages",
+      "why": "Phase 0.12: this case used to pin the 'design resolves from part.family' rule on DRX. Tyler's 8/11 cut is GVX + TEX, so DRX now carries an editorial hold and resolves to NO number at all — a held product must never emit a spec-able SKU. That suppression is itself worth pinning cross-language: if the Python mirror forgot it, the generated PDF would print a number the browser refuses to show. The family-fallback rule it used to cover is still exercised by the TEX cases below, whose Design segment resolves the same way.",
       "config": {
         "configId": "pn-case-0012",
         "brand": "WiLLstudio",
@@ -274,7 +274,7 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-DRX-_-_-_-_-_-BK",
+        "fixture": null,
         "arm": null,
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"

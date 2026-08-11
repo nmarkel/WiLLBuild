@@ -982,9 +982,16 @@ describe('default spec options — WHP7NP cord (Phase 0.10.5)', () => {
     expect(defaultSpecOptions(partById(catalog, 'sh1-shepherds-hook'))).toBeUndefined()
   })
 
-  it('defaultConfig starts with the cord pre-selected on the default fixture', () => {
+  it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {
+    // Phase 0.12 (D): this used to assert the WHP7NP cord specifically, because
+    // the default fixture was drx-post-top. DRX left the cut on 8/11, so the
+    // builder now opens on TEX and the cord is not its default. The RULE — the
+    // default config carries whatever that fixture's sheet defaults to — is what
+    // matters, and the DRX cord itself is still pinned directly in the test
+    // above, which needs no repair to hold.
     const cfg = defaultConfig(catalog)
-    expect(cfg.specOptions?.fixture?.options).toEqual(['WHP7NP'])
+    const fixture = partById(catalog, cfg.fixture)
+    expect(cfg.specOptions?.fixture).toEqual(defaultSpecOptions(fixture))
     // Still a stable, fully valid config.
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
   })

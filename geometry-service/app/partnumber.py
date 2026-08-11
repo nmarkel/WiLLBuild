@@ -60,10 +60,15 @@ COMING_SOON_LINES = ("WiLLstudio",)
 def _is_coming_soon(part: dict) -> bool:
     """Whether a part is visible-but-inert.  Mirrors src/lib/availability.ts.
 
-    Three conditions: the line is switched on, the part is not a pseudo-part (a
-    configuration concept needing no CAD, e.g. the direct-mount tenon adapter),
-    and its renders do not come from real CAD.
+    Two independent reasons.  An EDITORIAL hold (``comingSoon``) is a decision
+    about a named product — Tyler's 8/11 cut keeps the fixtures to GVX + TEX, so
+    DRX/MVX/DWX are held despite having real CAD — and it ignores the line
+    scope.  A GEOMETRY gap is the generated ``realCad`` flag, scoped to the
+    audited lines and skipped for pseudo-parts; it clears by itself as the
+    ingest lands each part.
     """
+    if part.get("comingSoon"):
+        return True
     if part.get("line") not in COMING_SOON_LINES:
         return False
     if part.get("pseudoPart"):

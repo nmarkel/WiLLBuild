@@ -33,13 +33,26 @@ export const COMING_SOON_LINES: readonly ProductLine[] = ['WiLLstudio']
 /**
  * Whether a part is presented as Coming Soon: visible, but inert.
  *
- * Three conditions, in the order they matter:
- *  1. its line is switched on (see COMING_SOON_LINES);
- *  2. it is not a pseudo-part (a configuration concept needing no CAD);
- *  3. its renders do not come from real CAD.
+ * TWO independent reasons, which are worth keeping apart because they behave
+ * differently over time:
+ *
+ *  A. an EDITORIAL hold (`part.comingSoon`) — finished enough to render, but
+ *     outside the current cut. Tyler's 8/11 call keeps the fixture set to
+ *     GVX + TEX, so DRX / MVX / DWX are held despite all three having real CAD.
+ *     Hand-set, and it does not clear itself: someone decides.
+ *
+ *  B. a GEOMETRY gap — still rendering from a placeholder solid. Driven off the
+ *     generated `realCad` flag, so it clears BY ITSELF as Workstream A lands
+ *     each part. Scoped to the lines whose real-vs-placeholder split has
+ *     actually been audited, and skipped for pseudo-parts (a configuration
+ *     concept like `direct-mount` needs no CAD ever).
+ *
+ * An editorial hold ignores the line scope: it is an explicit decision about a
+ * named product, so it applies wherever it is set.
  */
 export function isComingSoon(part: CatalogPart | undefined): boolean {
   if (!part) return false
+  if (part.comingSoon) return true
   if (!COMING_SOON_LINES.includes(part.line)) return false
   if (part.pseudoPart) return false
   return part.realCad !== true

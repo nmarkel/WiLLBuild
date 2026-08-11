@@ -40,23 +40,40 @@ describe('no configuration can rest on a Coming Soon part', () => {
     }
   })
 
-  it('repairs a share URL that names a Coming Soon part', () => {
-    // A hand-edited or stale link pointing at a disabled arm must come back
-    // configurable rather than silently building an un-orderable assembly.
+  it('KEEPS a Coming Soon part a share URL already names, rather than rewriting it', () => {
+    // Deliberate: repair never CHOOSES a held part, but it does not evict one
+    // the customer's link already names. Swapping their saved product for a
+    // different one because it left the cut would rewrite their design without
+    // telling them; leaving it inert (badged, no part number, no downloads) is
+    // what "visible, not configurable" actually means.
     //
-    // The arm must be one that is COMPATIBLE with the base config, or repair
-    // would swap it out for compatibility reasons and this would pass without
-    // testing availability at all — which is exactly how it was first written.
+    // The arm must be COMPATIBLE with the base config, or repair would drop it
+    // for compatibility reasons and this would prove nothing about availability.
     const base = defaultConfig(catalog, 'WiLLstudio')
     const soonArms = compatibleParts(catalog, base, 'arm').filter((p) => isComingSoon(p))
     expect(soonArms.length, 'expected a compatible Coming Soon arm to exist').toBeGreaterThan(0)
     for (const arm of soonArms) {
       const repaired = repairConfig(catalog, { ...base, arm: arm.id })
-      expect(
-        isComingSoon(partById(catalog, repaired.arm)),
-        `repair left the config on disabled arm ${arm.id}`,
-      ).toBe(false)
+      expect(repaired.arm, `repair rewrote the customer's ${arm.id}`).toBe(arm.id)
+      // ...and it stays inert while selected.
+      expect(buildPartNumber(catalog, repaired, 'arm')).toBeUndefined()
     }
+  })
+
+  it('never CHOOSES a Coming Soon part when it has to replace one', () => {
+    // The other half: when the named part is genuinely invalid, the replacement
+    // must be configurable. This is what keeps a fresh visitor off a held part.
+    const base = defaultConfig(catalog, 'WiLLstudio')
+    const repaired = repairConfig(catalog, { ...base, arm: 'not-a-real-part-id' })
+    expect(repaired.arm).not.toBe('not-a-real-part-id')
+    expect(isComingSoon(partById(catalog, repaired.arm))).toBe(false)
+  })
+
+  it('opens the builder on a configurable fixture, not the first in the catalog', () => {
+    // drx-post-top is first in catalog order and left the cut on 8/11.
+    const base = defaultConfig(catalog, 'WiLLstudio')
+    expect(isComingSoon(partById(catalog, base.fixture))).toBe(false)
+    expect(['gvx-pendant', 'tex-post-top']).toContain(base.fixture)
   })
 
   it('produces no part number for a Coming Soon part', () => {

@@ -446,32 +446,37 @@ export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[]
  */
 export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const next = { ...config }
-  // Phase 0.12 (D): a Coming Soon part is not a valid selection, so repair
-  // treats it exactly like an incompatible one. Compatibility alone is not
-  // enough — several disabled arms (the bullhorn brackets, CR2, FR2, the
-  // supported arms) ARE compatible with the default fixture, so a share URL
-  // naming one would otherwise survive repair and leave the builder resting on
-  // a part it simultaneously refuses to configure.
+  // Phase 0.12 (D): repair never CHOOSES a Coming Soon part, but it does not
+  // evict one that is already selected.
   //
-  // Coming Soon parts stay in `compatibleParts` (the rail still lists them,
-  // greyed) — this filter applies only to what a repair may LAND on.
-  const selectable = (parts: CatalogPart[]) => {
-    const usable = parts.filter((p) => !isComingSoon(p))
-    // Never strand a slot: if every option is disabled, keep the full list
-    // rather than blanking the selection.
-    return usable.length > 0 ? usable : parts
+  // The distinction is the whole point. Picking a replacement is our choice, so
+  // it must land on something configurable — otherwise a fresh visitor starts
+  // the builder on a disabled product. But a config that already names a part
+  // is the CUSTOMER's, and silently swapping their DRX for a GVX because DRX
+  // left the cut rewrites a saved design without telling them. Held parts are
+  // inert instead: badged, no part number, no downloads — visible, not
+  // configurable, exactly as specified. `defaultConfig` starts from an empty
+  // slot, so it always goes through the choosing path.
+  //
+  // Coming Soon parts also stay in `compatibleParts`, so the rail still lists
+  // them greyed.
+  const chooseFrom = (parts: CatalogPart[]) => {
+    const configurable = parts.filter((p) => !isComingSoon(p))
+    // Never strand a slot: if every option is held, keep the full list rather
+    // than blanking the selection.
+    return configurable.length > 0 ? configurable : parts
   }
   for (const slot of SLOT_ORDER) {
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
-      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand || isComingSoon(fixture)) {
-        next.fixture = selectable(partsForSlot(catalog, 'fixture', next.brand))[0]?.id ?? ''
+      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
+        next.fixture = chooseFrom(partsForSlot(catalog, 'fixture', next.brand))[0]?.id ?? ''
       }
       continue
     }
     const options = compatibleParts(catalog, next, slot)
-    if (!options.some((p) => p.id === next[slot]) || isComingSoon(partById(catalog, next[slot]))) {
-      next[slot] = selectable(options)[0]?.id ?? ''
+    if (!options.some((p) => p.id === next[slot])) {
+      next[slot] = chooseFrom(options)[0]?.id ?? ''
     }
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
@@ -672,7 +677,14 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
 }
 
 export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio'): PoleConfig {
-  const fixture = partsForSlot(catalog, 'fixture', brand)[0]?.id ?? ''
+  // Phase 0.12 (D): the fixture is seeded here, BEFORE repairConfig runs, so it
+  // has to skip Coming Soon parts itself — repair only filters when it chooses a
+  // replacement, and a seeded value is not a replacement. Without this the
+  // builder would open on the first catalog fixture (drx-post-top), which left
+  // the cut on 8/11.
+  const fixtures = partsForSlot(catalog, 'fixture', brand)
+  const configurable = fixtures.filter((p) => !isComingSoon(p))
+  const fixture = (configurable.length > 0 ? configurable : fixtures)[0]?.id ?? ''
   const seeded = defaultSpecOptions(partById(catalog, fixture))
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
