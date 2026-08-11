@@ -7,9 +7,11 @@ import {
   paramsToPartialConfig,
   paramsToViewMode,
   paramsToScene,
+  shareUrl,
   DEFAULT_SCENE,
 } from './lib/url'
 import type { Scene } from './lib/url'
+import { snapAssemblyYaw, type FocusTarget } from './lib/composite'
 import { brandHomePath, builderPath, productPath, parseRoute } from './lib/routes'
 
 export type SceneMode = 'day' | 'night'
@@ -35,12 +37,20 @@ interface ConfiguratorState {
   /** Current view mode: builder (3D wizard) or product (standalone product page). */
   view: ViewMode
   /**
-   * Phase 0.10.5: assembly view rotation in 45° steps (0..315). A viewer-state
-   * axis like `scene` — spins the whole composited assembly via the
-   * per-azimuth renders; it never changes the config.
+   * Assembly view rotation. Phase 0.11 (Workstream E): the canonical set is 2
+   * full-assembly views 180° apart, so this is 0 (front) or 180 (back) — the
+   * 45°-step orbit is retired. A viewer-state axis like `scene`: it spins the
+   * composited assembly via the per-azimuth renders, never the config.
    */
   viewYaw: number
   setViewYaw: (deg: number) => void
+  /**
+   * Phase 0.11 (Workstream E): which component the viewer frames — the other
+   * half of the Tesla view set. 'assembly' is the whole product; the rest are
+   * tight per-component shots (see focusBox in lib/composite.ts).
+   */
+  focus: FocusTarget
+  setFocus: (target: FocusTarget) => void
   /** Phase 0.10.5: ground compass at the pole base (0/90/180/270 reference). */
   showCompass: boolean
   toggleCompass: () => void
@@ -78,6 +88,14 @@ interface ConfiguratorState {
   toggleMode: () => void
   /** Choose a viewer backdrop scene; persists to state + (non-default) the URL. */
   setScene: (scene: Scene) => void
+  /**
+   * Phase 0.11 (F3): the canonical customer-facing share link — the config PLUS
+   * the live viewer scene. Anything that hands a URL to a customer must go
+   * through here; `shareUrl(config)` alone falls back to DEFAULT_SCENE and
+   * silently drops the backdrop the user is looking at. Empty string until the
+   * catalog/config have loaded.
+   */
+  shareLink: () => string
   /** Navigate to a standalone product view (switches brand to the product's line). */
   openProduct: (id: string) => void
   /** Return to the current brand's landing (builder for WiLLstudio, product grid otherwise). */
@@ -255,10 +273,19 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     return matchedTerms
   },
 
+  // Phase 0.11 (Workstream E): the 45°-step orbit is retired. The canonical
+  // view set is 2 full-assembly views 180° apart, so this snaps to 0 (front)
+  // or 180 (back) via the same helper the compositor uses — the control and
+  // the layout can never disagree about which views exist.
   viewYaw: 0,
-  setViewYaw: (deg) => set({ viewYaw: ((Math.round(deg / 45) * 45) % 360 + 360) % 360 }),
+  setViewYaw: (deg) => set({ viewYaw: snapAssemblyYaw(deg) }),
 
-  showCompass: false,
+  // Which component the viewer is framed on ('assembly' = the whole product).
+  // A pure view axis — never part of `config`, never in a share URL.
+  focus: 'assembly',
+  setFocus: (target) => set({ focus: target }),
+
+  showCompass: true,
   toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
 
   customSceneUrl: null,
@@ -280,6 +307,11 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     if (catalog && config && view.kind === 'builder') {
       syncUrl(brand, config, scene)
     }
+  },
+
+  shareLink: () => {
+    const { config, scene } = get()
+    return config ? shareUrl(config, scene) : ''
   },
 
   openProduct: (id) => {

@@ -1,10 +1,148 @@
-import type { Catalog, CatalogPart, PartSlot, PoleConfig, ProductLine, Slot, SpecOption } from '../types'
+import type {
+  BannerPanelSize,
+  Catalog,
+  CatalogPart,
+  PartSlot,
+  PoleConfig,
+  ProductLine,
+  Slot,
+  SpecOption,
+} from '../types'
 export { isAssemblyPart } from '../types'
 
 const SLOTS: readonly Slot[] = ['fixture', 'arm', 'pole', 'baseCover']
 
-/** Minimum banner-arm height up the pole shaft, in feet (clearance rule). */
+/**
+ * Minimum banner mounting height, in feet — measured to the BOTTOM of the
+ * banner (Phase 0.11 D1; before 0.11 the legacy path measured to the banner's
+ * vertical centre, so a 24×48 panel "at 8 ft" actually hung to ~6 ft).
+ */
 export const BANNER_MIN_FT = 8
+
+/**
+ * Puddy's spec raises the banner floor to 10 ft on a 25 ft pole. No catalog
+ * pole reaches 25 ft today (WiLLstudio ships 8–20 ft; NAFCO poles carry no
+ * `heightFt` at all and fall back to 20), so the rule is expressed as a
+ * function of pole height keyed at ≥ 25 ft rather than as a per-part exception
+ * — it starts applying by itself the day a 25 ft pole lands in the catalog.
+ */
+const BANNER_TALL_POLE_FT = 25
+const BANNER_TALL_POLE_MIN_FT = 10
+
+/**
+ * Headroom kept between the top of a shaft accessory and the pole top, in feet.
+ *
+ * Phase 0.11 (D3) reconciliation: two different caps existed — `poleFt − 2` on
+ * the legacy banner path and `poleFt − 1` on the accessory-placement path. The
+ * extra foot the legacy path reserved was an unlabelled stand-in for the banner
+ * extending above its (then centre) mounting point. Now that the reference is
+ * the banner's bottom edge, that allowance is stated explicitly as the panel's
+ * own height, and BOTH paths keep the same generic 1 ft of pole-top clearance.
+ */
+export const ACCESSORY_TOP_CLEARANCE_FT = 1
+
+/** Phase 0.11 (D2): last-resort panel size when the catalog declares none. */
+const FALLBACK_BANNER_PANEL_SIZE: BannerPanelSize = {
+  id: '24x48',
+  widthIn: 24,
+  heightIn: 48,
+  default: true,
+}
+
+/** The banner panel sizes the catalog offers (never empty — see the fallback). */
+export function bannerPanelSizes(catalog: Catalog): BannerPanelSize[] {
+  const sizes = catalog.bannerPanelSizes
+  return sizes && sizes.length > 0 ? sizes : [FALLBACK_BANNER_PANEL_SIZE]
+}
+
+/**
+ * Resolve a `BannerConfig.size` / `AccessoryPlacement.size` id to its panel
+ * dimensions. An absent or unknown id resolves to the catalog default (24"
+ * width is the most commonly ordered), which is what keeps pre-0.11 share URLs
+ * — they carry no size at all — loading as a valid 24×48 banner.
+ */
+export function bannerPanelSize(catalog: Catalog, id: string | undefined): BannerPanelSize {
+  const sizes = bannerPanelSizes(catalog)
+  return sizes.find((s) => s.id === id) ?? sizes.find((s) => s.default) ?? sizes[0]
+}
+
+/** True when a pole-accessory label is a banner-arm kit (BA24/BA30). */
+export function isBannerKitLabel(label: string): boolean {
+  return label.includes('Banner Arm Kit')
+}
+
+/**
+ * Panel sizes a banner-arm kit can actually carry, from the arm length its own
+ * label declares (`24" Wind Shedding Banner Arm Kit … 24" Fiberglass Arms` →
+ * panels up to 24" wide). Derived from catalog label text, never a hardcoded
+ * code→size table. Labels with no declared arm length (the legacy BA1 banner
+ * parts) offer every size. All three catalog sizes clear the labels' other
+ * stated limit — "For Banners Less Than 17.5 sq ft" — so it needs no filter.
+ */
+export function bannerSizesForLabel(catalog: Catalog, label: string): BannerPanelSize[] {
+  const sizes = bannerPanelSizes(catalog)
+  const armIn = label.match(/(\d+)\s*[”"]\s*(?:Wind Shedding )?Banner Arm Kit/)
+  if (!armIn) return sizes
+  const maxWidthIn = Number(armIn[1])
+  const fits = sizes.filter((s) => s.widthIn <= maxWidthIn)
+  return fits.length > 0 ? fits : sizes
+}
+
+/** The bottom-of-banner floor for a pole of this height (see BANNER_TALL_POLE_FT). */
+export function bannerMinFt(poleFt: number): number {
+  return poleFt >= BANNER_TALL_POLE_FT ? BANNER_TALL_POLE_MIN_FT : BANNER_MIN_FT
+}
+
+/**
+ * A legal mounting-height window in feet. `fits` is false only when the pole is
+ * too short to carry the accessory above its own minimum — the range then
+ * collapses onto the minimum and the caller should warn rather than pretend.
+ */
+export interface HeightRange {
+  minFt: number
+  maxFt: number
+  fits: boolean
+}
+
+/**
+ * Phase 0.11 (D3): the legal bottom-of-banner window on a pole, in feet — the
+ * single definition both banner paths and the placement UI use, so they can no
+ * longer drift apart. Because the height is measured to the banner's BOTTOM,
+ * the ceiling has to leave room for the panel itself, or a tall banner's top
+ * would run off the pole.
+ */
+export function bannerHeightRange(
+  catalog: Catalog,
+  poleFt: number,
+  sizeId?: string,
+): HeightRange {
+  const minFt = bannerMinFt(poleFt)
+  const panelFt = bannerPanelSize(catalog, sizeId).heightIn / 12
+  const ceiling = Math.round((poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT) * 12) / 12
+  // A pole too short to hold this panel above the floor collapses to the floor
+  // rather than inverting the range (the "floor wins" rule pre-dates 0.11).
+  // `fits: false` says so out loud instead of quietly returning a height whose
+  // banner overhangs the pole top — the UI warns, it does not pretend.
+  return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
+}
+
+/**
+ * The shaft-height window for any placeable pole accessory. Banner kits use
+ * the banner rules above; everything else keeps its label-declared minimum
+ * (FSTR's `Minimum 37" Above Base Plate`) or the generic 2 ft floor, under the
+ * same 1 ft of pole-top clearance.
+ */
+export function accessoryHeightRange(
+  catalog: Catalog,
+  poleFt: number,
+  label: string,
+  sizeId?: string,
+): HeightRange {
+  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId)
+  const minFt = labelMinFt(label) ?? 2
+  const ceiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
+  return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
+}
 
 function isSlot(s: PartSlot): s is Slot {
   return (SLOTS as readonly string[]).includes(s)
@@ -101,11 +239,42 @@ const EXCLUSIVE_CODE_FAMILIES: { name: string; match: RegExp }[] = [
   { name: 'cord', match: /^WHP/ },
   { name: 'surge-suppressor', match: /^SRG/ },
   { name: 'photocontrol', match: /^(BPC|TLPC)/ },
+  // Phase 0.11 (C2): the shepherds hook's centre feature — one decorative /
+  // logo insert sits in the hook, so CF1, CF2 and CF3 are three variants of one
+  // physical thing. Anchored to exactly CF1|CF2|CF3 rather than a `^CF` prefix
+  // on purpose: the catalog also carries a bare `CF` = "Custom" on mvx-coach,
+  // which is a different concept (a quote conversation on a coach fixture, not
+  // a hook insert) and must NOT be swept into this family — a prefix match
+  // would also claim any future CF-prefixed code sight unseen.
+  { name: 'center-feature', match: /^CF[123]$/ },
 ]
 
 /** The exclusive family a code belongs to, if any. */
 export function exclusiveFamily(code: string): string | undefined {
   return EXCLUSIVE_CODE_FAMILIES.find((f) => f.match.test(code))?.name
+}
+
+/**
+ * Phase 0.11 (C3): arms allowed to carry the centre-feature codes, keyed by the
+ * arm's official ordering model code (`modelCodes[1]`) rather than its catalog
+ * id — the arms sheet keys its Options column by model code too.
+ *
+ * Per the 0.11 spec: "Nick pretty sure SS has no logo; Tyler to confirm — treat
+ * SS as no-logo until then." Today only `sh1-shepherds-hook` carries the column,
+ * so this holds by data; the guard exists so a later catalog edit (or a parser
+ * re-run that fans the arms sheet's Options column across all 10 arm families)
+ * cannot silently start offering a logo feature on a crossarm.
+ */
+const CENTER_FEATURE_MODEL_CODES = new Set(['SH1'])
+
+/**
+ * Whether a part may offer a given option/accessory code at all. This is the
+ * part-level counterpart to `voltageCompatible`: `voltageCompatible` filters on
+ * a chosen value, this one filters on which product the sheet's code belongs to.
+ */
+export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): boolean {
+  if (exclusiveFamily(code) !== 'center-feature') return true
+  return CENTER_FEATURE_MODEL_CODES.has(part?.modelCodes?.[1] ?? '')
 }
 
 /**
@@ -298,13 +467,18 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     for (const slot of SLOT_ORDER) {
       const chosen = next.specOptions[slot]
       if (!chosen) continue
-      const options = partById(catalog, next[slot])?.options
+      const part = partById(catalog, next[slot])
+      const options = part?.options
       if (!options) continue
       const kept: Record<string, string | string[]> = {}
       const seenFamilies = new Set<string>()
       for (const opt of [...options].sort((a, b) => a.orderPosition - b.orderPosition)) {
-        const valid = specCodes(chosen[opt.key]).filter((code) =>
-          opt.values.some((v) => v.code === code),
+        const valid = specCodes(chosen[opt.key]).filter(
+          // Phase 0.11 (C3): `codeAllowedOnPart` rejects a code the sheet lists
+          // but this product may not carry (CF1/CF2/CF3 outside SH1), so a
+          // crafted URL — or a catalog edit that fans the arms sheet's Options
+          // column across every arm — can't smuggle a logo onto a crossarm.
+          (code) => opt.values.some((v) => v.code === code) && codeAllowedOnPart(part, code),
         )
         if (valid.length === 0) continue
         if (opt.group === 'ordering') {
@@ -347,14 +521,19 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     const cleaned: NonNullable<PoleConfig['accessoryPlacements']> = {}
     for (const [code, p] of Object.entries(next.accessoryPlacements)) {
       if (!placeable.has(code) || !p) continue
-      const maxFt = Math.max(2, Math.round(poleFt - 1))
-      // Label-declared minimum wins (FSTR: 37" above base plate); heights are
-      // inch-granular so such minimums are representable exactly.
       const label = poleAccessoryLabel(catalog, next, code)
-      // Banner kits keep the banner's 8 ft clearance floor; a label-declared
-      // minimum (FSTR's 37") wins where present; 2 ft generic otherwise.
-      const minFt =
-        labelMinFt(label) ?? (label.includes('Banner Arm Kit') ? BANNER_MIN_FT : 2)
+      // Phase 0.11 (D2): a panel size is meaningful only on a banner kit, and
+      // only when the kit's arms are long enough for it (BA24 can't fly a 30"
+      // banner). Anything else — unknown id, size on a festoon — is dropped.
+      const size = isBannerKitLabel(label)
+        ? bannerSizesForLabel(catalog, label).find((s) => s.id === p.size)?.id
+        : undefined
+      // Phase 0.11 (D3): ONE height window, shared with the placement UI —
+      // banner kits measure to the bottom of the banner and reserve the panel's
+      // own height under the pole top; other accessories keep their label
+      // minimum (FSTR's 37") under 1 ft of pole-top clearance. Heights stay
+      // inch-granular so such minimums are representable exactly.
+      const { minFt, maxFt } = accessoryHeightRange(catalog, poleFt, label, size)
       const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
       const orientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
       // Sides exist only where the accessory supports them, clamped to its set.
@@ -365,7 +544,12 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
             ? p.sides
             : 1
           : undefined
-      cleaned[code] = sides !== undefined ? { heightFt, orientation, sides } : { heightFt, orientation }
+      cleaned[code] = {
+        heightFt,
+        orientation,
+        ...(sides !== undefined ? { sides } : {}),
+        ...(size !== undefined ? { size } : {}),
+      }
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
@@ -389,12 +573,18 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       const sides = bannerPart.arrangements ?? [1]
       let banner = next.banner
       if (!sides.includes(banner.count)) banner = { ...banner, count: sides[0] ?? 1 }
-      // Phase 0.9: clamp the shaft height to the pole's usable range so a
-      // hand-crafted share link can't place the banner off the pole (mirrors
-      // BannerPicker's slider bounds: [BANNER_MIN_FT, pole height − 2 ft]).
+      // Phase 0.11 (D2): keep only a size the catalog actually offers; an absent
+      // or unknown id reads as the default (24×48), which is how a pre-0.11
+      // share link — it carries no size — still loads.
+      if (banner.size !== undefined && !bannerPanelSizes(catalog).some((s) => s.id === banner.size)) {
+        banner = { armId: banner.armId, count: banner.count, heightFt: banner.heightFt }
+      }
+      // Phase 0.11 (D3): the same height window the accessory path uses, so the
+      // two banner paths agree — floor at bannerMinFt (10 ft on a 25 ft+ pole),
+      // ceiling leaves room for the panel above its bottom-edge mounting height.
       const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
-      const maxFt = Math.max(BANNER_MIN_FT, Math.round(poleFt - 2))
-      const clampedFt = Math.min(maxFt, Math.max(BANNER_MIN_FT, banner.heightFt))
+      const { minFt, maxFt } = bannerHeightRange(catalog, poleFt, banner.size)
+      const clampedFt = Math.min(maxFt, Math.max(minFt, banner.heightFt))
       if (clampedFt !== banner.heightFt) banner = { ...banner, heightFt: clampedFt }
       next.banner = banner
     }

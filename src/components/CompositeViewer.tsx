@@ -1,10 +1,19 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
-import type { Catalog, PoleConfig } from '../types'
+import type { Catalog, PoleConfig, Slot } from '../types'
 import type { SceneMode } from '../store'
 import { useConfigurator } from '../store'
-import { resolveAssemblyLayout, pointInLayout, rotateY } from '../lib/composite'
-import { clampPan } from '../lib/viewerTransform'
+import {
+  availableViews,
+  currentViewIndex,
+  focusBox,
+  resolveAssemblyLayout,
+  pointInLayout,
+  rotateY,
+  type FocusTarget,
+} from '../lib/composite'
+import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
+import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
 import { compositeToBlob, nightLight } from '../lib/snapshot'
 import { RenderFallback } from './RenderFallback'
@@ -18,24 +27,44 @@ interface Props {
   showCompass: boolean
   mode: SceneMode
   scene: Scene
+  /** Tesla-style part callouts: when provided, each slot's layer gets a
+      labeled leader-line hotspot; clicking reports the slot (the builder
+      scrolls its rail section into view). Rendered only at fit zoom. */
+  onSlotClick?: (slot: Slot) => void
 }
+
+/** Callout anchors: which side the label sits on and where along the layer's
+    height the leader attaches (fraction of the layer's own box). Sides
+    alternate so labels never stack; vertical spread comes from the parts
+    themselves (fixture top, arm upper, pole mid, base cover bottom). */
+const CALLOUT_DEFS: { slot: Slot; label: string; side: 'left' | 'right'; anchorFrac: number }[] = [
+  { slot: 'fixture', label: 'Fixture', side: 'right', anchorFrac: 0.45 },
+  { slot: 'arm', label: 'Arm', side: 'left', anchorFrac: 0.5 },
+  { slot: 'pole', label: 'Pole', side: 'right', anchorFrac: 0.55 },
+  { slot: 'baseCover', label: 'Base Cover', side: 'left', anchorFrac: 0.5 },
+]
+
+/** Callouts show only near fit zoom — zoomed in is inspection mode. */
+const CALLOUT_MAX_ZOOM = 1.05
 
 /** Ground compass ring radius (meters) and label inset, world units. */
 const COMPASS_R_M = 1.5
 const COMPASS_LABEL_R_M = 1.85
 
-// Phase 0.10.5: zoom doubles as the product's SCALE within the backdrop photo
-// (the backdrop never scales) — 0.2× places a pole far down a lot, 10× is
-// close detail. clampPan keeps the product on screen; Reset restores the
-// grounded, centred, true-scale view.
-const MIN_ZOOM = 0.2
-const MAX_ZOOM = 10
-
 /** Bundled scene photos share this crop (see public/scenes/SOURCES.md). */
 const SCENE_IMG = { w: 1600, h: 1000 }
-/** Exponential step per wheel tick / button click, so zoom feels linear-ish at any level. */
-const WHEEL_SENSITIVITY = 0.0015
-const BUTTON_ZOOM_STEP = 1.25
+/**
+ * Zoom has no on-screen +/- cluster any more: Tyler's 0.10.5_TO viewer pass
+ * replaced it (and the rotate pair) with the view carousel, leaving wheel and
+ * drag as the fine controls. The per-tick factor lives in lib/wheelZoom.ts
+ * (`wheelZoomFactor`), so there is no local sensitivity constant here.
+ *
+ * TRADEOFF, flagged not hidden: dropping the buttons leaves no pointer-free
+ * zoom affordance, so a keyboard-only user can reach the carousel presets (real
+ * buttons) but not intermediate zoom levels. The presets cover the intended
+ * inspection cases, which is why this ships, but it is a real accessibility
+ * regression against 0.10.5 and the buttons are a one-component revert.
+ */
 
 /**
  * Shared horizon line for all three backdrop scenes, as a fraction of the
@@ -65,10 +94,6 @@ const HUMAN_OFFSET: [number, number, number] = [1.4, 0, 0.6]
 /** Ground shadow ellipse size in meters (width, height), converted via pxPerMeterY. */
 const GROUND_SHADOW_M: [number, number] = [2.6, 0.6]
 
-function clampZoom(z: number): number {
-  return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z))
-}
-
 /**
  * Layered image-compositing assembly viewer — drop-in replacement for the R3F
  * <Scene>. Stacks the pre-rendered part images from the render manifest at
@@ -78,10 +103,12 @@ function clampZoom(z: number): number {
  * the manifest is unavailable or any part in the current config has no
  * render asset.
  */
-export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene }: Props) {
+export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene, onSlotClick }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
   const viewYaw = useConfigurator((s) => s.viewYaw)
   const setViewYaw = useConfigurator((s) => s.setViewYaw)
+  const focus = useConfigurator((s) => s.focus)
+  const setFocus = useConfigurator((s) => s.setFocus)
   const customSceneUrl = useConfigurator((s) => s.customSceneUrl)
   const manifest = useRenderManifest()
   const night = mode === 'night'
@@ -91,7 +118,15 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     [catalog, manifest, config, viewYaw],
   )
 
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  // The interactive wrapper does NOT exist on the first commit: `manifest`
+  // starts `undefined`, so the first render always returns the "Loading render…"
+  // branch below and the wrapper only mounts once the manifest promise
+  // resolves. Holding the node in STATE (rather than a `useRef` that effects
+  // read once) makes that late arrival a real dependency: every effect that
+  // needs the element lists `wrapperEl` and therefore re-runs when it appears.
+  // A `useRef` + `useEffect(..., [])` here silently never attached — that is
+  // how scroll-wheel zoom was dead from Phase 0.7 through 0.10.5.
+  const [wrapperEl, setWrapperEl] = useState<HTMLDivElement | null>(null)
   const [fitScale, setFitScale] = useState(1)
   const [viewport, setViewport] = useState({ w: 0, h: 0 })
 
@@ -113,9 +148,44 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
     null,
   )
-  // Latest clamped (on-screen) pan, so a drag continues from where the product
-  // actually is, not from an out-of-bounds raw pan value.
-  const effPanRef = useRef({ x: 0, y: 0 })
+  /** Last pointer position seen during a drag — lets a mid-drag zoom rebase. */
+  const lastPointerRef = useRef({ x: 0, y: 0 })
+  // Mirrors `zoom` so several wheel ticks landing in one React batch each build
+  // on the previous one instead of all reading the same rendered value.
+  const zoomRef = useRef(zoom)
+  zoomRef.current = zoom
+  // Raw pan + the clamp inputs, both mirrored into refs. Event handlers must be
+  // able to ask "where is the product ACTUALLY on screen right now?" without
+  // waiting for a render — several pointermoves (or a pointermove and the
+  // pointerup that ends the gesture) can land in one React batch, and reading a
+  // render-time cache there would silently throw away the last of the drag.
+  const panRef = useRef(pan)
+  panRef.current = pan
+  // Zoom-INDEPENDENT clamp inputs only. The scale is recomputed per call from
+  // the zoom being asked about, so a burst of +/- clicks (or wheel ticks) that
+  // lands in one React batch clamps each step against that step's own bounds
+  // instead of the last rendered zoom's — caching the whole PanClampOpts here
+  // silently over-clamped every step after the first.
+  // `clamp: false` on photo scenes, where the product is placed freely.
+  const clampBaseRef = useRef<
+    (Omit<PanClampOpts, 'zoom' | 'scale'> & { fitScale: number; clamp: boolean }) | null
+  >(null)
+  /**
+   * Where the product actually is on screen right now — the clamped pan a drag
+   * or a zoom step continues from, computed live rather than read from a cache.
+   */
+  const currentEffPan = useCallback((): { x: number; y: number } => {
+    const b = clampBaseRef.current
+    if (!b || !b.clamp) return panRef.current
+    const z = zoomRef.current
+    return clampPan(panRef.current, {
+      zoom: z,
+      scale: b.fitScale * z,
+      box: b.box,
+      viewport: b.viewport,
+      horizonFrac: b.horizonFrac,
+    })
+  }, [])
 
   // Kept in a ref so the ResizeObserver callback below (subscribed once per
   // width/height pair) always reads the latest layout without re-subscribing
@@ -128,10 +198,50 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // convention: a finish swap shouldn't reset the view, only a part change.
   const assemblyKey = `${config.pole}-${config.arm}-${config.fixture}-${config.baseCover}-${config.armCount ?? 1}-${config.banner?.armId ?? ''}:${config.banner?.count ?? ''}:${config.banner?.heightFt ?? ''}`
 
+  /**
+   * The view carousel's presets for THIS config, and where the camera currently
+   * sits in them. Both derived — see `ASSEMBLY_VIEWS` in lib/composite.ts for
+   * why the index is not stored: (viewYaw, focus) already is the view, and a
+   * separate `viewIdx` desyncs the moment a callout or the option rail moves the
+   * camera. `viewIdx` is -1 when the customer has zoomed/panned off-preset.
+   */
+  const views = useMemo(() => (layout ? availableViews(layout) : []), [layout])
+  const viewIdx = currentViewIndex(views, viewYaw, focus)
+
+  /**
+   * New assembly or scene swap → drop any accumulated zoom/pan so the next
+   * framing is derived fresh rather than layered on a stale one.
+   *
+   * Deliberately resets the CAMERA ONLY — not `focus`, not `viewYaw`. Both of
+   * those were reset here at first and it broke the option rail: picking a
+   * fixture calls setFocus('poleTop') and also changes assemblyKey, so this
+   * effect fired straight afterwards and yanked the view back to the full
+   * assembly. The customer saw the headline flick to "Assembly (0°)" instead of
+   * framing the part they just chose.
+   *
+   * Nothing is lost by leaving them alone: the focus effect below re-derives the
+   * framing on the same assemblyKey change, and falls back to 'assembly' by
+   * itself when the new config has no such component.
+   */
   useEffect(() => {
+    zoomRef.current = 1
+    panRef.current = { x: 0, y: 0 }
     setZoom(1)
     setPan({ x: 0, y: 0 })
-  }, [assemblyKey])
+  }, [assemblyKey, scene])
+
+  /**
+   * Step through the carousel. Falls in at the first preset when the camera is
+   * currently off-preset, so ‹ › always does something predictable rather than
+   * appearing dead after a manual zoom.
+   */
+  const cycleView = (dir: number) => {
+    if (views.length === 0) return
+    const from = viewIdx < 0 ? 0 : viewIdx
+    const next = views[(from + dir + views.length) % views.length]
+    setViewYaw(next.yaw)
+    setFocus(next.focus)
+  }
 
   // Ground-aware fit scale from the wrapper's live size. useLayoutEffect so the
   // first paint already has the right scale instead of flashing at scale 1.
@@ -139,7 +249,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // foot sits at the shared horizon, so the sky space above it and the ground
   // space below it are different budgets and are constrained separately.
   useLayoutEffect(() => {
-    const el = wrapperRef.current
+    const el = wrapperEl
     if (!el) return
     const compute = () => {
       const box = layoutRef.current
@@ -162,20 +272,97 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     const ro = new ResizeObserver(compute)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [layout?.width, layout?.height, horizonFrac])
+  }, [wrapperEl, layout?.width, layout?.height, horizonFrac])
+
+  /**
+   * Phase 0.11 (Workstream E): drive the camera to the focused component.
+   *
+   * Declared AFTER the assemblyKey reset above so it runs second on a commit
+   * where both fire — changing the pole must not leave a stale fixture framing
+   * for a frame, and must not have the reset undo the focus.
+   *
+   * The framing itself is pure (`focusFrame`), so it is unit-tested rather
+   * than only observed in a browser. A focus whose component isn't in this
+   * config (no arm on a post-top) falls back to the whole assembly instead of
+   * leaving the viewer pointed at nothing.
+   *
+   * Returning to a full-assembly view re-grounds the product. That is load
+   * bearing now that Tyler's carousel is the only view control: with the +/-
+   * and Reset buttons gone, cycling Pole Bottom → Assembly (0°) would otherwise
+   * leave the camera zoomed 3× into the foot with no way back. It is gated on
+   * the focus actually CHANGING so a manual wheel/drag inside an assembly view
+   * still survives the next unrelated re-render.
+   */
+  const prevFocusRef = useRef<FocusTarget | null>(null)
+  useEffect(() => {
+    if (!layout || viewport.w <= 0 || viewport.h <= 0) return
+    const focusChanged = prevFocusRef.current !== focus
+    prevFocusRef.current = focus
+    if (focus === 'assembly') {
+      if (focusChanged) {
+        zoomRef.current = 1
+        panRef.current = { x: 0, y: 0 }
+        setZoom(1)
+        setPan({ x: 0, y: 0 })
+      }
+      return
+    }
+    const target = focusBox(layout, focus)
+    if (!target) {
+      setFocus('assembly')
+      return
+    }
+    const next = focusFrame(target, { fitScale, box: layout, viewport, horizonFrac })
+    zoomRef.current = next.zoom
+    panRef.current = next.pan
+    setZoom(next.zoom)
+    setPan(next.pan)
+    // `layout` is intentionally read but not a dependency: it is a new object on
+    // every finish swap, which would re-frame (and cancel a manual zoom) for a
+    // change that cannot move a component. assemblyKey covers the changes that can.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, assemblyKey, viewYaw, fitScale, viewport.w, viewport.h, horizonFrac])
+
+  /**
+   * The one zoom transition, shared by the wheel and the +/- buttons.
+   *
+   * It reads the CLAMPED pan and writes the renormalised result back into
+   * `pan`, so a pan applied at one zoom level can never survive as a stale
+   * out-of-bounds value that pins the product to the edge of its allowed range
+   * at every lower zoom (only Reset used to recover from that).
+   */
+  const applyZoomFactor = useCallback((factor: number) => {
+    const from = zoomRef.current
+    const next = zoomStep({ zoom: from, pan: currentEffPan() }, factor)
+    if (next.zoom === from) return
+    zoomRef.current = next.zoom
+    panRef.current = next.pan
+    setZoom(next.zoom)
+    setPan(next.pan)
+    // Zooming mid-drag: rebase the in-flight drag onto the renormalised pan and
+    // the current pointer position, so the next pointermove continues smoothly
+    // instead of snapping the product back to the pre-zoom offset.
+    const drag = dragRef.current
+    if (drag) {
+      drag.panX = next.pan.x
+      drag.panY = next.pan.y
+      drag.startX = lastPointerRef.current.x
+      drag.startY = lastPointerRef.current.y
+    }
+  }, [currentEffPan])
 
   // Native (non-passive) wheel listener so preventDefault reliably stops page
   // scroll — React's synthetic onWheel can be attached passive by the browser.
-  useEffect(() => {
-    const el = wrapperRef.current
-    if (!el) return
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      setZoom((z) => clampZoom(z * Math.exp(-e.deltaY * WHEEL_SENSITIVITY)))
-    }
-    el.addEventListener('wheel', onWheel, { passive: false })
-    return () => el.removeEventListener('wheel', onWheel)
-  }, [])
+  // Wired as a callback ref (see lib/wheelZoom.ts): the wrapper mounts several
+  // commits after this component does, and a mount-once effect misses it.
+  const wheelRef = useWheelZoom<HTMLDivElement>(applyZoomFactor)
+  const attachWrapper = useCallback(
+    (node: HTMLDivElement | null) => {
+      setWrapperEl(node)
+      wheelRef(node)
+    },
+    [wheelRef],
+  )
 
   useEffect(() => {
     if (!layout || !manifest) return
@@ -191,34 +378,38 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     // wrapper and swallow them.
     if ((e.target as HTMLElement).closest('button')) return
     e.currentTarget.setPointerCapture(e.pointerId)
-    dragRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      panX: effPanRef.current.x,
-      panY: effPanRef.current.y,
-    }
+    lastPointerRef.current = { x: e.clientX, y: e.clientY }
+    const eff = currentEffPan()
+    dragRef.current = { startX: e.clientX, startY: e.clientY, panX: eff.x, panY: eff.y }
   }
 
   const handlePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current
     if (!drag) return
-    setPan({ x: drag.panX + (e.clientX - drag.startX), y: drag.panY + (e.clientY - drag.startY) })
+    lastPointerRef.current = { x: e.clientX, y: e.clientY }
+    const next = {
+      x: drag.panX + (e.clientX - drag.startX),
+      y: drag.panY + (e.clientY - drag.startY),
+    }
+    panRef.current = next
+    setPan(next)
   }
 
   const handlePointerUp = () => {
+    if (!dragRef.current) return
     dragRef.current = null
+    // Commit the clamped pan the user can actually see. Without this the raw
+    // pan keeps whatever overshoot the drag accumulated past the bounds, and
+    // that stale value re-asserts itself on every later zoom change.
+    const eff = currentEffPan()
+    panRef.current = eff
+    setPan((p) => (p.x === eff.x && p.y === eff.y ? p : eff))
   }
 
-  const zoomIn = () => setZoom((z) => clampZoom(z * BUTTON_ZOOM_STEP))
-  const zoomOut = () => setZoom((z) => clampZoom(z / BUTTON_ZOOM_STEP))
-  const resetView = () => {
-    setZoom(1)
-    setPan({ x: 0, y: 0 })
-    setViewYaw(0)
-  }
-  // Phase 0.10.5: spin the assembly in 45° steps (the per-azimuth render compass).
-  const rotateLeft = () => setViewYaw(viewYaw - 45)
-  const rotateRight = () => setViewYaw(viewYaw + 45)
+  // 0.11's zoomIn/zoomOut/resetView/flipView are all gone: the carousel is the
+  // single view control now (cycleView above), and returning to an assembly
+  // preset performs the re-grounding that Reset used to. `applyZoomFactor` — the
+  // one shared zoom transition — stays, driven by the wheel.
 
   if (manifest === undefined) {
     return <div className="composite-loading">Loading render…</div>
@@ -271,21 +462,48 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // horizon. (Panning is only enabled once zoomed in — a deliberate inspection
   // mode — and is the one case the foot can leave the ground line.)
   const s = fitScale * zoom
-  // Bound the pan so the product always stays substantially in view and snaps
-  // back to grounded/centred at fit (zoom <= 1) — the view can never get stuck
-  // off-screen no matter how zoom/pan/reset are combined. Derived every render
-  // (raw `pan` state stays untouched) and cached for the next drag's base.
-  const effPan = clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac })
-  effPanRef.current = effPan
+  // Blank/studio scene: bound the pan so the product always stays substantially
+  // in view and snaps back to grounded/centred at fit — the view can never get
+  // stuck off-screen no matter how zoom/pan/view are combined. Photo scenes
+  // (Tyler, 0.10.5_TO): FREE placement — the product can be dragged and scaled
+  // anywhere so it sits naturally in the photo, and cycling to a view preset
+  // re-grounds it. Derived every render; raw `pan` state stays untouched.
+  //
+  // `clamp` has to travel with the rest of the clamp base, not just gate this
+  // one expression: the pointer handlers ask `currentEffPan()` where the product
+  // is mid-gesture, and if that kept clamping while the render did not, every
+  // free drag would be silently pulled back inside the studio bounds on the next
+  // pointer event — the free placement would look like it fought the cursor.
+  const freePlace = scene !== 'blank'
+  clampBaseRef.current = { fitScale, box: layout, viewport, horizonFrac, clamp: !freePlace }
+  const effPan = freePlace
+    ? pan
+    : clampPan(pan, { zoom, scale: s, box: layout, viewport, horizonFrac })
   const targetX = viewport.w / 2
   const targetY = viewport.h * horizonFrac
   const translateX = targetX - s * layout.origin[0] + effPan.x
   const translateY = targetY - s * layout.origin[1] + effPan.y
   const stageTransform = `translate(${translateX}px, ${translateY}px) scale(${s})`
 
+  // Tesla-style callouts, in viewport space (outside the scaled stage so the
+  // text never zooms). Anchors project each slot's layer box through the same
+  // translate+scale as the stage, so they track pan/rotate exactly.
+  const callouts =
+    onSlotClick && zoom <= CALLOUT_MAX_ZOOM
+      ? CALLOUT_DEFS.flatMap((d) => {
+          const partId = config[d.slot]
+          if (!partId) return []
+          const layer = layout.layers.find((l) => l.partId === partId)
+          if (!layer) return []
+          const ax = layer.left + layer.asset.width / 2
+          const ay = layer.top + layer.asset.height * d.anchorFrac
+          return [{ ...d, x: translateX + s * ax, y: translateY + s * ay }]
+        })
+      : []
+
   return (
     <div
-      ref={wrapperRef}
+      ref={attachWrapper}
       className={`composite-viewer${night ? ' night' : ''}${scene === 'blank' ? ' blank' : ''}`}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -407,21 +625,41 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         )}
       </div>
 
-      <div className="composite-zoom">
-        <button type="button" onClick={rotateLeft} title="Rotate view 45° left" aria-label="Rotate view left">
-          ⟲
+      {callouts.map((c) => (
+        <div key={c.slot} className={`viewer-callout ${c.side}`} style={{ left: c.x, top: c.y }}>
+          <span className="viewer-callout-dot" aria-hidden="true" />
+          <span className="viewer-callout-line" aria-hidden="true" />
+          <button
+            type="button"
+            className="viewer-callout-label"
+            onClick={() => onSlotClick?.(c.slot)}
+            title={`Jump to the ${c.label} options`}
+          >
+            {c.label} <span className="viewer-callout-plus">+</span>
+          </button>
+        </div>
+      ))}
+
+      {/* Phase 0.10.5_TO: the view carousel — bold headline names the current
+          framing; ‹ › click through the presets. Replaces the rotate/zoom
+          buttons AND 0.11's separate row of focus chips: both were ways to pick
+          a (yaw, focus) pair, and two controls for one axis is how they got out
+          of step with each other.
+
+          A manual wheel/drag does NOT change the headline: it adjusts the camera
+          within the chosen view, and the view is still the one the customer
+          picked. "Custom view" is the safety net for a focus that no preset
+          covers (the per-slot fixture/arm/baseCover targets, which `focusBox`
+          still supports) — not a zoom indicator. */}
+      <div className="viewer-view-switcher">
+        <button type="button" onClick={() => cycleView(-1)} aria-label="Previous view">
+          ‹
         </button>
-        <button type="button" onClick={rotateRight} title="Rotate view 45° right" aria-label="Rotate view right">
-          ⟳
-        </button>
-        <button type="button" onClick={zoomOut} title="Zoom out" aria-label="Zoom out">
-          −
-        </button>
-        <button type="button" onClick={resetView} title="Reset view" aria-label="Reset view">
-          ⤢
-        </button>
-        <button type="button" onClick={zoomIn} title="Zoom in" aria-label="Zoom in">
-          +
+        <h2 className="viewer-view-headline" aria-live="polite">
+          {viewIdx >= 0 ? views[viewIdx].label : 'Custom view'}
+        </h2>
+        <button type="button" onClick={() => cycleView(1)} aria-label="Next view">
+          ›
         </button>
       </div>
     </div>

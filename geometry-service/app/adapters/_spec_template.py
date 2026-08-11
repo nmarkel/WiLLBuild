@@ -210,22 +210,28 @@ def _draw_components_table(
     top: float,
     width: float,
 ) -> float:
-    """Draw component table; return Y position after the table."""
-    # Header row
-    col_w = [30.0, 65.0, width - 95.0]
+    """Draw component table; return Y position after the table.
+
+    Phase 0.11 (Workstream Z1): the WiLL part number is the configurator's
+    primary output, so it is a first-class column here — right after the slot,
+    ahead of the product name, and set bold because it is the string a designer
+    copies into a project spec.  A component with no published ordering matrix
+    prints '-' rather than a fabricated code (docs/part-numbers.md).
+    """
+    # Header row.  Proportional, so the table survives a layout width change.
+    col_w = [width * 0.15, width * 0.29, width * 0.32, width * 0.24]
     row_h = 6.5
 
     _set_fill(pdf, _GUNMETAL)
     _set_text(pdf, _WHITE)
     pdf.set_font("Helvetica", "B", 8)
     pdf.set_xy(left, top)
-    for i, label in enumerate(["Slot", "Product", "URL"]):
+    for i, label in enumerate(["Slot", "Part Number", "Product", "URL"]):
         pdf.cell(col_w[i], row_h, label, border=1, fill=True, align="C", new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.ln()
 
     # Data rows
     _set_text(pdf, _GUNMETAL)
-    pdf.set_font("Helvetica", "", 8)
     slot_labels = {
         "fixture": "Fixture",
         "arm": "Arm",
@@ -237,14 +243,37 @@ def _draw_components_table(
         _set_fill(pdf, _LIGHT_GRAY if fill else _WHITE)
         slot_label = slot_labels.get(part["slot"], part["slot"].title())
         url = part.get("productUrl", "")
+        number = part.get("partNumber") or "-"
         pdf.set_xy(left, pdf.get_y())
+        pdf.set_font("Helvetica", "", 8)
         pdf.cell(col_w[0], row_h, _latin1(slot_label), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[1], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[2], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "B", 8)
+        pdf.cell(col_w[1], row_h, _latin1(number), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.cell(col_w[2], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_w[3], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
     _set_fill(pdf, _WHITE)
-    return pdf.get_y()
+    y = pdf.get_y()
+
+    # Flag any number still carrying an unanswered ordering column, so an
+    # incomplete spec is obvious rather than looking orderable.
+    incomplete = [
+        p for p in parts if p.get("partNumber") and not p.get("partNumberComplete")
+    ]
+    if incomplete:
+        pdf.set_xy(left, y)
+        pdf.set_font("Helvetica", "I", 7)
+        pdf.cell(
+            width,
+            4.5,
+            _latin1("'_' in a part number marks an ordering column still to be specified."),
+            new_x=XPos.LMARGIN,
+            new_y=YPos.NEXT,
+        )
+        y = pdf.get_y()
+    return y
 
 
 def _draw_labeled_line(
@@ -355,6 +384,28 @@ def _draw_finish_block(
     ral_text = f"  ({finish_ral})" if finish_ral else ""
     pdf.cell(width, 5.5, _latin1(f"{finish_name}{ral_text}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln()
+
+    # Phase 0.11 (Workstream A): when the components are NOT all one colour, a
+    # single assembly-wide finish line is actively misleading — break it out per
+    # component.  An all-one-finish assembly is byte-identical to before.
+    if summary.get("per_slot_finish"):
+        slot_labels = {
+            "fixture": "Fixture",
+            "arm": "Arm",
+            "pole": "Pole",
+            "baseCover": "Base Cover",
+        }
+        for part in summary.get("parts", []):
+            pdf.set_x(left)
+            label = slot_labels.get(part["slot"], part["slot"].title())
+            pdf.cell(
+                width,
+                4.8,
+                _latin1(f"  {label}: {part.get('finish', '-')}"),
+                new_x=XPos.LMARGIN,
+                new_y=YPos.NEXT,
+            )
+        pdf.ln()
     if finishes_provisional:
         pdf.set_x(left)
         pdf.set_font("Helvetica", "I", 7)

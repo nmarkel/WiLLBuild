@@ -40,20 +40,25 @@ function parseArgs(argv) {
   return args
 }
 
-// Phase 0.10.5 (spec D9): every part gets the full 45° compass, standalone
-// products included. Previously only arm/fixture/banner/pole were radial,
-// which left base covers and standalone products at a single hero angle — and
-// left 4 real-CAD parts on the retired az120/az240 set, which silently snapped
-// the whole assembly rotation to 90° steps via composite.ts supports45.
+// Phase 0.11 (Workstream E): the 45° orbit is retired. The canonical view set
+// is 2 full-assembly views 180° apart plus per-component focus views (Tyler +
+// Nick, 8/10) — and a focus view is a FRAMING over the composited layers, not
+// a new asset, because the rig already alpha-crops each part at a fixed
+// pxPerMeter (a "tighter framing" of one part re-renders the same image).
+//
+// So the render set is driven purely by what a radial cluster needs INSIDE one
+// of the two views: (armAzimuth + armOrientation − viewYaw) mod 360 over
+// armAzimuths ⊆ {0,90,180,270}, orientation ∈ {0,90,180,270} and viewYaw ∈
+// {0,180} — exactly these four. az45/az135/az225/az315 are now unreachable.
+//
+// Keep in step with RENDER_ANGLE_KEYS in src/lib/composite.ts and COMPASS in
+// src/lib/composite.coverage.test.ts. Every part still gets every angle:
+// 0.10.5's no-exemptions rule (spec D9) is unchanged, only the set is smaller.
 const COMPASS = [
   { key: 'hero', yaw: 0 },
-  { key: 'az45', yaw: 45 },
   { key: 'az90', yaw: 90 },
-  { key: 'az135', yaw: 135 },
   { key: 'az180', yaw: 180 },
-  { key: 'az225', yaw: 225 },
   { key: 'az270', yaw: 270 },
-  { key: 'az315', yaw: 315 },
 ]
 
 export function ANGLES_FOR_SLOT(_slot) {

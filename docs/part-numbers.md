@@ -1,4 +1,4 @@
-# WiLL part numbers (Phase 0.10, Workstream 0; frontend-only as of 0.10.5)
+# WiLL part numbers (Phase 0.10, Workstream 0; restored to both sides in 0.11)
 
 The configured **part number is the configurator's primary output**. Per Tyler (8/3): a
 designer drops the WiLL SKU into their project spec, it becomes the basis of design, and
@@ -28,18 +28,35 @@ fluted/round base covers.
 
 ## Resolution rules
 
-**Frontend-only as of 0.10.5.** The part number is resolved by exactly one place in the
-codebase: `buildPartNumber` in `src/lib/summary.ts`. There is no `geometry-service` mirror —
-an earlier `app/partnumber.py` resolver (kept in lockstep with the frontend by pinning both
-test suites to the same expected strings) was deliberately dropped when the two divergent
-0.10.5 source branches were combined, rather than carried forward and re-synced. This is a
-known regression, not an oversight: generated STEP/DXF/IFC/PDF files and the download bundle
-no longer carry the configured part number anywhere, and the geometry-service's `config_hash`
-(`app/naming.py`) does not vary with `specOptions`/ordering-column choices — two configs that
-differ only in a spec option (e.g. cord length) still resolve to the *same* cached CAD/PDF
-files today. Restoring both (the Python resolver and the `config_hash` coupling) is tracked as
-R1/R2 for Phase 0.11 — see `Phase 0.10.5 — Branch Combine, Carry-Forward & Open Decisions.md`
-in the Design Assistant vault. Until then:
+**Two implementations, one contract (restored in 0.11, Workstream Z1).**
+
+- `buildPartNumber` in `src/lib/summary.ts` — the **reference implementation**. Everything the
+  customer sees in the browser resolves here.
+- `build_part_number` in `geometry-service/app/partnumber.py` — a faithful **mirror**, so every
+  generated STEP/DXF/IFC/PDF and the download bundle carry the same number the customer saw.
+
+0.10.5 dropped the Python side entirely (regression R1), leaving the number in the browser only
+— which had been 0.10's whole point. 0.11 re-adds it *cleanly*: the restored module mirrors
+Tyler's surviving `buildPartNumber`, not 0.10's deleted `partNumber.ts`. 0.10's resolver read
+`config.partOptions` and `catalog.parts[].ordering`, a data model that no longer exists, so
+reviving it verbatim would have resolved against dead fields.
+
+**The drift guard.** Two implementations of one customer-facing SKU rot silently, so neither
+language owns the expectations: `docs/part-number-cases.json` holds a shared set of
+(config → expected number) cases that **both** suites read —
+`src/lib/partNumber.contract.test.ts` and `geometry-service/tests/test_partnumber.py`. Change
+the rules in one language and the other language's suite fails until they are brought back into
+step. Regenerate deliberately with
+`UPDATE_PN_CASES=1 npx vitest run src/lib/partNumber.contract.test.ts`, then read the diff —
+every changed line is a changed part number. One case is anchored to the GVX sheet's own
+published ordering example (`WD-GVX-80-30-MV-5W-BK`) rather than to our own output, so the
+fixture is not purely self-referential.
+
+**Plumbing that had to be fixed first.** The browser POSTs the whole config object, but
+`app/models.py`'s `PoleConfig` never declared `specOptions`, `finishes`, `finishRal`,
+`armOrientation` or `accessoryPlacements` — pydantic silently dropped all five. That is *why*
+no ordering selection or per-slot finish could reach a generated file. All five are now
+declared and optional, so an older client produces byte-identical output.
 
 `buildPartNumber` applies:
 
@@ -71,33 +88,69 @@ what is left to choose. An incomplete number never looks spec-able.
 - **Output tray** — the "Part Numbers + Config" card (`src/components/OutputTray.tsx`) copies
   that same summary text to the clipboard for pasting into a project spec.
 
-## Where it does NOT surface (known 0.10.5 regression, tracked for 0.11)
-
-Because the Python resolver was dropped rather than carried forward (see "Resolution rules"
-above), none of the geometry-service outputs know about part numbers:
+## Where it surfaces (geometry-service — restored in 0.11)
 
 - **Spec sheet / concept-card PDF** (`app/adapters/_spec_template.py`) — the components table
-  has `Slot` / `Product` / `URL` columns only; there is no `Part Number` column.
-- **STEP/DXF/IFC/download bundle** — files are named from `config_hash` + `configId`
-  (`app/naming.py`), never from the configured part number. `app/realgeom.py`'s `CLUSTER_FILES`
-  table (e.g. `SS3-40F.STEP`, a real multi-arm cluster file) is consequently unreachable: the
-  design code that would select it is resolved only on the frontend now, and
-  `app/kit/assembly.py`'s `_design()` always returns `None` (see its own Phase 0.10.5 comment).
-  Every real-CAD part therefore falls back to its single-arm/base STEP file regardless of
-  `armCount`.
-- Restoring this (R1) together with coupling `specOptions` into `config_hash` so that two
-  configs differing only in a spec-sheet option no longer share a cached file (R2) is deferred
-  to Phase 0.11 — see `Phase 0.10.5 — Branch Combine, Carry-Forward & Open Decisions.md` in the
-  Design Assistant vault.
+  now carries a `Part Number` column, set **bold** and placed right after the slot, ahead of the
+  product name: it is the string a designer copies into a project spec. A component with no
+  published ordering sheet prints `-`, never a fabricated code. A number still carrying an
+  unanswered ordering column (`_`) is footnoted so an incomplete spec cannot pass for orderable.
+- **Download bundle** (`app/adapters/bundle_adapter.py`) — `summary.txt` prints each component's
+  own `Part No:` line under it, plus its own finish when the assembly is not all one colour.
+- **Per-component finish** (Phase 0.11 Workstream A) flows through the same resolver: each
+  slot's finish drives that component's own finish segment (and its `finish-type` FP/AN
+  segment), in the generated files, not just the browser summary.
 
-## Cache correctness (as of 0.10.5 — see R2 above)
+### The customer download, and the allowlist that gates it
 
-`app/naming.py`'s `config_hash` whitelist is `{pole, baseCover, arm, fixture, finish, armCount,
-banner}` — it does **not** include `specOptions` (per-part ordering-column / options-and-
-accessories selections). Those change the *printed* part number on the frontend but, today, two
-configs that differ only in a spec option resolve to the same `config_hash` and can share a
-cached geometry-service file. This was true before 0.10.5 too; it is not a regression introduced
-here, but it compounds the part-number gap above and is why R1 and R2 are tracked together.
+`factory-cad/<part number>.step` is back in the bundle (Phase 0.11, Workstream I) — but only for
+components whose **de-featured shell** has been confirmed. Today that is exactly one:
+`gvx-pendant` → `GVX-Simple.STEP` (Cole's simplified export, confirmed by Nick 2026-08-10). A
+fully-specified GVX therefore ships as `factory-cad/WD-GVX-80-30-MV-5W-BK.step`.
+
+The gate is `CUSTOMER_STEP_FILES` in `app/realgeom.py`, resolved through `customer_step_path()`,
+and it is deliberately a **separate table from `BASE_FILES`** rather than a flag on it:
+
+- `BASE_FILES` holds Engineering's **full masters** (`WD-GVX-PM` is 88 MB of internal detail).
+  Those drive the viewer and the kit. They must never leave the building.
+- `CUSTOMER_STEP_FILES` holds only what is cleared to ship. It is **fail-closed**: a new real
+  STEP does not become downloadable just by existing, and `customer_step_path()` has **no
+  fallback** to the master.
+
+That distinction is the whole lesson of the regression: Phase 0.10 resolved the attachment from
+"any part with real CAD", which is why the entire feature had to be dropped in 0.10.5 rather than
+patched. A component with real CAD but no cleared shell (DRX, TEX, MVX, the poles, the base
+covers) attaches nothing. An **incomplete** part number also attaches nothing — `WD-GVX-_-_-…`
+would label a file with a SKU that does not exist. `geometry-service/tests/test_partnumber.py`
+(`TestCustomerDownloadGate`) pins all of this, including that the allowlist is a strict subset of
+`BASE_FILES` and never points at the same file as the viewer master.
+
+`app/kit/assembly.py`'s `_design()` still returns `None`, so `app/realgeom.py`'s `CLUSTER_FILES`
+table (e.g. `SS3-40F.STEP`) remains unreachable and a real-CAD part falls back to its
+single-arm/base STEP regardless of `armCount`. The design code needed to select it is now
+resolvable on the Python side again, so this is no longer *blocked* — it is simply not wired,
+and is out of 0.11's scope.
+
+## Cache correctness (fixed in 0.11 — Workstream Z2, coupled to Z1)
+
+`app/naming.py`'s `config_hash` whitelist was `{pole, baseCover, arm, fixture, finish, armCount,
+banner}`. It now also includes:
+
+- **`specOptions`** — the ordering-column and options/accessories selections that resolve the
+  part number. Without this, two configs differing only in (say) cord length hashed identically
+  and the second was served the first's cached PDF — **showing the wrong part number**. That is
+  why Z1 and Z2 had to ship together: restoring the number onto the sheet without this makes the
+  cache actively wrong rather than merely incomplete.
+- **`finishes`** — the per-slot finish overrides, for the same reason.
+
+Both are included **only when non-empty**, so every config predating them keeps its historical
+hash byte-for-byte and existing caches stay valid. Multi-select code order is deliberately *not*
+normalised: the part number appends codes in stored order, so two configs with the same codes in
+a different order genuinely print different numbers and must hash apart.
+
+`armOrientation` and `accessoryPlacements` round-trip through the model but are deliberately
+**excluded** — they reach no generated artifact yet, so hashing them would only fragment the
+cache. Add them in the same commit that makes an adapter read them.
 
 ## Known spec-parse artifacts (fixed in the catalog, not the parser)
 

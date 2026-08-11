@@ -1,14 +1,23 @@
 import { describe, expect, it } from 'vitest'
 import type { Catalog, PoleConfig } from '../types'
 import {
+  ASSEMBLY_VIEW_YAWS,
+  ASSEMBLY_VIEWS,
+  FOCUS_TARGETS,
   HERO_ANGLE,
+  RENDER_ANGLE_KEYS,
+  RENDER_AZIMUTHS,
   angleKeyForAzimuth,
   armDepthProxy,
+  availableFocusTargets,
+  currentViewIndex,
+  focusBox,
   projectOffset,
   resolveRenderAsset,
   resolveAssemblyLayout,
   rotateY,
   pointInLayout,
+  snapAssemblyYaw,
   type RenderManifest,
 } from './composite'
 
@@ -282,5 +291,254 @@ describe('view rotation + nearest-angle fallback (Phase 0.10.5)', () => {
     const a = resolveAssemblyLayout(catalog, manifest, config, 0)
     const b = resolveAssemblyLayout(catalog, manifest, config, 360)
     expect(b).toEqual(a)
+  })
+})
+
+/**
+ * Phase 0.11 (Workstream E) — component focus regions.
+ *
+ * The focus views are a FRAMING over the composited layers rather than a new
+ * set of rendered assets (the rig alpha-crops each part individually at a
+ * fixed pxPerMeter, so a "tighter framing" of one part is the same image).
+ * What has to be right is which pixels belong to which component.
+ */
+describe('focusBox (Phase 0.11 E)', () => {
+  const layout = resolveAssemblyLayout(catalog, manifest, config)
+
+  it('the assembly focus is the whole box', () => {
+    expect(focusBox(layout, 'assembly')).toEqual({
+      left: 0,
+      top: 0,
+      width: layout.width,
+      height: layout.height,
+    })
+  })
+
+  it('a component focus is tighter than the whole assembly', () => {
+    const whole = focusBox(layout, 'assembly')!
+    const fixture = focusBox(layout, 'fixture')!
+    expect(fixture.height).toBeLessThan(whole.height)
+    expect(fixture.width).toBeLessThanOrEqual(whole.width)
+  })
+
+  it('the focus contains every layer of that component', () => {
+    for (const target of ['fixture', 'arm', 'baseCover'] as const) {
+      const box = focusBox(layout, target)!
+      for (const layer of layout.layers.filter((l) => l.slot === target)) {
+        expect(layer.left).toBeGreaterThanOrEqual(box.left)
+        expect(layer.top).toBeGreaterThanOrEqual(box.top)
+        expect(layer.left + layer.asset.width).toBeLessThanOrEqual(box.left + box.width)
+        expect(layer.top + layer.asset.height).toBeLessThanOrEqual(box.top + box.height)
+      }
+    }
+  })
+
+  it('never frames outside the assembly box', () => {
+    for (const target of ['assembly', 'fixture', 'arm', 'baseCover'] as const) {
+      const box = focusBox(layout, target)!
+      expect(box.left).toBeGreaterThanOrEqual(0)
+      expect(box.top).toBeGreaterThanOrEqual(0)
+      expect(box.left + box.width).toBeLessThanOrEqual(layout.width + 1e-9)
+      expect(box.top + box.height).toBeLessThanOrEqual(layout.height + 1e-9)
+    }
+  })
+
+  it('a component the config does not have has no focus', () => {
+    // A pole-only config: no arm, no fixture, no base cover to frame.
+    const poleOnly = resolveAssemblyLayout(catalog, manifest, {
+      ...config,
+      arm: '',
+      fixture: '',
+      baseCover: '',
+    })
+    expect(focusBox(poleOnly, 'arm')).toBeUndefined()
+    expect(focusBox(poleOnly, 'fixture')).toBeUndefined()
+    expect(availableFocusTargets(poleOnly)).toEqual(['assembly'])
+  })
+
+  it('offers every present component, in canonical order', () => {
+    expect(availableFocusTargets(layout)).toEqual([
+      'assembly',
+      'fixture',
+      'arm',
+      'baseCover',
+      'poleTop',
+      'poleBottom',
+    ])
+  })
+
+  /**
+   * The composite regions behind Tyler's Pole Top / Pole Bottom carousel stops.
+   * These replaced his `zoom: 2.6` + "0.8 m above the foot" constants, so the
+   * point of these assertions is that the framing comes from the layers that are
+   * actually composited — not from a number that happens to suit one pole.
+   */
+  describe('composite focus regions (Pole Top / Pole Bottom)', () => {
+    it('Pole Top spans the fixture AND the arm together', () => {
+      const top = focusBox(layout, 'poleTop')!
+      const fixture = focusBox(layout, 'fixture')!
+      const arm = focusBox(layout, 'arm')!
+      expect(top.left).toBeLessThanOrEqual(Math.min(fixture.left, arm.left))
+      expect(top.top).toBeLessThanOrEqual(Math.min(fixture.top, arm.top))
+      expect(top.left + top.width).toBeGreaterThanOrEqual(
+        Math.max(fixture.left + fixture.width, arm.left + arm.width),
+      )
+      expect(top.top + top.height).toBeGreaterThanOrEqual(
+        Math.max(fixture.top + fixture.height, arm.top + arm.height),
+      )
+    })
+
+    it('Pole Top sits above Pole Bottom in the layout', () => {
+      const top = focusBox(layout, 'poleTop')!
+      const bottom = focusBox(layout, 'poleBottom')!
+      // y grows downward in layout pixel space.
+      expect(top.top).toBeLessThan(bottom.top)
+    })
+
+    it('tracks the assembly instead of a fixed world offset', () => {
+      // The failure mode of centring "0.8 m above the foot" was that it framed
+      // the same world band whatever the pole did. Doubling the pole must move
+      // Pole Top and leave Pole Bottom (the base cover) where it is.
+      const tallCatalog: Catalog = {
+        ...catalog,
+        parts: catalog.parts.map((p) =>
+          p.id === 'pole'
+            ? { ...p, sockets: { ...p.sockets, top: { type: 'arm-mount', position: [0, 12, 0] } } }
+            : p,
+        ),
+      }
+      const tall = resolveAssemblyLayout(tallCatalog, manifest, config)
+      const short = resolveAssemblyLayout(catalog, manifest, config)
+
+      // Measured from the foot (origin), so the two layouts are comparable.
+      const fromFoot = (l: typeof tall, t: 'poleTop' | 'poleBottom') =>
+        focusBox(l, t)!.top - l.origin[1]
+      expect(fromFoot(tall, 'poleTop')).toBeLessThan(fromFoot(short, 'poleTop'))
+      expect(fromFoot(tall, 'poleBottom')).toBeCloseTo(fromFoot(short, 'poleBottom'), 6)
+    })
+
+    it('a build with no base cover offers no Pole Bottom', () => {
+      const noBase = resolveAssemblyLayout(catalog, manifest, { ...config, baseCover: '' })
+      expect(focusBox(noBase, 'poleBottom')).toBeUndefined()
+      expect(availableFocusTargets(noBase)).not.toContain('poleBottom')
+    })
+
+    /**
+     * Pole Top must degrade to whichever of its two slots is present, not
+     * disappear when one is missing. Asserted against a hand-built layout: the
+     * compositor only ever places a fixture inside `if (arm)`, so an armless
+     * fixture cannot be produced through resolveAssemblyLayout (in the real
+     * catalog post-tops go through the Direct Pole Mount pseudo-arm, so the case
+     * does not arise there either) — but the union logic still has to handle it.
+     */
+    it('degrades to whichever of the fixture/arm pair is present', () => {
+      const fixtureLayer = layout.layers.find((l) => l.slot === 'fixture')!
+      const fixtureOnly = { ...layout, layers: [fixtureLayer] }
+      expect(focusBox(fixtureOnly, 'arm')).toBeUndefined()
+      expect(focusBox(fixtureOnly, 'poleTop')).toEqual(focusBox(fixtureOnly, 'fixture'))
+
+      const armLayer = layout.layers.find((l) => l.slot === 'arm')!
+      const armOnly = { ...layout, layers: [armLayer] }
+      expect(focusBox(armOnly, 'poleTop')).toEqual(focusBox(armOnly, 'arm'))
+    })
+  })
+
+  it('an empty layout offers nothing', () => {
+    const empty = { layers: [], width: 0, height: 0, origin: [0, 0] as [number, number], missing: [] }
+    expect(focusBox(empty, 'assembly')).toBeUndefined()
+    expect(availableFocusTargets(empty)).toEqual([])
+  })
+})
+
+describe('the canonical view set (Phase 0.11 E)', () => {
+  // 0.11 shipped {0,180}; merging Tyler's 0.10.5_TO carousel restored 90 as a
+  // third assembly view (Nick, 8/11), so 90 now snaps to ITSELF rather than
+  // being folded into the back view.
+  it('snaps any yaw to the nearest full-assembly view', () => {
+    expect(snapAssemblyYaw(0)).toBe(0)
+    expect(snapAssemblyYaw(44)).toBe(0)
+    expect(snapAssemblyYaw(46)).toBe(90)
+    expect(snapAssemblyYaw(90)).toBe(90)
+    expect(snapAssemblyYaw(134)).toBe(90)
+    expect(snapAssemblyYaw(180)).toBe(180)
+    expect(snapAssemblyYaw(269)).toBe(180)
+    expect(snapAssemblyYaw(-90)).toBe(0)
+    expect(snapAssemblyYaw(360)).toBe(0)
+    expect(snapAssemblyYaw(540)).toBe(180)
+  })
+
+  it('every canonical view yaw snaps to itself', () => {
+    for (const yaw of ASSEMBLY_VIEW_YAWS) expect(snapAssemblyYaw(yaw)).toBe(yaw)
+  })
+
+  it('270° resolves to a real view rather than wedging the viewer', () => {
+    // Equidistant from 0 and 180 and not itself a view; only reachable from a
+    // stale/hand-edited value, but it must still land somewhere renderable.
+    expect(ASSEMBLY_VIEW_YAWS).toContain(
+      snapAssemblyYaw(270) as (typeof ASSEMBLY_VIEW_YAWS)[number],
+    )
+  })
+
+  /**
+   * The reason adding the 90° view needed no re-render. If this fails, the view
+   * set has grown a member that is not a multiple of 90 and the 4-angle render
+   * matrix no longer covers every radial arrangement — a coverage bug, not a
+   * test to relax.
+   */
+  it('adding a view cannot require a new render azimuth', () => {
+    const needed = new Set<number>()
+    for (const armAzimuth of [0, 90, 180, 270]) {
+      for (const orientation of [0, 90, 180, 270]) {
+        for (const viewYaw of ASSEMBLY_VIEW_YAWS) {
+          needed.add(((armAzimuth + orientation - viewYaw) % 360 + 360) % 360)
+        }
+      }
+    }
+    expect([...needed].sort((a, b) => a - b)).toEqual([...RENDER_AZIMUTHS])
+  })
+
+  it('the carousel presets are all reachable and self-consistent', () => {
+    for (const v of ASSEMBLY_VIEWS) {
+      expect(FOCUS_TARGETS).toContain(v.focus)
+      if (v.focus === 'assembly') {
+        expect(ASSEMBLY_VIEW_YAWS).toContain(v.yaw as (typeof ASSEMBLY_VIEW_YAWS)[number])
+      }
+    }
+    // Every assembly view yaw gets exactly one carousel stop.
+    const assemblyYaws = ASSEMBLY_VIEWS.filter((v) => v.focus === 'assembly').map((v) => v.yaw)
+    expect(assemblyYaws.sort((a, b) => a - b)).toEqual([...ASSEMBLY_VIEW_YAWS])
+    expect(new Set(ASSEMBLY_VIEWS.map((v) => v.id)).size).toBe(ASSEMBLY_VIEWS.length)
+  })
+
+  /**
+   * The carousel headline derives its index from (viewYaw, focus) rather than
+   * storing one — this is what keeps the headline honest when a callout or the
+   * option rail moves the camera.
+   */
+  it('locates the current view from camera state alone', () => {
+    expect(currentViewIndex(ASSEMBLY_VIEWS, 0, 'assembly')).toBe(0)
+    expect(currentViewIndex(ASSEMBLY_VIEWS, 90, 'assembly')).toBe(1)
+    expect(currentViewIndex(ASSEMBLY_VIEWS, 180, 'assembly')).toBe(2)
+    // A focus view is identified by its focus, at whatever yaw it was entered.
+    expect(ASSEMBLY_VIEWS[currentViewIndex(ASSEMBLY_VIEWS, 180, 'poleTop')].id).toBe('top')
+    expect(ASSEMBLY_VIEWS[currentViewIndex(ASSEMBLY_VIEWS, 0, 'poleBottom')].id).toBe('bottom')
+  })
+
+  it('reports no match for a focus the preset list does not offer', () => {
+    expect(currentViewIndex(ASSEMBLY_VIEWS, 0, 'arm')).toBe(-1)
+    expect(currentViewIndex([], 0, 'assembly')).toBe(-1)
+  })
+
+  it('the render angle keys match the render azimuths', () => {
+    expect(RENDER_ANGLE_KEYS.map((k) => (k === HERO_ANGLE ? 0 : Number(k.slice(2))))).toEqual([
+      ...RENDER_AZIMUTHS,
+    ])
+  })
+
+  it('every view yaw is itself a render azimuth', () => {
+    // The pole is drawn at (0 − viewYaw), so each view must be renderable.
+    for (const yaw of ASSEMBLY_VIEW_YAWS) {
+      expect(RENDER_AZIMUTHS).toContain(((360 - yaw) % 360) as (typeof RENDER_AZIMUTHS)[number])
+    }
   })
 })

@@ -234,7 +234,11 @@ describe('accessory placement in summary (Phase 0.10.5)', () => {
       }),
     )
     expect(summary).toContain('FSTR — Festoon Provision')
-    expect(summary).toContain('— placed 6 ft @ 90°')
+    // Phase 0.11 (D): the height now states what it measures to. A bare
+    // "6 ft" is the ambiguity the centre-vs-bottom bug hid behind.
+    expect(summary).toContain('— placed 6 ft to bottom @ 90°')
+    // A festoon is not a banner kit, so it gets no panel-size clause.
+    expect(summary).not.toContain('panel')
   })
 })
 
@@ -255,14 +259,32 @@ describe('banner arm summary line (Phase 0.10.5)', () => {
   // arm-arrangement label: quote text disagreeing with the PDF and the widget.
   // It must now go through bannerSummaryLine so the clipboard text carries the
   // derived banner height + both bar heights, matching generation.py's summary.
-  it('carries the derived dimensions and matches the Python wording ("opposite pair")', () => {
+  it('carries the ordered panel size and the derived bar heights', () => {
+    // Phase 0.11 (D): the line now names the ORDERED panel (24x48 default)
+    // rather than the placeholder solid's 49 in, and states that the
+    // configured height is measured to the banner's bottom.
     const summary = buildSummaryText(
       catalog,
       config({ banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt: 8 } }),
     )
-    expect(summary).toContain('Banner arm: BA1 Banner Arm — opposite pair, banner height 49 in')
+    expect(summary).toContain(
+      'Banner arm: BA1 Banner Arm — opposite pair, 24 × 48 in panel, banner height 48 in',
+    )
+    expect(summary).toContain("bottom of banner 8'-0\"")
     expect(summary).toMatch(/top bar \d+'-\d+"/)
     expect(summary).toMatch(/bottom bar \d+'-\d+"/)
+  })
+
+  it('the stated bottom height is the height the customer configured', () => {
+    // The bug this workstream fixes: an 8 ft "height" used to put the banner's
+    // BOTTOM at ~6 ft while the app reported it compliant.
+    for (const heightFt of [8, 10, 12]) {
+      const summary = buildSummaryText(
+        catalog,
+        config({ banner: { armId: 'willstudio-ba1-banner-arm', count: 2, heightFt } }),
+      )
+      expect(summary).toContain(`bottom of banner ${heightFt}'-0"`)
+    }
   })
 
   it('falls back to the plain line for an unknown banner armId', () => {

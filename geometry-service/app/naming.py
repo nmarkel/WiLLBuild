@@ -28,16 +28,58 @@ def config_hash(cfg: PoleConfig) -> str:
     geometry, so it joins the whitelist as its serialised dict (``armId``,
     ``count``, ``heightFt``) when present, else ``None`` — a config with a
     banner hashes distinctly from the same config without one.
+
+    Phase 0.11 (Workstream Z2) adds two more, and they are why Z1 and Z2 had to
+    ship together.  Neither changes the *geometry*, but both change what is
+    PRINTED on the generated spec sheet / concept card / bundle now that the
+    part-number resolver is restored:
+
+    * ``specOptions`` — the ordering-column and options/accessories selections
+      that resolve each component's part number.  Before this, two configs
+      differing only in (say) cord length hashed identically and the second one
+      was served the first one's cached PDF, showing the wrong part number.
+    * ``finishes`` — the per-slot finish overrides (Workstream A).  Each slot's
+      finish drives its own finish segment in that component's part number.
+
+    Both are included ONLY when non-empty, so every config that predates them
+    keeps its historical hash byte-for-byte and existing caches stay valid.
+
+    Deliberately still excluded: ``armOrientation`` and ``accessoryPlacements``.
+    They round-trip through the model but reach no generated artifact yet, so
+    hashing them would only fragment the cache.  Add them here in the same
+    commit that makes an adapter read them.
     """
     canonical: dict = {
         "arm": cfg.arm,
         "armCount": cfg.armCount,
-        "banner": cfg.banner.model_dump() if cfg.banner is not None else None,
+        # exclude_none matters: Phase 0.11 added an optional `size` to
+        # BannerConfig, and a plain model_dump() would inject "size": null into
+        # every pre-0.11 config's payload and change its historical hash.
+        "banner": cfg.banner.model_dump(exclude_none=True) if cfg.banner is not None else None,
         "baseCover": cfg.baseCover,
         "finish": cfg.finish,
         "fixture": cfg.fixture,
         "pole": cfg.pole,
     }
+
+    # A map of empty selections is not a selection: prune empties entirely so
+    # the hash stays identical to the same config without the field.
+    finishes = {slot: fid for slot, fid in sorted((cfg.finishes or {}).items()) if fid}
+    if finishes:
+        canonical["finishes"] = finishes
+
+    spec_options = {
+        slot: {key: value for key, value in sorted(columns.items()) if value}
+        for slot, columns in sorted((cfg.specOptions or {}).items())
+        if columns
+    }
+    # Multi-select code order is NOT normalised: the part number appends codes
+    # in stored order, so two configs with the same codes in a different order
+    # genuinely print different numbers and must hash apart.
+    spec_options = {slot: cols for slot, cols in spec_options.items() if cols}
+    if spec_options:
+        canonical["specOptions"] = spec_options
+
     payload = json.dumps(canonical, sort_keys=True, separators=(",", ":"))
     digest = hashlib.sha256(payload.encode()).hexdigest()
     return digest[:8]

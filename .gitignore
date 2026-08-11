@@ -44,6 +44,16 @@ coverage/
 
 # Real-geometry render-rig inputs (offline only — large STEP/GLB, never shipped)
 scripts/render-rig/real-assets/
+# ...and the same path as a SYMLINK. A trailing-slash pattern matches only real
+# directories, so a worktree that symlinks these in from the main checkout (the
+# usual way to run the rig/tests without duplicating 569 MB) left them showing
+# as untracked and one `git add -A` from being committed.
+scripts/render-rig/real-assets
+geometry-service/.venv
+
+# Agent tooling scratch (per-machine, not project source)
+.agents/
+skills-lock.json
 
 # Large raw engineering CAD source zips (not app build inputs) — keep out of git
 geometry-service/*.zip

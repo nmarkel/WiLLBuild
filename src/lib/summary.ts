@@ -1,7 +1,15 @@
-import type { Catalog, PoleConfig, Slot } from '../types'
-import { bannerSummaryLine } from './banner'
-import { configStatus, finishFor, optionLabel, partById, specCodes } from './compat'
-import { shareUrl } from './url'
+import type { Catalog, CatalogPart, PoleConfig, Slot } from '../types'
+import { bannerSummaryLine, formatPanelSize } from './banner'
+import {
+  bannerPanelSize,
+  configStatus,
+  finishFor,
+  isBannerKitLabel,
+  optionLabel,
+  partById,
+  specCodes,
+} from './compat'
+import { DEFAULT_SCENE, shareUrl, type Scene } from './url'
 
 /**
  * Phase 0.10.5: the part's full ordering part number, assembled the way the spec
@@ -13,6 +21,20 @@ import { shareUrl } from './url'
  * finish (via SpecOptionValue.mapsTo). Returns undefined for parts without a
  * parsed ordering table (no sheet, no part number).
  */
+/**
+ * The selected options & accessories codes for a part, in sheet-column order.
+ * Shared by both `buildPartNumber` branches so a model-code arm and a
+ * spec-sheet part append their add-ons identically. Mirrored by
+ * `_with_add_ons` in geometry-service/app/partnumber.py.
+ */
+function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
+  const chosen = config.specOptions?.[slot] ?? {}
+  return (part.options ?? [])
+    .filter((o) => o.group === 'options-accessories')
+    .sort((a, b) => a.orderPosition - b.orderPosition)
+    .flatMap((o) => specCodes(chosen[o.key]))
+}
+
 export function buildPartNumber(
   catalog: Catalog,
   config: PoleConfig,
@@ -23,7 +45,12 @@ export function buildPartNumber(
   // Arms carry official per-configuration model codes (SH1, SS3, AR2, …) —
   // that code IS the arm's ordering part number for the chosen count.
   if (slot === 'arm' && part.modelCodes) {
-    return part.modelCodes[config.armCount ?? 1]
+    const base = part.modelCodes[config.armCount ?? 1]
+    if (base === undefined) return undefined
+    // Phase 0.11 (Workstream C): SH1 offers the CF1/CF2/CF3 centre-feature
+    // codes, so a model-code arm must still carry its chosen options —
+    // `SH1-CF2`, not a bare `SH1`. Arms with no options column are unchanged.
+    return [base, ...addOnCodes(part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -68,9 +95,7 @@ export function buildPartNumber(
       segments.push('_')
     }
   }
-  for (const opt of options.filter((o) => o.group === 'options-accessories').sort(byPosition)) {
-    segments.push(...specCodes(chosen[opt.key]))
-  }
+  segments.push(...addOnCodes(part, config, slot))
   return segments.join('-')
 }
 
@@ -100,7 +125,16 @@ export function armArrangementLabel(count: number): string {
  * spec-sheet choices (indented under the part), with a quote flag on anything
  * not confirmed buildable online.
  */
-export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
+export function buildSummaryText(
+  catalog: Catalog,
+  config: PoleConfig,
+  /**
+   * Phase 0.11 (F3): the backdrop the customer is actually looking at. Omitting
+   * it silently substitutes the default, so the pasted link would restore a
+   * different scene than the one they shared.
+   */
+  scene: Scene = DEFAULT_SCENE,
+): string {
   const armCount = config.armCount ?? 1
   const banner = config.banner
   const bannerPart = banner ? partById(catalog, banner.armId) : undefined
@@ -125,8 +159,15 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
           // Placed accessories carry their shaft position for the quote.
           const placement = config.accessoryPlacements?.[code]
           const sides = placement?.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
+          // Phase 0.11 (D): say what the height measures TO, and name the
+          // ordered panel — a bare "12 ft" is exactly the ambiguity the
+          // centre-vs-bottom bug hid behind.
+          const panel =
+            placement && isBannerKitLabel(value?.label ?? '')
+              ? `, ${formatPanelSize(bannerPanelSize(catalog, placement.size))} panel`
+              : ''
           const placed = placement
-            ? ` — placed ${placement.heightFt} ft @ ${placement.orientation}°${sides}`
+            ? ` — placed ${placement.heightFt} ft to bottom @ ${placement.orientation}°${sides}${panel}`
             : ''
           partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`)
         }
@@ -144,11 +185,16 @@ export function buildSummaryText(catalog: Catalog, config: PoleConfig): string {
       ? [
           `Banner arm: ${
             bannerPart
-              ? bannerSummaryLine(bannerPart, banner.count, banner.heightFt)
+              ? bannerSummaryLine(
+                  bannerPart,
+                  banner.count,
+                  banner.heightFt,
+                  bannerPanelSize(catalog, banner.size),
+                )
               : `${banner.armId} — ${banner.count}-side @ ${banner.heightFt} ft`
           }`,
         ]
       : []),
-    `Link: ${shareUrl(config)}`,
+    `Link: ${shareUrl(config, scene)}`,
   ].join('\n')
 }

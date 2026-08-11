@@ -171,55 +171,72 @@ describe('assembly view rotation — real assets', () => {
     ).toHaveLength(2)
   })
 
-  it('a 45° view uses exact 45°-compass renders for rig-rendered arms', () => {
-    // HSX deco upsweep is placeholder-rendered → full 8-angle compass.
+  it('the back view uses the exact opposite-azimuth renders for rig-rendered arms', () => {
+    // Phase 0.11 (E): the 45° orbit is retired. A twin cluster viewed from the
+    // back shows its two arms at the SAME pair of azimuths as the front view,
+    // swapped — that is what "180° apart" buys, and why 2 views suffice for
+    // symmetric geometry.
     const twin = repairConfig(catalog, {
       ...base,
       fixture: 'mvx-coach',
       arm: 'willstudio-hsx-decorative-upsweep-arms',
       armCount: 2,
     })
-    const layout = resolveAssemblyLayout(catalog, manifest, twin, 45)
-    const files = layout.layers
-      .filter((l) => l.partId.startsWith('willstudio-hsx'))
-      .map((l) => l.asset.file)
-      .join(',')
-    expect(files).toContain('az135')
-    expect(files).toContain('az315')
+    const front = resolveAssemblyLayout(catalog, manifest, twin, 0)
+    const back = resolveAssemblyLayout(catalog, manifest, twin, 180)
+    const armFiles = (l: typeof front) =>
+      l.layers
+        .filter((x) => x.partId.startsWith('willstudio-hsx'))
+        .map((x) => x.asset.file)
+        .sort()
+    expect(armFiles(front).join(',')).toContain('az180')
+    expect(armFiles(back)).toEqual(armFiles(front))
   })
 
   it('assemblies with real-render parts rotate coherently: arm and fixture apply the same yaw', () => {
-    // Phase 0.10.5: every part now ships the full 8-angle compass, so a 45°
-    // request applies exactly (no more snapping to 90°). What this test
-    // actually guards is COHERENCE — the arm and its fixture must land on
-    // the SAME applied angle at each radial position, never rotating by
-    // different amounts and shearing apart.
+    // Phase 0.11 (E): the view set is 2 assembly views, so a request snaps to
+    // 0 or 180 — never a 45° step. What this test actually guards is
+    // COHERENCE: the arm and its fixture must land on the SAME applied angle
+    // at each radial position, never rotating by different amounts and
+    // shearing the assembly apart.
     const twin = repairConfig(catalog, { ...base, armCount: 2 })
-    const at45 = resolveAssemblyLayout(catalog, manifest, twin, 45)
-    expect(at45.appliedViewYaw).toBe(45)
+    const back = resolveAssemblyLayout(catalog, manifest, twin, 180)
+    expect(back.appliedViewYaw).toBe(180)
 
-    const armFiles = at45.layers
+    const armFiles = back.layers
       .filter((l) => l.partId.startsWith('willstudio-suspension-arm-pole-top-brackets'))
       .map((l) => l.asset.file)
       .sort()
-    const fixtureFiles = at45.layers
+    const fixtureFiles = back.layers
       .filter((l) => l.partId.startsWith('gvx-pendant'))
       .map((l) => l.asset.file)
       .sort()
-    expect(armFiles.some((f) => f.includes('az315'))).toBe(true)
-    expect(armFiles.some((f) => f.includes('az135'))).toBe(true)
+    // A twin at 180° view: arms sit at 180° and 0° (hero).
+    expect(armFiles.some((f) => f.includes('az180'))).toBe(true)
+    expect(armFiles.some((f) => f.includes('hero'))).toBe(true)
     // Each fixture rides the same angle as the arm it hangs from.
-    expect(fixtureFiles.some((f) => f.includes('az315'))).toBe(true)
-    expect(fixtureFiles.some((f) => f.includes('az135'))).toBe(true)
+    expect(fixtureFiles.some((f) => f.includes('az180'))).toBe(true)
+    expect(fixtureFiles.some((f) => f.includes('hero'))).toBe(true)
   })
 
-  it('all-rig assemblies apply 45° exactly', () => {
+  it('snaps any requested yaw to one of the canonical views', () => {
     const twin = repairConfig(catalog, {
       ...base,
       fixture: 'mvx-coach',
       arm: 'willstudio-hsx-decorative-upsweep-arms',
       armCount: 2,
     })
-    expect(resolveAssemblyLayout(catalog, manifest, twin, 45).appliedViewYaw).toBe(45)
+    const applied = (yaw: number) =>
+      resolveAssemblyLayout(catalog, manifest, twin, yaw).appliedViewYaw
+    // Retired 45° orbit steps resolve to the nearer canonical view, never to
+    // themselves — the manifest no longer carries az45/az135/az225/az315.
+    // 90 IS a canonical view again since the 0.10.5_TO carousel merge, so it
+    // resolves to itself; 45 and 135 still fold onto neighbours.
+    expect(applied(0)).toBe(0)
+    expect(applied(45)).toBe(0)
+    expect(applied(90)).toBe(90)
+    expect(applied(135)).toBe(90)
+    expect(applied(180)).toBe(180)
+    expect(applied(360)).toBe(0)
   })
 })
