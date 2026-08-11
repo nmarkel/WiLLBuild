@@ -21,6 +21,22 @@
       "glbBytes": 7064
     },
     {
+      "file": "FR2-40F.STEP",
+      "kind": "component",
+      "present": true,
+      "bytes": 1248777,
+      "sha256": "a0c0515fb41b01d0773c968a7db3382b229856f0171863bc4173c4cf1a06aa59",
+      "partId": "willstudio-fr2-decorative-crossarm",
+      "designCode": "FR2",
+      "fitCode": "40F",
+      "origin": "arm",
+      "converter": "mono",
+      "tolMm": 0.5,
+      "glb": "render-rig/real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
+      "glbBytes": 429880,
+      "note": "MAPPED in Phase 0.12 (Workstream A1) \u2014 the first of the six C1 arms to clear alignment, and the only one that needed no socket change. Measured from the GLB's own vertices: after rotateY=-90 the mesh spans X[-0.611,+0.610], and its reaching tip sits at x=0.610, y=0.305..0.318 \u2014 against a catalog socket authored at [0.62, 0.30, 0]. That is within ~1 cm, so the placeholder-era socket was already right and only the axis was wrong. The other five DO need re-derived sockets (and PM1 a rotateY of +90, not -90 \u2014 its real reach reverses); they stay unmapped."
+    },
+    {
       "file": "SH1-40F.STEP",
       "kind": "component",
       "present": true,
@@ -406,17 +422,6 @@
       "note": "Intended part pm1-pendant-arm (modelCodes {1: PM1}). Converted OK (13,508 tris). Blocked on axis + socket alignment \u2014 see above."
     },
     {
-      "file": "FR2-40F.STEP",
-      "kind": "unmapped",
-      "present": true,
-      "bytes": 1248777,
-      "sha256": "a0c0515fb41b01d0773c968a7db3382b229856f0171863bc4173c4cf1a06aa59",
-      "partId": null,
-      "designCode": "FR2",
-      "fitCode": "40F",
-      "note": "Intended part willstudio-fr2-decorative-crossarm (modelCodes {1: FR2}). Converted OK (19,726 tris). Closest of the five \u2014 its symmetric \u00b10.61 m reach matches the catalog socket x=0.62; likely needs only the rotateY. Blocked on alignment \u2014 see above."
-    },
-    {
       "file": "HS1-40F.STEP",
       "kind": "unmapped",
       "present": true,
@@ -441,9 +446,9 @@
     {
       "file": "CR2-40F.STEP",
       "kind": "unmapped",
-      "present": true,
-      "bytes": 4917290,
-      "sha256": "0da63e3415c816bf17b79748c8a487f72b6e792468a1bc757f07b396a5f5c1c6",
+      "present": false,
+      "bytes": null,
+      "sha256": null,
       "partId": null,
       "designCode": "CR2",
       "fitCode": "40F",

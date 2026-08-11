@@ -27,5 +27,9 @@
   "tex-post-top": "real-assets/glb/tex-post-top.glb",
   "mvx-coach": "real-assets/glb/mvx-coach.glb",
   "willstudio-rxb-sxb-bollard": "real-assets/glb/willstudio-rxb-sxb-bollard.glb",
-  "willstudio-dwx-flood-spot": "real-assets/glb/willstudio-dwx-flood-spot.glb"
+  "willstudio-dwx-flood-spot": "real-assets/glb/willstudio-dwx-flood-spot.glb",
+  "willstudio-fr2-decorative-crossarm": {
+    "glb": "real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
+    "rotateY": -90
+  }
 }

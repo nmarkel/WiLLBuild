@@ -58,6 +58,17 @@ INGEST: list[dict] = [
          origin="base", mode="mono", tol=0.5),
     # --- arms (single-arm files are the per-azimuth render source; the 2/3/4-arm
     #     files are whole clusters, used for the CAD downloads, not the layers) ---
+    dict(file="FR2-40F.STEP", part="willstudio-fr2-decorative-crossarm", design="FR2",
+         fit="40F", origin="mount", mode="mono", tol=0.5,
+         note="MAPPED in Phase 0.12 (Workstream A1) — the first of the six C1 arms "
+              "to clear alignment, and the only one that needed no socket change. "
+              "Measured from the GLB's own vertices: after rotateY=-90 the mesh "
+              "spans X[-0.611,+0.610], and its reaching tip sits at "
+              "x=0.610, y=0.305..0.318 — against a catalog socket authored at "
+              "[0.62, 0.30, 0]. That is within ~1 cm, so the placeholder-era "
+              "socket was already right and only the axis was wrong. The other "
+              "five DO need re-derived sockets (and PM1 a rotateY of +90, not "
+              "-90 — its real reach reverses); they stay unmapped."),
     dict(file="SH1-40F.STEP", part="sh1-shepherds-hook", design="SH1", fit="40F",
          origin="mount", mode="mono", tol=0.5),
     dict(file="SS1-40F.STEP", part="willstudio-side-shepherds-hook-pole-top-brackets",
@@ -171,11 +182,6 @@ UNMAPPED: list[dict] = [
     dict(file="PM1-40F.STEP", part=None, design="PM1", fit="40F",
          note="Intended part pm1-pendant-arm (modelCodes {1: PM1}). Converted OK "
               "(13,508 tris). Blocked on axis + socket alignment — see above."),
-    dict(file="FR2-40F.STEP", part=None, design="FR2", fit="40F",
-         note="Intended part willstudio-fr2-decorative-crossarm (modelCodes {1: FR2}). "
-              "Converted OK (19,726 tris). Closest of the five — its symmetric "
-              "±0.61 m reach matches the catalog socket x=0.62; likely needs only "
-              "the rotateY. Blocked on alignment — see above."),
     dict(file="HS1-40F.STEP", part=None, design="HS1", fit="40F",
          note="Intended part willstudio-hsx-decorative-upsweep-arms (modelCodes "
               "{1: HS1, 2: HS2}). Converted OK (24,111 tris). Blocked on axis + "

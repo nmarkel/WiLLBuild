@@ -32,7 +32,7 @@ const realParts = JSON.parse(readFileSync(REAL_PARTS_PATH, 'utf8')) as Record<st
  * placeholder renders. `direct-mount` is the 22nd row and is excluded from
  * badging — it is the tenon-adapter pseudo-part and needs no CAD ever.
  */
-const SECTION_D_BADGED = [
+const SECTION_D_AUDITED = [
   'aluminum-decorative-bullhorn-brackets-round-pole-mount',
   'aluminum-light-pole-base-covers',
   'bc-fluted',
@@ -56,6 +56,21 @@ const SECTION_D_BADGED = [
   'willstudio-wm2-single-wall-tenon-mount-w-finial',
 ]
 
+/**
+ * Parts Workstream A has since taken OFF that list by mapping their real CAD.
+ *
+ * The audit above is kept intact rather than edited down, so this line is the
+ * running record of progress against it — and re-enabling is exactly the
+ * automatic behaviour the generated flag is for: map the part in
+ * real-parts.json, re-render, and it stops being Coming Soon.
+ *
+ * FR2 (0.12, A1): the only one of the six C1 arms whose catalog socket already
+ * matched its real CAD — it needed the rotateY alone.
+ */
+const LANDED_SINCE_AUDIT = ['willstudio-fr2-decorative-crossarm']
+
+const SECTION_D_BADGED = SECTION_D_AUDITED.filter((id) => !LANDED_SINCE_AUDIT.includes(id))
+
 /** Section E: the 23 parts already rendering from real CAD. */
 const SECTION_E_REAL_CAD = Object.keys(realParts)
 
@@ -73,9 +88,10 @@ describe('the realCad flag tracks the render rig', () => {
     }
   })
 
-  it('matches the matrix scoreboard: 23 of 117', () => {
+  it('matches the matrix scoreboard, plus what 0.12 has landed', () => {
+    // The 8/11 audit measured 23 of 117; Workstream A1 added FR2.
     expect(catalog.parts.length).toBe(117)
-    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length)
   })
 })
 
