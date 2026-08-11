@@ -152,7 +152,79 @@ a different order genuinely print different numbers and must hash apart.
 **excluded** — they reach no generated artifact yet, so hashing them would only fragment the
 cache. Add them in the same commit that makes an adapter read them.
 
-## Known spec-parse artifacts (fixed in the catalog, not the parser)
+## TEX: two finish segments (Phase 0.12)
+
+TEX is the first sheet in the catalog whose part number carries **two** finish
+codes — Housing, and Spider Mount & Accent Line:
+
+```
+WD-TEX-[Lumen]-[CCT]-[Voltage]-[Dist]-[Mount]-[Housing]-[Accent][-Options]
+WD-TEX-80-30-MV-5W-3T-NA-BK          <- the sheet's own ordering example
+```
+
+The sheet is explicit that this is not optional: *"For side mount fixtures, the
+mounting arm will match the housing color. Accent line finish designation is
+still required."* So the accent segment appears on `SMS`/`SMR` too, and never
+resolves to `_`.
+
+- **Config axis:** `PoleConfig.accentFinishes`, keyed by slot, exactly parallel
+  to `finishes`. An unset accent falls back to that slot's own finish, the way an
+  unset slot finish falls back to the base `finish` — a default, not a fabricated
+  choice, because the fallback value is a colour the customer really picked.
+- **Which parts have one is DATA:** `hasAccentFinish(part)` looks for the
+  `finish-color-accent` ordering column. There is no part-id list, so a second
+  two-finish sheet needs no code change.
+- **Resolution order matters.** `finish-color-accent` also matches the generic
+  `finish-color` prefix, so both resolvers test the accent key FIRST. Reverse
+  them and both columns silently resolve to the housing colour — which is
+  exactly the bug 0.12 found in the shipped catalog.
+- **Cache:** `accentFinishes` is in `config_hash` (see below). Two TEX configs
+  differing only in accent print different numbers, so they must not share a
+  cached PDF.
+- **`5VN` is deliberately not encoded.** It appears in the sheet's lumen tables
+  but not in its ordering matrix, so orderability is unconfirmed (Tyler/Cole).
+  `src/lib/texPartNumber.test.ts` pins its absence *and* `5N`'s presence, so
+  neither can drift in by accident.
+
+The sheet also merged its **Design** column into **Lumen Output**. One column can
+only ever emit one segment, so before 0.12 the number lost whichever the customer
+did not pick — `WD-80-…` with a lumen chosen, `WD-TEX-…` with none. GVX, DRX and
+MVX all already carried a separate `design` column; TEX was the only sheet
+missing one. Both defects are corrected declaratively — see below.
+
+## Known spec-parse artifacts (now corrected declaratively)
+
+**Phase 0.12** moved these out of hand-edited `public/catalog.json` and into
+`docs/spec-option-corrections.json`, applied by
+`scripts/apply-spec-option-corrections.mjs` (and by `merge-spec-options.mjs`
+during a regeneration). Each rule names the merged column and the reviewed
+columns it splits into; a rule that can neither find its `rawKey` nor confirm it
+is already applied throws, so a re-parse cannot silently un-fix a SKU.
+`src/lib/specOptionCorrections.test.ts` pins the shipped catalog to that file.
+
+No value in it is invented: the pole columns were lifted verbatim from the
+already-reviewed catalog, and the TEX columns re-partitioned from the raw parse.
+
+> **⚠ Still not a full regeneration.** The corrections cover the parser's column
+> *merges* only. `public/catalog.json` carries further deliberate curation that
+> lives nowhere else — `gvx-pendant`'s `mounting` column is removed (pendant mount
+> rides as the `PM` option code), the `alum-pole-*` options/accessories value
+> lists are hand-trimmed, and `merge-ordering.mjs` separately owns `options` on
+> the arms and base covers. Running `merge-spec-options.mjs` alone still discards
+> those. Bringing them into the corrections file is worthwhile follow-up work and
+> was deliberately left undone in 0.12. Until then, prefer
+> `apply-spec-option-corrections.mjs`, which only performs the substitutions and
+> is safe against the live catalog.
+
+## Coming Soon parts resolve to no number (Phase 0.12, Workstream D)
+
+A part still rendering from placeholder geometry produces **no** part number, in
+both languages (`isComingSoon` / `_is_coming_soon`). The resolver's output is
+precisely what a designer pastes into a project spec, so a spec-able-looking SKU
+for a product that cannot be built is the one thing that must not escape. The
+generated PDF and bundle print `-` for it.
+
+## Historic spec-parse detail (why the merges happen)
 
 `scripts/spec-parse/parse_specs.py` locates ordering-table columns purely from PDF word
 x-coordinates (`_cluster_headers`'s 22pt gap heuristic, then nearest-centroid cell assignment).
@@ -181,19 +253,13 @@ the third defect:
   both — so both keys were also added to `Panel.tsx`'s `IMPLIED_COLUMNS` to keep them out of the
   "Base configuration" dropdowns (mirroring how `design`/`finish-type` were already hidden).
 
-> **⚠ HAZARD — read before ever rerunning `scripts/merge-spec-options.mjs`:** it owns the
-> `options` field and recomputes it *verbatim* from `docs/spec-options.json` (still polluted —
-> the raw parser output was deliberately left alone, see above) on every run — that's what makes
-> it idempotent against its own source. It is **not** idempotent against the hand edits above:
-> rerunning it will silently revert `alum-pole-*`'s hand-fixed `design`/`length` columns (and the
-> two older merges) back to the raw, polluted merged columns, with no error and nothing obviously
-> wrong in a quick diff — `buildPartNumber`'s pole part numbers would just quietly start
-> resolving from bad data again. This was already true before this task for the two older
-> merges; it is not fixed here (would require either fixing the parser's column-clustering,
-> which risks regressing sheets that already parse cleanly, or teaching the merge script to
-> preserve hand-authored columns). If you must rerun it, re-apply the `design`/`length` hand-fix
-> to `alum-pole-*` afterward. The same warning is repeated as a comment at the top of the script
-> itself.
+> **Historic note.** Until Phase 0.12 this section carried a HAZARD warning: the
+> merge script recomputed `options` verbatim from the raw parse on every run, so
+> re-running it silently reverted the `alum-pole-*` `design`/`length` hand-fixes
+> and pole part numbers quietly started resolving from polluted data again. That
+> specific trap is closed — those fixes are declarative now (above) and the merge
+> script applies them. The narrower caveat that remains is the curation callout
+> above, which is a known gap rather than a silent one.
 
 ## Open confirmations
 
