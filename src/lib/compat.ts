@@ -671,7 +671,6 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       // inch-granular so such minimums are representable exactly.
       const { minFt, maxFt } = accessoryHeightRange(catalog, poleFt, label, size)
       const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
-      const orientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
       // Sides exist only where the accessory supports them, clamped to its set.
       const sideOptions = accessorySideOptions(label)
       const sides =
@@ -680,6 +679,11 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
             ? p.sides
             : 1
           : undefined
+      // Tyler 8/12: fold the orientation onto the arrangement's distinct set —
+      // an opposite pair repeats every 180° (0/90 only); four sides repeat
+      // every 90° (orientation moot), same rule as the radial arm twin.
+      const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
+      const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
       cleaned[code] = {
         heightFt,
         orientation,

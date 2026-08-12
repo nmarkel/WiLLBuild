@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -687,19 +687,26 @@ function AccessoryPlacementBox({
           </div>
         </>
       )}
-      <p className="arm-count-label">Orientation</p>
-      <div className="arm-count-options orientation-options">
-        {ARM_ORIENTATIONS.map((deg) => (
-          <button
-            key={deg}
-            className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
-            onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
-            title={`${deg}° from the hand-hole reference`}
-          >
-            <span className="arm-count-name">{deg}°</span>
-          </button>
-        ))}
-      </div>
+      {/* Tyler 8/12: only orientations that produce distinct layouts for the
+          chosen sides — an opposite pair offers 0/90; four sides need no
+          orientation at all (every 90° rotation is the same picture). */}
+      {armOrientationOptions(placement.sides ?? 1).length > 1 && (
+        <>
+          <p className="arm-count-label">Orientation</p>
+          <div className="arm-count-options orientation-options">
+            {armOrientationOptions(placement.sides ?? 1).map((deg) => (
+              <button
+                key={deg}
+                className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
+                onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
+                title={`${deg}° from the hand-hole reference`}
+              >
+                <span className="arm-count-name">{deg}°</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
