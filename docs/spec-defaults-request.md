@@ -1,3 +1,20 @@
+# Tyler's config-pass requests — EXECUTED 8/12 (full-stack OK from Nick)
+
+Status update: Nick greenlit full-stack work on `phase-0.12_TO`, so the
+requests below were implemented directly (commit bde4a1f9) instead of handed
+off. What shipped differs from the original asks in one big way: **Tyler's
+blank-slate call superseded the defaults** — the builder now opens with
+nothing selected anywhere, so Request 2's seeding mechanism (`specDefaults` +
+`DEFAULT_OPTION_CODES`) is built and tested but deliberately DORMANT (no data
+seeds it). Request 0 (TEX hold) and Request 1 (X-code options) shipped as
+specced; the contract fixture was regenerated and verified against the Python
+mirror. Still open for Puddy: are WHPXNP / SRGXXX10 / BPCX real orderable
+conventions?
+
+The original request text follows for the record.
+
+---
+
 # Requests from Tyler's config pass (for Nick)
 
 Three related asks from working the GVX pilot config (Casey RFA path, step 2

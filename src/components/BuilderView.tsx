@@ -18,6 +18,10 @@ interface Props {
     Brands without one fall back to a text headline. */
 const WORDMARKS: Partial<Record<PoleConfig['brand'], string>> = {
   WiLLstudio: '/willstudio-logo-lightBG.png',
+  NAFCO: '/nafco-logo-fullColor.png',
+  WiLLsport: '/willsport-logo-lightBG.png',
+  WiLLev: '/willev-logo-lightBG.png',
+  WiLLcloud: '/willcloud-logo-lightBG.png',
 }
 
 /**
