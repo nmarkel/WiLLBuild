@@ -704,9 +704,9 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     )!
     expect(column.group).toBe('options-accessories')
     expect(column.values.map((v) => v.label)).toEqual([
-      'Decorative Center Feature',
+      'Simple Decorative Center Feature',
       'Brand / Logo / City Round Center Feature',
-      'Brand / Logo Center Feature (Variant)',
+      'Ornate Decorative Center Feature',
     ])
     // Bare `CF` = Custom is deliberately excluded (docs/ordering-matrix.json
     // armOptionsNote): a custom feature is a quote conversation, not a code.

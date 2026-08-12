@@ -2725,10 +2725,10 @@
           "values": [
             {
               "code": "CF1",
-              "label": "Decorative Center Feature",
+              "label": "Simple Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Ornamental centerpiece between the hooks"
+              "note": "A clean, understated centerpiece between the hooks"
             },
             {
               "code": "CF2",
@@ -2739,10 +2739,10 @@
             },
             {
               "code": "CF3",
-              "label": "Brand / Logo Center Feature (Variant)",
+              "label": "Ornate Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Alternate logo mounting style"
+              "note": "A detailed decorative centerpiece between the hooks"
             }
           ]
         }
@@ -16715,10 +16715,10 @@
           "values": [
             {
               "code": "CF1",
-              "label": "Decorative Center Feature",
+              "label": "Simple Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Ornamental centerpiece between the hooks"
+              "note": "A clean, understated centerpiece between the hooks"
             },
             {
               "code": "CF2",
@@ -16729,10 +16729,10 @@
             },
             {
               "code": "CF3",
-              "label": "Brand / Logo Center Feature (Variant)",
+              "label": "Ornate Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Alternate logo mounting style"
+              "note": "A detailed decorative centerpiece between the hooks"
             }
           ]
         }
