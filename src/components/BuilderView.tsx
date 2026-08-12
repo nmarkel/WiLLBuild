@@ -33,15 +33,20 @@ const WORDMARKS: Partial<Record<PoleConfig['brand'], string>> = {
  */
 export function BuilderView({ catalog, config }: Props) {
   const { showScale, showCompass, mode, scene, brand } = useConfigurator()
+  const setOpenStep = useConfigurator((s) => s.setOpenStep)
   const [downloadsOpen, setDownloadsOpen] = useState(false)
 
   // Callout click → scroll that step's rail section into view (scroll-margin
   // in builder.css keeps it clear of the sticky viewer on mobile).
-  const scrollToStep = useCallback((slot: Slot) => {
-    document
-      .getElementById(`builder-step-${slot}`)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [])
+  const scrollToStep = useCallback(
+    (slot: Slot) => {
+      setOpenStep(slot)
+      document
+        .getElementById(`builder-step-${slot}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    },
+    [setOpenStep],
+  )
 
   return (
     <div className="builder-app">

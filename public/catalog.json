@@ -2731,18 +2731,18 @@
               "note": "A clean, understated centerpiece between the hooks"
             },
             {
-              "code": "CF2",
-              "label": "Brand / Logo / City Round Center Feature",
-              "buildable": null,
-              "mapsTo": null,
-              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
-            },
-            {
               "code": "CF3",
               "label": "Ornate Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
               "note": "A detailed decorative centerpiece between the hooks"
+            },
+            {
+              "code": "CF2",
+              "label": "Brand / Logo / City Round Center Feature",
+              "buildable": null,
+              "mapsTo": null,
+              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
             }
           ]
         }
@@ -3725,7 +3725,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-14",
@@ -4412,7 +4413,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-16",
@@ -5099,7 +5101,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-20",
@@ -5786,7 +5789,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-8",
@@ -6473,7 +6477,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-10",
@@ -7160,7 +7165,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-15",
@@ -7847,7 +7853,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "alum-pole-18",
@@ -8534,7 +8541,8 @@
         ]
       },
       "designCode": "RSAA",
-      "realCad": true
+      "realCad": true,
+      "diameterIn": 4
     },
     {
       "id": "bc-cl1-small-clamshell",
@@ -16721,18 +16729,18 @@
               "note": "A clean, understated centerpiece between the hooks"
             },
             {
-              "code": "CF2",
-              "label": "Brand / Logo / City Round Center Feature",
-              "buildable": null,
-              "mapsTo": null,
-              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
-            },
-            {
               "code": "CF3",
               "label": "Ornate Decorative Center Feature",
               "buildable": null,
               "mapsTo": null,
               "note": "A detailed decorative centerpiece between the hooks"
+            },
+            {
+              "code": "CF2",
+              "label": "Brand / Logo / City Round Center Feature",
+              "buildable": null,
+              "mapsTo": null,
+              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
             }
           ]
         }

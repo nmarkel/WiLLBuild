@@ -698,15 +698,16 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
       .map((v) => v.code)
 
   it('are transcribed from the arms ordering matrix onto SH1', () => {
-    expect(cfValues('sh1-shepherds-hook')).toEqual(['CF1', 'CF2', 'CF3'])
+    // Display order (Tyler 8/12): Simple, Ornate, then Brand/Logo.
+    expect(cfValues('sh1-shepherds-hook')).toEqual(['CF1', 'CF3', 'CF2'])
     const column = partById(catalog, 'sh1-shepherds-hook')!.options!.find(
       (o) => o.key === 'center-feature',
     )!
     expect(column.group).toBe('options-accessories')
     expect(column.values.map((v) => v.label)).toEqual([
       'Simple Decorative Center Feature',
-      'Brand / Logo / City Round Center Feature',
       'Ornate Decorative Center Feature',
+      'Brand / Logo / City Round Center Feature',
     ])
     // Bare `CF` = Custom is deliberately excluded (docs/ordering-matrix.json
     // armOptionsNote): a custom feature is a quote conversation, not a code.

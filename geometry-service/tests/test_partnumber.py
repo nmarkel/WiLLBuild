@@ -177,7 +177,8 @@ class TestAssemblyResolution:
 
     def test_text_line_prints_the_number(self, catalog):
         cfg = _config(CASES[0])
-        assert part_number_text(catalog, cfg, "arm") == "Arm: SH1"
+        # Tyler 8/12: the arm number carries its finish colour.
+        assert part_number_text(catalog, cfg, "arm") == "Arm: SH1-BK"
 
 
 class TestConfigHashCoupling:
@@ -276,8 +277,10 @@ class TestPerSlotFinishReachesTheNumber:
                       "baseCover": "statuary-bronze"},
         )
         assert build_part_number(catalog, cfg, "fixture").endswith("-WH")
-        assert "-DG-" in build_part_number(catalog, cfg, "pole")
-        assert build_part_number(catalog, cfg, "baseCover").endswith("-DB")
+        # Trailing unanswered columns no longer print — DG is the last segment.
+        assert build_part_number(catalog, cfg, "pole").endswith("-DG")
+        # The derived Pole Fit rides after the colour (Tyler 8/12): …-DB-4R.
+        assert "-DB-" in build_part_number(catalog, cfg, "baseCover")
 
     def test_anodized_colour_drives_the_finish_type_segment(self, catalog):
         painted = PoleConfig(

@@ -147,12 +147,13 @@ describe('arm model code as part number (Phase 0.10.5)', () => {
       arm: 'willstudio-suspension-arm-pole-top-brackets',
       armCount: 3,
     })
-    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('AR3')
-    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: AR3')
+    // Tyler 8/12: the arm's finish colour joins its number.
+    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('AR3-BK')
+    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: AR3-BK')
   })
 
   it('single-only arms report their fixed code', () => {
-    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('SH1')
+    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('SH1-BK')
   })
 
   it('the upsweep has no code yet (24"/36" length model pending)', () => {
@@ -168,12 +169,12 @@ describe('pole part number — fixed and derived segments (Phase 0.10.5)', () =>
     })
     // product-family(WP) design(RSAA) length(14, from part.heightFt) diameter
     // wall AB SB FP color(SG) mounting(_)
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG-_')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG')
   })
 
   it('an anodized color flips the finish type to AN', () => {
     const cfg = config({ finishes: { pole: 'black-anodized' } })
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA-_')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA')
   })
 })
 
@@ -247,9 +248,12 @@ describe('base cover part number (Phase 0.10.5)', () => {
     const cfg = config({
       baseCover: 'bc-cl2-medium-clamshell',
       finishes: { baseCover: 'matte-black' },
+      // Tyler 8/12: Pole Fit is a FUNCTION of the pole's diameter, never a
+      // customer choice — an explicitly chosen code (old share URL) is
+      // ignored, and the derived fit rides at the END, after the colour.
       specOptions: { baseCover: { 'pole-fit': '5R' } },
     })
-    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-5R-BK')
+    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-BK-4R')
   })
 })
 

@@ -66,7 +66,9 @@ function isFinishColumn(opt: SpecOption): boolean {
 // length is derived from the chosen pole's own heightFt (Phase 0.10.5/summary.ts
 // buildPartNumber) — a customer-facing "Length" dropdown independent of the
 // pole height they already picked would let the two disagree.
-const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length'])
+// pole-fit is derived from the chosen pole's diameter (Tyler 8/12) — the
+// base cover asks the customer nothing.
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
   // Single-value columns (fixed segments like AB anchor bolts / SB base type /
@@ -77,10 +79,12 @@ function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
+  // Phase 0.12_TO (Tyler, 8/12): the categories collapse — ONE open at a
+  // time, the one being worked on. Shared store state so viewer callouts can
+  // open their section. (Picking a part still never moves the camera.)
+  const openStep = useConfigurator((s) => s.openStep)
+  const setOpenStep = useConfigurator((s) => s.setOpenStep)
 
-  // Phase 0.12_TO (Tyler, 8/12): picking a part must NOT move the camera.
-  // 0.11's select-time framing (selectAndFrame -> setFocus) is retired; the
-  // view carousel is the only view control and defaults to Assembly (0°).
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
 
@@ -93,9 +97,15 @@ export function Panel({ catalog, config }: Props) {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
 
+        const open = openStep === step.key
         return (
-          <section key={step.key} id={`builder-step-${step.key}`} className="step">
-            <div className="step-heading">
+          <section key={step.key} id={`builder-step-${step.key}`} className={`step${open ? ' open' : ''}`}>
+            <button
+              type="button"
+              className="step-heading"
+              aria-expanded={open}
+              onClick={() => setOpenStep(step.key)}
+            >
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">
@@ -107,7 +117,9 @@ export function Panel({ catalog, config }: Props) {
                 )}
                 {part ? displayPartName(part.name) : '—'}
               </span>
-            </div>
+              <span className="step-chevron" aria-hidden="true">{open ? '▾' : '▸'}</span>
+            </button>
+            {open && (
             <div className="step-body">
               <p className="step-tagline">{step.tagline}</p>
               <PartChoice
@@ -136,6 +148,7 @@ export function Panel({ catalog, config }: Props) {
                     o.values.some((v) => v.label.includes('Banner Arm Kit')),
                 ) && <BannerPicker catalog={catalog} config={config} />}
             </div>
+            )}
           </section>
         )
       })}

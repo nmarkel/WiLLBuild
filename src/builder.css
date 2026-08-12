@@ -854,3 +854,26 @@
   height: auto;
   margin: 0 auto 8px;
 }
+
+/* ---- Collapsible categories (Tyler 8/12): one open at a time ---- */
+
+.builder-app .step-heading {
+  width: 100%;
+  border: none;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.builder-app .step-chevron {
+  margin-left: 10px;
+  color: var(--text-dim);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.builder-app .step:not(.open) .step-heading:hover .step-label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

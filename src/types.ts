@@ -76,6 +76,9 @@ export interface CatalogPart {
    * like `comingSoon`; a code absent from the sheet's column never seeds.
    */
   specDefaults?: Record<string, string>
+  /** Pole OD in inches (WiLLstudio RSAA = 4). Drives the derived base-cover
+      Pole Fit code — a function of the pole, never a customer choice. */
+  diameterIn?: number
   /**
    * Phase 0.12 (D): a configuration concept rather than a manufactured product
    * — today the `direct-mount` tenon adapter, which is how you say "no arm".
