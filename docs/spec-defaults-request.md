@@ -1,4 +1,66 @@
-# Request: per-part default spec selections (`specDefaults`)
+# Requests from Tyler's config pass (for Nick)
+
+Three related asks from working the GVX pilot config (Casey RFA path, step 2
+"dial the config"). All change ordering data / SKU output, so they're specced
+here rather than applied from the UI branch.
+
+---
+
+# Request 0: hold TEX as Coming Soon (fixture cut → GVX only)
+
+**From:** Tyler (2026-08-12) — narrows his own 8/11 GVX+TEX cut to GVX-only
+for the Casey pilot.
+
+Setting `comingSoon: true` on `tex-post-top` was attempted on the UI branch
+and **deliberately reverted**: a held part loses its part number in both
+resolvers by design, so the flip fails 13 pinned tests — the section-D
+exact-list assertions in `availability.test.ts`, and every TEX SKU case in
+`texPartNumber.test.ts` + the cross-language contract
+(`partNumber.contract.test.ts` / `docs/part-number-cases.json`, which the
+geometry-service pytest reads too). Landing it properly means: flip the flag,
+update the section-D pins, regenerate the contract fixture
+(`UPDATE_PN_CASES=1`), and run the Python side — your call end to end.
+Side effect worth noting: the open "TEX side-mount labeling" item goes
+dormant while TEX is held.
+
+---
+
+# Request 1: GVX options simplification (X-codes via the corrections layer)
+
+**From:** Tyler (2026-08-12, working session)
+**Mechanism:** `docs/spec-option-corrections.json` + `apply-spec-option-corrections.mjs`
+(the 0.12 declarative layer — this is exactly its use case), then
+`UPDATE_PN_CASES=1` to regenerate the part-number contract fixture.
+
+## Target list (7 lines, replacing today's 14)
+
+| Line (simplified label) | Code → PN | Replaces | Default |
+|---|---|---|---|
+| Cord w/o Plug, Stripped Pigtail | `WHPXNP` | WHP3NP / WHP7NP / WHP11NP / WHP15NP | **ON** |
+| 10kA Surge Suppressor | `SRGXXX10` | SRG27710 / SRG48010 | off |
+| Button Photocontrol | `BPCX` | BPC1 / BPC3 / BPC4 | off |
+| Programmable Motion Sensor | `MPS` (unchanged) | — (label shortened from the 3-line spec text) | off |
+| House Side Shield | `HSS-GVX` (unchanged) | — | off |
+| Wireless DMX Control — consult factory | `GFX` (unchanged) | — | off |
+| Wireless Mesh Control — consult factory | `GFM` (unchanged) | — | off |
+
+- **90D (90° Optics Rotation): REMOVE from the customer list entirely** (Tyler).
+- X-code semantics: the generic code goes into the configured part number as-is
+  ("the string that gets inputted to the PN is WHPXNP" — Tyler); the concrete
+  variant (length / voltage rating) resolves at quote/order time. Cord
+  explicitly has "no bearing on the visual render."
+- Cord default-ON rides on the `specDefaults` mechanism below (Request 2) —
+  seed `specOptions.fixture.options = ['WHPXNP']` alongside the base columns.
+- **Data check (same class as the 5VN question):** are `WHPXNP` / `SRGXXX10` /
+  `BPCX` real conventions on the GVX sheet, or Tyler's shorthand for
+  "variant TBD"? Worth a Puddy confirm before they ship on quotes.
+- UI note: the builder renders whatever values the catalog carries — once the
+  corrections land, the list collapses with no UI change. The exclusive-family
+  auto-swap and voltage filtering simply stop mattering for these rows.
+
+---
+
+# Request 2: per-part default spec selections (`specDefaults`)
 
 **From:** Will (phase-0.10.5_TO UI pass, 2026-08-10)
 **For:** Nick — this needs catalog + store changes, which the UI branch deliberately doesn't touch.
