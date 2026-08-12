@@ -16636,7 +16636,7 @@
         }
       },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ss-willstudio-brackets_25e084a2-28de-49b5-bfd8-35ce373c91ee.jpg?v=1752000129",
-      "thumbnail": null,
+      "thumbnail": "thumbnails/ss-brackets.png",
       "model": null,
       "placeholder": {
         "kind": "tube",
@@ -16843,7 +16843,7 @@
         }
       },
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ar-willstudio-brackets_7d06f83f-56ca-4c48-8c00-8399b7c911d8.jpg?v=1752000488",
-      "thumbnail": null,
+      "thumbnail": "thumbnails/ar-brackets.png",
       "model": null,
       "placeholder": {
         "kind": "tube",
