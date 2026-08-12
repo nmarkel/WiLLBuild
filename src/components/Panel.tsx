@@ -2,7 +2,6 @@ import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
 import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
-import type { FocusTarget } from '../lib/composite'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
 const SIDE_LABELS: Record<number, string> = {
@@ -78,36 +77,10 @@ function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
-  const setFocus = useConfigurator((s) => s.setFocus)
 
-  /**
-   * Phase 0.11 (Workstream E): "zoom in on the part being configured."
-   *
-   * 0.11 hung this off the accordion's open step. Tyler's 0.10.5_TO rail has no
-   * accordion — every section is open in one scroll — so there is no "opening"
-   * left to hook, and the coupling is re-anchored to the act of PICKING a part:
-   * choose a fixture and the viewer frames the pole top, choose a base cover and
-   * it frames the pole bottom. Same intent, and it needs no extra affordance.
-   *
-   * The pole maps to 'assembly' because the pole IS most of the assembly, so
-   * framing it tightly just is the whole-product view.
-   *
-   * Slot → view, in the carousel's own vocabulary (see ASSEMBLY_VIEWS): the
-   * fixture and arm both live in the Pole Top framing, which is why picking
-   * either lands on the same view rather than a per-slot focus of its own.
-   */
-  const focusForSlot: Record<Slot, FocusTarget> = {
-    fixture: 'poleTop',
-    arm: 'poleTop',
-    pole: 'assembly',
-    baseCover: 'poleBottom',
-  }
-
-  const selectAndFrame = (slot: Slot, id: string) => {
-    select(slot, id)
-    setFocus(focusForSlot[slot])
-  }
-
+  // Phase 0.12_TO (Tyler, 8/12): picking a part must NOT move the camera.
+  // 0.11's select-time framing (selectAndFrame -> setFocus) is retired; the
+  // view carousel is the only view control and defaults to Assembly (0°).
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
 
@@ -137,11 +110,10 @@ export function Panel({ catalog, config }: Props) {
             </div>
             <div className="step-body">
               <p className="step-tagline">{step.tagline}</p>
-              {/* Picking a part also frames it in the viewer — see selectAndFrame. */}
               <PartChoice
                 parts={compatibleParts(catalog, config, step.key)}
                 selectedId={config[step.key]}
-                onSelect={(id) => selectAndFrame(step.key, id)}
+                onSelect={(id) => select(step.key, id)}
               />
               {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                   the chosen pole + arm actually support multiples (catalog rule). */}
@@ -157,7 +129,8 @@ export function Panel({ catalog, config }: Props) {
                   banner-kit accessory (BA24/BA30) — those configure banners
                   through Options & accessories placements instead. */}
               {step.key === 'pole' &&
-                !part?.options?.some(
+                part &&
+                !part.options?.some(
                   (o) =>
                     o.group === 'options-accessories' &&
                     o.values.some((v) => v.label.includes('Banner Arm Kit')),
@@ -469,8 +442,12 @@ function StepSpecOptions({
                             onChange={() => toggleSpecOption(slot, opt.key, v.code)}
                           />
                         )}
+                        {/* Phase 0.12_TO (Tyler): plain English only — the
+                            order code drives the part number but is not shown
+                            on the row. The sheet note becomes the caption. */}
                         <span className="spec-check-text">
-                          <span className="spec-check-code">{v.code}</span> {v.label}
+                          <span className="spec-check-name">{v.label}</span>
+                          {v.note && <span className="spec-check-note">{v.note}</span>}
                         </span>
                       </label>
                       {checked && placeable && (

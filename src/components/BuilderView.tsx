@@ -14,6 +14,12 @@ interface Props {
   config: PoleConfig
 }
 
+/** Brand wordmark assets (light-background variants) present in public/.
+    Brands without one fall back to a text headline. */
+const WORDMARKS: Partial<Record<PoleConfig['brand'], string>> = {
+  WiLLstudio: '/willstudio-logo-lightBG.png',
+}
+
 /**
  * Phase 0.10.5_TO: Tesla-configurator-style builder layout. Viewer dominant on
  * the left with its overlay controls unchanged, scrolling option rail on the
@@ -62,7 +68,14 @@ export function BuilderView({ catalog, config }: Props) {
       </div>
       <aside className="builder-rail">
         <div className="builder-headline">
-          <h1>{brand}</h1>
+          {/* Brand wordmark when the light-background asset exists (Tyler,
+              8/12); text headline for brands without one. Logo font is never
+              faked — no CSS recreation, real asset or plain text. */}
+          {WORDMARKS[brand] ? (
+            <img className="builder-headline-logo" src={WORDMARKS[brand]} alt={brand} />
+          ) : (
+            <h1>{brand}</h1>
+          )}
           <p>Design your pole — every choice updates the preview.</p>
         </div>
         <Panel catalog={catalog} config={config} />

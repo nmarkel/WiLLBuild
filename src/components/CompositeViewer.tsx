@@ -12,6 +12,7 @@ import {
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
+import { compatibleParts } from '../lib/compat'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
@@ -419,7 +420,37 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     Boolean,
   )
 
+  // Phase 0.12_TO (Tyler 8/12, blank slate): an empty or partial build is an
+  // INVITED state, not a missing-render error. Slots the brand offers but the
+  // customer hasn't chosen yet:
+  const neededSlots = (['fixture', 'arm', 'pole', 'baseCover'] as Slot[]).filter(
+    (slot) => !config[slot] && compatibleParts(catalog, config, slot).length > 0,
+  )
+
+  if (configPartIds.length === 0) {
+    return (
+      <div className="composite-start">
+        <h2>Start your build</h2>
+        <p>Pick a fixture in the panel — your pole takes shape here as you choose.</p>
+      </div>
+    )
+  }
+
   if (!manifest || !layout || layout.layers.length === 0 || layout.missing.length > 0) {
+    if (neededSlots.length > 0) {
+      const labels: Record<Slot, string> = {
+        fixture: 'a fixture',
+        arm: 'an arm',
+        pole: 'a pole',
+        baseCover: 'a base cover',
+      }
+      return (
+        <div className="composite-start">
+          <h2>Keep building</h2>
+          <p>Add {neededSlots.map((s) => labels[s]).join(', ')} to complete the preview.</p>
+        </div>
+      )
+    }
     const missingIds = layout && layout.missing.length > 0 ? layout.missing : configPartIds
     return <RenderFallback catalog={catalog} partIds={missingIds} label="Preview render coming" />
   }

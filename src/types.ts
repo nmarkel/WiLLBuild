@@ -69,6 +69,14 @@ export interface CatalogPart {
    */
   comingSoon?: boolean
   /**
+   * Phase 0.12_TO (Tyler 8/12): curated default codes for this part's
+   * ORDERING columns, keyed by column key — seeds `config.specOptions` when
+   * the part is chosen so the derived part number is complete out of the
+   * gate (GVX: 15,200 lm / 5000K / 120-277V / 90° Type V Medium). Hand-set
+   * like `comingSoon`; a code absent from the sheet's column never seeds.
+   */
+  specDefaults?: Record<string, string>
+  /**
    * Phase 0.12 (D): a configuration concept rather than a manufactured product
    * — today the `direct-mount` tenon adapter, which is how you say "no arm".
    *

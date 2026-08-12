@@ -78,7 +78,9 @@ const LANDED_SINCE_AUDIT = ['willstudio-fr2-decorative-crossarm']
  * these do NOT re-enable themselves when more geometry lands. Someone has to
  * decide they are back in the cut.
  */
-const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'willstudio-dwx-flood-spot']
+// tex-post-top joined the holds 8/12 (Tyler): fixture cut narrows to GVX
+// only for the Casey pilot. Held ≠ deleted — TEX re-enables by clearing the flag.
+const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'tex-post-top', 'willstudio-dwx-flood-spot']
 
 const SECTION_D_BADGED = SECTION_D_AUDITED.filter((id) => !LANDED_SINCE_AUDIT.includes(id))
 const ALL_BADGED = [...SECTION_D_BADGED, ...EDITORIAL_HOLDS]
@@ -148,10 +150,10 @@ describe('Coming Soon covers exactly the coverage matrix section-D list', () => 
     }
   })
 
-  it('leaves exactly GVX + TEX configurable in the fixture slot', () => {
+  it('leaves exactly GVX configurable in the fixture slot (8/12 cut)', () => {
     const fixtures = catalog.parts.filter((p) => p.slot === 'fixture' && p.line === 'WiLLstudio')
     const usable = fixtures.filter((p) => isConfigurable(p)).map((p) => p.id).sort()
-    expect(usable).toEqual(['gvx-pendant', 'tex-post-top'])
+    expect(usable).toEqual(['gvx-pendant'])
   })
 
   it('excludes direct-mount — a pseudo-part, not a future product', () => {

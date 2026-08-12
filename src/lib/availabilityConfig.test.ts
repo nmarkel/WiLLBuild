@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import catalogJson from '../../public/catalog.json'
 import type { Catalog, ProductLine, Slot } from '../types'
-import { compatibleParts, defaultConfig, partById, repairConfig, SLOT_ORDER } from './compat'
+import { autofillConfig, compatibleParts, defaultConfig, partById, repairConfig, SLOT_ORDER } from './compat'
 import { isComingSoon } from './availability'
 import { buildPartNumber } from './summary'
 
@@ -69,11 +69,15 @@ describe('no configuration can rest on a Coming Soon part', () => {
     expect(isComingSoon(partById(catalog, repaired.arm))).toBe(false)
   })
 
-  it('opens the builder on a configurable fixture, not the first in the catalog', () => {
-    // drx-post-top is first in catalog order and left the cut on 8/11.
+  it('opens the builder blank; autofill never lands on a held part', () => {
+    // 8/12 blank slate: no fixture is chosen for the customer at all — which
+    // trivially keeps the opening state off Coming Soon parts. The choosing
+    // path that must still dodge held parts is autofillConfig.
     const base = defaultConfig(catalog, 'WiLLstudio')
-    expect(isComingSoon(partById(catalog, base.fixture))).toBe(false)
-    expect(['gvx-pendant', 'tex-post-top']).toContain(base.fixture)
+    expect(base.fixture).toBe('')
+    const filled = autofillConfig(catalog, base)
+    expect(isComingSoon(partById(catalog, filled.fixture))).toBe(false)
+    expect(filled.fixture).toBe('gvx-pendant')
   })
 
   it('produces no part number for a Coming Soon part', () => {

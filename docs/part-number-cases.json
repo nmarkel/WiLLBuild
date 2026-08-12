@@ -309,7 +309,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-TEX-80-30-MV-5W-3T-NA-BK",
+        "fixture": null,
         "arm": "SH1",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"
@@ -341,7 +341,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-TEX-80-30-MV-5W-3T-NA-NA",
+        "fixture": null,
         "arm": "SH1",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"
@@ -376,7 +376,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-TEX-80-30-MV-5W-SMS-DB-WH",
+        "fixture": null,
         "arm": "SH1",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"
@@ -411,7 +411,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-TEX-80-30-MV-5W-3T-BK-SA",
+        "fixture": null,
         "arm": "SH1",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_",
         "baseCover": "WP-CL1-_-BK"

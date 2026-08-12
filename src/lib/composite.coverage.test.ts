@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig, ProductLine } from '../types'
-import { armAzimuths, compatibleParts, partsForSlot, repairConfig, defaultConfig } from './compat'
+import { armAzimuths, autofillConfig, compatibleParts, partsForSlot, repairConfig, defaultConfig } from './compat'
 import {
   ASSEMBLY_VIEW_YAWS,
   RENDER_ANGLE_KEYS,
@@ -85,7 +85,7 @@ describe('render manifest coverage', () => {
     // asserts the requested view is the view you get — no degradation path.
     const brands: ProductLine[] = ['WiLLstudio', 'NAFCO', 'WiLLsport']
     for (const brand of brands) {
-      const config = repairConfig(catalog, defaultConfig(catalog, brand))
+      const config = autofillConfig(catalog, defaultConfig(catalog, brand))
       for (const yaw of ASSEMBLY_VIEW_YAWS) {
         const layout = resolveAssemblyLayout(catalog, manifest, config, yaw)
         expect(layout.appliedViewYaw).toBe(yaw)
@@ -114,7 +114,7 @@ describe('render manifest coverage', () => {
     // The reason the render set is 4 angles and not 2: a quad cluster shows
     // arms pointing four ways inside ONE view. If this passes with only
     // hero/az180 present, the render set could shrink further; it does not.
-    const config = repairConfig(catalog, defaultConfig(catalog, 'WiLLstudio'))
+    const config = autofillConfig(catalog, defaultConfig(catalog, 'WiLLstudio'))
     const arm = catalog.parts.find((p) => p.id === config.arm)
     for (const count of arm?.arrangements ?? [1]) {
       for (const orientation of [0, 90, 180, 270]) {
@@ -151,7 +151,7 @@ const BUILDER_BRANDS: ProductLine[] = ['WiLLstudio', 'NAFCO', 'WiLLsport']
  * step filtered by compatibleParts against the selections made so far).
  */
 function enumerateConfigs(catalog: Catalog, brand: ProductLine): PoleConfig[] {
-  const base = defaultConfig(catalog, brand)
+  const base = autofillConfig(catalog, defaultConfig(catalog, brand))
   const configs: PoleConfig[] = []
 
   const fixtures = partsForSlot(catalog, 'fixture', brand)

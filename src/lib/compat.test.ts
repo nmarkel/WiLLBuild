@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible } from './compat'
+import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
+  autofillConfig,
+} from './compat'
 import { bannerGeometry } from './banner'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -193,11 +195,12 @@ describe('P1 pole-system promotions (Workstream G)', () => {
 })
 
 describe('repairConfig', () => {
-  it('replaces an arm that cannot carry the new fixture', () => {
+  it('clears an arm that cannot carry the new fixture (repair never chooses)', () => {
+    // Pre-8/12 this auto-picked direct-mount. Blank-slate rule: an invalid
+    // choice falls back to UNCHOSEN — the customer picks the replacement.
     const broken = config({ fixture: 'drx-post-top', arm: 'sh1-shepherds-hook' })
     const repaired = repairConfig(catalog, broken)
-    expect(repaired.arm).toBe('direct-mount')
-    expect(repaired.pole).toBe('alum-pole-14')
+    expect(repaired.arm).toBe('')
   })
 
   it('keeps a valid config unchanged', () => {
@@ -205,10 +208,11 @@ describe('repairConfig', () => {
     expect(repairConfig(catalog, valid)).toEqual(valid)
   })
 
-  it('repairs unknown part ids from a tampered share URL', () => {
+  it('clears unknown part ids from a tampered share URL (never invents)', () => {
     const repaired = repairConfig(catalog, config({ fixture: 'nope', arm: 'nope', finish: 'nope' }))
-    expect(partById(catalog, repaired.fixture)?.slot).toBe('fixture')
-    expect(partById(catalog, repaired.arm)?.slot).toBe('arm')
+    expect(repaired.fixture).toBe('')
+    expect(repaired.arm).toBe('')
+    // Finish still snaps to a real one — '' is not a legal finish.
     expect(repaired.finish).toBe('matte-black')
   })
 })
@@ -231,10 +235,20 @@ describe('attachSocket', () => {
 })
 
 describe('defaultConfig', () => {
-  it('produces a fully valid config', () => {
+  it('opens as a blank slate — no part chosen, repair leaves it alone', () => {
     const cfg = defaultConfig(catalog)
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
-    expect(cfg.pole && cfg.baseCover && cfg.arm && cfg.fixture && cfg.finish).toBeTruthy()
+    expect(cfg.fixture).toBe('')
+    expect(cfg.arm).toBe('')
+    expect(cfg.pole).toBe('')
+    expect(cfg.baseCover).toBe('')
+    expect(cfg.finish).toBeTruthy()
+  })
+
+  it('autofillConfig builds a complete, valid, configurable assembly on demand', () => {
+    const filled = autofillConfig(catalog, defaultConfig(catalog))
+    expect(filled.pole && filled.baseCover && filled.arm && filled.fixture).toBeTruthy()
+    expect(repairConfig(catalog, filled)).toEqual(filled)
   })
 })
 
@@ -419,9 +433,9 @@ describe('mount-type rules (H3b)', () => {
     expect(arms).toContain('sh1-shepherds-hook')
     expect(arms).toContain('willstudio-side-shepherds-hook-pole-top-brackets')
   })
-  it('repairConfig moves a post-top off an arm onto the direct mount', () => {
+  it('repairConfig clears an arm a post-top cannot mount (customer re-picks)', () => {
     const cfg = { ...base, fixture: 'drx-post-top', arm: 'upsweep' }
-    expect(repairConfig(catalog, cfg).arm).toBe('direct-mount')
+    expect(repairConfig(catalog, cfg).arm).toBe('')
   })
 })
 
@@ -986,13 +1000,23 @@ describe('voltage → options compatibility (Phase 0.10.5)', () => {
   })
 })
 
-describe('default spec options — WHP7NP cord (Phase 0.10.5)', () => {
-  it('defaultSpecOptions seeds the 6-ft cord where the sheet offers it', () => {
-    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHP7NP'] })
-    expect(defaultSpecOptions(partById(catalog, 'drx-post-top'))).toEqual({ options: ['WHP7NP'] })
-    // TEX offers no cords; arms have no sheet at all.
-    expect(defaultSpecOptions(partById(catalog, 'tex-post-top'))).toBeUndefined()
-    expect(defaultSpecOptions(partById(catalog, 'sh1-shepherds-hook'))).toBeUndefined()
+describe('default spec options — dormant by design (Phase 0.12_TO blank slate)', () => {
+  it('seeds nothing for any real part (Tyler 8/12: all open, all unselected)', () => {
+    for (const id of ['gvx-pendant', 'drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
+      expect(defaultSpecOptions(partById(catalog, id)), id).toBeUndefined()
+    }
+  })
+
+  it('the mechanism still works when a part carries specDefaults', () => {
+    // The machinery stays (catalog `specDefaults` + DEFAULT_OPTION_CODES) for
+    // the day a default earns its way back; pin it with a synthetic part.
+    const gvx = partById(catalog, 'gvx-pendant')!
+    const seeded = defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })
+    expect(seeded).toEqual({ 'lumen-output': '115' })
+    // A code the sheet does not offer never seeds.
+    expect(
+      defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': 'NOT-A-CODE' } }),
+    ).toBeUndefined()
   })
 
   it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {

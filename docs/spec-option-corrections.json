@@ -1,5 +1,5 @@
 {
-  "note": "Phase 0.12 — declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
+  "note": "Phase 0.12 \u2014 declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
   "rules": "Each entry replaces ONE raw column (matched by `rawKey`) with an ordered list of corrected columns. Fractional orderPosition values keep a split column adjacent to its neighbours without renumbering the sheet. No value here is invented: pole columns were lifted verbatim from the reviewed catalog, TEX columns re-partitioned from the raw parse.",
   "products": {
     "willstudio-decorative-aluminum-light-poles": {
@@ -229,11 +229,11 @@
       ]
     },
     "willstudio-tex-post-top-area": {
-      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number — see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
+      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number \u2014 see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
       "replace": [
         {
           "rawKey": "lumen-output",
-          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-… (no design), with none it resolved WD-TEX-… (no lumen). Split restores both.",
+          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-\u2026 (no design), with none it resolved WD-TEX-\u2026 (no lumen). Split restores both.",
           "columns": [
             {
               "key": "design",
@@ -466,6 +466,88 @@
                   "label": "Custom RAL Match",
                   "mapsTo": null,
                   "note": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "willstudio-gvx-pendant": {
+      "reason": "Tyler's 8/12 config-pass directive (docs/spec-defaults-request.md Request 1): collapse voltage/length variants into generic X-codes that go into the part number as-is (the concrete variant resolves at quote time), simplify labels, and drop 90D from the customer list. Unlike the parse-artifact rules above, these values ARE deliberate simplifications, not sheet transcriptions \u2014 provenance is the Tyler directive, pending Puddy's confirmation that the X-code convention is orderable.",
+      "replace": [
+        {
+          "rawKey": "options",
+          "why": "Raw column carried 11 values: 4 cord lengths (WHP3NP/7NP/11NP/15NP), 2 voltage-specific surge suppressors (SRG27710/SRG48010), 3 voltage-specific photocontrols (BPC1/3/4), MPS, and 90D. Collapsed to one line per family with generic X-codes; 90D removed per Tyler.",
+          "columns": [
+            {
+              "key": "options",
+              "label": "Options",
+              "group": "options-accessories",
+              "orderPosition": 8,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "WHPXNP",
+                  "label": "Cord w/o Plug, Stripped Pigtail",
+                  "mapsTo": null,
+                  "note": "Sized to your installation \u2014 we'll confirm the length with your quote"
+                },
+                {
+                  "buildable": null,
+                  "code": "SRGXXX10",
+                  "label": "10kA Surge Suppressor",
+                  "mapsTo": null,
+                  "note": "We'll match it to your project's voltage"
+                },
+                {
+                  "buildable": null,
+                  "code": "BPCX",
+                  "label": "Button Photocontrol",
+                  "mapsTo": null,
+                  "note": "We'll match it to your project's voltage"
+                },
+                {
+                  "buildable": null,
+                  "code": "MPS",
+                  "label": "Motion Sensor",
+                  "mapsTo": null,
+                  "note": "Programmable on/off, dimming & photocontrol \u2014 tune it over Bluetooth"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "accessories",
+          "why": "Label simplification only \u2014 same three accessories, shorter customer-facing names.",
+          "columns": [
+            {
+              "key": "accessories",
+              "label": "Accessories",
+              "group": "options-accessories",
+              "orderPosition": 9,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "HSS-GVX",
+                  "label": "House Side Shield",
+                  "mapsTo": null,
+                  "note": "Ships loose \u2014 cuts light spill toward homes"
+                },
+                {
+                  "buildable": null,
+                  "code": "GFX",
+                  "label": "Wireless DMX Control",
+                  "mapsTo": null,
+                  "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
+                },
+                {
+                  "buildable": null,
+                  "code": "GFM",
+                  "label": "Wireless Mesh Control",
+                  "mapsTo": null,
+                  "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
                 }
               ]
             }

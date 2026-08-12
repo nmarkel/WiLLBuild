@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
-import { repairConfig } from './compat'
+import { autofillConfig, repairConfig } from './compat'
 import { resolveAssemblyLayout, SLOT_Z, type RenderManifest } from './composite'
 
 // Phase 0.8 (A5): the representative end-to-end proof, against the REAL catalog
@@ -78,7 +78,9 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
 // placements in 0.10.5, so this proof runs on NAFCO (still Banner Arm box).
 describe('banner arm — real assets (legacy path, NAFCO)', () => {
   const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === 'NAFCO')
-  const nafcoBase: PoleConfig = repairConfig(catalog, {
+  // Blank-slate repair no longer fills empty slots — the complete NAFCO
+  // assembly this suite exercises is built explicitly.
+  const nafcoBase: PoleConfig = autofillConfig(catalog, {
     configId: 'banner-e2e',
     brand: 'NAFCO',
     pole: '',

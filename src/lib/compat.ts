@@ -308,11 +308,13 @@ export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): 
 }
 
 /**
- * Order codes pre-selected whenever a part offering them is chosen (the 6'
- * cord is the standard build). The customer can still uncheck them; they only
- * reseed when the part itself changes.
+ * Order codes pre-selected whenever a part offering them is chosen.
+ * DELIBERATELY EMPTY as of 8/12: Tyler's blank-slate call — nothing is
+ * selected for the customer, options included. (Earlier the same day this
+ * held WHPXNP, and before that WHP7NP; the seeding mechanism stays for the
+ * day a default earns its way back.)
  */
-const DEFAULT_OPTION_CODES = ['WHP7NP']
+const DEFAULT_OPTION_CODES: string[] = []
 
 /**
  * The default multi-select choices for a freshly chosen part: each default
@@ -320,10 +322,20 @@ const DEFAULT_OPTION_CODES = ['WHP7NP']
  */
 export function defaultSpecOptions(
   part: CatalogPart | undefined,
-): Record<string, string[]> | undefined {
+): Record<string, string | string[]> | undefined {
   if (!part?.options) return undefined
-  const seeded: Record<string, string[]> = {}
+  const seeded: Record<string, string | string[]> = {}
   for (const opt of part.options) {
+    // Ordering columns: the part's own curated defaults (catalog
+    // `specDefaults`, e.g. GVX's 15,200 lm / 5000K / 120-277V / Type V
+    // Medium — Tyler 8/12) seed the column so the derived part number is
+    // complete out of the gate. Only codes the sheet actually offers seed.
+    if (opt.group === 'ordering') {
+      // Single-choice columns store the bare code (setSpecOption's own shape).
+      const want = part.specDefaults?.[opt.key]
+      if (want && opt.values.some((v) => v.code === want)) seeded[opt.key] = want
+      continue
+    }
     if (opt.group !== 'options-accessories') continue
     const codes = opt.values.filter((v) => DEFAULT_OPTION_CODES.includes(v.code)).map((v) => v.code)
     if (codes.length > 0) seeded[opt.key] = codes
@@ -393,12 +405,21 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
   switch (slot) {
     case 'fixture':
       return options
-    case 'arm':
-      return options.filter((arm) => canHost(arm, partById(catalog, config.fixture)))
-    case 'pole':
-      return options.filter((pole) => canHost(pole, partById(catalog, config.arm)))
-    case 'baseCover':
-      return options.filter((cover) => canHost(partById(catalog, config.pole), cover))
+    // Phase 0.12_TO (blank slate): an unchosen upstream slot ('') constrains
+    // nothing — every section stays open with its full list until the
+    // customer's own picks start narrowing it.
+    case 'arm': {
+      const fixture = partById(catalog, config.fixture)
+      return fixture ? options.filter((arm) => canHost(arm, fixture)) : options
+    }
+    case 'pole': {
+      const arm = partById(catalog, config.arm)
+      return arm ? options.filter((pole) => canHost(pole, arm)) : options
+    }
+    case 'baseCover': {
+      const pole = partById(catalog, config.pole)
+      return pole ? options.filter((cover) => canHost(pole, cover)) : options
+    }
   }
 }
 
@@ -464,37 +485,29 @@ export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[]
  */
 export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const next = { ...config }
-  // Phase 0.12 (D): repair never CHOOSES a Coming Soon part, but it does not
-  // evict one that is already selected.
-  //
-  // The distinction is the whole point. Picking a replacement is our choice, so
-  // it must land on something configurable — otherwise a fresh visitor starts
-  // the builder on a disabled product. But a config that already names a part
-  // is the CUSTOMER's, and silently swapping their DRX for a GVX because DRX
-  // left the cut rewrites a saved design without telling them. Held parts are
-  // inert instead: badged, no part number, no downloads — visible, not
-  // configurable, exactly as specified. `defaultConfig` starts from an empty
-  // slot, so it always goes through the choosing path.
-  //
-  // Coming Soon parts also stay in `compatibleParts`, so the rail still lists
-  // them greyed.
-  const chooseFrom = (parts: CatalogPart[]) => {
-    const configurable = parts.filter((p) => !isComingSoon(p))
-    // Never strand a slot: if every option is held, keep the full list rather
-    // than blanking the selection.
-    return configurable.length > 0 ? configurable : parts
-  }
+  // Phase 0.12 (D)'s rule — repair never CHOOSES a Coming Soon part but never
+  // evicts one already selected — is now subsumed by the blank-slate rule
+  // below: repair never chooses ANY part. A held part a config already names
+  // stays (the customer's saved design is not rewritten); an invalid choice
+  // falls back to '' rather than to a silently-picked replacement.
   for (const slot of SLOT_ORDER) {
+    // Phase 0.12_TO (Tyler 8/12, blank slate): '' is a deliberate "not chosen
+    // yet" — the builder opens with every slot empty and the customer builds
+    // up. Repair FIXES invalid choices; it never MAKES choices. (Standalone
+    // products already relied on '' being a legal value.) An invalid non-empty
+    // choice repairs to '' too — falling back to "unchosen" is honest where
+    // auto-picking a replacement part was silent invention.
+    if (!next[slot]) continue
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
       if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
-        next.fixture = chooseFrom(partsForSlot(catalog, 'fixture', next.brand))[0]?.id ?? ''
+        next.fixture = ''
       }
       continue
     }
     const options = compatibleParts(catalog, next, slot)
     if (!options.some((p) => p.id === next[slot])) {
-      next[slot] = chooseFrom(options)[0]?.id ?? ''
+      next[slot] = ''
     }
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
@@ -694,16 +707,30 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
   return isStandard ? 'Standard' : 'Configurable'
 }
 
+/**
+ * Fill every empty slot with the first CONFIGURABLE compatible part, walking
+ * fixture-first. This is the pre-8/12 repair behavior preserved as an explicit
+ * act: repair never makes choices any more, but tests (and any future
+ * "build one for me" affordance) still need a one-call complete assembly.
+ */
+export function autofillConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
+  const next = { ...config }
+  for (const slot of SLOT_ORDER) {
+    if (next[slot]) continue
+    const options = compatibleParts(catalog, next, slot).filter((p) => !isComingSoon(p))
+    next[slot] = options[0]?.id ?? ''
+  }
+  return repairConfig(catalog, next)
+}
+
 export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio'): PoleConfig {
-  // Phase 0.12 (D): the fixture is seeded here, BEFORE repairConfig runs, so it
-  // has to skip Coming Soon parts itself — repair only filters when it chooses a
-  // replacement, and a seeded value is not a replacement. Without this the
-  // builder would open on the first catalog fixture (drx-post-top), which left
-  // the cut on 8/11.
-  const fixtures = partsForSlot(catalog, 'fixture', brand)
-  const configurable = fixtures.filter((p) => !isComingSoon(p))
-  const fixture = (configurable.length > 0 ? configurable : fixtures)[0]?.id ?? ''
-  const seeded = defaultSpecOptions(partById(catalog, fixture))
+  // Phase 0.12_TO (Tyler 8/12): the builder opens as a BLANK SLATE — no part
+  // pre-selected in any slot, no spec selections seeded. Every section sits
+  // open and unselected; the customer's first act is choosing, not undoing.
+  // (This retired 0.12 (D)'s fixture seeding, which existed only to keep the
+  // seed off Coming Soon parts — nothing is seeded now.)
+  const fixture = ''
+  const seeded = undefined
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
     brand,
