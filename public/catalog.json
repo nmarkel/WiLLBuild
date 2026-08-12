@@ -2608,7 +2608,7 @@
               "code": "HSS-GVX",
               "label": "House Side Shield",
               "mapsTo": null,
-              "note": "Ships loose — cuts light spill toward homes"
+              "note": "Helps control light spill and glare"
             },
             {
               "buildable": null,
