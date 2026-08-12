@@ -178,7 +178,7 @@ class TestAssemblyResolution:
     def test_text_line_prints_the_number(self, catalog):
         cfg = _config(CASES[0])
         # Tyler 8/12: the arm number carries its finish colour.
-        assert part_number_text(catalog, cfg, "arm") == "Arm: SH1-BK"
+        assert part_number_text(catalog, cfg, "arm") == "Arm: WP-SH1-BK"
 
 
 class TestConfigHashCoupling:

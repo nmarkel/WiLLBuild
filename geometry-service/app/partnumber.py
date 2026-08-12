@@ -200,7 +200,9 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         arm_finish = (finish or {}).get("code")
         if arm_finish:
             base = f"{base}-{arm_finish}"
-        return _with_add_ons(base, part, cfg, slot)
+        # Tyler 8/12: arms lead with the WP family code like every other
+        # WiLLstudio number — WP-SS2-BK-CF2.
+        return _with_add_ons(f"WP-{base}", part, cfg, slot)
 
     options = part.get("options")
     if not options:

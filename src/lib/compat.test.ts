@@ -32,13 +32,17 @@ describe('compatibleParts (fixture-first)', () => {
   })
 
   it('offers only pendant arms for the GVX pendant', () => {
+    // SD + HS joined the pendant carriers 8/12 (Tyler's GVX bracket list) —
+    // their placeholder-era sockets said post-top / arm-mount.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'gvx-pendant' }), 'arm'))
     expect(ids).toEqual(
       [
         'pa1-pendant-arm',
         'pm1-pendant-arm',
         'sh1-shepherds-hook',
+        'willstudio-hsx-decorative-upsweep-arms',
         'willstudio-side-shepherds-hook-pole-top-brackets',
+        'willstudio-supported-decorative-arms',
         'willstudio-suspension-arm-pole-top-brackets',
       ].sort(),
     )
@@ -52,14 +56,14 @@ describe('compatibleParts (fixture-first)', () => {
         'direct-mount',
         'willstudio-cr2-decorative-crossarm',
         'willstudio-fr2-decorative-crossarm',
-        'willstudio-supported-decorative-arms',
       ].sort(),
     )
   })
 
   it('offers only arm-mount carriers for the MVX coach', () => {
+    // HS became a pendant carrier 8/12; the classic upsweep stays MVX's own.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'mvx-coach' }), 'arm'))
-    expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
+    expect(ids).toEqual(['upsweep'])
   })
 
   it('offers the eight aluminum pole heights for any arm, and every base cover for any pole', () => {
@@ -90,14 +94,15 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'direct-mount',
     'willstudio-cr2-decorative-crossarm',
     'willstudio-fr2-decorative-crossarm',
-    'willstudio-supported-decorative-arms',
   ].sort()
 
   const PENDANT_ARMS = [
     'pa1-pendant-arm',
     'pm1-pendant-arm',
     'sh1-shepherds-hook',
+    'willstudio-hsx-decorative-upsweep-arms',
     'willstudio-side-shepherds-hook-pole-top-brackets',
+    'willstudio-supported-decorative-arms',
     'willstudio-suspension-arm-pole-top-brackets',
   ].sort()
 
@@ -128,9 +133,9 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     expect(ids).toEqual(PENDANT_ARMS)
   })
 
-  it('MVX coach accepts both upsweep arms', () => {
+  it('MVX coach keeps the classic upsweep (HS became a pendant carrier 8/12)', () => {
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'mvx-coach' }), 'arm'))
-    expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
+    expect(ids).toEqual(['upsweep'])
   })
 
   it('every promoted WiLLstudio pole hosts every WiLLstudio arm (tenon-3in top socket)', () => {
@@ -423,7 +428,7 @@ describe('mount-type rules (H3b)', () => {
   it('coach fixtures only get arm-mount upsweep arms', () => {
     const cfg = { ...base, fixture: 'mvx-coach' }
     const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
-    expect(arms).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'])
+    expect(arms).toEqual(['upsweep'])
   })
   it('pendants only get pendant arms', () => {
     const cfg = { ...base, fixture: 'gvx-pendant' }
@@ -644,20 +649,22 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
   it('applies the 8 ft banner floor a placement UI once ignored', () => {
     // Pre-0.11 divergence: repairConfig floored banner kits at BANNER_MIN_FT
     // while Panel's slider floored them at 2 ft. Both now use one function.
-    expect(withKit('BA24', undefined, 3).accessoryPlacements?.BA24?.heightFt).toBe(8)
+    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.heightFt).toBe(8)
   })
 
   it('reserves the panel height under the pole top', () => {
     // 20 ft pole − 4 ft default panel − 1 ft clearance.
-    expect(withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt).toBe(15)
+    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(15)
     // 20 ft pole − 5 ft panel − 1 ft clearance.
-    expect(withKit('BA30', '30x60', 99).accessoryPlacements?.BA30?.heightFt).toBe(14)
+    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(14)
   })
 
   it('keeps a size the kit can carry and drops one it cannot', () => {
-    expect(withKit('BA30', '30x60').accessoryPlacements?.BA30?.size).toBe('30x60')
-    // BA24's 24 in arms can't fly a 30 in banner — falls back to the default.
-    expect(withKit('BA24', '30x60').accessoryPlacements?.BA24?.size).toBeUndefined()
+    // Tyler 8/12: the consolidated BAX kit carries every panel size — the arm
+    // length (24"/30") resolves at quote from the chosen banner. The per-kit
+    // width gate lives on only as a label-parsing rule (tested above) for
+    // sheets that still declare an arm length.
+    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.size).toBe('30x60')
   })
 
   it('never stores a panel size on a non-banner accessory', () => {
@@ -677,7 +684,7 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
   it('a banner reads the same height whichever path configured it', () => {
     // 20 ft pole either way: alum-pole-20 for the kit path, the NAFCO fallback
     // for the legacy path.
-    const kit = withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt
+    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt
     const nafcoCfg = repairConfig(
       catalog,
       config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
@@ -1206,9 +1213,9 @@ describe('accessory placements (Phase 0.10.5)', () => {
   it('placeableAccessoryCodes lists selected marker-carrying codes only', () => {
     const cfg = repairConfig(catalog, withFstr())
     expect(placeableAccessoryCodes(catalog, cfg)).toEqual(['FSTR'])
-    // BA24/BA30 banner kits are placeable too (height + orientation panel).
-    const withBa = repairConfig(catalog, { ...withFstr(), specOptions: { pole: { accessories: ['BA24'] } } })
-    expect(placeableAccessoryCodes(catalog, withBa)).toEqual(['BA24'])
+    // The consolidated BAX banner kit is placeable too (height + orientation).
+    const withBa = repairConfig(catalog, { ...withFstr(), specOptions: { pole: { accessories: ['BAX'] } } })
+    expect(placeableAccessoryCodes(catalog, withBa)).toEqual(['BAX'])
   })
 
   it('repairConfig clamps placement height to the shaft and orientation to the compass set', () => {
@@ -1243,17 +1250,17 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
       fixture: 'drx-post-top',
       arm: 'direct-mount',
       pole: 'alum-pole-12',
-      specOptions: { pole: { options: ['FSTR'], accessories: ['BA24', 'FH'] } },
+      specOptions: { pole: { options: ['FSTR'], accessories: ['BAX', 'FH'] } },
     })
     const repaired = repairConfig(catalog, {
       ...base,
       accessoryPlacements: {
-        BA24: { heightFt: 10, orientation: 90, sides: 4 },
+        BAX: { heightFt: 10, orientation: 90, sides: 4 },
         FH: { heightFt: 8, orientation: 0, sides: 4 }, // FH allows 1|2 → clamps to 1
         FSTR: { heightFt: 6, orientation: 0, sides: 2 }, // FSTR has no sides → stripped
       },
     })
-    expect(repaired.accessoryPlacements?.BA24?.sides).toBe(4)
+    expect(repaired.accessoryPlacements?.BAX?.sides).toBe(4)
     expect(repaired.accessoryPlacements?.FH?.sides).toBe(1)
     expect(repaired.accessoryPlacements?.FSTR?.sides).toBeUndefined()
   })

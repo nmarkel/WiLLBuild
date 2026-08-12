@@ -212,8 +212,20 @@ export const PLACEMENT_MARKER = 'Specify Pole Height & Orientation'
  * declare one (generic 2 ft floor applies).
  */
 export function labelMinFt(label: string): number | undefined {
-  const m = label.match(/Minimum\s+(\d+)\s*[”"]/)
+  const m = label.match(/Minimum\s+(\d+)\s*[”"]/i)
   return m ? Number(m[1]) / 12 : undefined
+}
+
+/** A value's full machine-readable text: label + note (constraints like the
+    festoon's Minimum 37” now live in the plain-English caption). */
+export function valueText(v: { label: string; note?: string | null }): string {
+  return v.note ? `${v.label} ${v.note}` : v.label
+}
+
+/** Whether an accessory value takes a shaft placement — the explicit flag,
+    with the legacy label-marker as back-compat for untreated sheets. */
+export function isPlaceable(v: { label: string; placeable?: boolean }): boolean {
+  return v.placeable === true || v.label.includes(PLACEMENT_MARKER)
 }
 
 /**
@@ -228,12 +240,14 @@ export function accessorySideOptions(label: string): number[] | undefined {
   return undefined
 }
 
-/** The label of a selected pole accessory value, for placement rules. */
+/** The full text of a selected pole accessory value (label + caption), for
+    placement rules — constraints like the festoon minimum live in the caption
+    since the plain-English pass. */
 export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: string): string {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue
     const value = opt.values.find((v) => v.code === code)
-    if (value) return value.label
+    if (value) return valueText(value)
   }
   return ''
 }
@@ -253,7 +267,7 @@ export function placeableAccessoryCodes(catalog: Catalog, config: PoleConfig): s
     if (opt.group !== 'options-accessories') continue
     for (const code of specCodes(chosen[opt.key])) {
       const value = opt.values.find((v) => v.code === code)
-      if (value?.label.includes(PLACEMENT_MARKER)) codes.push(code)
+      if (value && isPlaceable(value)) codes.push(code)
     }
   }
   return codes

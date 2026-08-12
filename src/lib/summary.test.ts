@@ -148,12 +148,12 @@ describe('arm model code as part number (Phase 0.10.5)', () => {
       armCount: 3,
     })
     // Tyler 8/12: the arm's finish colour joins its number.
-    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('AR3-BK')
-    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: AR3-BK')
+    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('WP-AR3-BK')
+    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: WP-AR3-BK')
   })
 
   it('single-only arms report their fixed code', () => {
-    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('SH1-BK')
+    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('WP-SH1-BK')
   })
 
   it('the upsweep has no code yet (24"/36" length model pending)', () => {
@@ -234,7 +234,7 @@ describe('accessory placement in summary (Phase 0.10.5)', () => {
         accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
       }),
     )
-    expect(summary).toContain('FSTR — Festoon Provision')
+    expect(summary).toContain('FSTR — Festoon Power Provision')
     // Phase 0.11 (D): the height now states what it measures to. A bare
     // "6 ft" is the ambiguity the centre-vs-bottom bug hid behind.
     expect(summary).toContain('— placed 6 ft to bottom @ 90°')

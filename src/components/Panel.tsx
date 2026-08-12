@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, armOrientationOptions, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -104,7 +104,7 @@ export function Panel({ catalog, config }: Props) {
               type="button"
               className="step-heading"
               aria-expanded={open}
-              onClick={() => setOpenStep(step.key)}
+              onClick={() => setOpenStep(open ? null : step.key)}
             >
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
@@ -425,7 +425,7 @@ function StepSpecOptions({
                 {showLabel && <p className="spec-option-group-label">{label}</p>}
                 {values.map((v) => {
                   const checked = specCodes(chosen[opt.key]).includes(v.code)
-                  const placeable = slot === 'pole' && v.label.includes(PLACEMENT_MARKER)
+                  const placeable = slot === 'pole' && isPlaceable(v)
                   const family = exclusiveFamily(v.code)
                   return (
                     <div key={v.code}>
@@ -469,7 +469,7 @@ function StepSpecOptions({
                           code={v.code}
                           config={config}
                           poleFt={part.heightFt ?? 20}
-                          label={v.label}
+                          label={valueText(v)}
                         />
                       )}
                     </div>

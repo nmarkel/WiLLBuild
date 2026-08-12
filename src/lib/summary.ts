@@ -75,8 +75,9 @@ export function buildPartNumber(
     // Arms have no sheet columns, so the code comes from the palette itself.
     const armFinish = catalog.finishes.find((f) => f.id === finishFor(config, slot))?.code
     // Phase 0.11 (Workstream C): a model-code arm still carries its chosen
-    // options — `SH1-CF2`, never a bare `SH1` with a silent selection.
-    return [base, ...(armFinish ? [armFinish] : []), ...addOnCodes(part, config, slot)].join('-')
+    // options. Tyler 8/12: arms lead with the WP product-family code like
+    // every other WiLLstudio number — `WP-SS2-BK-CF2`.
+    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined

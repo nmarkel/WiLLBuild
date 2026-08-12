@@ -225,6 +225,96 @@
               ]
             }
           ]
+        },
+        {
+          "rawKey": "options",
+          "why": "Tyler 8/12: consolidate the two hand-hole variants (HHUR/HHRR-4/5/6) into one generic line (reinforcement + size resolve at quote) and give every accessory plain-English title+caption copy. The '(Specify Pole Height & Orientation)' boilerplate becomes the explicit `placeable` flag.",
+          "columns": [
+            {
+              "key": "options",
+              "label": "Options",
+              "group": "options-accessories",
+              "orderPosition": 6,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "HHX",
+                  "label": "Additional Hand Hole",
+                  "mapsTo": null,
+                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
+                  "placeable": true
+                },
+                {
+                  "buildable": null,
+                  "code": "FSTR",
+                  "label": "Festoon Power Provision",
+                  "mapsTo": null,
+                  "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
+                  "placeable": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "options-2",
+          "why": "Tyler 8/12: consolidate all five coupling variants (pipe/straight thread \u00d7 sizes) into one generic line; thread type and size resolve at quote.",
+          "columns": [
+            {
+              "key": "options-2",
+              "label": "Options",
+              "group": "options-accessories",
+              "orderPosition": 7,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "CPLX",
+                  "label": "Threaded Coupling",
+                  "mapsTo": null,
+                  "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
+                  "placeable": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "accessories",
+          "why": "Tyler 8/12: consolidate the two banner arm kits (24\"/30\" arms resolve at quote from the chosen banner size) and simplify the flag/plant holder copy.",
+          "columns": [
+            {
+              "key": "accessories",
+              "label": "Accessories",
+              "group": "options-accessories",
+              "orderPosition": 8,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "BAX",
+                  "label": "Banner Arm Kit",
+                  "mapsTo": null,
+                  "note": "Wind-shedding fiberglass arms for banners up to 17.5 sq ft \u2014 pick your banner size and placement below",
+                  "placeable": true
+                },
+                {
+                  "buildable": null,
+                  "code": "FH",
+                  "label": "Flag Holder Kit",
+                  "mapsTo": null,
+                  "note": "A single flag bracket with stainless hardware \u2014 field installed",
+                  "placeable": true
+                },
+                {
+                  "buildable": null,
+                  "code": "PH",
+                  "label": "Plant Holder Kit",
+                  "mapsTo": null,
+                  "note": "A single planter bracket with stainless hardware \u2014 field installed",
+                  "placeable": true
+                }
+              ]
+            }
+          ]
         }
       ]
     },
