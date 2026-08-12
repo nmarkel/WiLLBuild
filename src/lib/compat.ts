@@ -308,13 +308,12 @@ export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): 
 }
 
 /**
- * Order codes pre-selected whenever a part offering them is chosen.
- * DELIBERATELY EMPTY as of 8/12: Tyler's blank-slate call — nothing is
- * selected for the customer, options included. (Earlier the same day this
- * held WHPXNP, and before that WHP7NP; the seeding mechanism stays for the
- * day a default earns its way back.)
+ * Order codes pre-selected whenever a part offering them is chosen. Composes
+ * with the blank slate: the builder still OPENS empty — these seed at the
+ * moment the customer picks a part that offers them, and stay uncheckable.
+ * WHPXNP (Tyler 8/12): the generic cord line is the standard build.
  */
-const DEFAULT_OPTION_CODES: string[] = []
+const DEFAULT_OPTION_CODES: string[] = ['WHPXNP']
 
 /**
  * The default multi-select choices for a freshly chosen part: each default

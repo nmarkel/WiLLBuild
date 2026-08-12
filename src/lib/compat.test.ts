@@ -1000,9 +1000,12 @@ describe('voltage → options compatibility (Phase 0.10.5)', () => {
   })
 })
 
-describe('default spec options — dormant by design (Phase 0.12_TO blank slate)', () => {
-  it('seeds nothing for any real part (Tyler 8/12: all open, all unselected)', () => {
-    for (const id of ['gvx-pendant', 'drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
+describe('default spec options — the generic cord (Phase 0.12_TO)', () => {
+  it('seeds the WHPXNP cord when the picked part offers it — and nothing else', () => {
+    // Composes with the blank slate: the builder opens empty; this seeds at
+    // part-PICK time (Tyler 8/12: "select Cord w/o Plug by default").
+    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHPXNP'] })
+    for (const id of ['drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
       expect(defaultSpecOptions(partById(catalog, id)), id).toBeUndefined()
     }
   })
@@ -1012,11 +1015,11 @@ describe('default spec options — dormant by design (Phase 0.12_TO blank slate)
     // the day a default earns its way back; pin it with a synthetic part.
     const gvx = partById(catalog, 'gvx-pendant')!
     const seeded = defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })
-    expect(seeded).toEqual({ 'lumen-output': '115' })
-    // A code the sheet does not offer never seeds.
+    expect(seeded).toEqual({ 'lumen-output': '115', options: ['WHPXNP'] })
+    // A code the sheet does not offer never seeds (the cord still does).
     expect(
       defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': 'NOT-A-CODE' } }),
-    ).toBeUndefined()
+    ).toEqual({ options: ['WHPXNP'] })
   })
 
   it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {
