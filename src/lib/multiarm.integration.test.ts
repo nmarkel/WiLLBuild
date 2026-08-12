@@ -39,7 +39,12 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
     [3, 3],
     [4, 4],
   ])('armCount=%i composites with 0 missing and %i arm layers', (count, expectedArms) => {
-    const config = repairConfig(catalog, { ...base, armCount: count })
+    // Catalog policy trims the AR brackets to Single/Twin (Tyler 8/12), but
+    // the COMPOSITOR math for 3/4-way clusters stays pinned here — the config
+    // is built directly, bypassing repair's policy clamp. Brand policy for
+    // counts is pinned in compat.test.ts; NAFCO/WiLLsport suites still
+    // exercise 3/4-way through repair.
+    const config = { ...base, armCount: count }
     expect(config.armCount).toBe(count) // catalog allows it (A2)
     const layout = resolveAssemblyLayout(catalog, manifest, config)
     expect(layout.missing).toEqual([])
@@ -150,7 +155,8 @@ describe('arm orientation — real assets', () => {
   })
 
   it('triple (3@90) at 180° wraps around cleanly', () => {
-    const cfg = repairConfig(catalog, { ...base, armCount: 3, armOrientation: 180 })
+    // Direct construction — see the policy note above.
+    const cfg = { ...base, armCount: 3, armOrientation: 180 }
     const layout = resolveAssemblyLayout(catalog, manifest, cfg)
     expect(layout.missing).toEqual([])
     expect(

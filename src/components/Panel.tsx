@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, armOrientationOptions, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -704,11 +704,15 @@ function ArmOrientationSelector({ catalog, config }: { catalog: Catalog; config:
   const reach = socket ? Math.hypot(socket.position[0], socket.position[2]) : 0
   if (reach < 0.05) return null
   const current = config.armOrientation ?? 0
+  // Only orientations that produce distinct layouts for this arrangement
+  // (Tyler 8/12: a twin offers 0/90 — 180/270 are the same picture).
+  const offered = armOrientationOptions(config.armCount ?? 1)
+  if (offered.length <= 1) return null
   return (
     <div className="arm-count arm-orientation">
       <p className="arm-count-label">Orientation</p>
       <div className="arm-count-options">
-        {ARM_ORIENTATIONS.map((deg) => (
+        {offered.map((deg) => (
           <button
             key={deg}
             className={`arm-count-chip ${current === deg ? 'selected' : ''}`}

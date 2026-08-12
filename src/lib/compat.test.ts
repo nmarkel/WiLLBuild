@@ -453,10 +453,11 @@ describe('armAzimuths', () => {
 
 describe('allowedArmCounts', () => {
   it('intersects the pole and arm arrangement lists', () => {
-    // alum-pole-14 and the AR suspension arm are both annotated [1,2,3,4].
+    // alum-pole-14 is annotated [1,2,3,4]; the AR brackets trimmed to [1,2]
+    // (Tyler 8/12: Single + Twin only) — the intersection is the arm's set.
     expect(
       allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'willstudio-suspension-arm-pole-top-brackets' })),
-    ).toEqual([1, 2, 3, 4])
+    ).toEqual([1, 2])
   })
 
   it('falls back to single-only for an arm with no arrangements (e.g. direct mount)', () => {
@@ -471,11 +472,15 @@ describe('allowedArmCounts', () => {
 })
 
 describe('repairConfig — arm count clamping', () => {
-  it('keeps a valid multi-arm count', () => {
-    // (AR suspension arm — SH1/PA1 became single-only per the official config list.)
+  it('keeps a valid multi-arm count and clamps one outside the cut', () => {
+    // Tyler 8/12: brackets offer Single + Twin only. Twin survives; a triple
+    // from an old share URL clamps back to single.
+    expect(
+      repairConfig(catalog, config({ arm: 'willstudio-suspension-arm-pole-top-brackets', armCount: 2 })).armCount,
+    ).toBe(2)
     expect(
       repairConfig(catalog, config({ arm: 'willstudio-suspension-arm-pole-top-brackets', armCount: 3 })).armCount,
-    ).toBe(3)
+    ).toBe(1)
   })
 
   it('resets an unsupported count to single', () => {
@@ -699,20 +704,21 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     )!
     expect(column.group).toBe('options-accessories')
     expect(column.values.map((v) => v.label)).toEqual([
-      'Center Shepherds Hook Decorative Feature',
-      'Center Shepherds Hook Brand/Logo/City Round Feature',
-      'Center Shepherds Hook Brand/Logo Feature (variant)',
+      'Decorative Center Feature',
+      'Brand / Logo / City Round Center Feature',
+      'Brand / Logo Center Feature (Variant)',
     ])
     // Bare `CF` = Custom is deliberately excluded (docs/ordering-matrix.json
     // armOptionsNote): a custom feature is a quote conversation, not a code.
     expect(column.values.some((v) => v.code === 'CF')).toBe(false)
   })
 
-  it('appear on no other part in the catalog', () => {
+  it('appear on exactly the hook family — SH1 and the SS brackets', () => {
+    // Tyler 8/12 settled the 0.11 open item: SS DOES take the centre feature.
     const carriers = catalog.parts
       .filter((p) => (p.options ?? []).some((o) => o.values.some((v) => /^CF[123]$/.test(v.code))))
       .map((p) => p.id)
-    expect(carriers).toEqual(['sh1-shepherds-hook'])
+    expect(carriers).toEqual(['sh1-shepherds-hook', 'willstudio-side-shepherds-hook-pole-top-brackets'])
   })
 
   it('are one exclusive family — and the bare CF on mvx-coach is not in it', () => {
@@ -750,11 +756,11 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     expect(repaired.specOptions?.fixture?.options).toEqual(['CF'])
   })
 
-  it('is offered on SH1 only — guarded, not merely absent elsewhere', () => {
+  it('is offered on the hook family only — guarded, not merely absent elsewhere', () => {
     expect(codeAllowedOnPart(partById(catalog, 'sh1-shepherds-hook'), 'CF1')).toBe(true)
-    // "Nick pretty sure SS has no logo; Tyler to confirm" → SS stays no-logo.
+    // Tyler confirmed 8/12: SS takes the logo/centre feature too.
     const ss = partById(catalog, 'willstudio-side-shepherds-hook-pole-top-brackets')
-    expect(codeAllowedOnPart(ss, 'CF1')).toBe(false)
+    expect(codeAllowedOnPart(ss, 'CF1')).toBe(true)
     expect(codeAllowedOnPart(partById(catalog, 'upsweep'), 'CF1')).toBe(false)
     expect(codeAllowedOnPart(undefined, 'CF1')).toBe(false)
     // The guard is scoped to the family: unrelated codes stay unaffected.
@@ -762,26 +768,29 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     expect(codeAllowedOnPart(partById(catalog, 'drx-post-top'), 'WHP3NP')).toBe(true)
   })
 
-  it('a catalog edit that offers CF on another arm is rejected by repairConfig', () => {
+  it('a catalog edit that offers CF on a non-hook arm is rejected by repairConfig', () => {
     // Simulates scripts/merge-ordering.mjs fanning the arms sheet's Options
     // column across all 10 arm families — the exact way this could regress.
+    // (SS legitimately carries CF since 8/12, so the crossarm plays the
+    // tampered part now.)
     const sh1Column = partById(catalog, 'sh1-shepherds-hook')!.options![0]
     const tampered: Catalog = {
       ...catalog,
       parts: catalog.parts.map((p) =>
-        p.id === 'willstudio-side-shepherds-hook-pole-top-brackets'
-          ? { ...p, options: [sh1Column] }
-          : p,
+        p.id === 'willstudio-fr2-decorative-crossarm' ? { ...p, options: [sh1Column] } : p,
       ),
     }
     const repaired = repairConfig(
       tampered,
       config({
-        arm: 'willstudio-side-shepherds-hook-pole-top-brackets',
+        // A post-top fixture the crossarm can actually carry, so the arm
+        // itself survives repair and only the CF selection is judged.
+        fixture: 'drx-post-top',
+        arm: 'willstudio-fr2-decorative-crossarm',
         specOptions: { arm: { 'center-feature': ['CF1'] } },
       }),
     )
-    expect(repaired.arm).toBe('willstudio-side-shepherds-hook-pole-top-brackets')
+    expect(repaired.arm).toBe('willstudio-fr2-decorative-crossarm')
     expect(repaired.specOptions?.arm).toBeUndefined()
   })
 })
@@ -1078,9 +1087,11 @@ describe('SH1 shepherd’s hook is single-arm only (Phase 0.10.5)', () => {
 describe('official arm configuration list (Phase 0.10.5)', () => {
   const CASES: [string, number[]][] = [
     ['sh1-shepherds-hook', [1]],
-    ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2, 3, 4]],
+    // Tyler 8/12: SS/AR brackets sell as Single + Twin in the configurator
+    // (SS3/SS4 + AR3/AR4 modelCodes stay in the catalog for SKU resolution).
+    ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2]],
     ['willstudio-supported-decorative-arms', [1, 2]],
-    ['willstudio-suspension-arm-pole-top-brackets', [1, 2, 3, 4]],
+    ['willstudio-suspension-arm-pole-top-brackets', [1, 2]],
     ['upsweep', [1, 2]],
     ['willstudio-cr2-decorative-crossarm', [1]],
     ['willstudio-fr2-decorative-crossarm', [1]],

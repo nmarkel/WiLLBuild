@@ -289,13 +289,15 @@ export function exclusiveFamily(code: string): string | undefined {
  * arm's official ordering model code (`modelCodes[1]`) rather than its catalog
  * id — the arms sheet keys its Options column by model code too.
  *
- * Per the 0.11 spec: "Nick pretty sure SS has no logo; Tyler to confirm — treat
- * SS as no-logo until then." Today only `sh1-shepherds-hook` carries the column,
- * so this holds by data; the guard exists so a later catalog edit (or a parser
- * re-run that fans the arms sheet's Options column across all 10 arm families)
- * cannot silently start offering a logo feature on a crossarm.
+ * Tyler confirmed 8/12: the SS side-shepherds-hook brackets DO take the
+ * centre feature (the 0.11 "treat SS as no-logo until Tyler confirms" interim
+ * is settled the other way). The guard is keyed by the family's single-arm
+ * model code, so SS2 (twin) carries it too — matching the sheet, where CF is
+ * a family option, not a per-count one. It still exists so a parser re-run
+ * fanning the arms sheet's Options column across all 10 arm families cannot
+ * silently start offering a logo feature on a crossarm.
  */
-const CENTER_FEATURE_MODEL_CODES = new Set(['SH1'])
+const CENTER_FEATURE_MODEL_CODES = new Set(['SH1', 'SS1'])
 
 /**
  * Whether a part may offer a given option/accessory code at all. This is the
@@ -479,6 +481,26 @@ export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[]
 }
 
 /**
+ * Phase 0.12_TO (Tyler 8/12): the orientations that produce DISTINCT layouts
+ * for an arm arrangement. Evenly spaced arrangements are rotationally
+ * symmetric — a twin (2 @ 180°) repeats every 180°, so 180/270 duplicate
+ * 0/90; a quad (4 @ 90°) repeats every 90°, so only 0 is distinct. The
+ * official triple is 3 @ 90° (NOT evenly spaced), so it keeps all four.
+ */
+export function armOrientationOptions(count: number): number[] {
+  if (count === 2) return [0, 90]
+  if (count === 4) return [0]
+  return [...ARM_ORIENTATIONS]
+}
+
+/** Fold an orientation onto its arrangement's distinct set (270° twin ≡ 90°). */
+export function foldArmOrientation(deg: number, count: number): number {
+  if (count === 2) return deg % 180
+  if (count === 4) return 0
+  return deg
+}
+
+/**
  * Walk slots fixture-first and replace any selection that is no longer
  * compatible by the first compatible option, so the assembly is never broken.
  */
@@ -609,6 +631,8 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   // else (tampered URL) resets to 0, and 0 stays unset to keep URLs clean.
   if (next.armOrientation !== undefined) {
     next.armOrientation = ARM_ORIENTATIONS.includes(next.armOrientation) ? next.armOrientation : 0
+    // Fold onto the arrangement's distinct set (a twin at 270° IS 90°).
+    next.armOrientation = foldArmOrientation(next.armOrientation, next.armCount ?? 1)
     if (next.armOrientation === 0) next.armOrientation = undefined
   }
   // Phase 0.10.5: accessory placements exist only while their code is selected
