@@ -22,7 +22,18 @@ import { accentFinishFor } from './compat'
  * (read by both this suite's sibling contract test and the Python mirror).
  */
 
-const catalog = catalogJson as unknown as Catalog
+// TEX is editorially held as of 8/12 (Tyler narrowed the cut to GVX for the
+// Casey pilot), and a held part deliberately resolves NO part number. These
+// tests pin the RESOLVER's TEX logic (two finish segments, accent default) so
+// it is ready the day the hold lifts — so the fixture strips the hold. The
+// held behavior itself is pinned in availability.test.ts and the shared
+// contract fixture.
+const catalog = (() => {
+  const c = structuredClone(catalogJson) as unknown as Catalog
+  const tex = c.parts.find((p) => p.id === 'tex-post-top')
+  if (tex) delete (tex as { comingSoon?: boolean }).comingSoon
+  return c
+})()
 
 function texConfig(overrides: Partial<PoleConfig> = {}): PoleConfig {
   return {

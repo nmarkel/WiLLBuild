@@ -212,8 +212,20 @@ export const PLACEMENT_MARKER = 'Specify Pole Height & Orientation'
  * declare one (generic 2 ft floor applies).
  */
 export function labelMinFt(label: string): number | undefined {
-  const m = label.match(/Minimum\s+(\d+)\s*[”"]/)
+  const m = label.match(/Minimum\s+(\d+)\s*[”"]/i)
   return m ? Number(m[1]) / 12 : undefined
+}
+
+/** A value's full machine-readable text: label + note (constraints like the
+    festoon's Minimum 37” now live in the plain-English caption). */
+export function valueText(v: { label: string; note?: string | null }): string {
+  return v.note ? `${v.label} ${v.note}` : v.label
+}
+
+/** Whether an accessory value takes a shaft placement — the explicit flag,
+    with the legacy label-marker as back-compat for untreated sheets. */
+export function isPlaceable(v: { label: string; placeable?: boolean }): boolean {
+  return v.placeable === true || v.label.includes(PLACEMENT_MARKER)
 }
 
 /**
@@ -228,12 +240,14 @@ export function accessorySideOptions(label: string): number[] | undefined {
   return undefined
 }
 
-/** The label of a selected pole accessory value, for placement rules. */
+/** The full text of a selected pole accessory value (label + caption), for
+    placement rules — constraints like the festoon minimum live in the caption
+    since the plain-English pass. */
 export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: string): string {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue
     const value = opt.values.find((v) => v.code === code)
-    if (value) return value.label
+    if (value) return valueText(value)
   }
   return ''
 }
@@ -253,7 +267,7 @@ export function placeableAccessoryCodes(catalog: Catalog, config: PoleConfig): s
     if (opt.group !== 'options-accessories') continue
     for (const code of specCodes(chosen[opt.key])) {
       const value = opt.values.find((v) => v.code === code)
-      if (value?.label.includes(PLACEMENT_MARKER)) codes.push(code)
+      if (value && isPlaceable(value)) codes.push(code)
     }
   }
   return codes
@@ -289,13 +303,15 @@ export function exclusiveFamily(code: string): string | undefined {
  * arm's official ordering model code (`modelCodes[1]`) rather than its catalog
  * id — the arms sheet keys its Options column by model code too.
  *
- * Per the 0.11 spec: "Nick pretty sure SS has no logo; Tyler to confirm — treat
- * SS as no-logo until then." Today only `sh1-shepherds-hook` carries the column,
- * so this holds by data; the guard exists so a later catalog edit (or a parser
- * re-run that fans the arms sheet's Options column across all 10 arm families)
- * cannot silently start offering a logo feature on a crossarm.
+ * Tyler confirmed 8/12: the SS side-shepherds-hook brackets DO take the
+ * centre feature (the 0.11 "treat SS as no-logo until Tyler confirms" interim
+ * is settled the other way). The guard is keyed by the family's single-arm
+ * model code, so SS2 (twin) carries it too — matching the sheet, where CF is
+ * a family option, not a per-count one. It still exists so a parser re-run
+ * fanning the arms sheet's Options column across all 10 arm families cannot
+ * silently start offering a logo feature on a crossarm.
  */
-const CENTER_FEATURE_MODEL_CODES = new Set(['SH1'])
+const CENTER_FEATURE_MODEL_CODES = new Set(['SH1', 'SS1'])
 
 /**
  * Whether a part may offer a given option/accessory code at all. This is the
@@ -308,11 +324,12 @@ export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): 
 }
 
 /**
- * Order codes pre-selected whenever a part offering them is chosen (the 6'
- * cord is the standard build). The customer can still uncheck them; they only
- * reseed when the part itself changes.
+ * Order codes pre-selected whenever a part offering them is chosen. Composes
+ * with the blank slate: the builder still OPENS empty — these seed at the
+ * moment the customer picks a part that offers them, and stay uncheckable.
+ * WHPXNP (Tyler 8/12): the generic cord line is the standard build.
  */
-const DEFAULT_OPTION_CODES = ['WHP7NP']
+const DEFAULT_OPTION_CODES: string[] = ['WHPXNP']
 
 /**
  * The default multi-select choices for a freshly chosen part: each default
@@ -320,10 +337,20 @@ const DEFAULT_OPTION_CODES = ['WHP7NP']
  */
 export function defaultSpecOptions(
   part: CatalogPart | undefined,
-): Record<string, string[]> | undefined {
+): Record<string, string | string[]> | undefined {
   if (!part?.options) return undefined
-  const seeded: Record<string, string[]> = {}
+  const seeded: Record<string, string | string[]> = {}
   for (const opt of part.options) {
+    // Ordering columns: the part's own curated defaults (catalog
+    // `specDefaults`, e.g. GVX's 15,200 lm / 5000K / 120-277V / Type V
+    // Medium — Tyler 8/12) seed the column so the derived part number is
+    // complete out of the gate. Only codes the sheet actually offers seed.
+    if (opt.group === 'ordering') {
+      // Single-choice columns store the bare code (setSpecOption's own shape).
+      const want = part.specDefaults?.[opt.key]
+      if (want && opt.values.some((v) => v.code === want)) seeded[opt.key] = want
+      continue
+    }
     if (opt.group !== 'options-accessories') continue
     const codes = opt.values.filter((v) => DEFAULT_OPTION_CODES.includes(v.code)).map((v) => v.code)
     if (codes.length > 0) seeded[opt.key] = codes
@@ -393,12 +420,21 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
   switch (slot) {
     case 'fixture':
       return options
-    case 'arm':
-      return options.filter((arm) => canHost(arm, partById(catalog, config.fixture)))
-    case 'pole':
-      return options.filter((pole) => canHost(pole, partById(catalog, config.arm)))
-    case 'baseCover':
-      return options.filter((cover) => canHost(partById(catalog, config.pole), cover))
+    // Phase 0.12_TO (blank slate): an unchosen upstream slot ('') constrains
+    // nothing — every section stays open with its full list until the
+    // customer's own picks start narrowing it.
+    case 'arm': {
+      const fixture = partById(catalog, config.fixture)
+      return fixture ? options.filter((arm) => canHost(arm, fixture)) : options
+    }
+    case 'pole': {
+      const arm = partById(catalog, config.arm)
+      return arm ? options.filter((pole) => canHost(pole, arm)) : options
+    }
+    case 'baseCover': {
+      const pole = partById(catalog, config.pole)
+      return pole ? options.filter((cover) => canHost(pole, cover)) : options
+    }
   }
 }
 
@@ -459,42 +495,54 @@ export function allowedArmCounts(catalog: Catalog, config: PoleConfig): number[]
 }
 
 /**
+ * Phase 0.12_TO (Tyler 8/12): the orientations that produce DISTINCT layouts
+ * for an arm arrangement. Evenly spaced arrangements are rotationally
+ * symmetric — a twin (2 @ 180°) repeats every 180°, so 180/270 duplicate
+ * 0/90; a quad (4 @ 90°) repeats every 90°, so only 0 is distinct. The
+ * official triple is 3 @ 90° (NOT evenly spaced), so it keeps all four.
+ */
+export function armOrientationOptions(count: number): number[] {
+  if (count === 2) return [0, 90]
+  if (count === 4) return [0]
+  return [...ARM_ORIENTATIONS]
+}
+
+/** Fold an orientation onto its arrangement's distinct set (270° twin ≡ 90°). */
+export function foldArmOrientation(deg: number, count: number): number {
+  if (count === 2) return deg % 180
+  if (count === 4) return 0
+  return deg
+}
+
+/**
  * Walk slots fixture-first and replace any selection that is no longer
  * compatible by the first compatible option, so the assembly is never broken.
  */
 export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   const next = { ...config }
-  // Phase 0.12 (D): repair never CHOOSES a Coming Soon part, but it does not
-  // evict one that is already selected.
-  //
-  // The distinction is the whole point. Picking a replacement is our choice, so
-  // it must land on something configurable — otherwise a fresh visitor starts
-  // the builder on a disabled product. But a config that already names a part
-  // is the CUSTOMER's, and silently swapping their DRX for a GVX because DRX
-  // left the cut rewrites a saved design without telling them. Held parts are
-  // inert instead: badged, no part number, no downloads — visible, not
-  // configurable, exactly as specified. `defaultConfig` starts from an empty
-  // slot, so it always goes through the choosing path.
-  //
-  // Coming Soon parts also stay in `compatibleParts`, so the rail still lists
-  // them greyed.
-  const chooseFrom = (parts: CatalogPart[]) => {
-    const configurable = parts.filter((p) => !isComingSoon(p))
-    // Never strand a slot: if every option is held, keep the full list rather
-    // than blanking the selection.
-    return configurable.length > 0 ? configurable : parts
-  }
+  // Phase 0.12 (D)'s rule — repair never CHOOSES a Coming Soon part but never
+  // evicts one already selected — is now subsumed by the blank-slate rule
+  // below: repair never chooses ANY part. A held part a config already names
+  // stays (the customer's saved design is not rewritten); an invalid choice
+  // falls back to '' rather than to a silently-picked replacement.
   for (const slot of SLOT_ORDER) {
+    // Phase 0.12_TO (Tyler 8/12, blank slate): '' is a deliberate "not chosen
+    // yet" — the builder opens with every slot empty and the customer builds
+    // up. Repair FIXES invalid choices; it never MAKES choices. (Standalone
+    // products already relied on '' being a legal value.) An invalid non-empty
+    // choice repairs to '' too — falling back to "unchosen" is honest where
+    // auto-picking a replacement part was silent invention.
+    if (!next[slot]) continue
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
       if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
-        next.fixture = chooseFrom(partsForSlot(catalog, 'fixture', next.brand))[0]?.id ?? ''
+        next.fixture = ''
       }
       continue
     }
     const options = compatibleParts(catalog, next, slot)
     if (!options.some((p) => p.id === next[slot])) {
-      next[slot] = chooseFrom(options)[0]?.id ?? ''
+      next[slot] = ''
     }
   }
   if (!catalog.finishes.some((f) => f.id === next.finish)) {
@@ -597,6 +645,8 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
   // else (tampered URL) resets to 0, and 0 stays unset to keep URLs clean.
   if (next.armOrientation !== undefined) {
     next.armOrientation = ARM_ORIENTATIONS.includes(next.armOrientation) ? next.armOrientation : 0
+    // Fold onto the arrangement's distinct set (a twin at 270° IS 90°).
+    next.armOrientation = foldArmOrientation(next.armOrientation, next.armCount ?? 1)
     if (next.armOrientation === 0) next.armOrientation = undefined
   }
   // Phase 0.10.5: accessory placements exist only while their code is selected
@@ -621,7 +671,6 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       // inch-granular so such minimums are representable exactly.
       const { minFt, maxFt } = accessoryHeightRange(catalog, poleFt, label, size)
       const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
-      const orientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
       // Sides exist only where the accessory supports them, clamped to its set.
       const sideOptions = accessorySideOptions(label)
       const sides =
@@ -630,6 +679,11 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
             ? p.sides
             : 1
           : undefined
+      // Tyler 8/12: fold the orientation onto the arrangement's distinct set —
+      // an opposite pair repeats every 180° (0/90 only); four sides repeat
+      // every 90° (orientation moot), same rule as the radial arm twin.
+      const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
+      const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
       cleaned[code] = {
         heightFt,
         orientation,
@@ -694,16 +748,30 @@ export function configStatus(catalog: Catalog, config: PoleConfig): 'Standard' |
   return isStandard ? 'Standard' : 'Configurable'
 }
 
+/**
+ * Fill every empty slot with the first CONFIGURABLE compatible part, walking
+ * fixture-first. This is the pre-8/12 repair behavior preserved as an explicit
+ * act: repair never makes choices any more, but tests (and any future
+ * "build one for me" affordance) still need a one-call complete assembly.
+ */
+export function autofillConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
+  const next = { ...config }
+  for (const slot of SLOT_ORDER) {
+    if (next[slot]) continue
+    const options = compatibleParts(catalog, next, slot).filter((p) => !isComingSoon(p))
+    next[slot] = options[0]?.id ?? ''
+  }
+  return repairConfig(catalog, next)
+}
+
 export function defaultConfig(catalog: Catalog, brand: ProductLine = 'WiLLstudio'): PoleConfig {
-  // Phase 0.12 (D): the fixture is seeded here, BEFORE repairConfig runs, so it
-  // has to skip Coming Soon parts itself — repair only filters when it chooses a
-  // replacement, and a seeded value is not a replacement. Without this the
-  // builder would open on the first catalog fixture (drx-post-top), which left
-  // the cut on 8/11.
-  const fixtures = partsForSlot(catalog, 'fixture', brand)
-  const configurable = fixtures.filter((p) => !isComingSoon(p))
-  const fixture = (configurable.length > 0 ? configurable : fixtures)[0]?.id ?? ''
-  const seeded = defaultSpecOptions(partById(catalog, fixture))
+  // Phase 0.12_TO (Tyler 8/12): the builder opens as a BLANK SLATE — no part
+  // pre-selected in any slot, no spec selections seeded. Every section sits
+  // open and unselected; the customer's first act is choosing, not undoing.
+  // (This retired 0.12 (D)'s fixture seeding, which existed only to keep the
+  // seed off Coming Soon parts — nothing is seeded now.)
+  const fixture = ''
+  const seeded = undefined
   return repairConfig(catalog, {
     configId: crypto.randomUUID(),
     brand,

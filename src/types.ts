@@ -69,6 +69,28 @@ export interface CatalogPart {
    */
   comingSoon?: boolean
   /**
+   * Phase 0.12_TO (Tyler 8/12): curated default codes for this part's
+   * ORDERING columns, keyed by column key — seeds `config.specOptions` when
+   * the part is chosen so the derived part number is complete out of the
+   * gate (GVX: 15,200 lm / 5000K / 120-277V / 90° Type V Medium). Hand-set
+   * like `comingSoon`; a code absent from the sheet's column never seeds.
+   */
+  specDefaults?: Record<string, string>
+  /** Pole OD in inches (WiLLstudio RSAA = 4). Drives the derived base-cover
+      Pole Fit code — a function of the pole, never a customer choice. */
+  diameterIn?: number
+  /**
+   * Phase 0.12_TO (Tyler 8/12): this part may sell from PLACEHOLDER art — an
+   * explicit, per-part exemption from the geometry-gap Coming Soon rule.
+   *
+   * The 8/11 rule (also Tyler's) said a placeholder must not sit next to real
+   * products as an equal; this flag is him narrowing that rule for named
+   * parts he wants orderable now (SD/HS/PM1 pendant brackets). Hand-set like
+   * `comingSoon`, and self-cleaning in effect: once the part's real CAD lands,
+   * `realCad` flips true and this flag simply stops mattering.
+   */
+  placeholderApproved?: boolean
+  /**
    * Phase 0.12 (D): a configuration concept rather than a manufactured product
    * — today the `direct-mount` tenon adapter, which is how you say "no arm".
    *
@@ -166,6 +188,14 @@ export interface SpecOptionValue {
   /** Catalog finish id this value maps to, when buildable (else null). */
   mapsTo: string | null
   note: string | null
+  /**
+   * Phase 0.12_TO (Tyler 8/12): this accessory takes a shaft placement
+   * (height/orientation). Replaces the sheets' "(Specify Pole Height &
+   * Orientation)" label boilerplate, which plain-English copy dropped —
+   * label matching on PLACEMENT_MARKER remains as back-compat for parts
+   * whose sheets haven't had the copy treatment.
+   */
+  placeable?: boolean
 }
 
 /** One column of the ordering matrix = one configurator choice. */

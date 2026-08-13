@@ -193,7 +193,16 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         base = model_codes.get(str(cfg.armCount or 1))
         if base is None:
             return None
-        return _with_add_ons(base, part, cfg, slot)
+        # Phase 0.12_TO (Tyler 8/12): the arm's finish colour joins its number
+        # (SS2-BK-CF2, finish before the centre-feature codes), from the
+        # palette itself — arms have no sheet columns.
+        finish = _find_finish(catalog, finish_for(cfg, slot))
+        arm_finish = (finish or {}).get("code")
+        if arm_finish:
+            base = f"{base}-{arm_finish}"
+        # Tyler 8/12: arms lead with the WP family code like every other
+        # WiLLstudio number — WP-SS2-BK-CF2.
+        return _with_add_ons(f"WP-{base}", part, cfg, slot)
 
     options = part.get("options")
     if not options:
@@ -211,6 +220,10 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         key = opt.get("key", "")
         values = opt.get("values") or []
         selected = spec_codes(chosen.get(key))
+        if key == "pole-fit":
+            # Phase 0.12_TO (Tyler 8/12): Pole Fit derives from the chosen
+            # pole's diameter — appended after the finish, at the end.
+            continue
         if selected:
             segments.append(selected[0])
         elif key == ACCENT_FINISH_KEY:
@@ -244,6 +257,25 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         key=lambda o: o.get("orderPosition", 0),
     ):
         segments.extend(spec_codes(chosen.get(opt.get("key", ""))))
+
+    # Derived Pole Fit rides at the very end (after finish + add-ons).
+    fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)
+    pole = _find_part(catalog, getattr(cfg, "pole", ""))
+    diameter = (pole or {}).get("diameterIn")
+    if fit_column and diameter:
+        want = f"{_js_number(diameter)}R"
+        fit = next(
+            (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
+            None,
+        )
+        if fit:
+            segments.append(fit)
+
+    # Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
+    # pole with nothing chosen ends after its colour code.  Interior blanks
+    # stay: they keep the sheet's column positions readable.
+    while segments and segments[-1] == UNSPECIFIED:
+        segments.pop()
 
     return "-".join(segments)
 

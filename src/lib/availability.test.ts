@@ -78,9 +78,25 @@ const LANDED_SINCE_AUDIT = ['willstudio-fr2-decorative-crossarm']
  * these do NOT re-enable themselves when more geometry lands. Someone has to
  * decide they are back in the cut.
  */
-const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'willstudio-dwx-flood-spot']
+// tex-post-top joined the holds 8/12 (Tyler): fixture cut narrows to GVX
+// only for the Casey pilot. Held ≠ deleted — TEX re-enables by clearing the flag.
+const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'tex-post-top', 'willstudio-dwx-flood-spot']
 
-const SECTION_D_BADGED = SECTION_D_AUDITED.filter((id) => !LANDED_SINCE_AUDIT.includes(id))
+/**
+ * Tyler 8/12: parts approved to SELL from placeholder art — an explicit,
+ * per-part exemption from the geometry-gap rule (`placeholderApproved` in the
+ * catalog). Unlike LANDED_SINCE_AUDIT these still render placeholders; the
+ * exemption is a product call, and it stops mattering the day realCad lands.
+ */
+const PLACEHOLDER_APPROVED = [
+  'willstudio-supported-decorative-arms',
+  'willstudio-hsx-decorative-upsweep-arms',
+  'pm1-pendant-arm',
+]
+
+const SECTION_D_BADGED = SECTION_D_AUDITED.filter(
+  (id) => !LANDED_SINCE_AUDIT.includes(id) && !PLACEHOLDER_APPROVED.includes(id),
+)
 const ALL_BADGED = [...SECTION_D_BADGED, ...EDITORIAL_HOLDS]
 
 /** Section E: the 23 parts already rendering from real CAD. */
@@ -104,6 +120,24 @@ describe('the realCad flag tracks the render rig', () => {
     // The 8/11 audit measured 23 of 117; Workstream A1 added FR2.
     expect(catalog.parts.length).toBe(117)
     expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length)
+  })
+})
+
+describe('placeholder-approved parts (Tyler 8/12)', () => {
+  it('flags exactly the three approved arms, configurable despite realCad=false', () => {
+    for (const id of PLACEHOLDER_APPROVED) {
+      const part = byId(id)
+      expect(part?.placeholderApproved, id).toBe(true)
+      expect(part?.realCad, id).not.toBe(true)
+      expect(isComingSoon(part), id).toBe(false)
+    }
+    const flagged = catalog.parts.filter((p) => p.placeholderApproved).map((p) => p.id).sort()
+    expect(flagged).toEqual([...PLACEHOLDER_APPROVED].sort())
+  })
+
+  it('an editorial hold still outranks the approval', () => {
+    const part = byId(PLACEHOLDER_APPROVED[0])!
+    expect(isComingSoon({ ...part, comingSoon: true })).toBe(true)
   })
 })
 
@@ -148,10 +182,10 @@ describe('Coming Soon covers exactly the coverage matrix section-D list', () => 
     }
   })
 
-  it('leaves exactly GVX + TEX configurable in the fixture slot', () => {
+  it('leaves exactly GVX configurable in the fixture slot (8/12 cut)', () => {
     const fixtures = catalog.parts.filter((p) => p.slot === 'fixture' && p.line === 'WiLLstudio')
     const usable = fixtures.filter((p) => isConfigurable(p)).map((p) => p.id).sort()
-    expect(usable).toEqual(['gvx-pendant', 'tex-post-top'])
+    expect(usable).toEqual(['gvx-pendant'])
   })
 
   it('excludes direct-mount — a pseudo-part, not a future product', () => {

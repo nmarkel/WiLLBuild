@@ -70,10 +70,14 @@ export function buildPartNumber(
   if (slot === 'arm' && part.modelCodes) {
     const base = part.modelCodes[config.armCount ?? 1]
     if (base === undefined) return undefined
-    // Phase 0.11 (Workstream C): SH1 offers the CF1/CF2/CF3 centre-feature
-    // codes, so a model-code arm must still carry its chosen options —
-    // `SH1-CF2`, not a bare `SH1`. Arms with no options column are unchanged.
-    return [base, ...addOnCodes(part, config, slot)].join('-')
+    // Phase 0.12_TO (Tyler 8/12): the arm's finish colour is part of its
+    // ordering number — `SS2-BK-CF2`, finish before the centre-feature codes.
+    // Arms have no sheet columns, so the code comes from the palette itself.
+    const armFinish = catalog.finishes.find((f) => f.id === finishFor(config, slot))?.code
+    // Phase 0.11 (Workstream C): a model-code arm still carries its chosen
+    // options. Tyler 8/12: arms lead with the WP product-family code like
+    // every other WiLLstudio number — `WP-SS2-BK-CF2`.
+    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -85,6 +89,12 @@ export function buildPartNumber(
   const segments: string[] = []
   for (const opt of options.filter((o) => o.group === 'ordering').sort(byPosition)) {
     const selected = specCodes(chosen[opt.key])[0]
+    if (opt.key === 'pole-fit') {
+      // Phase 0.12_TO (Tyler 8/12): a base cover's Pole Fit is a function of
+      // the chosen pole's diameter, not a customer choice — derived below and
+      // appended AFTER the finish, at the end of the number.
+      continue
+    }
     if (selected) {
       segments.push(selected)
     } else if (opt.key === ACCENT_FINISH_KEY) {
@@ -119,6 +129,18 @@ export function buildPartNumber(
     }
   }
   segments.push(...addOnCodes(part, config, slot))
+  // Derived Pole Fit rides at the very end (after finish + add-ons): the
+  // pole's OD selects the matching fit code (4" round pole → 4R).
+  const fitColumn = options.find((o) => o.key === 'pole-fit')
+  const poleDiameter = partById(catalog, config.pole)?.diameterIn
+  const fit = fitColumn && poleDiameter
+    ? fitColumn.values.find((v) => v.code === `${poleDiameter}R`)?.code
+    : undefined
+  if (fit) segments.push(fit)
+  // Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
+  // pole with nothing chosen ends after its colour code, not with `-_`.
+  // Interior blanks stay: they keep the sheet's column positions readable.
+  while (segments.length > 0 && segments[segments.length - 1] === '_') segments.pop()
   return segments.join('-')
 }
 

@@ -296,17 +296,19 @@
 .builder-app .spec-choices {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
+/* Same inviting scale as the Options & Accessories boxes (Tyler 8/12). */
 .builder-app .spec-choice {
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   background: #fff;
-  border-radius: 10px;
-  padding: 9px 13px;
+  border-radius: 12px;
+  padding: 12px 16px;
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
@@ -515,6 +517,77 @@
 /* Bigger tap targets on the chip selectors too. */
 .builder-app .arm-count-chip {
   padding: 12px 10px;
+}
+
+/* ---- Options & Accessories: MacBook-Pro-style select boxes (Tyler 8/12) —
+   full-width bordered rows, plain-English title + caption, no order codes. ---- */
+
+.builder-app .spec-check {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.builder-app .spec-check:hover {
+  border-color: var(--text-dim);
+}
+
+.builder-app .spec-check.checked {
+  border-color: var(--will-yellow);
+  background: var(--yellow-soft);
+}
+
+.builder-app .spec-check {
+  position: relative;
+}
+
+/* The whole box is the control (Tyler 8/12): the input stays in the DOM for
+   keyboard + screen-reader semantics but is visually hidden — selection is
+   indicated by the box itself (yellow border + soft fill). */
+.builder-app .spec-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.builder-app .spec-check:has(input:focus-visible) {
+  outline: 2px solid var(--will-dark-yellow);
+  outline-offset: 2px;
+}
+
+.builder-app .spec-check-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.builder-app .spec-check-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.builder-app .spec-check-note {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* Spec column labels step up from fine print to real sub-headings. */
+.builder-app .spec-option-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 4px;
 }
 
 /* Orientation choosers read better 2-wide (0°/90° over 180°/270°). */
@@ -742,4 +815,65 @@
     max-width: none;
     max-height: 88vh;
   }
+}
+
+/* ---- Blank-slate viewer states (Phase 0.12_TO, Tyler 8/12) ---- */
+
+.composite-start {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px;
+}
+
+.composite-start h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--will-gray);
+}
+
+.composite-start p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--text-dim);
+  max-width: 40ch;
+}
+
+.builder-app .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Rail headline wordmark (light-bg asset; text fallback for other brands). */
+.builder-headline-logo {
+  display: block;
+  width: min(250px, 70%);
+  height: auto;
+  margin: 0 auto 8px;
+}
+
+/* ---- Collapsible categories (Tyler 8/12): one open at a time ---- */
+
+.builder-app .step-heading {
+  width: 100%;
+  border: none;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.builder-app .step-chevron {
+  margin-left: 10px;
+  color: var(--text-dim);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.builder-app .step:not(.open) .step-heading:hover .step-label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

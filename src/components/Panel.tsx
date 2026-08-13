@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, ARM_ORIENTATIONS, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, PLACEMENT_MARKER, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
-import type { FocusTarget } from '../lib/composite'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
 const SIDE_LABELS: Record<number, string> = {
@@ -67,7 +66,9 @@ function isFinishColumn(opt: SpecOption): boolean {
 // length is derived from the chosen pole's own heightFt (Phase 0.10.5/summary.ts
 // buildPartNumber) — a customer-facing "Length" dropdown independent of the
 // pole height they already picked would let the two disagree.
-const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length'])
+// pole-fit is derived from the chosen pole's diameter (Tyler 8/12) — the
+// base cover asks the customer nothing.
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
   // Single-value columns (fixed segments like AB anchor bolts / SB base type /
@@ -78,35 +79,11 @@ function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
 export function Panel({ catalog, config }: Props) {
   const select = useConfigurator((s) => s.select)
   const setArmCount = useConfigurator((s) => s.setArmCount)
-  const setFocus = useConfigurator((s) => s.setFocus)
-
-  /**
-   * Phase 0.11 (Workstream E): "zoom in on the part being configured."
-   *
-   * 0.11 hung this off the accordion's open step. Tyler's 0.10.5_TO rail has no
-   * accordion — every section is open in one scroll — so there is no "opening"
-   * left to hook, and the coupling is re-anchored to the act of PICKING a part:
-   * choose a fixture and the viewer frames the pole top, choose a base cover and
-   * it frames the pole bottom. Same intent, and it needs no extra affordance.
-   *
-   * The pole maps to 'assembly' because the pole IS most of the assembly, so
-   * framing it tightly just is the whole-product view.
-   *
-   * Slot → view, in the carousel's own vocabulary (see ASSEMBLY_VIEWS): the
-   * fixture and arm both live in the Pole Top framing, which is why picking
-   * either lands on the same view rather than a per-slot focus of its own.
-   */
-  const focusForSlot: Record<Slot, FocusTarget> = {
-    fixture: 'poleTop',
-    arm: 'poleTop',
-    pole: 'assembly',
-    baseCover: 'poleBottom',
-  }
-
-  const selectAndFrame = (slot: Slot, id: string) => {
-    select(slot, id)
-    setFocus(focusForSlot[slot])
-  }
+  // Phase 0.12_TO (Tyler, 8/12): the categories collapse — ONE open at a
+  // time, the one being worked on. Shared store state so viewer callouts can
+  // open their section. (Picking a part still never moves the camera.)
+  const openStep = useConfigurator((s) => s.openStep)
+  const setOpenStep = useConfigurator((s) => s.setOpenStep)
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
   const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
@@ -120,9 +97,15 @@ export function Panel({ catalog, config }: Props) {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
 
+        const open = openStep === step.key
         return (
-          <section key={step.key} id={`builder-step-${step.key}`} className="step">
-            <div className="step-heading">
+          <section key={step.key} id={`builder-step-${step.key}`} className={`step${open ? ' open' : ''}`}>
+            <button
+              type="button"
+              className="step-heading"
+              aria-expanded={open}
+              onClick={() => setOpenStep(open ? null : step.key)}
+            >
               <span className="step-num">{i + 1}</span>
               <span className="step-label">{step.label}</span>
               <span className="step-selected">
@@ -134,14 +117,15 @@ export function Panel({ catalog, config }: Props) {
                 )}
                 {part ? displayPartName(part.name) : '—'}
               </span>
-            </div>
+              <span className="step-chevron" aria-hidden="true">{open ? '▾' : '▸'}</span>
+            </button>
+            {open && (
             <div className="step-body">
               <p className="step-tagline">{step.tagline}</p>
-              {/* Picking a part also frames it in the viewer — see selectAndFrame. */}
               <PartChoice
                 parts={compatibleParts(catalog, config, step.key)}
                 selectedId={config[step.key]}
-                onSelect={(id) => selectAndFrame(step.key, id)}
+                onSelect={(id) => select(step.key, id)}
               />
               {/* Phase 0.8 (A1/A2): radial arm-count selector — only shown when
                   the chosen pole + arm actually support multiples (catalog rule). */}
@@ -157,12 +141,14 @@ export function Panel({ catalog, config }: Props) {
                   banner-kit accessory (BA24/BA30) — those configure banners
                   through Options & accessories placements instead. */}
               {step.key === 'pole' &&
-                !part?.options?.some(
+                part &&
+                !part.options?.some(
                   (o) =>
                     o.group === 'options-accessories' &&
                     o.values.some((v) => v.label.includes('Banner Arm Kit')),
                 ) && <BannerPicker catalog={catalog} config={config} />}
             </div>
+            )}
           </section>
         )
       })}
@@ -439,7 +425,7 @@ function StepSpecOptions({
                 {showLabel && <p className="spec-option-group-label">{label}</p>}
                 {values.map((v) => {
                   const checked = specCodes(chosen[opt.key]).includes(v.code)
-                  const placeable = slot === 'pole' && v.label.includes(PLACEMENT_MARKER)
+                  const placeable = slot === 'pole' && isPlaceable(v)
                   const family = exclusiveFamily(v.code)
                   return (
                     <div key={v.code}>
@@ -469,8 +455,12 @@ function StepSpecOptions({
                             onChange={() => toggleSpecOption(slot, opt.key, v.code)}
                           />
                         )}
+                        {/* Phase 0.12_TO (Tyler): plain English only — the
+                            order code drives the part number but is not shown
+                            on the row. The sheet note becomes the caption. */}
                         <span className="spec-check-text">
-                          <span className="spec-check-code">{v.code}</span> {v.label}
+                          <span className="spec-check-name">{v.label}</span>
+                          {v.note && <span className="spec-check-note">{v.note}</span>}
                         </span>
                       </label>
                       {checked && placeable && (
@@ -479,7 +469,7 @@ function StepSpecOptions({
                           code={v.code}
                           config={config}
                           poleFt={part.heightFt ?? 20}
-                          label={v.label}
+                          label={valueText(v)}
                         />
                       )}
                     </div>
@@ -697,19 +687,26 @@ function AccessoryPlacementBox({
           </div>
         </>
       )}
-      <p className="arm-count-label">Orientation</p>
-      <div className="arm-count-options orientation-options">
-        {ARM_ORIENTATIONS.map((deg) => (
-          <button
-            key={deg}
-            className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
-            onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
-            title={`${deg}° from the hand-hole reference`}
-          >
-            <span className="arm-count-name">{deg}°</span>
-          </button>
-        ))}
-      </div>
+      {/* Tyler 8/12: only orientations that produce distinct layouts for the
+          chosen sides — an opposite pair offers 0/90; four sides need no
+          orientation at all (every 90° rotation is the same picture). */}
+      {armOrientationOptions(placement.sides ?? 1).length > 1 && (
+        <>
+          <p className="arm-count-label">Orientation</p>
+          <div className="arm-count-options orientation-options">
+            {armOrientationOptions(placement.sides ?? 1).map((deg) => (
+              <button
+                key={deg}
+                className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
+                onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
+                title={`${deg}° from the hand-hole reference`}
+              >
+                <span className="arm-count-name">{deg}°</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -727,11 +724,15 @@ function ArmOrientationSelector({ catalog, config }: { catalog: Catalog; config:
   const reach = socket ? Math.hypot(socket.position[0], socket.position[2]) : 0
   if (reach < 0.05) return null
   const current = config.armOrientation ?? 0
+  // Only orientations that produce distinct layouts for this arrangement
+  // (Tyler 8/12: a twin offers 0/90 — 180/270 are the same picture).
+  const offered = armOrientationOptions(config.armCount ?? 1)
+  if (offered.length <= 1) return null
   return (
     <div className="arm-count arm-orientation">
       <p className="arm-count-label">Orientation</p>
       <div className="arm-count-options">
-        {ARM_ORIENTATIONS.map((deg) => (
+        {offered.map((deg) => (
           <button
             key={deg}
             className={`arm-count-chip ${current === deg ? 'selected' : ''}`}

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import type { Catalog, PoleConfig } from '../types'
-import { configStatus, partById } from '../lib/compat'
+import { compatibleParts, configStatus, partById } from '../lib/compat'
 import { armArrangementLabel, buildSummaryText, SUMMARY_ROWS } from '../lib/summary'
 import { displayPartName } from '../lib/display'
 import { useConfigurator } from '../store'
+import type { Slot } from '../types'
 
 const QUOTE_URL = 'https://willbrands.com/pages/request-a-quote'
 
@@ -32,6 +33,12 @@ export function BottomBar({ catalog, config, onOpenDownloads }: Props) {
   const scene = useConfigurator((s) => s.scene)
 
   const status = configStatus(catalog, config)
+  // Blank-slate builder: quoting or downloading a half-built pole ships a
+  // half-meaningful artifact — both wait until every slot the brand offers is
+  // chosen. Share stays live (sharing a work-in-progress is legitimate).
+  const incomplete = (['fixture', 'arm', 'pole', 'baseCover'] as Slot[]).some(
+    (slot) => !config[slot] && compatibleParts(catalog, config, slot).length > 0,
+  )
   // The quote body embeds the same link, so it needs the same live scene.
   const quoteHref = `${QUOTE_URL}?configuration=${encodeURIComponent(buildSummaryText(catalog, config, scene))}`
   const names = SUMMARY_ROWS.map((r) => {
@@ -60,15 +67,26 @@ export function BottomBar({ catalog, config, onOpenDownloads }: Props) {
         </span>
       </div>
       <div className="bottom-bar-actions">
-        <button className="btn secondary" onClick={onOpenDownloads}>
+        <button
+          className="btn secondary"
+          onClick={onOpenDownloads}
+          disabled={incomplete}
+          title={incomplete ? 'Finish your build to unlock downloads' : undefined}
+        >
           Downloads
         </button>
         <button className="btn secondary" onClick={copyLink}>
           {copied ? 'Link Copied ✓' : 'Share'}
         </button>
-        <a className="btn primary" href={quoteHref} target="_blank" rel="noreferrer">
-          Request a Quote
-        </a>
+        {incomplete ? (
+          <button className="btn primary" disabled title="Finish your build to request a quote">
+            Request a Quote
+          </button>
+        ) : (
+          <a className="btn primary" href={quoteHref} target="_blank" rel="noreferrer">
+            Request a Quote
+          </a>
+        )}
       </div>
     </div>
   )

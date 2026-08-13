@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, PoleConfig } from '../types'
-import { repairConfig } from './compat'
+import { autofillConfig, repairConfig } from './compat'
 import { resolveAssemblyLayout, SLOT_Z, type RenderManifest } from './composite'
 
 // Phase 0.8 (A5): the representative end-to-end proof, against the REAL catalog
@@ -39,7 +39,12 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
     [3, 3],
     [4, 4],
   ])('armCount=%i composites with 0 missing and %i arm layers', (count, expectedArms) => {
-    const config = repairConfig(catalog, { ...base, armCount: count })
+    // Catalog policy trims the AR brackets to Single/Twin (Tyler 8/12), but
+    // the COMPOSITOR math for 3/4-way clusters stays pinned here — the config
+    // is built directly, bypassing repair's policy clamp. Brand policy for
+    // counts is pinned in compat.test.ts; NAFCO/WiLLsport suites still
+    // exercise 3/4-way through repair.
+    const config = { ...base, armCount: count }
     expect(config.armCount).toBe(count) // catalog allows it (A2)
     const layout = resolveAssemblyLayout(catalog, manifest, config)
     expect(layout.missing).toEqual([])
@@ -78,7 +83,9 @@ describe('multi-arm GVX on AR suspension arm — real assets', () => {
 // placements in 0.10.5, so this proof runs on NAFCO (still Banner Arm box).
 describe('banner arm — real assets (legacy path, NAFCO)', () => {
   const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === 'NAFCO')
-  const nafcoBase: PoleConfig = repairConfig(catalog, {
+  // Blank-slate repair no longer fills empty slots — the complete NAFCO
+  // assembly this suite exercises is built explicitly.
+  const nafcoBase: PoleConfig = autofillConfig(catalog, {
     configId: 'banner-e2e',
     brand: 'NAFCO',
     pole: '',
@@ -148,7 +155,8 @@ describe('arm orientation — real assets', () => {
   })
 
   it('triple (3@90) at 180° wraps around cleanly', () => {
-    const cfg = repairConfig(catalog, { ...base, armCount: 3, armOrientation: 180 })
+    // Direct construction — see the policy note above.
+    const cfg = { ...base, armCount: 3, armOrientation: 180 }
     const layout = resolveAssemblyLayout(catalog, manifest, cfg)
     expect(layout.missing).toEqual([])
     expect(
@@ -176,17 +184,14 @@ describe('assembly view rotation — real assets', () => {
     // back shows its two arms at the SAME pair of azimuths as the front view,
     // swapped — that is what "180° apart" buys, and why 2 views suffice for
     // symmetric geometry.
-    // Phase 0.12 (D): HSX is Coming Soon, so repairConfig will not rest on it.
-    // This case is about render azimuths, not availability — pin the arm back.
-    const twin = {
-      ...repairConfig(catalog, {
-        ...base,
-        fixture: 'mvx-coach',
-        arm: 'willstudio-hsx-decorative-upsweep-arms',
-        armCount: 2,
-      }),
+    // 8/12: HSX is a pendant carrier now (Tyler's GVX bracket list) and
+    // placeholder-approved, so a GVX twin on it survives repair as-is.
+    const twin = repairConfig(catalog, {
+      ...base,
+      fixture: 'gvx-pendant',
       arm: 'willstudio-hsx-decorative-upsweep-arms',
-    }
+      armCount: 2,
+    })
     const front = resolveAssemblyLayout(catalog, manifest, twin, 0)
     const back = resolveAssemblyLayout(catalog, manifest, twin, 180)
     const armFiles = (l: typeof front) =>

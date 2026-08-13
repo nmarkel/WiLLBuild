@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible } from './compat'
+import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
+  autofillConfig,
+} from './compat'
 import { bannerGeometry } from './banner'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -30,13 +32,17 @@ describe('compatibleParts (fixture-first)', () => {
   })
 
   it('offers only pendant arms for the GVX pendant', () => {
+    // SD + HS joined the pendant carriers 8/12 (Tyler's GVX bracket list) —
+    // their placeholder-era sockets said post-top / arm-mount.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'gvx-pendant' }), 'arm'))
     expect(ids).toEqual(
       [
         'pa1-pendant-arm',
         'pm1-pendant-arm',
         'sh1-shepherds-hook',
+        'willstudio-hsx-decorative-upsweep-arms',
         'willstudio-side-shepherds-hook-pole-top-brackets',
+        'willstudio-supported-decorative-arms',
         'willstudio-suspension-arm-pole-top-brackets',
       ].sort(),
     )
@@ -50,14 +56,14 @@ describe('compatibleParts (fixture-first)', () => {
         'direct-mount',
         'willstudio-cr2-decorative-crossarm',
         'willstudio-fr2-decorative-crossarm',
-        'willstudio-supported-decorative-arms',
       ].sort(),
     )
   })
 
   it('offers only arm-mount carriers for the MVX coach', () => {
+    // HS became a pendant carrier 8/12; the classic upsweep stays MVX's own.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'mvx-coach' }), 'arm'))
-    expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
+    expect(ids).toEqual(['upsweep'])
   })
 
   it('offers the eight aluminum pole heights for any arm, and every base cover for any pole', () => {
@@ -88,14 +94,15 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'direct-mount',
     'willstudio-cr2-decorative-crossarm',
     'willstudio-fr2-decorative-crossarm',
-    'willstudio-supported-decorative-arms',
   ].sort()
 
   const PENDANT_ARMS = [
     'pa1-pendant-arm',
     'pm1-pendant-arm',
     'sh1-shepherds-hook',
+    'willstudio-hsx-decorative-upsweep-arms',
     'willstudio-side-shepherds-hook-pole-top-brackets',
+    'willstudio-supported-decorative-arms',
     'willstudio-suspension-arm-pole-top-brackets',
   ].sort()
 
@@ -126,9 +133,9 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     expect(ids).toEqual(PENDANT_ARMS)
   })
 
-  it('MVX coach accepts both upsweep arms', () => {
+  it('MVX coach keeps the classic upsweep (HS became a pendant carrier 8/12)', () => {
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'mvx-coach' }), 'arm'))
-    expect(ids).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'].sort())
+    expect(ids).toEqual(['upsweep'])
   })
 
   it('every promoted WiLLstudio pole hosts every WiLLstudio arm (tenon-3in top socket)', () => {
@@ -193,11 +200,12 @@ describe('P1 pole-system promotions (Workstream G)', () => {
 })
 
 describe('repairConfig', () => {
-  it('replaces an arm that cannot carry the new fixture', () => {
+  it('clears an arm that cannot carry the new fixture (repair never chooses)', () => {
+    // Pre-8/12 this auto-picked direct-mount. Blank-slate rule: an invalid
+    // choice falls back to UNCHOSEN — the customer picks the replacement.
     const broken = config({ fixture: 'drx-post-top', arm: 'sh1-shepherds-hook' })
     const repaired = repairConfig(catalog, broken)
-    expect(repaired.arm).toBe('direct-mount')
-    expect(repaired.pole).toBe('alum-pole-14')
+    expect(repaired.arm).toBe('')
   })
 
   it('keeps a valid config unchanged', () => {
@@ -205,10 +213,11 @@ describe('repairConfig', () => {
     expect(repairConfig(catalog, valid)).toEqual(valid)
   })
 
-  it('repairs unknown part ids from a tampered share URL', () => {
+  it('clears unknown part ids from a tampered share URL (never invents)', () => {
     const repaired = repairConfig(catalog, config({ fixture: 'nope', arm: 'nope', finish: 'nope' }))
-    expect(partById(catalog, repaired.fixture)?.slot).toBe('fixture')
-    expect(partById(catalog, repaired.arm)?.slot).toBe('arm')
+    expect(repaired.fixture).toBe('')
+    expect(repaired.arm).toBe('')
+    // Finish still snaps to a real one — '' is not a legal finish.
     expect(repaired.finish).toBe('matte-black')
   })
 })
@@ -231,10 +240,20 @@ describe('attachSocket', () => {
 })
 
 describe('defaultConfig', () => {
-  it('produces a fully valid config', () => {
+  it('opens as a blank slate — no part chosen, repair leaves it alone', () => {
     const cfg = defaultConfig(catalog)
     expect(repairConfig(catalog, cfg)).toEqual(cfg)
-    expect(cfg.pole && cfg.baseCover && cfg.arm && cfg.fixture && cfg.finish).toBeTruthy()
+    expect(cfg.fixture).toBe('')
+    expect(cfg.arm).toBe('')
+    expect(cfg.pole).toBe('')
+    expect(cfg.baseCover).toBe('')
+    expect(cfg.finish).toBeTruthy()
+  })
+
+  it('autofillConfig builds a complete, valid, configurable assembly on demand', () => {
+    const filled = autofillConfig(catalog, defaultConfig(catalog))
+    expect(filled.pole && filled.baseCover && filled.arm && filled.fixture).toBeTruthy()
+    expect(repairConfig(catalog, filled)).toEqual(filled)
   })
 })
 
@@ -409,7 +428,7 @@ describe('mount-type rules (H3b)', () => {
   it('coach fixtures only get arm-mount upsweep arms', () => {
     const cfg = { ...base, fixture: 'mvx-coach' }
     const arms = compatibleParts(catalog, cfg, 'arm').map((p) => p.id)
-    expect(arms).toEqual(['upsweep', 'willstudio-hsx-decorative-upsweep-arms'])
+    expect(arms).toEqual(['upsweep'])
   })
   it('pendants only get pendant arms', () => {
     const cfg = { ...base, fixture: 'gvx-pendant' }
@@ -419,9 +438,9 @@ describe('mount-type rules (H3b)', () => {
     expect(arms).toContain('sh1-shepherds-hook')
     expect(arms).toContain('willstudio-side-shepherds-hook-pole-top-brackets')
   })
-  it('repairConfig moves a post-top off an arm onto the direct mount', () => {
+  it('repairConfig clears an arm a post-top cannot mount (customer re-picks)', () => {
     const cfg = { ...base, fixture: 'drx-post-top', arm: 'upsweep' }
-    expect(repairConfig(catalog, cfg).arm).toBe('direct-mount')
+    expect(repairConfig(catalog, cfg).arm).toBe('')
   })
 })
 
@@ -439,10 +458,11 @@ describe('armAzimuths', () => {
 
 describe('allowedArmCounts', () => {
   it('intersects the pole and arm arrangement lists', () => {
-    // alum-pole-14 and the AR suspension arm are both annotated [1,2,3,4].
+    // alum-pole-14 is annotated [1,2,3,4]; the AR brackets trimmed to [1,2]
+    // (Tyler 8/12: Single + Twin only) — the intersection is the arm's set.
     expect(
       allowedArmCounts(catalog, config({ pole: 'alum-pole-14', arm: 'willstudio-suspension-arm-pole-top-brackets' })),
-    ).toEqual([1, 2, 3, 4])
+    ).toEqual([1, 2])
   })
 
   it('falls back to single-only for an arm with no arrangements (e.g. direct mount)', () => {
@@ -457,11 +477,15 @@ describe('allowedArmCounts', () => {
 })
 
 describe('repairConfig — arm count clamping', () => {
-  it('keeps a valid multi-arm count', () => {
-    // (AR suspension arm — SH1/PA1 became single-only per the official config list.)
+  it('keeps a valid multi-arm count and clamps one outside the cut', () => {
+    // Tyler 8/12: brackets offer Single + Twin only. Twin survives; a triple
+    // from an old share URL clamps back to single.
+    expect(
+      repairConfig(catalog, config({ arm: 'willstudio-suspension-arm-pole-top-brackets', armCount: 2 })).armCount,
+    ).toBe(2)
     expect(
       repairConfig(catalog, config({ arm: 'willstudio-suspension-arm-pole-top-brackets', armCount: 3 })).armCount,
-    ).toBe(3)
+    ).toBe(1)
   })
 
   it('resets an unsupported count to single', () => {
@@ -625,20 +649,22 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
   it('applies the 8 ft banner floor a placement UI once ignored', () => {
     // Pre-0.11 divergence: repairConfig floored banner kits at BANNER_MIN_FT
     // while Panel's slider floored them at 2 ft. Both now use one function.
-    expect(withKit('BA24', undefined, 3).accessoryPlacements?.BA24?.heightFt).toBe(8)
+    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.heightFt).toBe(8)
   })
 
   it('reserves the panel height under the pole top', () => {
     // 20 ft pole − 4 ft default panel − 1 ft clearance.
-    expect(withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt).toBe(15)
+    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(15)
     // 20 ft pole − 5 ft panel − 1 ft clearance.
-    expect(withKit('BA30', '30x60', 99).accessoryPlacements?.BA30?.heightFt).toBe(14)
+    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(14)
   })
 
   it('keeps a size the kit can carry and drops one it cannot', () => {
-    expect(withKit('BA30', '30x60').accessoryPlacements?.BA30?.size).toBe('30x60')
-    // BA24's 24 in arms can't fly a 30 in banner — falls back to the default.
-    expect(withKit('BA24', '30x60').accessoryPlacements?.BA24?.size).toBeUndefined()
+    // Tyler 8/12: the consolidated BAX kit carries every panel size — the arm
+    // length (24"/30") resolves at quote from the chosen banner. The per-kit
+    // width gate lives on only as a label-parsing rule (tested above) for
+    // sheets that still declare an arm length.
+    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.size).toBe('30x60')
   })
 
   it('never stores a panel size on a non-banner accessory', () => {
@@ -658,7 +684,7 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
   it('a banner reads the same height whichever path configured it', () => {
     // 20 ft pole either way: alum-pole-20 for the kit path, the NAFCO fallback
     // for the legacy path.
-    const kit = withKit('BA24', undefined, 99).accessoryPlacements?.BA24?.heightFt
+    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt
     const nafcoCfg = repairConfig(
       catalog,
       config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
@@ -679,26 +705,28 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
       .map((v) => v.code)
 
   it('are transcribed from the arms ordering matrix onto SH1', () => {
-    expect(cfValues('sh1-shepherds-hook')).toEqual(['CF1', 'CF2', 'CF3'])
+    // Display order (Tyler 8/12): Simple, Ornate, then Brand/Logo.
+    expect(cfValues('sh1-shepherds-hook')).toEqual(['CF1', 'CF3', 'CF2'])
     const column = partById(catalog, 'sh1-shepherds-hook')!.options!.find(
       (o) => o.key === 'center-feature',
     )!
     expect(column.group).toBe('options-accessories')
     expect(column.values.map((v) => v.label)).toEqual([
-      'Center Shepherds Hook Decorative Feature',
-      'Center Shepherds Hook Brand/Logo/City Round Feature',
-      'Center Shepherds Hook Brand/Logo Feature (variant)',
+      'Simple Decorative Center Feature',
+      'Ornate Decorative Center Feature',
+      'Brand / Logo / City Round Center Feature',
     ])
     // Bare `CF` = Custom is deliberately excluded (docs/ordering-matrix.json
     // armOptionsNote): a custom feature is a quote conversation, not a code.
     expect(column.values.some((v) => v.code === 'CF')).toBe(false)
   })
 
-  it('appear on no other part in the catalog', () => {
+  it('appear on exactly the hook family — SH1 and the SS brackets', () => {
+    // Tyler 8/12 settled the 0.11 open item: SS DOES take the centre feature.
     const carriers = catalog.parts
       .filter((p) => (p.options ?? []).some((o) => o.values.some((v) => /^CF[123]$/.test(v.code))))
       .map((p) => p.id)
-    expect(carriers).toEqual(['sh1-shepherds-hook'])
+    expect(carriers).toEqual(['sh1-shepherds-hook', 'willstudio-side-shepherds-hook-pole-top-brackets'])
   })
 
   it('are one exclusive family — and the bare CF on mvx-coach is not in it', () => {
@@ -736,11 +764,11 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     expect(repaired.specOptions?.fixture?.options).toEqual(['CF'])
   })
 
-  it('is offered on SH1 only — guarded, not merely absent elsewhere', () => {
+  it('is offered on the hook family only — guarded, not merely absent elsewhere', () => {
     expect(codeAllowedOnPart(partById(catalog, 'sh1-shepherds-hook'), 'CF1')).toBe(true)
-    // "Nick pretty sure SS has no logo; Tyler to confirm" → SS stays no-logo.
+    // Tyler confirmed 8/12: SS takes the logo/centre feature too.
     const ss = partById(catalog, 'willstudio-side-shepherds-hook-pole-top-brackets')
-    expect(codeAllowedOnPart(ss, 'CF1')).toBe(false)
+    expect(codeAllowedOnPart(ss, 'CF1')).toBe(true)
     expect(codeAllowedOnPart(partById(catalog, 'upsweep'), 'CF1')).toBe(false)
     expect(codeAllowedOnPart(undefined, 'CF1')).toBe(false)
     // The guard is scoped to the family: unrelated codes stay unaffected.
@@ -748,26 +776,29 @@ describe('centre-feature codes CF1/CF2/CF3 (Phase 0.11, Workstream C)', () => {
     expect(codeAllowedOnPart(partById(catalog, 'drx-post-top'), 'WHP3NP')).toBe(true)
   })
 
-  it('a catalog edit that offers CF on another arm is rejected by repairConfig', () => {
+  it('a catalog edit that offers CF on a non-hook arm is rejected by repairConfig', () => {
     // Simulates scripts/merge-ordering.mjs fanning the arms sheet's Options
     // column across all 10 arm families — the exact way this could regress.
+    // (SS legitimately carries CF since 8/12, so the crossarm plays the
+    // tampered part now.)
     const sh1Column = partById(catalog, 'sh1-shepherds-hook')!.options![0]
     const tampered: Catalog = {
       ...catalog,
       parts: catalog.parts.map((p) =>
-        p.id === 'willstudio-side-shepherds-hook-pole-top-brackets'
-          ? { ...p, options: [sh1Column] }
-          : p,
+        p.id === 'willstudio-fr2-decorative-crossarm' ? { ...p, options: [sh1Column] } : p,
       ),
     }
     const repaired = repairConfig(
       tampered,
       config({
-        arm: 'willstudio-side-shepherds-hook-pole-top-brackets',
+        // A post-top fixture the crossarm can actually carry, so the arm
+        // itself survives repair and only the CF selection is judged.
+        fixture: 'drx-post-top',
+        arm: 'willstudio-fr2-decorative-crossarm',
         specOptions: { arm: { 'center-feature': ['CF1'] } },
       }),
     )
-    expect(repaired.arm).toBe('willstudio-side-shepherds-hook-pole-top-brackets')
+    expect(repaired.arm).toBe('willstudio-fr2-decorative-crossarm')
     expect(repaired.specOptions?.arm).toBeUndefined()
   })
 })
@@ -986,13 +1017,26 @@ describe('voltage → options compatibility (Phase 0.10.5)', () => {
   })
 })
 
-describe('default spec options — WHP7NP cord (Phase 0.10.5)', () => {
-  it('defaultSpecOptions seeds the 6-ft cord where the sheet offers it', () => {
-    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHP7NP'] })
-    expect(defaultSpecOptions(partById(catalog, 'drx-post-top'))).toEqual({ options: ['WHP7NP'] })
-    // TEX offers no cords; arms have no sheet at all.
-    expect(defaultSpecOptions(partById(catalog, 'tex-post-top'))).toBeUndefined()
-    expect(defaultSpecOptions(partById(catalog, 'sh1-shepherds-hook'))).toBeUndefined()
+describe('default spec options — the generic cord (Phase 0.12_TO)', () => {
+  it('seeds the WHPXNP cord when the picked part offers it — and nothing else', () => {
+    // Composes with the blank slate: the builder opens empty; this seeds at
+    // part-PICK time (Tyler 8/12: "select Cord w/o Plug by default").
+    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHPXNP'] })
+    for (const id of ['drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
+      expect(defaultSpecOptions(partById(catalog, id)), id).toBeUndefined()
+    }
+  })
+
+  it('the mechanism still works when a part carries specDefaults', () => {
+    // The machinery stays (catalog `specDefaults` + DEFAULT_OPTION_CODES) for
+    // the day a default earns its way back; pin it with a synthetic part.
+    const gvx = partById(catalog, 'gvx-pendant')!
+    const seeded = defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })
+    expect(seeded).toEqual({ 'lumen-output': '115', options: ['WHPXNP'] })
+    // A code the sheet does not offer never seeds (the cord still does).
+    expect(
+      defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': 'NOT-A-CODE' } }),
+    ).toEqual({ options: ['WHPXNP'] })
   })
 
   it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {
@@ -1051,9 +1095,11 @@ describe('SH1 shepherd’s hook is single-arm only (Phase 0.10.5)', () => {
 describe('official arm configuration list (Phase 0.10.5)', () => {
   const CASES: [string, number[]][] = [
     ['sh1-shepherds-hook', [1]],
-    ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2, 3, 4]],
+    // Tyler 8/12: SS/AR brackets sell as Single + Twin in the configurator
+    // (SS3/SS4 + AR3/AR4 modelCodes stay in the catalog for SKU resolution).
+    ['willstudio-side-shepherds-hook-pole-top-brackets', [1, 2]],
     ['willstudio-supported-decorative-arms', [1, 2]],
-    ['willstudio-suspension-arm-pole-top-brackets', [1, 2, 3, 4]],
+    ['willstudio-suspension-arm-pole-top-brackets', [1, 2]],
     ['upsweep', [1, 2]],
     ['willstudio-cr2-decorative-crossarm', [1]],
     ['willstudio-fr2-decorative-crossarm', [1]],
@@ -1167,9 +1213,9 @@ describe('accessory placements (Phase 0.10.5)', () => {
   it('placeableAccessoryCodes lists selected marker-carrying codes only', () => {
     const cfg = repairConfig(catalog, withFstr())
     expect(placeableAccessoryCodes(catalog, cfg)).toEqual(['FSTR'])
-    // BA24/BA30 banner kits are placeable too (height + orientation panel).
-    const withBa = repairConfig(catalog, { ...withFstr(), specOptions: { pole: { accessories: ['BA24'] } } })
-    expect(placeableAccessoryCodes(catalog, withBa)).toEqual(['BA24'])
+    // The consolidated BAX banner kit is placeable too (height + orientation).
+    const withBa = repairConfig(catalog, { ...withFstr(), specOptions: { pole: { accessories: ['BAX'] } } })
+    expect(placeableAccessoryCodes(catalog, withBa)).toEqual(['BAX'])
   })
 
   it('repairConfig clamps placement height to the shaft and orientation to the compass set', () => {
@@ -1204,17 +1250,17 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
       fixture: 'drx-post-top',
       arm: 'direct-mount',
       pole: 'alum-pole-12',
-      specOptions: { pole: { options: ['FSTR'], accessories: ['BA24', 'FH'] } },
+      specOptions: { pole: { options: ['FSTR'], accessories: ['BAX', 'FH'] } },
     })
     const repaired = repairConfig(catalog, {
       ...base,
       accessoryPlacements: {
-        BA24: { heightFt: 10, orientation: 90, sides: 4 },
+        BAX: { heightFt: 10, orientation: 90, sides: 4 },
         FH: { heightFt: 8, orientation: 0, sides: 4 }, // FH allows 1|2 → clamps to 1
         FSTR: { heightFt: 6, orientation: 0, sides: 2 }, // FSTR has no sides → stripped
       },
     })
-    expect(repaired.accessoryPlacements?.BA24?.sides).toBe(4)
+    expect(repaired.accessoryPlacements?.BAX?.sides).toBe(4)
     expect(repaired.accessoryPlacements?.FH?.sides).toBe(1)
     expect(repaired.accessoryPlacements?.FSTR?.sides).toBeUndefined()
   })

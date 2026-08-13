@@ -52,6 +52,13 @@ interface ConfiguratorState {
    */
   focus: FocusTarget
   setFocus: (target: FocusTarget) => void
+  /**
+   * Phase 0.12_TO (Tyler 8/12): the one rail section open right now — the
+   * product categories collapse, one open at a time. Shared UI state (not
+   * Panel-local) so a viewer callout click can open its section too.
+   */
+  openStep: Slot | null
+  setOpenStep: (slot: Slot | null) => void
   /** Phase 0.10.5: ground compass at the pole base (0/90/180/270 reference). */
   showCompass: boolean
   toggleCompass: () => void
@@ -132,6 +139,8 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
   scene: DEFAULT_SCENE,
   view: { kind: 'builder' },
   brand: 'WiLLstudio',
+  openStep: 'fixture',
+  setOpenStep: (slot) => set({ openStep: slot }),
 
   loadCatalog: async () => {
     const res = await fetch(`${import.meta.env.BASE_URL}catalog.json`)
