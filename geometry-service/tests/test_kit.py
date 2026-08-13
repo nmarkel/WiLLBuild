@@ -55,6 +55,38 @@ def _spec_top_extent_m(spec: dict) -> float:
     raise AssertionError(f"unexpected spec kind {kind!r}")
 
 
+def _tube_apex_m(aph: dict) -> float:
+    """Topmost Y a swept-tube arm reaches, centreline plus the tube's own bulge.
+
+    The bulge is NOT a flat ``+radiusM``.  A cylinder of radius r about a unit
+    axis ``d`` extends above its centreline by ``r * sqrt(1 - d_y**2)`` — the
+    full radius where the tube runs horizontally, and NOTHING where it runs
+    straight up, because there the end cap is a horizontal disc through the
+    centreline point itself.
+
+    Both cases are live in the catalog, which is why the distinction matters:
+    SH1's hook ARCS over, so its highest point is the side of a near-horizontal
+    tube and the full radius applies; the HSX upsweep's last segment rises
+    VERTICALLY into its pendant socket, so the tube stops dead at that point.
+    A flat ``+radiusM`` over-predicted HSX by exactly one radius (30 mm) — 0.5 mm
+    past the 1% tolerance on an 8 ft pole, which is how it surfaced: as of the
+    0.12_TO merge, Tyler's SD/HS socket repoint made gvx-pendant + HSX a valid
+    combo for the first time, so this latent flaw had never been enumerated.
+    """
+    r = aph["radiusM"]
+    pts = aph["points"]
+    apex = max(pt[1] for pt in pts)  # centreline, before any bulge
+    for a, b in zip(pts, pts[1:]):
+        seg = [b[i] - a[i] for i in range(3)]
+        length = sum(c * c for c in seg) ** 0.5
+        if length == 0:
+            continue
+        dy = seg[1] / length
+        bulge = r * max(0.0, 1.0 - dy * dy) ** 0.5
+        apex = max(apex, a[1] + bulge, b[1] + bulge)
+    return apex
+
+
 def _expected_height_m(catalog: dict, cfg) -> float:
     """Overall assembly height (meters) derived from socket + placeholder data."""
     pole = part(catalog, cfg.pole)
@@ -71,13 +103,11 @@ def _expected_height_m(catalog: dict, cfg) -> float:
 
     # The top of the assembly is the higher of: the fixture stacked on the arm
     # socket, OR the arm's own apex (a shepherd's-hook tube arcs above the
-    # pendant socket it terminates at).  Account for both, plus the swept tube
-    # radius which bulges the apex by ~radiusM.
+    # pendant socket it terminates at).
     fixture_top = arm_socket_y + _fixture_top_extent_m(fixture)
     aph = arm["placeholder"]
     if aph["kind"] == "tube":
-        apex = max(pt[1] for pt in aph["points"]) + aph["radiusM"]
-        arm_top = max(fixture_top, apex)
+        arm_top = max(fixture_top, _tube_apex_m(aph))
     else:
         arm_top = fixture_top
 
@@ -98,19 +128,36 @@ def _built(catalog):
 
 
 def test_combo_count(catalog):
-    """Sanity: the kit enumerates the expected 880 valid combos.
+    """Sanity: the kit enumerates the expected 800 valid combos.
 
     Was 561 (17 fixture-arm pairs x 11 poles x 3 base covers) before Phase
     0.10.5 re-slotted bc-fluted/bc-round to 'standalone' and the catalog grew
     to include NAFCO/WiLLsport wizard parts and 2 additional official base
     covers (bc-cl2/bc-cl3/bc-sc2 replacing bc-fluted/bc-round — net 3 -> 5).
-    880 is the current count computed by the same socket-matching
-    valid_combos() this test exercises; no independent formula holds across
-    the now-multi-brand catalog (WiLLstudio + NAFCO + WiLLsport each have
-    their own socket families), so this is a regression guard on that count,
-    not a hand-derived product.
+    Was 880 until the 0.12_TO merge; 800 as of Phase 0.13.  The guard did its
+    job — the drop is Tyler's 8/12 socket repoint (commit 9407caa3), which moved
+    the SD and HS arms off their placeholder-era post-top/arm-mount sockets onto
+    `pendant`, because his list is explicit that those arms serve the GVX.
+    Measured attribution, pre- vs post-merge enumeration (2026-08-13):
+
+        lost 160:  mvx-coach + HSX upsweep                    (40)
+                   drx/tex/dwx + supported-decorative-arms    (40 each)
+        gained 80: gvx-pendant + HSX upsweep                  (40)
+                   gvx-pendant + supported-decorative-arms    (40)
+        net       -80
+
+    Checked at the same time: no fixture lost its last arm.  mvx-coach keeps the
+    classic `upsweep` (40 combos), matching Tyler's "MVX keeps only the classic
+    upsweep".  The seven NAFCO/WiLLsport fixtures enumerate 0 here and did so
+    BEFORE the merge too — they appear in neither the lost nor the gained set —
+    so that is this helper's WiLLstudio-pole scope, not a regression.
+
+    800 is the current count computed by the same socket-matching valid_combos()
+    this test exercises; no independent formula holds across the now-multi-brand
+    catalog (WiLLstudio + NAFCO + WiLLsport each have their own socket families),
+    so this is a regression guard on that count, not a hand-derived product.
     """
-    assert len(valid_combos(catalog)) == 880
+    assert len(valid_combos(catalog)) == 800
 
 
 def test_every_combo_has_positive_volume(catalog, _built):

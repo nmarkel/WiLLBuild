@@ -55,7 +55,7 @@
 - `docs/DEPLOY.md` *(new)* — fly.io runbook + `VITE_GEOMETRY_URL` wiring for the deployed frontend.
 
 **Docs:**
-- `CLAUDE.md`, `../Design Assistant/12 Open Decisions.md` (APS-deferred decision), memory files.
+- `CLAUDE.md`, `/Users/nickmarkel/Library/CloudStorage/GoogleDrive-nmarkel@willbrands.com/Shared drives/21-Engineering/18-coding-projects/WiLLbuild/Design Assistant/12 Open Decisions.md` (APS-deferred decision), memory files.
 
 ---
 
@@ -189,7 +189,7 @@ Everything the user needs to run `fly deploy` themselves; the service currently 
 - [ ] **Step 2:** Run geometry-service fast suite `.venv/bin/pytest tests/ -q` green. Then a determinism/labeling slice for the two new formats across a handful of representative configs (reuse the matrix harness pattern if cheap; otherwise 3-5 configs × {herocard, rfa} asserting file + disclaimer + determinism). Full 561-combo matrix is NOT required for the new PDF/rfa formats (documented — they don't touch STEP/DXF/IFC geometry paths).
 - [ ] **Step 3:** Boundary grep empty (engines + httpx only in `app/adapters/`). Record in report.
 - [ ] **Step 4:** Manual e2e smoke in `npm run dev` + running service: open `/studio/design`, build a config, download Concept Card (herocard PDF opens, shows status chip + disclaimer) and Revit Family (rfa downloads, tray shows the mock-APS warning). Note results in the report.
-- [ ] **Step 5:** Update `CLAUDE.md` status line to Phase 0.4 (brand route, herocard, rfa mock, fly prep). Update `../Design Assistant/12 Open Decisions.md`: record "Revit = APS mock this pass; real .rfa pending Autodesk dev account (DoD 2 deferred)" and "Hosting = fly.io, config prepped, deploy manual". Update the Phase 0.4 doc status if appropriate.
+- [ ] **Step 5:** Update `CLAUDE.md` status line to Phase 0.4 (brand route, herocard, rfa mock, fly prep). Update `/Users/nickmarkel/Library/CloudStorage/GoogleDrive-nmarkel@willbrands.com/Shared drives/21-Engineering/18-coding-projects/WiLLbuild/Design Assistant/12 Open Decisions.md`: record "Revit = APS mock this pass; real .rfa pending Autodesk dev account (DoD 2 deferred)" and "Hosting = fly.io, config prepped, deploy manual". Update the Phase 0.4 doc status if appropriate.
 - [ ] **Step 6:** Write/refresh memory files for any non-obvious facts discovered (e.g. adapter-boundary now includes httpx; rfa mock convention).
 - [ ] **Step 7:** Commit: `git commit -am "Phase 0.4 demo-critical: integration, docs, decisions"`.
 

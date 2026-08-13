@@ -174,7 +174,7 @@ REGISTRY: dict[str, Adapter]           # populated by explicit imports here — 
 - [ ] **Step 1: Failing tests** `tests/test_ifc.py`: file opens with `ifcopenshell.open`; schema `IFC4`; exactly one `IfcLightFixture`; its psets (via `ifcopenshell.util.element.get_psets`) carry ConfigId + Disclaimer; geometry present (shape representation non-empty); deterministic across two runs after zeroing the header timestamp (ifcopenshell lets you set `file.header` / owner history explicitly — set fixed `creation_date=0`).
 - [ ] **Step 2:** Implement: mesh the solid via build123d `.tessellate(0.5)` (or export/import trick), build IFC with `ifcopenshell.api` (project → site → building → storey → `IfcLightFixture` with `IfcPolygonalFaceSet`), mm units, add pset. ~120 lines.
 - [ ] **Step 3:** `pytest` green; register adapter. Commit: `git commit -am "IFC adapter: IfcLightFixture with concept pset (Revit deliverable, Option B)"`
-- [ ] **Step 4:** Append the decision record to `/Users/nickmarkel/Documents/Design Assistant/12 Open Decisions.md` (see master plan; short entry: chose IFC now, RFA-via-APS deferred to Phase 3 — blocked on APS account/credentials; adapter boundary keeps the swap frontend-invisible).
+- [ ] **Step 4:** Append the decision record to `/Users/nickmarkel/Library/CloudStorage/GoogleDrive-nmarkel@willbrands.com/Shared drives/21-Engineering/18-coding-projects/WiLLbuild/Design Assistant/12 Open Decisions.md` (see master plan; short entry: chose IFC now, RFA-via-APS deferred to Phase 3 — blocked on APS account/credentials; adapter boundary keeps the swap frontend-invisible).
 
 ### Task 6: Workstream E — spec-sheet PDF adapter
 

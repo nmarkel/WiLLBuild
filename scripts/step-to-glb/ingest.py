@@ -135,6 +135,31 @@ CLUSTERS: list[dict] = [
     dict(file="BA30-4R.STEP", part="willstudio-ba1-banner-arm", design="BA30", fit="4R",
          note="30in banner-arm kit — the BA30 order code's own CAD. The rig renders "
               "the banner layer from BA24; this is the second size variant."),
+    # --- Phase 0.13: Cole's 8/11-8/12 exports.  Both are CAD for a CONFIGURED
+    #     CODE on a part that already renders from its own master, so neither is
+    #     a second render source.  Registering them here is the whole job: it
+    #     puts the order code next to its released file. ---
+    dict(file="TEX-AREA.STEP", part="tex-post-top", design="TEX", fit="SMR",
+         note="Area/side-mount variant of the TEX — the exact counterpart of "
+              "DRX-Area-4R-Side-Mount.STEP above, and classified the same way. The "
+              "catalog part is named 'TEX Post Top & Area' and its mounting column "
+              "already offers 3T/SMS/SMR, so this file serves the SMS and SMR codes "
+              "of a part that renders from TEX.STEP. It is NOT a render source: the "
+              "compositor keys layers by part id, so a second mounting of one part "
+              "has nowhere to render to. Measured 2026-08-13: 208 solids, 431.80 x "
+              "203.20 x 591.22 mm, with z running -375.32..+215.90 — the extra 375 mm "
+              "in -Z is the side-mount arm, so the file is fixture PLUS bracket, not "
+              "a bare head. That is also why it could not be dropped in as a "
+              "tex-post-top layer even if the asset model allowed it."),
+    dict(file="GVX-HSS.STEP", part="gvx-pendant", design="HSS-GVX", fit="PM",
+         note="The GVX assembled WITH its House Side Shield fitted (88 MB, the same "
+              "order as the WD-GVX-PM master it is built from). HSS-GVX is an "
+              "ACCESSORY code in gvx-pendant's `accessories` column, and an "
+              "accessory-driven variant has nowhere to render to today for the same "
+              "part-id-keyed reason as TEX-AREA. Keyed by the accessory code rather "
+              "than a design code so it cannot collide with the master. Measured "
+              "2026-08-13: 214 solids, 479.37 x 516.62 x 479.37 mm — the master plus "
+              "the 1-solid shield (HSS-GVX.STEP, in UNMAPPED below)."),
 ]
 
 # Files with no catalog PART mapping — recorded, never guessed.
@@ -146,6 +171,34 @@ UNMAPPED: list[dict] = [
          note="Flag Holder — Single Flag Holder Kit. An Accessory adder, not a slot part."),
     dict(file="PH-4R.STEP", part=None, design="PH", fit="4R",
          note="Plant Holder — Single Plant Holder Kit. An Accessory adder, not a slot part."),
+    # --- Phase 0.13: Cole's 8/12 accessory exports.  Adders, so no layer. ---
+    dict(file="HSS-GVX.STEP", part=None, design="HSS-GVX", fit=None,
+         note="House Side Shield for the GVX, as its own component (0.29 MB; the "
+              "fitted assembly is GVX-HSS.STEP in CLUSTERS). Measured 405 x 127 x "
+              "220 mm, one solid, and asymmetric in Z (-202.6..+17.0) — it wraps one "
+              "side, which is what a house-side shield is. An `accessories` order "
+              "code on gvx-pendant, not a slot part, so it gets no render layer."),
+    # HH-*R are the hand hole itself, NOT a cover plate: each is a 6in-tall
+    # section of round pole at its named OD (4R = 4.00in, 5R = 4.98in, 6R =
+    # 6.00in, all 152.40 mm tall), 12 faces against a plain tube's 6, and
+    # 198.7 cm3 against 149.6 cm3 for the same tube at 0.125in wall — i.e. the
+    # opening plus its frame.  An `HHX` order code on every pole (Tyler
+    # consolidated HHUR/HHRR-4/5/6 into one line on 8/12), so no slot part and
+    # no layer of its own.
+    #
+    # ⚠️ These are, however, the real geometry for the ONE thing the render rig
+    # currently fakes: RSAA-4040-12.STEP has no hand hole (see the note under
+    # DERIVED below), so the rig grafts a placeholder box, which Tyler thinned
+    # twice on 8/11 (20 -> 12 -> 8 mm) to read as a plate.  Swapping that graft
+    # for HH-4R is a real improvement and a DELIBERATE, SEPARATE decision: it
+    # re-renders all 8 poles, and the graft doubles as the rig's visible 0-degree
+    # homing reference, so a recessed real hole must be checked to still read at
+    # 360 px/m before it replaces a protruding plate.  Not done here.
+    dict(file="HH-4R.STEP", part=None, design="HHX", fit="4R",
+         note="Additional Hand Hole, 4in round pole — the WiLLstudio fit "
+              "(`diameterIn: 4` on all 8 poles). See the block comment above."),
+    dict(file="HH-5R.STEP", part=None, design="HHX", fit="5R", note="See HH-4R."),
+    dict(file="HH-6R.STEP", part=None, design="HHX", fit="6R", note="See HH-4R."),
     # --- Phase 0.11 (Workstream I): CONVERTED BUT NOT MAPPED — pending socket
     #     alignment. These five DO have an unambiguous catalog part (each file's
     #     code is that part's own `modelCodes` entry) and each converts cleanly
