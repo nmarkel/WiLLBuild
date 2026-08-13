@@ -34,10 +34,12 @@ describe('compatibleParts (fixture-first)', () => {
   it('offers only pendant arms for the GVX pendant', () => {
     // SD + HS joined the pendant carriers 8/12 (Tyler's GVX bracket list) —
     // their placeholder-era sockets said post-top / arm-mount.
+    // PA1 left the list 8/13 (Tyler): its fitting doesn't work with the GVX,
+    // so its carry socket is its own type (pendant-pa1) that no fixture
+    // mounts today — socket matching stays the only compatibility mechanism.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'gvx-pendant' }), 'arm'))
     expect(ids).toEqual(
       [
-        'pa1-pendant-arm',
         'pm1-pendant-arm',
         'sh1-shepherds-hook',
         'willstudio-hsx-decorative-upsweep-arms',
@@ -97,7 +99,6 @@ describe('P1 pole-system promotions (Workstream G)', () => {
   ].sort()
 
   const PENDANT_ARMS = [
-    'pa1-pendant-arm',
     'pm1-pendant-arm',
     'sh1-shepherds-hook',
     'willstudio-hsx-decorative-upsweep-arms',

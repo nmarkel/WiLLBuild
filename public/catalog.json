@@ -2857,7 +2857,7 @@
       "mount": "tenon-3in",
       "sockets": {
         "fixture": {
-          "type": "pendant",
+          "type": "pendant-pa1",
           "position": [
             0.68,
             -0.1,
