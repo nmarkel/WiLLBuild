@@ -524,7 +524,13 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       ? CALLOUT_DEFS.flatMap((d) => {
           const partId = config[d.slot]
           if (!partId) return []
-          const layer = layout.layers.find((l) => l.partId === partId)
+          // Multi-instance arrangements (twin/triple/quad) suffix their layer
+          // ids (`<part>#1`, `<part>#az180`) — a twin must not lose its arm
+          // and fixture callouts, so match the instance prefix too and anchor
+          // on the first (frontmost) instance.
+          const layer = layout.layers.find(
+            (l) => l.partId === partId || l.partId.startsWith(`${partId}#`),
+          )
           if (!layer) return []
           const ax = layer.left + layer.asset.width / 2
           const ay = layer.top + layer.asset.height * d.anchorFrac
