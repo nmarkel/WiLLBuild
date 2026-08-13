@@ -2859,8 +2859,8 @@
         "fixture": {
           "type": "pendant",
           "position": [
-            0.68,
-            -0.1,
+            0.914,
+            0.092,
             0
           ]
         }
@@ -2917,7 +2917,12 @@
       "modelCodes": {
         "1": "PA1"
       },
-      "realCad": false
+      "realCad": true,
+      "mountOffset": [
+        0,
+        -0.3257,
+        0
+      ]
     },
     {
       "id": "pm1-pendant-arm",
@@ -2934,8 +2939,8 @@
         "fixture": {
           "type": "pendant",
           "position": [
-            0.66,
-            0.02,
+            0.362,
+            0.092,
             0
           ]
         }
@@ -2988,8 +2993,13 @@
       "modelCodes": {
         "1": "PM1"
       },
-      "realCad": false,
-      "placeholderApproved": true
+      "realCad": true,
+      "placeholderApproved": true,
+      "mountOffset": [
+        0,
+        -0.0127,
+        0
+      ]
     },
     {
       "id": "direct-mount",
@@ -16090,8 +16100,8 @@
         "side": {
           "type": "pendant",
           "position": [
-            0.5,
-            0.48,
+            1.219,
+            0.651,
             0
           ]
         }
@@ -16162,7 +16172,7 @@
         "1": "HS1",
         "2": "HS2"
       },
-      "realCad": false,
+      "realCad": true,
       "placeholderApproved": true
     },
     {
@@ -16475,8 +16485,8 @@
         "fixture": {
           "type": "pendant",
           "position": [
-            0.6,
-            0.4,
+            0.61,
+            0.117,
             0
           ]
         }
@@ -16541,7 +16551,7 @@
         "1": "SD1",
         "2": "SD2"
       },
-      "realCad": false,
+      "realCad": true,
       "placeholderApproved": true
     },
     {

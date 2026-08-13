@@ -120,6 +120,16 @@ CLUSTER_FILES: dict[tuple[str, str], str] = {
     # covers both, so both codes point at it.
     ("drx-post-top", "SMS"): "DRX-Area-4R-Side-Mount.STEP",
     ("drx-post-top", "SMR"): "DRX-Area-4R-Side-Mount.STEP",
+    # Phase 0.13: Cole's 8/11-8/12 exports.  TEX now has the same side-mount
+    # export DRX has, and it is registered identically — TEX's mounting column
+    # offers the same SMS/SMR pair and one released file covers both.
+    ("tex-post-top", "SMS"): "TEX-AREA.STEP",
+    ("tex-post-top", "SMR"): "TEX-AREA.STEP",
+    # The GVX with its House Side Shield fitted, keyed by the ACCESSORY code
+    # (HSS-GVX) rather than a design code — gvx-pendant's design code is GVX and
+    # already resolves the master through BASE_FILES.  Both gates above still
+    # apply: nothing calls cluster_step_path(), and this is another full master.
+    ("gvx-pendant", "HSS-GVX"): "GVX-HSS.STEP",
 }
 
 

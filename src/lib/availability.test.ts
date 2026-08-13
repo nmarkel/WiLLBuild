@@ -67,7 +67,23 @@ const SECTION_D_AUDITED = [
  * FR2 (0.12, A1): the only one of the six C1 arms whose catalog socket already
  * matched its real CAD — it needed the rotateY alone.
  */
-const LANDED_SINCE_AUDIT = ['willstudio-fr2-decorative-crossarm']
+const LANDED_SINCE_AUDIT = [
+  'willstudio-fr2-decorative-crossarm',
+  // Phase 0.13: three more of the six, each socket re-derived from its own GLB
+  // by the rule in socketRealCad.test.ts (calibrated on SH1 to 0.4 mm and
+  // reproducing the shipped SS/AR sockets to <0.5 mm), then verified in the
+  // browser. PA1 and PM1 also needed `mountOffset` — their GLB origin is not
+  // their pole attachment, so they hung 32.6 cm and 1.3 cm clear of the pole.
+  'pa1-pendant-arm',
+  'pm1-pendant-arm',
+  'willstudio-supported-decorative-arms',
+  // HS1 landed last, and only after the bore search was fixed: it is a BRACED
+  // upsweep whose support stay hangs 37 mm below its bore, so "lowest face in
+  // the outer half" found the stay's flat underside (0.110 x 0.024 m) instead of
+  // the Ø0.060 bore that was there all along, 84 mm inboard of the decorative
+  // end. Socket moved 0.72 m — the largest correction of the set.
+  'willstudio-hsx-decorative-upsweep-arms',
+]
 
 /**
  * EDITORIAL holds — parts pulled from the cut by decision, not by a geometry
@@ -116,23 +132,49 @@ describe('the realCad flag tracks the render rig', () => {
     }
   })
 
-  it('matches the matrix scoreboard, plus what 0.12 has landed', () => {
-    // The 8/11 audit measured 23 of 117; Workstream A1 added FR2.
+  it('matches the matrix scoreboard, plus what 0.12 and 0.13 have landed', () => {
+    // The 8/11 audit measured 23 of 117; A1 added FR2, and 0.13 added PA1, PM1,
+    // SD and HS1 — 28 of 117. That is FIVE of the six C1 arms; only CR2 is left,
+    // parked on its tenon-shoulder question.
     expect(catalog.parts.length).toBe(117)
     expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(28)
   })
 })
 
 describe('placeholder-approved parts (Tyler 8/12)', () => {
-  it('flags exactly the three approved arms, configurable despite realCad=false', () => {
+  it('flags exactly the three approved arms, and all three are configurable', () => {
     for (const id of PLACEHOLDER_APPROVED) {
       const part = byId(id)
       expect(part?.placeholderApproved, id).toBe(true)
-      expect(part?.realCad, id).not.toBe(true)
       expect(isComingSoon(part), id).toBe(false)
     }
     const flagged = catalog.parts.filter((p) => p.placeholderApproved).map((p) => p.id).sort()
     expect(flagged).toEqual([...PLACEHOLDER_APPROVED].sort())
+  })
+
+  /**
+   * Phase 0.13: exactly what Tyler said would happen — "it stops mattering the
+   * day realCad lands". All three now render from real CAD (SD, PM1, then HS1
+   * once the bore search was fixed), so the exemption is fully redundant.
+   *
+   * The flags are deliberately LEFT in the catalog: they are Tyler's product call
+   * to retire, they are harmless once realCad is true, and stripping them would
+   * be a data edit dressed up as cleanup. This test is the evidence he needs to
+   * make that call — and it will fail loudly if a future re-ingest ever DROPS one
+   * of these parts' real CAD, which would quietly make the exemption matter again.
+   */
+  it('is now FULLY redundant — all three have real CAD', () => {
+    // 0.13 finished what Tyler predicted: "it stops mattering the day realCad
+    // lands". HS1 was the last holdout and landed too, so not one of the three
+    // still depends on the exemption. Clearing every flag would change nothing.
+    const stillLoadBearing = PLACEHOLDER_APPROVED.filter((id) => byId(id)?.realCad !== true)
+    expect(stillLoadBearing).toEqual([])
+    for (const id of PLACEHOLDER_APPROVED) {
+      expect(isComingSoon({ ...byId(id)!, placeholderApproved: undefined }), id).toBe(false)
+    }
+    // Left in the catalog deliberately: they are Tyler's product call to retire,
+    // and a redundant flag is harmless. This test is the evidence for that call.
   })
 
   it('an editorial hold still outranks the approval', () => {

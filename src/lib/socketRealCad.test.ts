@@ -24,10 +24,11 @@ import type { Catalog, CatalogPart } from '../types'
  *       DERIVED from max reach, which is precisely the wrong feature on an arm
  *       whose mounting point is inboard of its tip.
  *
- * The hang point is not a judgement call. All three pendant arms terminate in
- * the same standard 2-3/8" downward-open bore (measured: 0.0605/0.0605/0.0599 m
- * across x and z, 108 vertices each — it is the same fitting part). Once the
- * fitting is found by the right feature, the rule is exact:
+ * The hang point is not a judgement call. Every pendant arm terminates in the
+ * same standard 2-3/8" downward-open bore — measured across all SEVEN as of
+ * 0.13 (SH1/SS/AR/PA1/PM1/SD/HS1), 0.0599-0.0605 m in both x and z. It is the
+ * same fitting part every time. Once the fitting is found by the right feature,
+ * the rule is exact:
  *
  *     socket = (centre of the fitting's open face, face y + stem insertion)
  *
@@ -36,10 +37,12 @@ import type { Catalog, CatalogPart } from '../types'
  * authored value on the one part with ground truth is the real rule, not a
  * curve fit, so it is asserted as a point with a 1 cm tolerance.
  *
- * FINDING THE FITTING: the downward-open bore nearest the far end — the lowest
- * face in the outer half of the reach. NOT the extreme vertex, which is the bar
- * end cap on AR and the outer wall of the curl on SS. That single change of
- * feature is the whole fix.
+ * FINDING THE FITTING: the lowest face in the outer half of the reach THAT IS
+ * the 2-3/8" bore. NOT the extreme vertex (the bar end cap on AR, the outer
+ * wall of the curl on SS), and — since 0.13 — not merely the lowest face
+ * either: HS1 is a braced upsweep whose support stay hangs 37 mm BELOW its
+ * bore, so the diameter has to filter the search rather than check it
+ * afterwards.
  *
  * SELF-CALIBRATING: the stem insertion is derived from SH1 at run time rather
  * than hardcoded, because SH1 is the designated anchor and the customer-visible
@@ -178,6 +181,17 @@ interface Fitting {
  * Restricting to the outer half of the reach skips the pole clamp and any
  * mid-span brackets; taking the LOWEST face there (not the furthest vertex)
  * finds AR's inboard drop nipple, which is the whole point.
+ *
+ * Phase 0.13 — the bore diameter is a FILTER, not a post-hoc check. It used to
+ * take the single lowest face and then assert its diameter, which assumes
+ * nothing in the outer half hangs below the fitting. HS1 breaks that: it is a
+ * BRACED upsweep, and its diagonal support stay dips to y=0.522 while the bore's
+ * open face is at y=0.559 — so the stay won the "lowest" test by 37 mm and the
+ * rule reported its flat underside (0.110 x 0.024 m) instead of a Ø0.060 bore.
+ * HS1's bore was there all along, 84 mm inboard of the decorative end, exactly
+ * like AR's drop nipple. So: walk candidate faces upward and take the lowest one
+ * that actually IS the 2-3/8" bore. Verified to reproduce the six sockets already
+ * derived under the old rule, to the millimetre.
  */
 function pendantFitting(path: string, rotateY: number): Fitting | null {
   const pts = glbPoints(path, rotateY)
@@ -185,17 +199,22 @@ function pendantFitting(path: string, rotateY: number): Fitting | null {
   const reach = Math.max(...pts.map((p) => Math.abs(p[0])))
   const far = pts.filter((p) => Math.abs(p[0]) >= reach * 0.5)
   if (far.length === 0) return null
-  const faceY = Math.min(...far.map((p) => p[1]))
-  const face = far.filter((p) => p[1] <= faceY + 0.004)
-  const xs = face.map((p) => p[0])
-  const zs = face.map((p) => p[2])
-  return {
-    faceY,
-    centreX: (Math.min(...xs) + Math.max(...xs)) / 2,
-    diaX: Math.max(...xs) - Math.min(...xs),
-    diaZ: Math.max(...zs) - Math.min(...zs),
-    reach,
+
+  // Candidate face heights, lowest first, quantised to the millimetre.
+  const levels = [...new Set(far.map((p) => Math.round(p[1] * 1000)))].sort((a, b) => a - b)
+  for (const level of levels) {
+    const faceY = level / 1000
+    const face = far.filter((p) => p[1] >= faceY - 0.0005 && p[1] <= faceY + 0.004)
+    if (face.length < 12) continue // too few verts to be a tessellated circle
+    const xs = face.map((p) => p[0])
+    const zs = face.map((p) => p[2])
+    const diaX = Math.max(...xs) - Math.min(...xs)
+    const diaZ = Math.max(...zs) - Math.min(...zs)
+    if (Math.abs(diaX - BORE_DIA_M) > 0.01) continue
+    if (Math.abs(diaX - diaZ) > BORE_TOL_M) continue
+    return { faceY, centreX: (Math.min(...xs) + Math.max(...xs)) / 2, diaX, diaZ, reach }
   }
+  return null
 }
 
 const realParts: Record<string, string | { glb: string; rotateY?: number }> = existsSync(REAL_PARTS)
@@ -215,10 +234,22 @@ function fittingFor(part: CatalogPart): Fitting | null {
 
 const ANCHOR_ID = 'sh1-shepherds-hook'
 
+/**
+ * The socket a pendant hangs from, BY TYPE not by key name.
+ *
+ * Phase 0.13: this used to read `sockets.fixture` only, which silently excluded
+ * HS1 — its pendant socket is keyed `side`. Nothing in the app cares about the
+ * key (compat and compositing both match on socket TYPE), so the one place the
+ * name mattered was this guard, i.e. exactly the test that exists to catch a bad
+ * socket would have skipped the arm with the worst one (0.72 m out).
+ */
+function pendantSocketKey(p: CatalogPart): string | undefined {
+  return Object.keys(p.sockets ?? {}).find((k) => p.sockets![k].type === 'pendant')
+}
+
 /** Real-CAD arms whose fixture hangs from a downward bore. */
 const pendantArms = catalog.parts.filter(
-  (p): p is CatalogPart =>
-    p.slot === 'arm' && p.realCad === true && p.sockets?.fixture?.type === 'pendant',
+  (p): p is CatalogPart => p.slot === 'arm' && p.realCad === true && !!pendantSocketKey(p),
 )
 
 const assetsPresent = existsSync(GLB_DIR)
@@ -247,9 +278,10 @@ describe.skipIf(!assetsPresent)('pendant sockets sit on the real CAD fitting the
       const fitting = fittingFor(arm)
       if (!fitting || !anchorFitting) return // no local GLB
 
-      // Same standard bore on every one of these arms — if this fails, the
-      // rule has latched onto some other face and the point check below is
-      // meaningless, so assert it rather than assume it.
+      // Same standard bore on every one of these arms. Since 0.13 the search
+      // FILTERS on this, so a failure here means no qualifying bore was found
+      // at all (fitting would be null) — kept as a belt-and-braces statement
+      // of what the rule guarantees, not as the thing that catches HS1's case.
       expect(
         fitting.diaX,
         `${arm.id} terminal face is ${fitting.diaX.toFixed(4)} m across x — not the 2-3/8" bore`,
@@ -259,7 +291,8 @@ describe.skipIf(!assetsPresent)('pendant sockets sit on the real CAD fitting the
       // Insertion depth of the pendant's stem, taken from the anchor.
       const insertion = anchor!.sockets!.fixture.position[1] - anchorFitting.faceY
       const expected: [number, number] = [fitting.centreX, fitting.faceY + insertion]
-      const socket = arm.sockets!.fixture.position
+      // by TYPE, not key: HS1's pendant socket is keyed `side`.
+      const socket = arm.sockets![pendantSocketKey(arm)!].position
 
       expect(
         Math.abs(socket[0] - expected[0]),
@@ -376,12 +409,62 @@ describe.skipIf(!assetsPresent)('FR2 crossarm sits on the pole and mounts on its
     const collarBottom = Math.min(...collar.map((p) => p[1]))
     const offset = fr2!.mountOffset ?? [0, 0, 0]
 
-    // Every other arm's collar bottom IS its origin; FR2's is 0.0889 m up, so
-    // the offset must cancel exactly that or the crossarm floats.
+    // FR2's collar bottom is 0.0889 m up, so the offset must cancel exactly
+    // that or the crossarm floats. (When this was written FR2 was the only such
+    // arm; PA1 and PM1 turned out to be the same in 0.13, which is why the
+    // generalised guard below now covers every real-CAD arm rather than one.)
     expect(
       collarBottom + offset[1],
       `FR2 collar bottom ${collarBottom.toFixed(4)} + mountOffset ${offset[1]} must land on ` +
         `the pole top (0) — a non-zero result is the visible float`,
     ).toBeCloseTo(0, 3)
   })
+})
+
+/**
+ * Phase 0.13 — the generalised form of FR2's float check.
+ *
+ * ASSETS.md says a part's origin is its LOWER ATTACHMENT POINT, but three arms
+ * now violate that (FR2, PA1, PM1) and `mountOffset` is how the catalog absorbs
+ * it. The trap this closes: a global `y_min == 0` looks like compliance and is
+ * NOT — PA1's lowest geometry is its OUTBOARD PENDANT BORE at y=0, while its
+ * pole collar sits 0.3257 m up, so it hung a third of a metre clear of the pole
+ * while measuring "fine". PM1 was the same at 0.0127 m.
+ *
+ * The only measurement that means anything is the collar's own bottom: geometry
+ * on the POLE AXIS, not the global minimum. Run over every real-CAD arm so the
+ * next ingest cannot reintroduce it silently — the coverage gate never will,
+ * because a floating arm's layers all exist.
+ */
+describe.skipIf(!assetsPresent)('every real-CAD arm lands its collar on the pole top', () => {
+  const realArms = catalog.parts.filter(
+    (p): p is CatalogPart => p.slot === 'arm' && p.realCad === true && !p.pseudoPart,
+  )
+
+  it('has real-CAD arms to check', () => {
+    expect(realArms.length).toBeGreaterThan(0)
+  })
+
+  for (const arm of realArms) {
+    it(`${arm.id}: collar bottom + mountOffset lands on the pole top`, () => {
+      const path = resolve(GLB_DIR, `${arm.id}.glb`)
+      if (!existsSync(path)) return
+      const pts = glbPoints(path, rotateYFor(arm.id))
+      if (!pts.length) return
+
+      // Geometry hugging the pole axis — the collar that swallows the tenon.
+      const collar = pts.filter((p) => Math.abs(p[0]) < 0.08 && Math.abs(p[2]) < 0.08)
+      expect(collar.length, `${arm.id} has no geometry on the pole axis to seat`).toBeGreaterThan(0)
+      const collarBottom = Math.min(...collar.map((p) => p[1]))
+      const offset = arm.mountOffset ?? [0, 0, 0]
+
+      expect(
+        collarBottom + offset[1],
+        `${arm.id} collar bottom ${collarBottom.toFixed(4)} + mountOffset ${offset[1]} = ` +
+          `${(collarBottom + offset[1]).toFixed(4)}, not 0 — the arm floats that far off the ` +
+          `pole top (or is sunk into it). Global y_min is NOT the check: PA1's is 0 at its ` +
+          `outboard bore while its collar sat 0.3257 m up.`,
+      ).toBeCloseTo(0, 3)
+    })
+  }
 })

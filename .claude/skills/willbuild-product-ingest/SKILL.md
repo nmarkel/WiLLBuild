@@ -11,9 +11,19 @@ Skipping a step has always cost more than doing it. Work on a phase branch off `
 
 ## 0 · Source ground rules
 
-- Source of truth: `~/SynologyDrive/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio`
-  (Cole's exports; basis = 4" pole, 40F arm hub, 3" OD tenon). Files are **FULL engineering
-  STEP — IP-sensitive**. They never ship. GLBs are machine-local + gitignored.
+- Source of truth (Cole's exports; basis = 4" pole, 40F arm hub, 3" OD tenon):
+  `~/Library/CloudStorage/SynologyDrive-NickSynology206/Engineering/Marketing-Engineering/STEP-Website/WiLLstudio`
+  — this is the **CloudStorage** mount. `~/SynologyDrive/...` also resolves but reads
+  EMPTY, so a path built from it silently finds nothing (corrected 2026-08-13; the
+  same warning is in `scripts/step-to-glb/ingest.py`'s docstring).
+  Files are **FULL engineering STEP — IP-sensitive**. They never ship. GLBs are
+  machine-local + gitignored, and `ingest.py` does NOT copy from the drive: the local
+  cache `scripts/render-rig/real-assets/step/` is populated by hand, and a file that
+  is on Synology but not there records as `present: false` with no hash.
+- The vault (phase docs, coverage matrix, open decisions) moved 2026-08-13 to the
+  shared Google Drive and is the single source of truth for Nick, Tyler and Claude:
+  `/Users/nickmarkel/Library/CloudStorage/GoogleDrive-nmarkel@willbrands.com/Shared drives/21-Engineering/18-coding-projects/WiLLbuild/Design Assistant`
+  The old `~/Documents/Design Assistant` is tombstoned — never write there.
 - If a filename changed on Synology, verify by **SHA compare** before assuming a rename
   (CR1→CR2 precedent), then update `scripts/step-to-glb/ingest.py` to follow.
 - The coverage audit lives in the vault ("WiLLstudio STEP → Site Coverage Matrix"); update

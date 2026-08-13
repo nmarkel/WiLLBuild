@@ -83,6 +83,38 @@ def test_cluster_files_are_never_kit_geometry():
         assert (part_id, design) not in realgeom.DESIGN_FILES
 
 
+def test_tex_side_mount_mirrors_the_drx_precedent():
+    """Phase 0.13: TEX-AREA serves BOTH side-mount codes, exactly as DRX does.
+
+    TEX's mounting column offers 3T (post top), SMS (square pole/wall) and SMR
+    (round pole), and Cole released ONE side-mount export on 8/11 — so both
+    codes point at it, which is the rule already established for DRX.  Pinned
+    because the alternative (mapping only SMR, the code the filename hints at)
+    silently leaves SMS resolving to the post-top master.
+    """
+    for code in ("SMS", "SMR"):
+        assert realgeom.CLUSTER_FILES[("tex-post-top", code)] == "TEX-AREA.STEP"
+        assert realgeom.CLUSTER_FILES[("drx-post-top", code)] == "DRX-Area-4R-Side-Mount.STEP"
+    # 3T is the post-top mounting: it must NOT resolve to the side-mount file.
+    assert ("tex-post-top", "3T") not in realgeom.CLUSTER_FILES
+
+
+def test_gvx_hss_variant_cannot_shadow_the_gvx_master():
+    """Phase 0.13: the shield-installed GVX is keyed by its ACCESSORY code.
+
+    GVX-HSS.STEP is the master WITH the House Side Shield fitted.  gvx-pendant's
+    design code is plain GVX, which already resolves the 88 MB master through
+    BASE_FILES, so keying the variant on a design code would have collided.
+    HSS-GVX is the accessory code from the GVX ordering matrix, so it cannot.
+    """
+    assert realgeom.CLUSTER_FILES[("gvx-pendant", "HSS-GVX")] == "GVX-HSS.STEP"
+    assert realgeom.BASE_FILES["gvx-pendant"] == "WD-GVX-PM"
+    assert ("gvx-pendant", "GVX") not in realgeom.CLUSTER_FILES
+    # Registering a cluster file must never open the customer download gate.
+    assert "GVX-HSS.STEP" not in realgeom.CUSTOMER_STEP_FILES.values()
+    assert "TEX-AREA.STEP" not in realgeom.CUSTOMER_STEP_FILES.values()
+
+
 def test_design_codes_cover_every_arm_count_of_the_mapped_families():
     for family, prefix in ((SS, "SS"), ("willstudio-suspension-arm-pole-top-brackets", "AR")):
         codes = {d for (p, d) in {**realgeom.DESIGN_FILES, **realgeom.CLUSTER_FILES} if p == family}

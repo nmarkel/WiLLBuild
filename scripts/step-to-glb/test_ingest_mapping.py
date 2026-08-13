@@ -54,3 +54,57 @@ def test_flag_and_plant_holders_stay_unmapped_as_accessories():
     unmapped_files = {e["file"] for e in ingest.UNMAPPED}
     assert "FH-4R.STEP" in unmapped_files
     assert "PH-4R.STEP" in unmapped_files
+
+
+def test_cole_0_13_exports_are_classified_below_the_render_line():
+    """Phase 0.13: none of Cole's six 8/11-8/12 files is a render source.
+
+    This is the assertion that keeps real-CAD coverage honest.  Anything landing
+    in INGEST gets a GLB, a layer, and `realCad: true` — which drives Coming
+    Soon — so a file promoted into INGEST without its own catalog part would
+    present placeholder-mismatched art as configurable.  All six belong below
+    that line:
+
+      * TEX-AREA / GVX-HSS  -> CLUSTERS: real CAD for a configured code on a part
+        that already renders from its own master (a second mounting, and an
+        accessory-installed variant).  The compositor keys layers by part id, so
+        neither has anywhere to render to.
+      * HSS-GVX / HH-4R/5R/6R -> UNMAPPED: order-code adders with no slot part.
+    """
+    ingest_files = {e["file"] for e in ingest.INGEST}
+    clusters = {e["file"] for e in ingest.CLUSTERS}
+    unmapped = {e["file"] for e in ingest.UNMAPPED}
+
+    new_files = {
+        "TEX-AREA.STEP", "GVX-HSS.STEP", "HSS-GVX.STEP",
+        "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP",
+    }
+    assert new_files.isdisjoint(ingest_files), (
+        "a 0.13 export was promoted to a render source; it has no catalog part"
+    )
+    assert {"TEX-AREA.STEP", "GVX-HSS.STEP"} <= clusters
+    assert {"HSS-GVX.STEP", "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"} <= unmapped
+
+    # The variant files carry the part they vary; the adders carry no part at all.
+    by_file = {e["file"]: e for e in ingest.CLUSTERS}
+    assert by_file["TEX-AREA.STEP"]["part"] == "tex-post-top"
+    assert by_file["GVX-HSS.STEP"]["part"] == "gvx-pendant"
+    for e in ingest.UNMAPPED:
+        if e["file"] in {"HSS-GVX.STEP", "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"}:
+            assert e["part"] is None, f"{e['file']} must not claim a catalog part"
+
+
+def test_hand_hole_files_are_adders_not_the_poles_render_source():
+    """HH-*R must never become the pole's geometry.
+
+    They are 6in sections of round pole carrying the hand-hole opening plus its
+    frame (measured 2026-08-13), one per OD: 4R/5R/6R.  The poles render from
+    RSAA-4040-12 with a placeholder cover grafted by the rig
+    (`placeholderGraftChildren`), and swapping in this real geometry is an open
+    decision, not an accident waiting to happen — the graft doubles as the rig's
+    visible 0-degree homing reference and these openings are RECESSED.
+    """
+    pole_sources = {e["file"] for e in ingest.INGEST if e["part"].startswith("alum-pole")}
+    assert pole_sources == {"RSAA-4040-12.STEP"}
+    for f in ("HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"):
+        assert f not in pole_sources

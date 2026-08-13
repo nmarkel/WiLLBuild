@@ -31,5 +31,21 @@
   "willstudio-fr2-decorative-crossarm": {
     "glb": "real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
     "rotateY": -90
+  },
+  "pa1-pendant-arm": {
+    "glb": "real-assets/glb/pa1-pendant-arm.glb",
+    "rotateY": -90
+  },
+  "pm1-pendant-arm": {
+    "glb": "real-assets/glb/pm1-pendant-arm.glb",
+    "rotateY": 90
+  },
+  "willstudio-supported-decorative-arms": {
+    "glb": "real-assets/glb/willstudio-supported-decorative-arms.glb",
+    "rotateY": -90
+  },
+  "willstudio-hsx-decorative-upsweep-arms": {
+    "glb": "real-assets/glb/willstudio-hsx-decorative-upsweep-arms.glb",
+    "rotateY": -90
   }
 }

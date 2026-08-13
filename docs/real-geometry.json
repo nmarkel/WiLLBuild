@@ -29,7 +29,7 @@
       "partId": "willstudio-fr2-decorative-crossarm",
       "designCode": "FR2",
       "fitCode": "40F",
-      "origin": "arm",
+      "origin": "mount",
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
@@ -374,6 +374,28 @@
       "designCode": "BA30",
       "fitCode": "4R",
       "note": "30in banner-arm kit \u2014 the BA30 order code's own CAD. The rig renders the banner layer from BA24; this is the second size variant."
+    },
+    {
+      "file": "TEX-AREA.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 35584330,
+      "sha256": "3602e91b186ff1461f3400fd17192e39a707cf655b60a8d1402a0c0929e4e324",
+      "partId": "tex-post-top",
+      "designCode": "TEX",
+      "fitCode": "SMR",
+      "note": "Area/side-mount variant of the TEX \u2014 the exact counterpart of DRX-Area-4R-Side-Mount.STEP above, and classified the same way. The catalog part is named 'TEX Post Top & Area' and its mounting column already offers 3T/SMS/SMR, so this file serves the SMS and SMR codes of a part that renders from TEX.STEP. It is NOT a render source: the compositor keys layers by part id, so a second mounting of one part has nowhere to render to. Measured 2026-08-13: 208 solids, 431.80 x 203.20 x 591.22 mm, with z running -375.32..+215.90 \u2014 the extra 375 mm in -Z is the side-mount arm, so the file is fixture PLUS bracket, not a bare head. That is also why it could not be dropped in as a tex-post-top layer even if the asset model allowed it."
+    },
+    {
+      "file": "GVX-HSS.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 87968176,
+      "sha256": "dfd26b700ea8fdc25879d8e870c3e4666224a5aa0547aa300c16ce99b750f1b8",
+      "partId": "gvx-pendant",
+      "designCode": "HSS-GVX",
+      "fitCode": "PM",
+      "note": "The GVX assembled WITH its House Side Shield fitted (88 MB, the same order as the WD-GVX-PM master it is built from). HSS-GVX is an ACCESSORY code in gvx-pendant's `accessories` column, and an accessory-driven variant has nowhere to render to today for the same part-id-keyed reason as TEX-AREA. Keyed by the accessory code rather than a design code so it cannot collide with the master. Measured 2026-08-13: 214 solids, 479.37 x 516.62 x 479.37 mm \u2014 the master plus the 1-solid shield (HSS-GVX.STEP, in UNMAPPED below)."
     }
   ],
   "unmapped": [
@@ -398,6 +420,50 @@
       "designCode": "PH",
       "fitCode": "4R",
       "note": "Plant Holder \u2014 Single Plant Holder Kit. An Accessory adder, not a slot part."
+    },
+    {
+      "file": "HSS-GVX.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 292925,
+      "sha256": "202cbcb385d38acb9b846822bf364a922be14e95c62b5b6c08dfb4dd9ab70a79",
+      "partId": null,
+      "designCode": "HSS-GVX",
+      "fitCode": null,
+      "note": "House Side Shield for the GVX, as its own component (0.29 MB; the fitted assembly is GVX-HSS.STEP in CLUSTERS). Measured 405 x 127 x 220 mm, one solid, and asymmetric in Z (-202.6..+17.0) \u2014 it wraps one side, which is what a house-side shield is. An `accessories` order code on gvx-pendant, not a slot part, so it gets no render layer."
+    },
+    {
+      "file": "HH-4R.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 94221,
+      "sha256": "32b2b14f1b8b7f1580b0dcb66281882c09cecb50e7dd55b21576892ca263a240",
+      "partId": null,
+      "designCode": "HHX",
+      "fitCode": "4R",
+      "note": "Additional Hand Hole, 4in round pole \u2014 the WiLLstudio fit (`diameterIn: 4` on all 8 poles). See the block comment above."
+    },
+    {
+      "file": "HH-5R.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 94759,
+      "sha256": "b19731681b7e3066e40ddfebfde6c481263aa1bdc96f6c344899522b41b5d297",
+      "partId": null,
+      "designCode": "HHX",
+      "fitCode": "5R",
+      "note": "See HH-4R."
+    },
+    {
+      "file": "HH-6R.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 93983,
+      "sha256": "d0d518558f674640ba917882737d5dd1fcaa96cc6b02c06bbf12bef1a964162e",
+      "partId": null,
+      "designCode": "HHX",
+      "fitCode": "6R",
+      "note": "See HH-4R."
     },
     {
       "file": "PA1-40F.STEP",
@@ -446,9 +512,9 @@
     {
       "file": "CR2-40F.STEP",
       "kind": "unmapped",
-      "present": false,
-      "bytes": null,
-      "sha256": null,
+      "present": true,
+      "bytes": 4917290,
+      "sha256": "0da63e3415c816bf17b79748c8a487f72b6e792468a1bc757f07b396a5f5c1c6",
       "partId": null,
       "designCode": "CR2",
       "fitCode": "40F",
