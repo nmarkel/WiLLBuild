@@ -310,7 +310,7 @@
             {
               "buildable": null,
               "code": "WD",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "mapsTo": null,
               "note": null
             }
@@ -504,21 +504,21 @@
             {
               "buildable": null,
               "code": "5W",
-              "label": "150° Type V Square",
+              "label": "150\u00b0 Type V Square",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5M",
-              "label": "90° Type V Medium",
+              "label": "90\u00b0 Type V Medium",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5N",
-              "label": "70° Type V Narrow",
+              "label": "70\u00b0 Type V Narrow",
               "mapsTo": null,
               "note": null
             },
@@ -668,21 +668,21 @@
             {
               "buildable": null,
               "code": "WHP3NP",
-              "label": "2’ Cord w/o Plug, Stripped",
+              "label": "2\u2019 Cord w/o Plug, Stripped",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "WHP7NP",
-              "label": "6’ Cord w/o Plug, Stripped",
+              "label": "6\u2019 Cord w/o Plug, Stripped",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "WHP11NP",
-              "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "label": "10\u2019 Cord w/o Plug, Stripped Pigtail",
               "mapsTo": null,
               "note": null
             }
@@ -739,7 +739,7 @@
             {
               "buildable": null,
               "code": "MPS",
-              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Remote Mount Only) Factory)",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100\u2019 diameter from 40\u2019 mounting height (Remote Mount Only) Factory)",
               "mapsTo": null,
               "note": null
             }
@@ -977,7 +977,7 @@
             {
               "buildable": null,
               "code": "WD",
-              "label": "WiLLstudio® Housing",
+              "label": "WiLLstudio\u00ae Housing",
               "mapsTo": null,
               "note": null
             }
@@ -1178,21 +1178,21 @@
             {
               "buildable": null,
               "code": "5W",
-              "label": "150° Type V Square",
+              "label": "150\u00b0 Type V Square",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5M",
-              "label": "90° Type V Medium",
+              "label": "90\u00b0 Type V Medium",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5N",
-              "label": "70° Type V Narrow",
+              "label": "70\u00b0 Type V Narrow",
               "mapsTo": null,
               "note": null
             },
@@ -1427,7 +1427,7 @@
             {
               "buildable": null,
               "code": "MPS",
-              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Remote Mount Only) Installed)",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100\u2019 diameter from 40\u2019 mounting height (Remote Mount Only) Installed)",
               "mapsTo": null,
               "note": null
             }
@@ -1638,7 +1638,7 @@
             {
               "buildable": null,
               "code": "WD",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "mapsTo": null,
               "note": null
             }
@@ -1832,21 +1832,21 @@
             {
               "buildable": null,
               "code": "5W",
-              "label": "150° Type V Square",
+              "label": "150\u00b0 Type V Square",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5M",
-              "label": "90° Type V Medium",
+              "label": "90\u00b0 Type V Medium",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5N",
-              "label": "70° Type V Narrow",
+              "label": "70\u00b0 Type V Narrow",
               "mapsTo": null,
               "note": null
             },
@@ -2018,21 +2018,21 @@
             {
               "buildable": null,
               "code": "WHP3NP",
-              "label": "2’ Cord w/o Plug, Stripped Pigtail (Requires 3T Mount) N5P Receptacle)",
+              "label": "2\u2019 Cord w/o Plug, Stripped Pigtail (Requires 3T Mount) N5P Receptacle)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "WHP7NP",
-              "label": "6’ Cord w/o Plug, Stripped Pigtail (Requires PM Mount) N5P Receptacle)",
+              "label": "6\u2019 Cord w/o Plug, Stripped Pigtail (Requires PM Mount) N5P Receptacle)",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "WHP11NP",
-              "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "label": "10\u2019 Cord w/o Plug, Stripped Pigtail",
               "mapsTo": null,
               "note": null
             },
@@ -2081,7 +2081,7 @@
             {
               "buildable": null,
               "code": "MPS",
-              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Available On PM Mount Only) (Not Available With FB Finial Bottom)",
+              "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100\u2019 diameter from 40\u2019 mounting height (Available On PM Mount Only) (Not Available With FB Finial Bottom)",
               "mapsTo": null,
               "note": null
             }
@@ -2255,7 +2255,7 @@
             {
               "buildable": null,
               "code": "WD",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "mapsTo": null,
               "note": null
             }
@@ -2449,21 +2449,21 @@
             {
               "buildable": null,
               "code": "5W",
-              "label": "150° Type V Square",
+              "label": "150\u00b0 Type V Square",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5M",
-              "label": "90° Type V Medium",
+              "label": "90\u00b0 Type V Medium",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "5N",
-              "label": "70° Type V Narrow",
+              "label": "70\u00b0 Type V Narrow",
               "mapsTo": null,
               "note": null
             },
@@ -2572,7 +2572,7 @@
               "code": "WHPXNP",
               "label": "Cord w/o Plug, Stripped Pigtail",
               "mapsTo": null,
-              "note": "Sized to your installation — we'll confirm the length with your quote"
+              "note": "Sized to your installation \u2014 we'll confirm the length with your quote"
             },
             {
               "buildable": null,
@@ -2593,7 +2593,7 @@
               "code": "MPS",
               "label": "Motion Sensor",
               "mapsTo": null,
-              "note": "Programmable on/off, dimming & photocontrol — tune it over Bluetooth"
+              "note": "Programmable on/off, dimming & photocontrol \u2014 tune it over Bluetooth"
             }
           ]
         },
@@ -2615,14 +2615,14 @@
               "code": "GFX",
               "label": "Wireless DMX Control",
               "mapsTo": null,
-              "note": "Consult factory — we’ll coordinate the details with your quote"
+              "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
             },
             {
               "buildable": null,
               "code": "GFM",
               "label": "Wireless Mesh Control",
               "mapsTo": null,
-              "note": "Consult factory — we’ll coordinate the details with your quote"
+              "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
             }
           ]
         }
@@ -2742,7 +2742,7 @@
               "label": "Brand / Logo / City Round Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Your emblem at the center — artwork coordinated with your quote"
+              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
             }
           ]
         }
@@ -2752,7 +2752,7 @@
         "sourcePage": null,
         "parseStatus": "partial",
         "gaps": [
-          "Center-feature codes transcribed from docs/ordering-matrix.json armOptions (the arms sheet's Options column). Bare 'CF' (Custom) is deliberately excluded per armOptionsNote — a custom feature is a quote conversation, not an assemblable code. Offered on SH1 only until Tyler confirms whether SS crossarms carry a logo feature."
+          "Center-feature codes transcribed from docs/ordering-matrix.json armOptions (the arms sheet's Options column). Bare 'CF' (Custom) is deliberately excluded per armOptionsNote \u2014 a custom feature is a quote conversation, not an assemblable code. Offered on SH1 only until Tyler confirms whether SS crossarms carry a logo feature."
         ]
       },
       "realCad": true
@@ -2999,7 +2999,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "No Arm — Direct Pole Mount",
+      "name": "No Arm \u2014 Direct Pole Mount",
       "family": "Tenon Adapter",
       "mount": "tenon-3in",
       "sockets": {
@@ -3111,7 +3111,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -3363,63 +3363,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -3443,7 +3443,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -3451,7 +3451,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -3467,7 +3467,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -3483,7 +3483,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -3491,7 +3491,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -3499,7 +3499,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -3763,7 +3763,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -4015,63 +4015,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -4095,7 +4095,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -4103,7 +4103,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -4119,7 +4119,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -4135,7 +4135,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -4143,7 +4143,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -4151,7 +4151,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -4415,7 +4415,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -4667,63 +4667,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -4747,7 +4747,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -4755,7 +4755,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -4771,7 +4771,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -4787,7 +4787,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -4795,7 +4795,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -4803,7 +4803,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -5067,7 +5067,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -5319,63 +5319,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -5399,7 +5399,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -5407,7 +5407,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -5423,7 +5423,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -5439,7 +5439,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -5447,7 +5447,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -5455,7 +5455,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -5719,7 +5719,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -5971,63 +5971,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -6051,7 +6051,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -6059,7 +6059,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -6075,7 +6075,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -6091,7 +6091,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -6099,7 +6099,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -6107,7 +6107,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -6371,7 +6371,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -6623,63 +6623,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -6703,7 +6703,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -6711,7 +6711,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -6727,7 +6727,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -6743,7 +6743,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -6751,7 +6751,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -6759,7 +6759,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -7023,7 +7023,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -7275,63 +7275,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -7355,7 +7355,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -7363,7 +7363,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -7379,7 +7379,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -7395,7 +7395,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -7403,7 +7403,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -7411,7 +7411,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -7675,7 +7675,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -7927,63 +7927,63 @@
             {
               "buildable": null,
               "code": "P1",
-              "label": "4” OD x 5” Long Tenon",
+              "label": "4\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P2",
-              "label": "2.38” OD x 4” Long Tenon",
+              "label": "2.38\u201d OD x 4\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P3",
-              "label": "3.50” OD x 6” Long Tenon",
+              "label": "3.50\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P4",
-              "label": "4” OD x 6” Long Tenon",
+              "label": "4\u201d OD x 6\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P5",
-              "label": "2.88” OD x 4” Long",
+              "label": "2.88\u201d OD x 4\u201d Long",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P6",
-              "label": "2.88” OD x 5” Long Tenon",
+              "label": "2.88\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "P7",
-              "label": "2.38” OD x 5” Long Tenon",
+              "label": "2.38\u201d OD x 5\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PQ",
-              "label": "2.38” OD x 12” Long Tenon",
+              "label": "2.38\u201d OD x 12\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
             {
               "buildable": null,
               "code": "PD",
-              "label": "3” OD x 3” Long Tenon",
+              "label": "3\u201d OD x 3\u201d Long Tenon",
               "mapsTo": null,
               "note": null
             },
@@ -8007,7 +8007,7 @@
               "code": "HHX",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
+              "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
               "placeable": true
             },
             {
@@ -8015,7 +8015,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
+              "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
               "placeable": true
             }
           ]
@@ -8031,7 +8031,7 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
               "placeable": true
             }
           ]
@@ -8047,7 +8047,7 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
               "placeable": true
             },
             {
@@ -8055,7 +8055,7 @@
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
+              "note": "A single flag bracket with stainless hardware \u2014 field installed",
               "placeable": true
             },
             {
@@ -8063,7 +8063,7 @@
               "code": "PH",
               "label": "Plant Holder Kit",
               "mapsTo": null,
-              "note": "A single planter bracket with stainless hardware — field installed",
+              "note": "A single planter bracket with stainless hardware \u2014 field installed",
               "placeable": true
             }
           ]
@@ -8305,7 +8305,7 @@
           "values": [
             {
               "code": "WP",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8485,7 +8485,7 @@
           "values": [
             {
               "code": "WP",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8665,7 +8665,7 @@
           "values": [
             {
               "code": "WP",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -8845,7 +8845,7 @@
           "values": [
             {
               "code": "WP",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -9025,7 +9025,7 @@
           "values": [
             {
               "code": "WP",
-              "label": "WiLLstudio®",
+              "label": "WiLLstudio\u00ae",
               "buildable": true,
               "mapsTo": null,
               "note": null
@@ -9534,7 +9534,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO®  SLX SLIM LED LIGHTING",
+      "name": "NAFCO\u00ae  SLX SLIM LED LIGHTING",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SLS-45-6ARM.jpg?v=1713905297",
       "thumbnail": null,
@@ -9617,7 +9617,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® ABH-1 Single Arm Aluminum Bullhorn Brackets",
+      "name": "NAFCO\u00ae ABH-1 Single Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-1_fba6752c-4dc0-48ed-9ba9-4a94ff6fec2f.jpg?v=1751998545",
       "thumbnail": null,
@@ -9694,7 +9694,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® ABH-2 Double Arm Aluminum Bullhorn Brackets",
+      "name": "NAFCO\u00ae ABH-2 Double Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-2_2ce50611-37af-4f5b-98c8-41ae28054037.jpg?v=1751998572",
       "thumbnail": null,
@@ -9770,7 +9770,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® ABH-3 Triple Arm Aluminum Bullhorn Brackets",
+      "name": "NAFCO\u00ae ABH-3 Triple Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-3_8500e87e-56ef-4026-9c6d-2a24ef10bd6c.jpg?v=1751998739",
       "thumbnail": null,
@@ -9846,7 +9846,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® ABH-4 Quad Arm Aluminum Bullhorn Brackets",
+      "name": "NAFCO\u00ae ABH-4 Quad Arm Aluminum Bullhorn Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/abh-4_5e0dc957-9913-47e2-8b97-3a0b6feb19ca.jpg?v=1751998680",
       "thumbnail": null,
@@ -9922,7 +9922,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® CHX Cobrahead",
+      "name": "NAFCO\u00ae CHX Cobrahead",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/chx-4-roadway-light-mast-arm-mount-45-light-gray.jpg?v=1666033524",
       "thumbnail": null,
@@ -10019,7 +10019,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® NTX Pole + Slim Area Light",
+      "name": "NAFCO\u00ae NTX Pole + Slim Area Light",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ntx-pole-slim-area-light.jpg?v=1696880463",
       "thumbnail": null,
@@ -10126,7 +10126,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® Pre-Cast Concrete Light Pole Bases",
+      "name": "NAFCO\u00ae Pre-Cast Concrete Light Pole Bases",
       "family": "NAFCO Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/pre-cast-base-main.jpg?v=1770992982",
       "thumbnail": null,
@@ -10231,7 +10231,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® SHX Shoebox",
+      "name": "NAFCO\u00ae SHX Shoebox",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/SHM-6Arm-45.jpg?v=1748955914",
       "thumbnail": null,
@@ -10310,7 +10310,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® SPX-1 Single Arm Aluminum Spoke Brackets",
+      "name": "NAFCO\u00ae SPX-1 Single Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-1_7a3df7df-6117-4fc2-81df-ab932d9b3f1a.jpg?v=1751995676",
       "thumbnail": null,
@@ -10382,7 +10382,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® SPX-2 Double Arm Aluminum Spoke Brackets",
+      "name": "NAFCO\u00ae SPX-2 Double Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-2_5017030e-cad4-49e5-a229-3063fc7fc761.jpg?v=1751995781",
       "thumbnail": null,
@@ -10448,7 +10448,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® SPX-3 Triple Arm Aluminum Spoke Brackets",
+      "name": "NAFCO\u00ae SPX-3 Triple Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-3_0bd8b450-057f-4492-9679-fe751b02a463.jpg?v=1751995883",
       "thumbnail": null,
@@ -10514,7 +10514,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® SPX-4 Quad Arm Aluminum Spoke Brackets",
+      "name": "NAFCO\u00ae SPX-4 Quad Arm Aluminum Spoke Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/spx-4_9f95ad68-2a16-4bc9-8096-d58eeed85bcc.jpg?v=1751995997",
       "thumbnail": null,
@@ -10580,7 +10580,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® UPX-1 Single Arm Aluminum Upsweep Brackets",
+      "name": "NAFCO\u00ae UPX-1 Single Arm Aluminum Upsweep Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/upx-1.jpg?v=1751997624",
       "thumbnail": null,
@@ -10657,7 +10657,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® UPX-2 Double Arm Aluminum Upsweep Brackets",
+      "name": "NAFCO\u00ae UPX-2 Double Arm Aluminum Upsweep Brackets",
       "family": "NAFCO Brackets & Arms",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/upx-2.jpg?v=1751997678",
       "thumbnail": null,
@@ -10763,7 +10763,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "NAFCO® WCX Wall Mount",
+      "name": "NAFCO\u00ae WCX Wall Mount",
       "family": "NAFCO Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/wcl-wallpack-light-standard-mount-45-black.jpg?v=1696884856",
       "thumbnail": null,
@@ -13464,7 +13464,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLev™ EVSE L2 Charging Pedestals",
+      "name": "WiLLev\u2122 EVSE L2 Charging Pedestals",
       "family": "WiLLev EV Charging",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/willev-8ft-pedestal.jpg?v=1697054055",
       "thumbnail": null,
@@ -13608,7 +13608,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLev™ NTX Pole + Slim Area Light",
+      "name": "WiLLev\u2122 NTX Pole + Slim Area Light",
       "family": "WiLLev Poles",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/ntx-pole-slim-area-light.jpg?v=1696880463",
       "thumbnail": null,
@@ -13801,7 +13801,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® EBX Slim High Bay",
+      "name": "WiLLsport\u00ae EBX Slim High Bay",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/eb2-high-bay-light-standard-mount-45-black.jpg?v=1666122739",
       "thumbnail": null,
@@ -13893,7 +13893,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WILLsport® GTX High-Output Area",
+      "name": "WILLsport\u00ae GTX High-Output Area",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/GT6-6Arm-45_16eaf644-92e5-4ccb-8cb7-fc0e6fcb9a63.jpg?v=1752069434",
       "thumbnail": null,
@@ -13958,7 +13958,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® HDX Area / Flood / Sports",
+      "name": "WiLLsport\u00ae HDX Area / Flood / Sports",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/HD6-Flood-APY.jpg?v=1695389217",
       "thumbnail": null,
@@ -14054,7 +14054,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® HDX High Bay & Sports",
+      "name": "WiLLsport\u00ae HDX High Bay & Sports",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/hd6-45bottom-harp.jpg?v=1682715467",
       "thumbnail": null,
@@ -14130,7 +14130,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® HSX Sportslighter",
+      "name": "WiLLsport\u00ae HSX Sportslighter",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/hsx-10-gs-sportslighter-light-stud-mount-45-black.jpg?v=1666185924",
       "thumbnail": null,
@@ -14205,7 +14205,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® KBX Lighting System",
+      "name": "WiLLsport\u00ae KBX Lighting System",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/kbx-8-sports-light-yoke-mount-45-black.jpg?v=1666290901",
       "thumbnail": null,
@@ -14284,7 +14284,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® PDX Sports & Large Area Power Distribution & Controls Hub",
+      "name": "WiLLsport\u00ae PDX Sports & Large Area Power Distribution & Controls Hub",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/PDH-45R.jpg?v=1727185686",
       "thumbnail": null,
@@ -14364,7 +14364,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® RPCX Sports & Large Area Remote Power Control",
+      "name": "WiLLsport\u00ae RPCX Sports & Large Area Remote Power Control",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/RPC-L-45L.jpg?v=1749489925",
       "thumbnail": null,
@@ -14443,7 +14443,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® Sports & Large Area Brackets & Arms",
+      "name": "WiLLsport\u00ae Sports & Large Area Brackets & Arms",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/willsport-brackets-arms-1_2d5591d2-4a4c-49eb-87ff-077cacc82e58.jpg?v=1722626958",
       "thumbnail": null,
@@ -14527,7 +14527,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLsport® Wrestling Dual Light Packages",
+      "name": "WiLLsport\u00ae Wrestling Dual Light Packages",
       "family": "WiLLsport Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/PIN-1C-WhiteLED-Bottom.jpg?v=1761224932",
       "thumbnail": null,
@@ -15792,7 +15792,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® CR2 Decorative Crossarm",
+      "name": "WiLLstudio\u00ae CR2 Decorative Crossarm",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
       "sockets": {
@@ -15865,7 +15865,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® DWX Flood & Spot",
+      "name": "WiLLstudio\u00ae DWX Flood & Spot",
       "family": "DWX",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/DWX-45.jpg?v=1763042175",
       "thumbnail": null,
@@ -15997,7 +15997,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® FR2 Decorative Crossarm",
+      "name": "WiLLstudio\u00ae FR2 Decorative Crossarm",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
       "mountOffset": [
@@ -16083,7 +16083,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® HSX Decorative Upsweep Arms",
+      "name": "WiLLstudio\u00ae HSX Decorative Upsweep Arms",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
       "sockets": {
@@ -16173,7 +16173,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® Pendant Ceiling Mounts",
+      "name": "WiLLstudio\u00ae Pendant Ceiling Mounts",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/pc-willstudio-brackets_a4d79091-ece7-476a-9e13-5eec3dc3ce09.jpg?v=1752001534",
       "thumbnail": null,
@@ -16242,7 +16242,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® RXB / SXB Bollard",
+      "name": "WiLLstudio\u00ae RXB / SXB Bollard",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/products/rdb-c-bollard-light-standard-mount-close-bronze.jpg?v=1666129115",
       "thumbnail": null,
@@ -16344,7 +16344,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® Side Shepherds Hook Pole Top Brackets",
+      "name": "WiLLstudio\u00ae Side Shepherds Hook Pole Top Brackets",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
       "sockets": {
@@ -16454,7 +16454,7 @@
               "label": "Brand / Logo / City Round Center Feature",
               "buildable": null,
               "mapsTo": null,
-              "note": "Your emblem at the center — artwork coordinated with your quote"
+              "note": "Your emblem at the center \u2014 artwork coordinated with your quote"
             }
           ]
         }
@@ -16468,7 +16468,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® Supported Decorative Arms",
+      "name": "WiLLstudio\u00ae Supported Decorative Arms",
       "family": "WiLLstudio Fixtures",
       "mount": "tenon-3in",
       "sockets": {
@@ -16552,7 +16552,7 @@
       "productClass": "assembly-part",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® Suspension Arm Pole Top Brackets",
+      "name": "WiLLstudio\u00ae Suspension Arm Pole Top Brackets",
       "family": "WiLLstudio Brackets & Arms",
       "mount": "tenon-3in",
       "sockets": {
@@ -16812,7 +16812,7 @@
     {
       "id": "nafco-ba1-banner-arm",
       "slot": "banner",
-      "name": "NAFCO® BA1 Banner Arm",
+      "name": "NAFCO\u00ae BA1 Banner Arm",
       "family": "BA1",
       "line": "NAFCO",
       "category": "Banner Arms",
@@ -16911,7 +16911,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® WM1 Single Wall Mount Pendant",
+      "name": "WiLLstudio\u00ae WM1 Single Wall Mount Pendant",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/WM1-45.jpg?v=1752001308",
       "thumbnail": null,
@@ -17012,7 +17012,7 @@
       "productClass": "standalone",
       "dropShip": false,
       "tier": 2,
-      "name": "WiLLstudio® WM2 Single Wall Tenon Mount w/ Finial",
+      "name": "WiLLstudio\u00ae WM2 Single Wall Tenon Mount w/ Finial",
       "family": "WiLLstudio Fixtures",
       "photo": "https://cdn.shopify.com/s/files/1/0672/9888/5881/files/WM2-45.jpg?v=1752001400",
       "thumbnail": null,
