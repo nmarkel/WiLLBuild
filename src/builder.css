@@ -895,3 +895,10 @@
   border-radius: 999px;
   padding: 3px 10px;
 }
+
+/* CR-OPT-14: spec values incompatible with the current selections. */
+.builder-app .spec-choice.incompatible {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}

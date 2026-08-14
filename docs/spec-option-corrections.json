@@ -361,6 +361,159 @@
               ]
             }
           ]
+        },
+        {
+          "rawKey": "fixture-mounting",
+          "why": "CR-OPT-14 (Tyler 8/14): PF Flush Arm Fit requires a D (.188) or E (.250) wall \u2014 the flush fit machines into the wall, so the thin C (.125) wall is out. Encoded as a value-level `requires` dependency.",
+          "columns": [
+            {
+              "group": "ordering",
+              "key": "fixture-mounting",
+              "label": "Fixture Mounting",
+              "orderPosition": 5,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "PC",
+                  "label": "Cap Only, No Side",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "PL",
+                  "label": "Open Top, No Cap",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "PF",
+                  "label": "Flush Arm Fit",
+                  "mapsTo": null,
+                  "note": "Needs a D (.188\u201d) or E (.250\u201d) wall",
+                  "requires": {
+                    "wall-thickness": [
+                      "D",
+                      "E"
+                    ]
+                  }
+                },
+                {
+                  "buildable": null,
+                  "code": "D1",
+                  "label": "Drill Single",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "D2",
+                  "label": "Drill 2@180",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "D3",
+                  "label": "Drill 3@120",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "D4",
+                  "label": "Drill 4@90",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "D5",
+                  "label": "Drill 2@90",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "D6",
+                  "label": "Drill 3@90",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P1",
+                  "label": "4\u201d OD x 5\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P2",
+                  "label": "2.38\u201d OD x 4\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P3",
+                  "label": "3.50\u201d OD x 6\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P4",
+                  "label": "4\u201d OD x 6\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P5",
+                  "label": "2.88\u201d OD x 4\u201d Long",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P6",
+                  "label": "2.88\u201d OD x 5\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P7",
+                  "label": "2.38\u201d OD x 5\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "PQ",
+                  "label": "2.38\u201d OD x 12\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "PD",
+                  "label": "3\u201d OD x 3\u201d Long Tenon",
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "buildable": null,
+                  "code": "P9",
+                  "label": "Custom Size Tenon",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
         }
       ]
     },

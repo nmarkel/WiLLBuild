@@ -230,6 +230,13 @@ export interface SpecOptionValue {
    */
   resolvesByDiameter?: Record<string, string>
   /**
+   * CR-OPT-14 (Tyler 8/14): choosing this value REQUIRES the named columns'
+   * selections to be among the allowed codes (PF flush arm fit → wall D/E).
+   * The UI disables incompatible chips; repair clears a constrained column's
+   * violating choice back to unchosen (never auto-picks a replacement).
+   */
+  requires?: Record<string, string[]>
+  /**
    * CR-PLC-07 (Tyler 8/14): bespoke shaft-placement window for this
    * accessory — floor/ceiling/default in feet, step in inches. Absent fields
    * fall back to the generic rules (label minimum / pole-top clearance /

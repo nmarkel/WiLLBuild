@@ -653,6 +653,32 @@ describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
   })
 })
 
+describe('PF flush arm fit requires a D/E wall (CR-OPT-14, Tyler 8/14)', () => {
+  const withPole = (specOptions: Record<string, string>) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: specOptions },
+    })
+
+  it('clears a C wall when PF mounting is chosen (constrained column, never re-picked)', () => {
+    const cfg = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'C' })
+    expect(cfg.specOptions?.pole?.['fixture-mounting']).toBe('PF')
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBeUndefined()
+  })
+
+  it('keeps compliant walls with PF', () => {
+    const d = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'D' })
+    expect(d.specOptions?.pole?.['wall-thickness']).toBe('D')
+    const e = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'E' })
+    expect(e.specOptions?.pole?.['wall-thickness']).toBe('E')
+  })
+
+  it('C wall stays fine without PF', () => {
+    expect(withPole({ 'wall-thickness': 'C' }).specOptions?.pole?.['wall-thickness']).toBe('C')
+  })
+})
+
 describe('hand hole + festoon rules (CR-OPT-13, Tyler 8/14)', () => {
   const withShaft = (placements: Record<string, { heightFt: number; orientation: number }[]>) =>
     repairConfig(catalog, {

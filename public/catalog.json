@@ -3336,7 +3336,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -4034,7 +4040,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -4732,7 +4744,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -5430,7 +5448,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -6128,7 +6152,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -6826,7 +6856,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -7524,7 +7560,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -8222,7 +8264,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,

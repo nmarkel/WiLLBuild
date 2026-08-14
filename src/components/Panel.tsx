@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, snapPlacementHeightFt, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -377,21 +377,31 @@ function StepSpecOptions({
                 <div className="spec-option" key={opt.key}>
                   <span className="spec-option-label">{optionLabel(opt)}</span>
                   <div className="spec-choices" role="radiogroup" aria-label={optionLabel(opt)}>
-                    {opt.values.map((v) => (
-                      <button
-                        key={v.code}
-                        type="button"
-                        role="radio"
-                        aria-checked={current === v.code}
-                        className={`spec-choice${current === v.code ? ' selected' : ''}`}
-                        onClick={() =>
-                          setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
-                        }
-                        title={`${v.code} — ${v.label}`}
-                      >
-                        {v.label}
-                      </button>
-                    ))}
+                    {opt.values.map((v) => {
+                      // CR-OPT-14: grey out values incompatible with other
+                      // chosen columns (PF flush fit → walls C is out).
+                      const compatible = valueCompatibleWithChosen(part, chosen, opt.key, v)
+                      return (
+                        <button
+                          key={v.code}
+                          type="button"
+                          role="radio"
+                          aria-checked={current === v.code}
+                          className={`spec-choice${current === v.code ? ' selected' : ''}${compatible ? '' : ' incompatible'}`}
+                          disabled={!compatible}
+                          onClick={() =>
+                            setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
+                          }
+                          title={
+                            compatible
+                              ? `${v.code} — ${v.label}`
+                              : `Not available with the current selections${v.note ? ` — ${v.note}` : ''}`
+                          }
+                        >
+                          {v.label}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )

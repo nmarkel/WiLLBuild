@@ -1,4 +1,5 @@
 import type {
+  SpecOptionValue,
   BannerPanelSize,
   Catalog,
   CatalogPart,
@@ -390,6 +391,35 @@ export function exclusiveFamily(code: string): string | undefined {
 const CENTER_FEATURE_MODEL_CODES = new Set(['SH1', 'SS1'])
 
 /**
+ * CR-OPT-14: whether choosing `value` in `opt` is compatible with the other
+ * columns' CURRENT choices — both directions: this value's own `requires`
+ * against chosen columns, and other chosen values' `requires` against this
+ * column. Used by the UI to disable chips and by repair to clear violations.
+ */
+export function valueCompatibleWithChosen(
+  part: CatalogPart,
+  chosen: Record<string, string | string[]>,
+  optKey: string,
+  value: SpecOptionValue,
+): boolean {
+  // This value's own requirements vs already-chosen columns.
+  for (const [col, allowed] of Object.entries(value.requires ?? {})) {
+    const current = specCodes(chosen[col])[0]
+    if (current && !allowed.includes(current)) return false
+  }
+  // Other chosen values' requirements vs this column.
+  for (const opt of part.options ?? []) {
+    if (opt.key === optKey) continue
+    const current = specCodes(chosen[opt.key])[0]
+    if (!current) continue
+    const chosenValue = opt.values.find((v) => v.code === current)
+    const allowed = chosenValue?.requires?.[optKey]
+    if (allowed && !allowed.includes(value.code)) return false
+  }
+  return true
+}
+
+/**
  * Whether a part may offer a given option/accessory code at all. This is the
  * part-level counterpart to `voltageCompatible`: `voltageCompatible` filters on
  * a chosen value, this one filters on which product the sheet's code belongs to.
@@ -725,6 +755,27 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
           return true
         })
         if (codes.length > 0) kept[opt.key] = codes
+      }
+      // CR-OPT-14: clear choices violating another chosen value's `requires`
+      // (PF flush fit → wall must be D/E). The requires-OWNER wins; the
+      // CONSTRAINED column clears back to unchosen — repair never re-picks.
+      for (const opt of options) {
+        const current = specCodes(kept[opt.key])[0]
+        if (!current || opt.group !== 'ordering') continue
+        const value = opt.values.find((v) => v.code === current)
+        if (!value) continue
+        if (!valueCompatibleWithChosen(part, kept, opt.key, value)) {
+          // Only clear if this value is the CONSTRAINED side (some other
+          // chosen value's requires names this column).
+          const constrainedByOther = (part.options ?? []).some((o) => {
+            if (o.key === opt.key) return false
+            const c = specCodes(kept[o.key])[0]
+            const cv = c ? o.values.find((v2) => v2.code === c) : undefined
+            const allowed = cv?.requires?.[opt.key]
+            return !!allowed && !allowed.includes(current)
+          })
+          if (constrainedByOther) delete kept[opt.key]
+        }
       }
       if (Object.keys(kept).length > 0) cleaned[slot] = kept
     }
