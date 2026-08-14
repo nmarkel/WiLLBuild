@@ -296,17 +296,19 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
             segments.append(cord)
 
     # Derived Pole Fit rides at the very end (after finish + add-ons).
+    # CR-PN-04 (amended Tyler 8/14): no pole / unlisted OD notates as 4X.
     fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)
-    pole = _find_part(catalog, getattr(cfg, "pole", ""))
-    diameter = (pole or {}).get("diameterIn")
-    if fit_column and diameter:
-        want = f"{_js_number(diameter)}R"
-        fit = next(
-            (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
-            None,
-        )
-        if fit:
-            segments.append(fit)
+    if fit_column:
+        pole = _find_part(catalog, getattr(cfg, "pole", ""))
+        diameter = (pole or {}).get("diameterIn")
+        fit = None
+        if diameter:
+            want = f"{_js_number(diameter)}R"
+            fit = next(
+                (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
+                None,
+            )
+        segments.append(fit or "4X")
 
     # Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
     # pole with nothing chosen ends after its colour code.  Interior blanks

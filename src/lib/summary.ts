@@ -154,12 +154,16 @@ export function buildPartNumber(
   }
   // Derived Pole Fit rides at the very end (after finish + add-ons): the
   // pole's OD selects the matching fit code (4" round pole → 4R).
+  // CR-PN-04 (amended Tyler 8/14): no pole chosen — or an OD the column
+  // doesn't list — notates as 4X (fit TBD), never silently omitted.
   const fitColumn = options.find((o) => o.key === 'pole-fit')
-  const poleDiameter = partById(catalog, config.pole)?.diameterIn
-  const fit = fitColumn && poleDiameter
-    ? fitColumn.values.find((v) => v.code === `${poleDiameter}R`)?.code
-    : undefined
-  if (fit) segments.push(fit)
+  if (fitColumn) {
+    const poleDiameter = partById(catalog, config.pole)?.diameterIn
+    const fit = poleDiameter
+      ? fitColumn.values.find((v) => v.code === `${poleDiameter}R`)?.code
+      : undefined
+    segments.push(fit ?? '4X')
+  }
   // Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
   // pole with nothing chosen ends after its colour code, not with `-_`.
   // Interior blanks stay: they keep the sheet's column positions readable.
