@@ -59,13 +59,21 @@ describe('real-CAD-first rule (spec D8)', () => {
 })
 
 describe('pole hand-hole graft (spec D8a)', () => {
-  it('grafts the placeholder hand-hole child onto a real pole', () => {
+  it('grafts the hand-hole cover AND the base plate onto a real pole', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
     const graft = placeholderGraftChildren(pole)
-    expect(graft).toHaveLength(1)
-    // The cover box, not the pole cylinder itself.
-    expect(graft[0].spec.kind).toBe('box')
-    expect(graft[0].position).toEqual([0.0508, 0.3175, 0])
+    // Phase 0.14 (Tyler 8/14): two box children — the cover (proud of the
+    // shaft) and the anchor-base plate (on the axis at y=0, 8.63in square
+    // for the 4in pole per Tyler's base drawings; 1in thickness assumed).
+    expect(graft).toHaveLength(2)
+    const cover = graft.find((c) => c.position[0] > 0)
+    const plate = graft.find((c) => c.name === 'base-plate')
+    expect(cover?.spec.kind).toBe('box')
+    expect(cover?.position).toEqual([0.0508, 0.3175, 0])
+    expect(plate?.spec.kind).toBe('box')
+    expect(plate?.position).toEqual([0, 0, 0])
+    expect(plate?.spec.sizeM[0]).toBeCloseTo(8.63 * 0.0254, 3)
+    expect(plate?.spec.sizeM[0]).toBe(plate?.spec.sizeM[2])
   })
 
   it('grafts nothing onto parts whose real geometry is already complete', () => {
@@ -83,21 +91,20 @@ describe('pole hand-hole graft (spec D8a)', () => {
   it('grafts the real HH-4R section AND keeps the cover plate when the GLB is present', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
     const plan = poleGraftPlan(pole, { glbPresent: true })
-    expect(plan.boxes).toHaveLength(1)
-    expect(plan.boxes[0].spec.kind).toBe('box')
+    expect(plan.boxes).toHaveLength(2) // cover + base plate (0.14)
     expect(plan.glbs).toHaveLength(1)
     expect(plan.glbs[0].glb).toMatch(/willstudio-acc-hand-hole\.glb$/)
-    // Positioned to keep the box cover's vertical CENTRE (box base + h/2),
-    // on the pole axis — the section is a full wrap, not a proud plate.
-    const box = plan.boxes[0]
-    expect(plan.glbs[0].position).toEqual([0, box.position[1] + box.spec.sizeM[1] / 2, 0])
+    // Positioned to keep the COVER's vertical CENTRE (cover base + h/2), on
+    // the pole axis — the frame anchors on the cover, never the base plate.
+    const cover = plan.boxes.find((b) => b.position[0] > 0)
+    expect(plan.glbs[0].position).toEqual([0, cover.position[1] + cover.spec.sizeM[1] / 2, 0])
   })
 
-  it('falls back to the box graft alone on a machine without the accessory GLB', () => {
+  it('falls back to the box grafts alone on a machine without the accessory GLB', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
     const plan = poleGraftPlan(pole, { glbPresent: false })
     expect(plan.glbs).toEqual([])
-    expect(plan.boxes).toHaveLength(1)
+    expect(plan.boxes).toHaveLength(2)
   })
 
   it('plans no graft for non-pole parts', () => {

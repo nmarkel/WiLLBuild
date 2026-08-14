@@ -3145,6 +3145,23 @@
               0.3175,
               0
             ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
           }
         ]
       },
@@ -3858,6 +3875,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -4575,6 +4609,23 @@
               0.3175,
               0
             ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
           }
         ]
       },
@@ -5288,6 +5339,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -6005,6 +6073,23 @@
               0.3175,
               0
             ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
           }
         ]
       },
@@ -6718,6 +6803,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -7435,6 +7537,23 @@
               0.3175,
               0
             ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
           }
         ]
       },
@@ -8148,6 +8267,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }

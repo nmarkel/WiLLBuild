@@ -119,8 +119,12 @@ export function poleGraftPlan(part, { glbPresent } = { glbPresent: existsSync(re
   const boxes = placeholderGraftChildren(part)
   if (boxes.length === 0) return { boxes: [], glbs: [] }
   if (!glbPresent) return { boxes, glbs: [] }
-  const box = boxes[0]
-  const centerY = box.position[1] + box.spec.sizeM[1] / 2
+  // Phase 0.14: a pole carries TWO box children now — the hand-hole cover
+  // (proud of the shaft, position x > 0) and the base plate (centred on the
+  // axis at y=0). Only the cover anchors the HH-4R frame's height.
+  const cover = boxes.find((b) => b.position[0] > 0)
+  if (!cover) return { boxes, glbs: [] }
+  const centerY = cover.position[1] + cover.spec.sizeM[1] / 2
   return { boxes, glbs: [{ glb: HH_GRAFT_GLB, position: [0, centerY, 0] }] }
 }
 

@@ -33,6 +33,10 @@ interface Rule {
   rawKey: string
   why: string
   columns: SpecOption[]
+  /** Phase 0.14 (CLE): rule applies only to these catalog part ids. */
+  parts?: string[]
+  /** Phase 0.14 (CLE): append when the rawKey column is absent (no raw source). */
+  append?: boolean
 }
 interface CorrectionsFile {
   products: Record<string, { reason: string; replace: Rule[] }>
