@@ -16910,7 +16910,8 @@
           }
         ]
       },
-      "realCad": true
+      "realCad": true,
+      "groundMounted": true
     },
     {
       "id": "willstudio-side-shepherds-hook-pole-top-brackets",

@@ -534,7 +534,13 @@ export function partById(catalog: Catalog, id: string): CatalogPart | undefined 
 
 /** Wizard parts for a slot; brand-scoped when a brand is given (each line has its own builder). */
 export function partsForSlot(catalog: Catalog, slot: Slot, brand?: ProductLine): CatalogPart[] {
-  return catalog.parts.filter((p) => p.slot === slot && (!brand || p.line === brand))
+  // Phase 0.14: ground-mounted products (RXB/SXB bollard) join the Fixture
+  // step from the standalone slot — see `groundMounted` in types.ts.
+  return catalog.parts.filter(
+    (p) =>
+      (p.slot === slot || (slot === 'fixture' && p.groundMounted === true)) &&
+      (!brand || p.line === brand),
+  )
 }
 
 /** A host can carry a part when it exposes a socket of the part's mount type. */
@@ -558,13 +564,19 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
     // customer's own picks start narrowing it.
     case 'arm': {
       const fixture = partById(catalog, config.fixture)
+      // Phase 0.14: a ground-mounted product is complete — nothing mounts it,
+      // nothing stands under it. All three mounting slots go empty (the Panel
+      // shows them grayed as "not applicable", repair evicts prior choices).
+      if (fixture?.groundMounted) return []
       return fixture ? options.filter((arm) => canHost(arm, fixture)) : options
     }
     case 'pole': {
+      if (partById(catalog, config.fixture)?.groundMounted) return []
       const arm = partById(catalog, config.arm)
       return arm ? options.filter((pole) => canHost(pole, arm)) : options
     }
     case 'baseCover': {
+      if (partById(catalog, config.fixture)?.groundMounted) return []
       const pole = partById(catalog, config.pole)
       return pole ? options.filter((cover) => canHost(pole, cover)) : options
     }
@@ -668,7 +680,13 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     if (!next[slot]) continue
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
-      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
+      // Phase 0.14: ground-mounted products (slot 'standalone') are legal
+      // fixture choices — see `groundMounted` in types.ts.
+      const legal =
+        fixture !== undefined &&
+        (fixture.slot === 'fixture' || fixture.groundMounted === true) &&
+        fixture.line === next.brand
+      if (!legal) {
         next.fixture = ''
       }
       continue

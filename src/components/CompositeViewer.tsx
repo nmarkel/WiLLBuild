@@ -12,7 +12,7 @@ import {
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
-import { compatibleParts } from '../lib/compat'
+import { compatibleParts, partById } from '../lib/compat'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
@@ -381,11 +381,15 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         pxPerMeterY: manifest.rig.pxPerMeterY,
         // A pole-less partial preview floats — the silhouette has no ground
         // line to stand on, so the snapshot drops it too (matches the viewer).
-        showScale: showScale && Boolean(config.pole),
+        // A ground-mounted product (bollard) stands on the ground by itself.
+        showScale:
+          showScale &&
+          (Boolean(config.pole) ||
+            Boolean(partById(catalog, config.fixture)?.groundMounted)),
       }),
     )
     return () => registerSnapshot(null)
-  }, [layout, manifest, night, showScale, config.pole, registerSnapshot])
+  }, [layout, manifest, night, showScale, config.pole, config.fixture, catalog, registerSnapshot])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     // Presses on the viewer's own controls (rotate/zoom/reset) must stay
@@ -460,7 +464,10 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // No pole yet → the layout is a floating component preview: nothing is
   // grounded, so the ground furniture (contact shadow, compass ring, human
   // silhouette; night pool is already absent from the layout) stays hidden.
-  const grounded = Boolean(config.pole)
+  // A ground-mounted product (RXB/SXB bollard) stands on the ground by
+  // itself — its base-origin render sits at y=0, so it IS grounded.
+  const grounded =
+    Boolean(config.pole) || Boolean(partById(catalog, config.fixture)?.groundMounted)
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
   // The yaw the layout actually drew (snapped to the assembly's shared step).
@@ -627,7 +634,10 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
             reference, so it rotates with the assembly spin. Projected through
             the same rig map as everything else, so it lies on the ground
             plane in correct perspective. */}
-        {showCompass && grounded && (
+        {/* The compass tracks the ARM arrangement's orientation about the
+            pole — a ground-mounted product has neither, so it needs a pole
+            specifically, not just a grounded layout. */}
+        {showCompass && Boolean(config.pole) && (
           <svg className="composite-compass" style={{ overflow: 'visible' }} aria-hidden="true">
             <polygon
               points={Array.from({ length: 48 }, (_, i) => {

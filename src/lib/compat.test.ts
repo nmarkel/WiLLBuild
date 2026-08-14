@@ -29,8 +29,41 @@ const sortedIds = (parts: { id: string }[]) => parts.map((p) => p.id).sort()
 
 describe('compatibleParts (fixture-first)', () => {
   it('offers every fixture unconditionally', () => {
-    // DRX, TEX, MVX, GVX + the DWX flood (Phase 0.10.5)
-    expect(compatibleParts(catalog, config({}), 'fixture')).toHaveLength(5)
+    // DRX, TEX, MVX, GVX + the DWX flood (Phase 0.10.5), + the RXB/SXB
+    // bollard — a ground-mounted standalone offered in the Fixture step
+    // (Phase 0.14, Tyler 8/14).
+    const fixtures = compatibleParts(catalog, config({}), 'fixture')
+    expect(fixtures).toHaveLength(6)
+    expect(fixtures.some((p) => p.id === 'willstudio-rxb-sxb-bollard')).toBe(true)
+  })
+
+  // ---- Phase 0.14 (Tyler 8/14): ground-mounted products in the builder ----
+  describe('ground-mounted fixture (RXB/SXB bollard)', () => {
+    const withBollard = config({ fixture: 'willstudio-rxb-sxb-bollard' })
+
+    it('empties bracket, pole and base cover — nothing mounts a complete product', () => {
+      expect(compatibleParts(catalog, withBollard, 'arm')).toEqual([])
+      expect(compatibleParts(catalog, withBollard, 'pole')).toEqual([])
+      expect(compatibleParts(catalog, withBollard, 'baseCover')).toEqual([])
+    })
+
+    it('repair accepts the bollard as the fixture and evicts mounting parts', () => {
+      const repaired = repairConfig(catalog, {
+        ...withBollard,
+        arm: 'sh1-shepherds-hook',
+        pole: 'alum-pole-20',
+        baseCover: 'bc-cl1-small-clamshell',
+      })
+      expect(repaired.fixture).toBe('willstudio-rxb-sxb-bollard')
+      expect(repaired.arm).toBe('')
+      expect(repaired.pole).toBe('')
+      expect(repaired.baseCover).toBe('')
+    })
+
+    it('the flag is pinned on exactly the bollard', () => {
+      const flagged = catalog.parts.filter((p) => p.groundMounted).map((p) => p.id)
+      expect(flagged).toEqual(['willstudio-rxb-sxb-bollard'])
+    })
   })
 
   it('offers only pendant arms for the GVX pendant', () => {

@@ -319,6 +319,36 @@
   border-color: rgba(230, 231, 232, 0.25);
 }
 
+/* ---- Ground-mounted fixture (Phase 0.14): Bracket / Pole / Base Cover gray
+   out instead of vanishing — the customer sees they're deliberately not
+   applicable to a complete product like the RXB/SXB bollard. ---- */
+
+.builder-app .step-na {
+  opacity: 0.55;
+}
+
+.builder-app .step-na-heading {
+  cursor: default;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 4px;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.builder-app .step-na .step-selected {
+  font-style: italic;
+}
+
+.builder-app .step-na-note {
+  margin: 0 4px 14px 40px;
+  font-size: 13px;
+  color: var(--will-gray);
+}
+
 /* ---- Base configuration: single-select boxes (replace the dropdowns) ---- */
 
 .builder-app .spec-choices {

@@ -69,6 +69,14 @@ export interface CatalogPart {
    */
   comingSoon?: boolean
   /**
+   * Phase 0.14 (Tyler 8/14): a complete, self-contained GROUND-MOUNTED product
+   * (RXB/SXB bollard) offered in the builder's Fixture step although its slot
+   * stays 'standalone' (it keeps its standalone product view). Selecting one
+   * grays out Bracket / Pole / Base Cover — compatibleParts returns [] for
+   * those slots and repair evicts prior choices. Hand-set, like `comingSoon`.
+   */
+  groundMounted?: boolean
+  /**
    * Phase 0.12_TO (Tyler 8/12): curated default codes for this part's
    * ORDERING columns, keyed by column key — seeds `config.specOptions` when
    * the part is chosen so the derived part number is complete out of the

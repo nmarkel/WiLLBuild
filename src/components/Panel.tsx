@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, partsForSlot, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -86,8 +86,20 @@ export function Panel({ catalog, config }: Props) {
   const openStep = useConfigurator((s) => s.openStep)
   const setOpenStep = useConfigurator((s) => s.setOpenStep)
 
-  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
-  const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
+  // Phase 0.14 (Tyler 8/14): a ground-mounted fixture (RXB/SXB bollard) is a
+  // complete product — Bracket / Pole / Base Cover GRAY OUT rather than
+  // vanish, so the customer sees they're deliberately not applicable.
+  const groundMounted = Boolean(partById(catalog, config.fixture)?.groundMounted)
+
+  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers) —
+  // but keep a section the bollard EMPTIED visible in its grayed state.
+  const steps = STEPS.filter(
+    (step) =>
+      compatibleParts(catalog, config, step.key).length > 0 ||
+      (groundMounted &&
+        step.key !== 'fixture' &&
+        partsForSlot(catalog, step.key, config.brand).length > 0),
+  )
 
   // Phase 0.10.5_TO (Tesla-style): every section always open in one scroll —
   // no accordion, no "Continue" ceremony. The heavy sub-UI self-collapses
@@ -97,6 +109,28 @@ export function Panel({ catalog, config }: Props) {
       {steps.map((step, i) => {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
+
+        // Phase 0.14: grayed "not applicable" section — the chosen fixture is
+        // a complete ground-mounted product, so nothing can be picked here.
+        const notApplicable =
+          groundMounted &&
+          step.key !== 'fixture' &&
+          compatibleParts(catalog, config, step.key).length === 0
+        if (notApplicable) {
+          return (
+            <section key={step.key} id={`builder-step-${step.key}`} className="step step-na">
+              <div className="step-heading step-na-heading">
+                <span className="step-num">{i + 1}</span>
+                <span className="step-label">{step.label}</span>
+                <span className="step-selected">Not applicable</span>
+              </div>
+              <p className="step-na-note">
+                This product is ground-mounted and complete on its own — no{' '}
+                {step.label.toLowerCase()} to configure.
+              </p>
+            </section>
+          )
+        }
 
         const open = openStep === step.key
         return (
