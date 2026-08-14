@@ -296,7 +296,15 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
             segments.append(cord)
 
     # Derived Pole Fit rides at the very end (after finish + add-ons).
-    # CR-PN-04 (amended Tyler 8/14): no pole / unlisted OD notates as 4X.
+    # Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
+    # pole with nothing chosen ends after its colour code.  Interior blanks
+    # stay: they keep the sheet's column positions readable.
+    while segments and segments[-1] == UNSPECIFIED:
+        segments.pop()
+
+    # CR-PN-04 (re-amended Tyler 8/14): the derived Pole Fit appends AFTER
+    # the trim — no pole / unlisted OD prints the standard blank placeholder,
+    # the one intentional trailing "_" (was briefly 4X).
     fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)
     if fit_column:
         pole = _find_part(catalog, getattr(cfg, "pole", ""))
@@ -308,13 +316,7 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
                 (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
                 None,
             )
-        segments.append(fit or "4X")
-
-    # Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
-    # pole with nothing chosen ends after its colour code.  Interior blanks
-    # stay: they keep the sheet's column positions readable.
-    while segments and segments[-1] == UNSPECIFIED:
-        segments.pop()
+        segments.append(fit or UNSPECIFIED)
 
     return "-".join(segments)
 
