@@ -653,6 +653,44 @@ describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
   })
 })
 
+describe('coupling rules (CR-OPT-12, Tyler 8/14)', () => {
+  const withCouplings = (instances: { heightFt: number; orientation: number }[]) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'options-2': ['CPLX'] } },
+      accessoryPlacements: { CPLX: instances },
+    })
+
+  it('caps at 3 instances (more via engineering)', () => {
+    const four = withCouplings([
+      { heightFt: 4, orientation: 0 },
+      { heightFt: 6, orientation: 90 },
+      { heightFt: 8, orientation: 180 },
+      { heightFt: 10, orientation: 270 },
+    ])
+    expect(withCouplings([{ heightFt: 4, orientation: 0 }]).accessoryPlacements?.CPLX).toHaveLength(1)
+    expect(four.accessoryPlacements?.CPLX).toHaveLength(3)
+  })
+
+  it('floors at 3 ft (18" above the standard hand hole, on the 6" grid)', () => {
+    expect(withCouplings([{ heightFt: 1, orientation: 0 }]).accessoryPlacements?.CPLX?.[0].heightFt).toBe(3)
+  })
+
+  it('same-orientation instances keep a 6" gap; different orientations may share a height', () => {
+    const nudged = withCouplings([
+      { heightFt: 6, orientation: 0 },
+      { heightFt: 6, orientation: 0 },
+    ])
+    expect(nudged.accessoryPlacements?.CPLX?.map((p) => p.heightFt).sort()).toEqual([6, 6.5])
+    const shared = withCouplings([
+      { heightFt: 6, orientation: 0 },
+      { heightFt: 6, orientation: 90 },
+    ])
+    expect(shared.accessoryPlacements?.CPLX?.map((p) => p.heightFt)).toEqual([6, 6])
+  })
+})
+
 describe('banner bottom-arm window (CR-PLC-08, Tyler 8/14)', () => {
   it('BAX clamps 8–10 ft with an 8 ft default on a 20 ft pole', () => {
     const cfg = repairConfig(catalog, {
@@ -1310,7 +1348,8 @@ describe('accessory placements (Phase 0.10.5)', () => {
 describe('accessory placement sides (Phase 0.10.5)', () => {
   it('side sets come from what the accessory is', () => {
     expect(accessorySideOptions('24" Wind Shedding Banner Arm Kit, ... (Specify Pole Height & Orientation)')).toEqual([1, 2, 4])
-    expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toEqual([1, 2])
+    // CR-OPT-12: couplings are instanced, not paired — no sides option.
+    expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toBeUndefined()
     expect(accessorySideOptions('Single Flag Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
     expect(accessorySideOptions('Single Plant Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
     expect(accessorySideOptions('Festoon Provision, Electrical by Others')).toBeUndefined()

@@ -649,7 +649,14 @@ function AccessoryPlacementBox({
           ordinal={isMulti && shown.length > 1 ? idx + 1 : undefined}
         />
       ))}
-      {isMulti && (
+      {isMulti &&
+        shown.length >= (accessoryValueOuter?.placement?.maxInstances ?? Infinity) && (
+          <p className="spec-options-note">
+            Need more than {accessoryValueOuter?.placement?.maxInstances}? Reach out to
+            engineering — we’ll spec it with you.
+          </p>
+        )}
+      {isMulti && shown.length < (accessoryValueOuter?.placement?.maxInstances ?? Infinity) && (
         <button
           type="button"
           className="placement-add"

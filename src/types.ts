@@ -242,6 +242,10 @@ export interface SpecOptionValue {
     stepIn?: number
     /** CR-OPT-11: this accessory may repeat on one pole, each instance placed. */
     multi?: boolean
+    /** CR-OPT-12: instance cap (couplings: 3 — more via engineering). */
+    maxInstances?: number
+    /** CR-OPT-12: minimum vertical gap between same-orientation instances, ft. */
+    minGapFt?: number
   }
 }
 

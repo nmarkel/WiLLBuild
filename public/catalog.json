@@ -3495,10 +3495,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -4176,10 +4180,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -4857,10 +4865,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -5538,10 +5550,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -6219,10 +6235,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -6900,10 +6920,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -7581,10 +7605,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]
@@ -8262,10 +8290,14 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
               "placeable": true,
               "placement": {
-                "multi": true
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
               }
             }
           ]

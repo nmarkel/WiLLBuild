@@ -273,7 +273,8 @@ export function isPlaceable(v: { label: string; placeable?: boolean }): boolean 
  */
 export function accessorySideOptions(label: string): number[] | undefined {
   if (label.includes('Banner Arm Kit')) return [1, 2, 4]
-  if (label.includes('Coupling')) return [1, 2]
+  // CR-OPT-12 (Tyler 8/14): couplings are INSTANCED, not paired — an
+  // "opposite pair" is two instances at 0° and 180°, so no sides option.
   if (label.includes('Flag Holder') || label.includes('Plant Holder')) return [1, 2]
   return undefined
 }
@@ -741,9 +742,13 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       const accessoryValue = poleAccessoryValue(catalog, next, code)
       const sideOptions = accessorySideOptions(label)
       const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
-      // CR-OPT-11: only `multi` accessories keep several instances.
-      const kept = accessoryValue?.placement?.multi ? instances : instances.slice(0, 1)
-      cleaned[code] = kept.map((p) => {
+      // CR-OPT-11: only `multi` accessories keep several instances;
+      // CR-OPT-12: capped (couplings: 3 — more via engineering).
+      const cap = accessoryValue?.placement?.multi
+        ? (accessoryValue.placement.maxInstances ?? Infinity)
+        : 1
+      const kept = instances.slice(0, cap)
+      const clamped = kept.map((p) => {
         // Phase 0.11 (D2): a panel size is meaningful only on a banner kit.
         const size = isBannerKitLabel(label)
           ? bannerSizesForLabel(catalog, label).find((s2) => s2.id === p.size)?.id
@@ -778,6 +783,22 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
           ...(size !== undefined ? { size } : {}),
         }
       })
+      // CR-OPT-12: same-orientation instances keep a minimum vertical gap —
+      // later instances nudge UP in step increments (deterministic), clamped
+      // to the window; engineering resolves anything the pole can't fit.
+      const minGap = accessoryValue?.placement?.minGapFt
+      if (minGap && clamped.length > 1) {
+        const byOrientation = new Map<number, number>()
+        const ordered = [...clamped].sort((a, b) => a.heightFt - b.heightFt)
+        for (const inst of ordered) {
+          const lastTop = byOrientation.get(inst.orientation)
+          if (lastTop !== undefined && inst.heightFt - lastTop < minGap) {
+            inst.heightFt = Math.round((lastTop + minGap) * 12) / 12
+          }
+          byOrientation.set(inst.orientation, inst.heightFt)
+        }
+      }
+      cleaned[code] = clamped
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }
