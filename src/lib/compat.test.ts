@@ -4,6 +4,7 @@ import type { Catalog, CatalogPart, PoleConfig } from '../types'
 import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
   autofillConfig,
   cordCodeFor,
+  fixtureBottomFt,
 } from './compat'
 import { bannerGeometry } from './banner'
 
@@ -632,6 +633,34 @@ describe('banner mounting rules (Phase 0.11, Workstream D)', () => {
       maxFt: 11,
       fits: true,
     })
+  })
+})
+
+describe('banner top clears the fixture bottom (CR-PLC-05, Tyler 8/14)', () => {
+  it('the AR suspension pendant pulls the banner ceiling below the pole-top rule', () => {
+    // GVX hangs 0.505 m below its mount; AR carries it at +0.143 m — the
+    // fixture bottom sits ~1.19 ft below the pole top, so the fixture rule
+    // binds. SH1 (+0.514 m socket) leaves the pole-top rule binding.
+    const ar = autofillConfig(catalog, {
+      ...defaultConfig(catalog),
+      fixture: 'gvx-pendant',
+      arm: 'willstudio-suspension-arm-pole-top-brackets',
+      pole: 'alum-pole-20',
+    })
+    const bottom = fixtureBottomFt(catalog, ar)!
+    expect(bottom).toBeLessThan(20)
+    const range = bannerHeightRange(catalog, 20, '24x48', bottom)
+    expect(range.maxFt).toBeCloseTo(Math.round((bottom - 1 - 4) * 12) / 12, 5)
+    expect(range.maxFt).toBeLessThan(15) // stricter than pole-top ceiling
+    const sh1 = { ...ar, arm: 'sh1-shepherds-hook' }
+    const sh1Range = bannerHeightRange(catalog, 20, '24x48', fixtureBottomFt(catalog, sh1))
+    expect(sh1Range.maxFt).toBe(15) // pole-top rule still binds for SH1
+  })
+
+  it('post-top fixtures carry no hangM — the rule stays inert', () => {
+    expect(
+      fixtureBottomFt(catalog, config({ fixture: 'drx-post-top', arm: 'direct-mount' })),
+    ).toBeUndefined()
   })
 })
 

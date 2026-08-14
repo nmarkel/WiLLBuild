@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -625,7 +625,14 @@ function AccessoryPlacementBox({
   // repairConfig clamps with. Before 0.11 this box floored banner kits at 2 ft
   // while repairConfig floored them at 8 ft, so the slider offered heights the
   // store immediately overrode.
-  const { minFt, maxFt, fits } = accessoryHeightRange(catalog, poleFt, label, existing?.size)
+  const { minFt, maxFt, fits } = accessoryHeightRange(
+    catalog,
+    poleFt,
+    label,
+    existing?.size,
+    // CR-PLC-05: banner top ≥ 1 ft below the fixture bottom (pendants).
+    fixtureBottomFt(catalog, config),
+  )
   // A label-declared minimum (FSTR's 37", a banner kit's 8 ft floor) is also
   // the default placement.
   const defaultFt = minFt > 2 ? minFt : Math.min(4, maxFt)

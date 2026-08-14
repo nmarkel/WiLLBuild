@@ -160,6 +160,13 @@ export interface CatalogPart {
    * fixture origin, in meters — drives the conceptual night-mode light.
    */
   lightOffset?: [number, number, number]
+  /**
+   * CR-PLC-05 (Tyler 8/14): pendant fixtures only — how far the body hangs
+   * BELOW its mount point, in meters. Measured from the part's own render
+   * (asset height minus anchor y, over pxPerMeterY), never guessed. Drives
+   * the banner-top clearance below the fixture.
+   */
+  hangM?: number
   /** GLB path; null while parts are placeholder primitives. */
   model: string | null
   /** Parametric primitive spec for preview; optional for standalone (photo-card tier). */

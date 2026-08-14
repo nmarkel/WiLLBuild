@@ -112,14 +112,38 @@ export interface HeightRange {
  * the ceiling has to leave room for the panel itself, or a tall banner's top
  * would run off the pole.
  */
+const M_TO_FT = 3.280839895
+
+/**
+ * CR-PLC-05 (Tyler 8/14): how high the chosen fixture's BOTTOM sits above
+ * grade, in feet — pole top, plus the arm's fixture-socket height, minus the
+ * fixture's measured hang. Undefined when any piece is missing (post-top
+ * fixtures carry no hangM, so the rule is pendant-only by data).
+ */
+export function fixtureBottomFt(catalog: Catalog, config: PoleConfig): number | undefined {
+  const fixture = partById(catalog, config.fixture)
+  const arm = partById(catalog, config.arm)
+  const poleFt = partById(catalog, config.pole)?.heightFt
+  if (!fixture?.hangM || !arm || !poleFt) return undefined
+  const socket = Object.values(arm.sockets ?? {}).find((s) => s.type === fixture.mount)
+  if (!socket) return undefined
+  return poleFt + socket.position[1] * M_TO_FT - fixture.hangM * M_TO_FT
+}
+
 export function bannerHeightRange(
   catalog: Catalog,
   poleFt: number,
   sizeId?: string,
+  fixtureBottom?: number,
 ): HeightRange {
   const minFt = bannerMinFt(poleFt)
   const panelFt = bannerPanelSize(catalog, sizeId).heightIn / 12
-  const ceiling = Math.round((poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT) * 12) / 12
+  // CR-PLC-05: the banner's TOP stays at least 1 ft below the fixture's
+  // bottom — the binding ceiling when a pendant hangs below the pole top.
+  const belowFixture =
+    fixtureBottom !== undefined ? fixtureBottom - ACCESSORY_TOP_CLEARANCE_FT - panelFt : Infinity
+  const ceiling =
+    Math.round(Math.min(poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT, belowFixture) * 12) / 12
   // A pole too short to hold this panel above the floor collapses to the floor
   // rather than inverting the range (the "floor wins" rule pre-dates 0.11).
   // `fits: false` says so out loud instead of quietly returning a height whose
@@ -138,8 +162,9 @@ export function accessoryHeightRange(
   poleFt: number,
   label: string,
   sizeId?: string,
+  fixtureBottom?: number,
 ): HeightRange {
-  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId)
+  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId, fixtureBottom)
   const minFt = labelMinFt(label) ?? 2
   const ceiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
   return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
@@ -686,7 +711,13 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       // own height under the pole top; other accessories keep their label
       // minimum (FSTR's 37") under 1 ft of pole-top clearance. Heights stay
       // inch-granular so such minimums are representable exactly.
-      const { minFt, maxFt } = accessoryHeightRange(catalog, poleFt, label, size)
+      const { minFt, maxFt } = accessoryHeightRange(
+        catalog,
+        poleFt,
+        label,
+        size,
+        fixtureBottomFt(catalog, next),
+      )
       const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
       // Sides exist only where the accessory supports them, clamped to its set.
       const sideOptions = accessorySideOptions(label)
