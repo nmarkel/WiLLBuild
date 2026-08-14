@@ -292,12 +292,12 @@
 }
 
 /* ---- Partial-build hint (Phase 0.14): pill over the art, never a full-screen
-   state — the render always shows from the first pick. Bottom-center, above
-   the viewport controls' corner cluster. ---- */
+   state — the render always shows from the first pick. Bottom-center, sitting
+   ABOVE the scene/night/compass toolbar (which owns the bottom-center strip). ---- */
 
 .composite-hint {
   position: absolute;
-  bottom: 22px;
+  bottom: 78px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 8;

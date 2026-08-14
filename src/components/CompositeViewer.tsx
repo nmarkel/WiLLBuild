@@ -713,7 +713,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           never a full-screen state. Lists only slots this brand offers. */}
       {neededSlots.length > 0 && (
         <div className="composite-hint" aria-live="polite">
-          Add {neededSlots.map((s) => SLOT_HINT_LABELS[s]).join(', ')} to complete your pole
+          Add {neededSlots.map((s) => SLOT_HINT_LABELS[s]).join(', ')} to complete your build
         </div>
       )}
     </div>
