@@ -229,6 +229,13 @@ export interface SpecOptionValue {
    * the pole (HHX → HHX-4 on a 4" pole). No/unknown diameter → own code.
    */
   resolvesByDiameter?: Record<string, string>
+  /**
+   * CR-PLC-07 (Tyler 8/14): bespoke shaft-placement window for this
+   * accessory — floor/ceiling/default in feet, step in inches. Absent fields
+   * fall back to the generic rules (label minimum / pole-top clearance /
+   * 1-inch granularity). The pole's own ceiling still applies on short poles.
+   */
+  placement?: { minFt?: number; maxFt?: number; defaultFt?: number; stepIn?: number }
 }
 
 /** One column of the ordering matrix = one configurator choice. */

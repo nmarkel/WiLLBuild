@@ -636,6 +636,23 @@ describe('banner mounting rules (Phase 0.11, Workstream D)', () => {
   })
 })
 
+describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
+  const withHolder = (code: string, heightFt: number) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: [code] } },
+      accessoryPlacements: { [code]: { heightFt, orientation: 0, sides: 1 } },
+    })
+
+  it('flag + plant holders clamp to 8–12 ft and snap to 6-inch steps', () => {
+    expect(withHolder('FH', 3).accessoryPlacements?.FH?.heightFt).toBe(8)
+    expect(withHolder('FH', 19).accessoryPlacements?.FH?.heightFt).toBe(12)
+    // 9.7 ft snaps to the 6" grid → 9.5 ft.
+    expect(withHolder('PH', 9.7).accessoryPlacements?.PH?.heightFt).toBe(9.5)
+  })
+})
+
 describe('banner top clears the fixture bottom (CR-PLC-05, Tyler 8/14)', () => {
   it('the AR suspension pendant pulls the banner ceiling below the pole-top rule', () => {
     // GVX hangs 0.505 m below its mount; AR carries it at +0.143 m — the

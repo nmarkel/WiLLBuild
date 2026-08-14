@@ -307,7 +307,13 @@
                   "label": "Flag Holder Kit",
                   "mapsTo": null,
                   "note": "A single flag bracket with stainless hardware \u2014 field installed",
-                  "placeable": true
+                  "placeable": true,
+                  "placement": {
+                    "minFt": 8,
+                    "maxFt": 12,
+                    "defaultFt": 10,
+                    "stepIn": 6
+                  }
                 },
                 {
                   "buildable": null,
@@ -315,7 +321,13 @@
                   "label": "Plant Holder Kit",
                   "mapsTo": null,
                   "note": "A single planter bracket with stainless hardware \u2014 field installed",
-                  "placeable": true
+                  "placeable": true,
+                  "placement": {
+                    "minFt": 8,
+                    "maxFt": 12,
+                    "defaultFt": 9,
+                    "stepIn": 6
+                  }
                 }
               ]
             }

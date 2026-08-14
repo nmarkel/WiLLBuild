@@ -163,10 +163,14 @@ export function accessoryHeightRange(
   label: string,
   sizeId?: string,
   fixtureBottom?: number,
+  placement?: { minFt?: number; maxFt?: number },
 ): HeightRange {
   if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId, fixtureBottom)
-  const minFt = labelMinFt(label) ?? 2
-  const ceiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
+  // CR-PLC-07: an accessory's own window (FH/PH: 8–12 ft) beats the generic
+  // rules; the pole's physical ceiling still applies on short poles.
+  const minFt = placement?.minFt ?? labelMinFt(label) ?? 2
+  const poleCeiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
+  const ceiling = Math.min(placement?.maxFt ?? Infinity, poleCeiling)
   return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
 }
 
@@ -269,12 +273,18 @@ export function accessorySideOptions(label: string): number[] | undefined {
     placement rules — constraints like the festoon minimum live in the caption
     since the plain-English pass. */
 export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: string): string {
+  const value = poleAccessoryValue(catalog, config, code)
+  return value ? valueText(value) : ''
+}
+
+/** The selected pole accessory's full value object (placement window etc.). */
+export function poleAccessoryValue(catalog: Catalog, config: PoleConfig, code: string) {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue
     const value = opt.values.find((v) => v.code === code)
-    if (value) return valueText(value)
+    if (value) return value
   }
-  return ''
+  return undefined
 }
 
 /**
@@ -711,14 +721,19 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       // own height under the pole top; other accessories keep their label
       // minimum (FSTR's 37") under 1 ft of pole-top clearance. Heights stay
       // inch-granular so such minimums are representable exactly.
+      const accessoryValue = poleAccessoryValue(catalog, next, code)
       const { minFt, maxFt } = accessoryHeightRange(
         catalog,
         poleFt,
         label,
         size,
         fixtureBottomFt(catalog, next),
+        accessoryValue?.placement,
       )
-      const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
+      // CR-PLC-07: snap to the accessory's step (FH/PH: 6"), else the inch.
+      const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
+      const snapped = Math.round(p.heightFt / stepFt) * stepFt
+      const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(snapped * 12) / 12))
       // Sides exist only where the accessory supports them, clamped to its set.
       const sideOptions = accessorySideOptions(label)
       const sides =
