@@ -653,6 +653,20 @@ describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
   })
 })
 
+describe('banner bottom-arm window (CR-PLC-08, Tyler 8/14)', () => {
+  it('BAX clamps 8–10 ft with an 8 ft default on a 20 ft pole', () => {
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: ['BAX'] } },
+      accessoryPlacements: { BAX: { heightFt: 15, orientation: 0, sides: 1 } },
+    })
+    // 15 ft exceeds the kit's own 10 ft bottom-arm cap — tighter than the
+    // pole/panel rule (which would allow 15 on a 20 ft pole).
+    expect(cfg.accessoryPlacements?.BAX?.heightFt).toBe(10)
+  })
+})
+
 describe('banner top clears the fixture bottom (CR-PLC-05, Tyler 8/14)', () => {
   it('the AR suspension pendant pulls the banner ceiling below the pole-top rule', () => {
     // GVX hangs 0.505 m below its mount; AR carries it at +0.143 m — the
@@ -700,11 +714,11 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
     expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.heightFt).toBe(8)
   })
 
-  it('reserves the panel height under the pole top', () => {
-    // 20 ft pole − 4 ft default panel − 1 ft clearance.
-    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(15)
-    // 20 ft pole − 5 ft panel − 1 ft clearance.
-    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(14)
+  it('reserves the panel height under the pole top — within the kit window', () => {
+    // CR-PLC-08 (Tyler 8/14): BAX's own bottom-arm cap (10 ft) is tighter
+    // than the structural 20 − panel − 1 ceilings, so it binds either size.
+    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(10)
+    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(10)
   })
 
   it('keeps a size the kit can carry and drops one it cannot', () => {
@@ -729,9 +743,10 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
     expect(repaired.accessoryPlacements?.FSTR?.size).toBeUndefined()
   })
 
-  it('a banner reads the same height whichever path configured it', () => {
-    // 20 ft pole either way: alum-pole-20 for the kit path, the NAFCO fallback
-    // for the legacy path.
+  it('both paths share the structural rules; kit windows differentiate by data', () => {
+    // The legacy NAFCO path carries no CR-PLC-08 window, so it keeps the
+    // structural ceiling (20 − 4 − 1 = 15); WiLLstudio's BAX kit caps at its
+    // own 10 ft bottom-arm rule. Same shared function, different value data.
     const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt
     const nafcoCfg = repairConfig(
       catalog,
@@ -741,7 +756,8 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
       ...nafcoCfg,
       banner: { armId: 'nafco-ba1-banner-arm', count: 1, heightFt: 99 },
     }).banner?.heightFt
-    expect(kit).toBe(legacy)
+    expect(kit).toBe(10)
+    expect(legacy).toBe(15)
   })
 })
 

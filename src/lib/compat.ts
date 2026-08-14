@@ -135,15 +135,24 @@ export function bannerHeightRange(
   poleFt: number,
   sizeId?: string,
   fixtureBottom?: number,
+  placement?: { minFt?: number; maxFt?: number },
 ): HeightRange {
-  const minFt = bannerMinFt(poleFt)
+  // CR-PLC-08: the kit's own window (BAX bottom arm: 8–10 ft) combines with
+  // the structural rules — every ceiling applies, tightest wins.
+  const minFt = Math.max(bannerMinFt(poleFt), placement?.minFt ?? 0)
   const panelFt = bannerPanelSize(catalog, sizeId).heightIn / 12
   // CR-PLC-05: the banner's TOP stays at least 1 ft below the fixture's
   // bottom — the binding ceiling when a pendant hangs below the pole top.
   const belowFixture =
     fixtureBottom !== undefined ? fixtureBottom - ACCESSORY_TOP_CLEARANCE_FT - panelFt : Infinity
   const ceiling =
-    Math.round(Math.min(poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT, belowFixture) * 12) / 12
+    Math.round(
+      Math.min(
+        poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT,
+        belowFixture,
+        placement?.maxFt ?? Infinity,
+      ) * 12,
+    ) / 12
   // A pole too short to hold this panel above the floor collapses to the floor
   // rather than inverting the range (the "floor wins" rule pre-dates 0.11).
   // `fits: false` says so out loud instead of quietly returning a height whose
@@ -165,7 +174,7 @@ export function accessoryHeightRange(
   fixtureBottom?: number,
   placement?: { minFt?: number; maxFt?: number },
 ): HeightRange {
-  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId, fixtureBottom)
+  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId, fixtureBottom, placement)
   // CR-PLC-07: an accessory's own window (FH/PH: 8–12 ft) beats the generic
   // rules; the pole's physical ceiling still applies on short poles.
   const minFt = placement?.minFt ?? labelMinFt(label) ?? 2

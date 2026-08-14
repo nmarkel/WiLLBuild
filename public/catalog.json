@@ -3509,7 +3509,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -4178,7 +4184,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -4847,7 +4859,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -5516,7 +5534,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -6185,7 +6209,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -6854,7 +6884,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -7523,7 +7559,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
@@ -8192,7 +8234,13 @@
               "label": "Banner Arm Kit",
               "mapsTo": null,
               "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              }
             },
             {
               "buildable": null,
