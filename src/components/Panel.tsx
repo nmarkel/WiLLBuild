@@ -458,6 +458,27 @@ function StepSpecOptions({
                     )
                   }
                   const checked = specCodes(chosen[opt.key]).includes(v.code)
+                  // CR-OPT-13 (UI): the shaft-access group caps at 2 TOTAL.
+                  // A checked accessory with no committed placement still
+                  // occupies a slot, so it counts as 1. When full, unchecked
+                  // group members lock and say why.
+                  const vGroup = v.placement?.spacingGroup
+                  const vGroupCap = v.placement?.groupMaxInstances
+                  const groupFull =
+                    !checked &&
+                    vGroup !== undefined &&
+                    vGroupCap !== undefined &&
+                    (part.options ?? [])
+                      .filter((o2) => o2.group === 'options-accessories')
+                      .flatMap((o2) => o2.values)
+                      .filter((v2) => v2.placement?.spacingGroup === vGroup)
+                      .reduce((n, v2) => {
+                        const inst = placementInstances(config, v2.code).length
+                        const isChecked = (part.options ?? []).some((o2) =>
+                          specCodes(chosen[o2.key]).includes(v2.code),
+                        )
+                        return n + (isChecked ? Math.max(1, inst) : inst)
+                      }, 0) >= vGroupCap
                   const placeable = slot === 'pole' && isPlaceable(v)
                   const family = exclusiveFamily(v.code)
                   return (
@@ -479,13 +500,15 @@ function StepSpecOptions({
                             name={`${slot}-${family}`}
                             checked={checked}
                             readOnly
-                            onClick={() => toggleSpecOption(slot, opt.key, v.code)}
+                            onClick={() => !groupFull && toggleSpecOption(slot, opt.key, v.code)}
+                            disabled={groupFull}
                           />
                         ) : (
                           <input
                             type="checkbox"
                             checked={checked}
-                            onChange={() => toggleSpecOption(slot, opt.key, v.code)}
+                            onChange={() => !groupFull && toggleSpecOption(slot, opt.key, v.code)}
+                            disabled={groupFull}
                           />
                         )}
                         {/* Phase 0.12_TO (Tyler): plain English only — the
@@ -496,6 +519,15 @@ function StepSpecOptions({
                           {v.note && <span className="spec-check-note">{v.note}</span>}
                         </span>
                       </label>
+                      {groupFull && (
+                        <p className="spec-options-note placement-blocked">
+                          Maximum of {vGroupCap} total hand holes + festoons per pole — reach
+                          out to engineering if you need more.
+                        </p>
+                      )}
+                      {checked && v.disclaimer && (
+                        <p className="placement-disclaimer">{v.disclaimer}</p>
+                      )}
                       {checked && placeable && (
                         <AccessoryPlacementBox
                           catalog={catalog}

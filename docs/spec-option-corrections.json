@@ -328,7 +328,8 @@
                     "maxFt": 10,
                     "defaultFt": 8,
                     "stepIn": 6
-                  }
+                  },
+                  "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
                 },
                 {
                   "buildable": null,

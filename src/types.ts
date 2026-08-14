@@ -244,6 +244,11 @@ export interface SpecOptionValue {
    */
   requires?: Record<string, string[]>
   /**
+   * CR-PLC-09 (Tyler 8/14): attention line shown when this accessory is
+   * SELECTED (banner kits: engineering reviews every application at quote).
+   */
+  disclaimer?: string
+  /**
    * CR-PLC-07 (Tyler 8/14): bespoke shaft-placement window for this
    * accessory — floor/ceiling/default in feet, step in inches. Absent fields
    * fall back to the generic rules (label minimum / pole-top clearance /

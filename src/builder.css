@@ -902,3 +902,14 @@
   cursor: not-allowed;
   text-decoration: line-through;
 }
+
+/* CR-PLC-09: engineering disclaimer on selected accessories (banner kits). */
+.builder-app .placement-disclaimer {
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--will-yellow);
+  background: var(--yellow-soft);
+  font-size: 12.5px;
+  color: var(--text);
+  border-radius: 0 8px 8px 0;
+}
