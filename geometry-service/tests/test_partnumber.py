@@ -280,8 +280,8 @@ class TestPerSlotFinishReachesTheNumber:
         assert "-WH-" in build_part_number(catalog, cfg, "fixture")
         # Trailing unanswered columns no longer print — DG is the last segment.
         assert build_part_number(catalog, cfg, "pole").endswith("-DG")
-        # The derived Pole Fit rides after the colour (Tyler 8/12): …-DB-4R.
-        assert "-DB-" in build_part_number(catalog, cfg, "baseCover")
+        # Fit sits in the sheet position (Tyler 8/14 final): WP-CL1-4R-DB.
+        assert build_part_number(catalog, cfg, "baseCover").endswith("-DB")
 
     def test_anodized_colour_drives_the_finish_type_segment(self, catalog):
         painted = PoleConfig(

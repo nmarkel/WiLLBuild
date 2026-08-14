@@ -239,8 +239,17 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         values = opt.get("values") or []
         selected = spec_codes(chosen.get(key))
         if key == "pole-fit":
-            # Phase 0.12_TO (Tyler 8/12): Pole Fit derives from the chosen
-            # pole's diameter — appended after the finish, at the end.
+            # CR-PN-04 (final form, Tyler 8/14): derived, in the sheet's own
+            # column position; blank placeholder when no pole is chosen.
+            pole = _find_part(catalog, getattr(cfg, "pole", ""))
+            diameter = (pole or {}).get("diameterIn")
+            fit = None
+            if diameter:
+                want = f"{_js_number(diameter)}R"
+                fit = next(
+                    (v["code"] for v in values if v.get("code") == want), None
+                )
+            segments.append(fit or UNSPECIFIED)
             continue
         if selected:
             segments.append(selected[0])
@@ -301,22 +310,6 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     # stay: they keep the sheet's column positions readable.
     while segments and segments[-1] == UNSPECIFIED:
         segments.pop()
-
-    # CR-PN-04 (re-amended Tyler 8/14): the derived Pole Fit appends AFTER
-    # the trim — no pole / unlisted OD prints the standard blank placeholder,
-    # the one intentional trailing "_" (was briefly 4X).
-    fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)
-    if fit_column:
-        pole = _find_part(catalog, getattr(cfg, "pole", ""))
-        diameter = (pole or {}).get("diameterIn")
-        fit = None
-        if diameter:
-            want = f"{_js_number(diameter)}R"
-            fit = next(
-                (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
-                None,
-            )
-        segments.append(fit or UNSPECIFIED)
 
     return "-".join(segments)
 

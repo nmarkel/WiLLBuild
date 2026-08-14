@@ -107,9 +107,16 @@ export function buildPartNumber(
   for (const opt of options.filter((o) => o.group === 'ordering').sort(byPosition)) {
     const selected = specCodes(chosen[opt.key])[0]
     if (opt.key === 'pole-fit') {
-      // Phase 0.12_TO (Tyler 8/12): a base cover's Pole Fit is a function of
-      // the chosen pole's diameter, not a customer choice — derived below and
-      // appended AFTER the finish, at the end of the number.
+      // CR-PN-04 (final form, Tyler 8/14): Pole Fit is a function of the
+      // chosen pole's diameter, never a customer choice, and it lives in the
+      // sheet's own column position — WP-CL1-4R-BK derived, WP-CL1-_-BK when
+      // no pole is chosen (the blank is interior, finish follows it).
+      const poleDiameter = partById(catalog, config.pole)?.diameterIn
+      segments.push(
+        (poleDiameter
+          ? opt.values.find((v) => v.code === `${poleDiameter}R`)?.code
+          : undefined) ?? '_',
+      )
       continue
     }
     if (selected) {
@@ -158,17 +165,6 @@ export function buildPartNumber(
   // pole with nothing chosen ends after its colour code, not with `-_`.
   // Interior blanks stay: they keep the sheet's column positions readable.
   while (segments.length > 0 && segments[segments.length - 1] === '_') segments.pop()
-  // CR-PN-04 (re-amended Tyler 8/14): the derived Pole Fit appends AFTER the
-  // trim — with no pole chosen (or an unlisted OD) it prints the standard
-  // blank placeholder, the one intentional trailing `_` (was briefly 4X).
-  const fitColumn = options.find((o) => o.key === 'pole-fit')
-  if (fitColumn) {
-    const poleDiameter = partById(catalog, config.pole)?.diameterIn
-    const fit = poleDiameter
-      ? fitColumn.values.find((v) => v.code === `${poleDiameter}R`)?.code
-      : undefined
-    segments.push(fit ?? '_')
-  }
   return segments.join('-')
 }
 

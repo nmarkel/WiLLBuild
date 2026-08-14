@@ -255,7 +255,7 @@ describe('base cover part number (Phase 0.10.5)', () => {
       // ignored, and the derived fit rides at the END, after the colour.
       specOptions: { baseCover: { 'pole-fit': '5R' } },
     })
-    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-BK-4R')
+    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-4R-BK')
   })
 })
 
