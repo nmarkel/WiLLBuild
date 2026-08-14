@@ -33,13 +33,14 @@ import { isComingSoon } from './availability'
  * spec-sheet part append their add-ons identically. Mirrored by
  * `_with_add_ons` in geometry-service/app/partnumber.py.
  */
-function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
+function addOnCodes(catalog: Catalog, part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
   const chosen = config.specOptions?.[slot] ?? {}
   // CR-OPT-07: a value may resolve its printed code by the chosen voltage
   // (surge: SRGXXX10 → SRG27710 on MV / SRG48010 on HV). CR-OPT-06: derived
   // rows (the bracket cord) never print their own code — the resolver
   // appends the derived one separately.
   const voltage = specCodes(chosen['voltage'])[0]
+  const poleDiameter = partById(catalog, config.pole)?.diameterIn
   return (part.options ?? [])
     .filter((o) => o.group === 'options-accessories')
     .sort((a, b) => a.orderPosition - b.orderPosition)
@@ -51,7 +52,11 @@ function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[]
         const value = o.values.find((v) => v.code === code)
         if (value?.derived) return []
         const mapped = voltage ? value?.resolvesBy?.[voltage] : undefined
-        return [mapped ?? code]
+        // CR-OPT-10: pole-diameter-resolved codes (hand hole size digit).
+        const sized = poleDiameter
+          ? value?.resolvesByDiameter?.[String(poleDiameter)]
+          : undefined
+        return [sized ?? mapped ?? code]
       }),
     )
 }
@@ -94,7 +99,7 @@ export function buildPartNumber(
     // Phase 0.11 (Workstream C): a model-code arm still carries its chosen
     // options. Tyler 8/12: arms lead with the WP product-family code like
     // every other WiLLstudio number — `WP-SS2-BK-CF2`.
-    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(part, config, slot)].join('-')
+    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -152,7 +157,7 @@ export function buildPartNumber(
       segments.push('_')
     }
   }
-  segments.push(...addOnCodes(part, config, slot))
+  segments.push(...addOnCodes(catalog, part, config, slot))
   // CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard) — appended
   // like an add-on, but from the arm pairing, never from a selection.
   if (slot === 'fixture') {

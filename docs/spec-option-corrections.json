@@ -238,11 +238,16 @@
               "values": [
                 {
                   "buildable": null,
-                  "code": "HHX",
+                  "code": "HHXR",
                   "label": "Additional Hand Hole",
                   "mapsTo": null,
-                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it",
-                  "placeable": true
+                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it. Standard or reinforced, confirmed with your quote",
+                  "placeable": true,
+                  "resolvesByDiameter": {
+                    "4": "HHXR-4",
+                    "5": "HHXR-5",
+                    "6": "HHXR-6"
+                  }
                 },
                 {
                   "buildable": null,

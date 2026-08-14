@@ -282,6 +282,8 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     # CR-OPT-07: voltage-resolved codes; CR-OPT-06: derived rows never print
     # their own code.  Mirrors addOnCodes in src/lib/summary.ts.
     voltage = (spec_codes(chosen.get("voltage")) or [None])[0]
+    _pole = _find_part(catalog, getattr(cfg, "pole", ""))
+    pole_diameter = (_pole or {}).get("diameterIn")
     for opt in sorted(
         (o for o in options if o.get("group") == "options-accessories"),
         key=lambda o: o.get("orderPosition", 0),
@@ -296,7 +298,13 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
             if value and value.get("derived"):
                 continue
             mapped = (value or {}).get("resolvesBy", {}).get(voltage) if voltage else None
-            segments.append(mapped or code)
+            # CR-OPT-10: pole-diameter-resolved codes (hand-hole size digit).
+            sized = (
+                (value or {}).get("resolvesByDiameter", {}).get(_js_number(pole_diameter))
+                if pole_diameter
+                else None
+            )
+            segments.append(sized or mapped or code)
 
     # CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard).
     if slot == "fixture":

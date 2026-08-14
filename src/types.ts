@@ -216,6 +216,12 @@ export interface SpecOptionValue {
    * (HV). Unmapped or unchosen voltage → the row's own code prints as-is.
    */
   resolvesBy?: Record<string, string>
+  /**
+   * CR-OPT-10 (Tyler 8/14): like resolvesBy, but keyed by the chosen POLE's
+   * outside diameter in inches — the hand hole's size digit is a function of
+   * the pole (HHX → HHX-4 on a 4" pole). No/unknown diameter → own code.
+   */
+  resolvesByDiameter?: Record<string, string>
 }
 
 /** One column of the ordering matrix = one configurator choice. */
