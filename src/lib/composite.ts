@@ -435,7 +435,9 @@ export function resolveAssemblyLayout(
       const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === config.brand)
       if (bannerPart) {
         for (const code of kitCodes) {
-          const placement = config.accessoryPlacements?.[code]
+          // CR-OPT-11: placements are instanced; the banner kit is
+          // single-instance by data, so the first instance is the banner.
+          const placement = config.accessoryPlacements?.[code]?.[0]
           // Same bottom reference as the legacy path above. The fallback tracks
           // the pole-height-dependent floor (10 ft on a 25 ft pole) rather than
           // the old hardcoded 8.

@@ -286,6 +286,24 @@ export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: s
   return value ? valueText(value) : ''
 }
 
+/**
+ * CR-OPT-11: an accessory's placement instances, whatever shape the config
+ * carries (legacy single object, array, or nothing → []).
+ */
+export function placementInstances(
+  config: PoleConfig,
+  code: string,
+): import('../types').AccessoryPlacement[] {
+  // Legacy single-object entries reach here through old URLs / saved configs
+  // typed loosely — normalize defensively even though arrays are canonical.
+  const raw = config.accessoryPlacements?.[code] as
+    | import('../types').AccessoryPlacement[]
+    | import('../types').AccessoryPlacement
+    | undefined
+  if (!raw) return []
+  return Array.isArray(raw) ? raw : [raw]
+}
+
 /** The selected pole accessory's full value object (placement window etc.). */
 export function poleAccessoryValue(catalog: Catalog, config: PoleConfig, code: string) {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
@@ -716,52 +734,50 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     const placeable = new Set(placeableAccessoryCodes(catalog, next))
     const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
     const cleaned: NonNullable<PoleConfig['accessoryPlacements']> = {}
-    for (const [code, p] of Object.entries(next.accessoryPlacements)) {
-      if (!placeable.has(code) || !p) continue
+    for (const code of Object.keys(next.accessoryPlacements)) {
+      const instances = placementInstances(next, code)
+      if (!placeable.has(code) || instances.length === 0) continue
       const label = poleAccessoryLabel(catalog, next, code)
-      // Phase 0.11 (D2): a panel size is meaningful only on a banner kit, and
-      // only when the kit's arms are long enough for it (BA24 can't fly a 30"
-      // banner). Anything else — unknown id, size on a festoon — is dropped.
-      const size = isBannerKitLabel(label)
-        ? bannerSizesForLabel(catalog, label).find((s) => s.id === p.size)?.id
-        : undefined
-      // Phase 0.11 (D3): ONE height window, shared with the placement UI —
-      // banner kits measure to the bottom of the banner and reserve the panel's
-      // own height under the pole top; other accessories keep their label
-      // minimum (FSTR's 37") under 1 ft of pole-top clearance. Heights stay
-      // inch-granular so such minimums are representable exactly.
       const accessoryValue = poleAccessoryValue(catalog, next, code)
-      const { minFt, maxFt } = accessoryHeightRange(
-        catalog,
-        poleFt,
-        label,
-        size,
-        fixtureBottomFt(catalog, next),
-        accessoryValue?.placement,
-      )
-      // CR-PLC-07: snap to the accessory's step (FH/PH: 6"), else the inch.
-      const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
-      const snapped = Math.round(p.heightFt / stepFt) * stepFt
-      const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(snapped * 12) / 12))
-      // Sides exist only where the accessory supports them, clamped to its set.
       const sideOptions = accessorySideOptions(label)
-      const sides =
-        sideOptions && p.sides !== undefined
-          ? sideOptions.includes(p.sides)
-            ? p.sides
-            : 1
+      const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
+      // CR-OPT-11: only `multi` accessories keep several instances.
+      const kept = accessoryValue?.placement?.multi ? instances : instances.slice(0, 1)
+      cleaned[code] = kept.map((p) => {
+        // Phase 0.11 (D2): a panel size is meaningful only on a banner kit.
+        const size = isBannerKitLabel(label)
+          ? bannerSizesForLabel(catalog, label).find((s2) => s2.id === p.size)?.id
           : undefined
-      // Tyler 8/12: fold the orientation onto the arrangement's distinct set —
-      // an opposite pair repeats every 180° (0/90 only); four sides repeat
-      // every 90° (orientation moot), same rule as the radial arm twin.
-      const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
-      const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
-      cleaned[code] = {
-        heightFt,
-        orientation,
-        ...(sides !== undefined ? { sides } : {}),
-        ...(size !== undefined ? { size } : {}),
-      }
+        // Sides exist only where the accessory supports them, clamped to its set.
+        const sides =
+          sideOptions && p.sides !== undefined
+            ? sideOptions.includes(p.sides)
+              ? p.sides
+              : 1
+            : undefined
+        // Phase 0.11 (D3): ONE height window shared with the placement UI;
+        // CR-PLC-05 fixture clearance and CR-PLC-07/08 windows apply per
+        // instance, and heights snap to the accessory's step grid.
+        const { minFt, maxFt } = accessoryHeightRange(
+          catalog,
+          poleFt,
+          label,
+          size,
+          fixtureBottomFt(catalog, next),
+          accessoryValue?.placement,
+        )
+        const snapped = Math.round(p.heightFt / stepFt) * stepFt
+        const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(snapped * 12) / 12))
+        // Tyler 8/12: fold the orientation onto the arrangement's distinct set.
+        const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
+        const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
+        return {
+          heightFt,
+          orientation,
+          ...(sides !== undefined ? { sides } : {}),
+          ...(size !== undefined ? { size } : {}),
+        }
+      })
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }

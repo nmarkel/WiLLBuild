@@ -86,8 +86,12 @@ interface ConfiguratorState {
   setArmOrientation: (deg: number) => void
   /** Phase 0.8 (C): set or clear the mid-shaft banner-arm accessory. */
   setBanner: (banner: import('./types').BannerConfig | null) => void
-  /** Phase 0.10.5: place a selected pole accessory (FSTR/CPL/FH/PH/…) on the shaft. */
-  setAccessoryPlacement: (code: string, placement: import('./types').AccessoryPlacement) => void
+  /**
+   * Phase 0.10.5, instanced in CR-OPT-11 (Tyler 8/14): set ALL placement
+   * instances for a pole accessory (multi accessories carry several — one per
+   * coupling/hand hole on the shaft).
+   */
+  setAccessoryPlacement: (code: string, placements: import('./types').AccessoryPlacement[]) => void
   /** Phase 0.8 (D), reshaped in 0.10.5: pick a single-choice ordering column value for one part's step. */
   setSpecOption: (slot: Slot, key: string, code: string) => void
   /**
@@ -234,10 +238,10 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
     set({ config: next })
   },
 
-  setAccessoryPlacement: (code, placement) => {
+  setAccessoryPlacement: (code, placements) => {
     const { catalog, config, view, brand, scene } = get()
     if (!catalog || !config || view.kind === 'product') return
-    const accessoryPlacements = { ...(config.accessoryPlacements ?? {}), [code]: placement }
+    const accessoryPlacements = { ...(config.accessoryPlacements ?? {}), [code]: placements }
     const next = repairConfig(catalog, { ...config, accessoryPlacements, rev: config.rev + 1 })
     syncUrl(brand, next, scene)
     set({ config: next })

@@ -642,14 +642,14 @@ describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
       ...autofillConfig(catalog, defaultConfig(catalog)),
       pole: 'alum-pole-20',
       specOptions: { pole: { accessories: [code] } },
-      accessoryPlacements: { [code]: { heightFt, orientation: 0, sides: 1 } },
+      accessoryPlacements: { [code]: [{ heightFt, orientation: 0, sides: 1 }] },
     })
 
   it('flag + plant holders clamp to 8–12 ft and snap to 6-inch steps', () => {
-    expect(withHolder('FH', 3).accessoryPlacements?.FH?.heightFt).toBe(8)
-    expect(withHolder('FH', 19).accessoryPlacements?.FH?.heightFt).toBe(12)
+    expect(withHolder('FH', 3).accessoryPlacements?.FH?.[0]?.heightFt).toBe(8)
+    expect(withHolder('FH', 19).accessoryPlacements?.FH?.[0]?.heightFt).toBe(12)
     // 9.7 ft snaps to the 6" grid → 9.5 ft.
-    expect(withHolder('PH', 9.7).accessoryPlacements?.PH?.heightFt).toBe(9.5)
+    expect(withHolder('PH', 9.7).accessoryPlacements?.PH?.[0]?.heightFt).toBe(9.5)
   })
 })
 
@@ -659,11 +659,11 @@ describe('banner bottom-arm window (CR-PLC-08, Tyler 8/14)', () => {
       ...autofillConfig(catalog, defaultConfig(catalog)),
       pole: 'alum-pole-20',
       specOptions: { pole: { accessories: ['BAX'] } },
-      accessoryPlacements: { BAX: { heightFt: 15, orientation: 0, sides: 1 } },
+      accessoryPlacements: { BAX: [{ heightFt: 15, orientation: 0, sides: 1 }] },
     })
     // 15 ft exceeds the kit's own 10 ft bottom-arm cap — tighter than the
     // pole/panel rule (which would allow 15 on a 20 ft pole).
-    expect(cfg.accessoryPlacements?.BAX?.heightFt).toBe(10)
+    expect(cfg.accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
   })
 })
 
@@ -704,21 +704,21 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-20',
         specOptions: { pole: { accessories: [code] } },
-        accessoryPlacements: { [code]: { heightFt, orientation: 0, sides: 1, ...(size ? { size } : {}) } },
+        accessoryPlacements: { [code]: [{ heightFt, orientation: 0, sides: 1, ...(size ? { size } : {}) }] },
       }),
     )
 
   it('applies the 8 ft banner floor a placement UI once ignored', () => {
     // Pre-0.11 divergence: repairConfig floored banner kits at BANNER_MIN_FT
     // while Panel's slider floored them at 2 ft. Both now use one function.
-    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.heightFt).toBe(8)
+    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(8)
   })
 
   it('reserves the panel height under the pole top — within the kit window', () => {
     // CR-PLC-08 (Tyler 8/14): BAX's own bottom-arm cap (10 ft) is tighter
     // than the structural 20 − panel − 1 ceilings, so it binds either size.
-    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(10)
-    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(10)
+    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
+    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
   })
 
   it('keeps a size the kit can carry and drops one it cannot', () => {
@@ -726,7 +726,7 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
     // length (24"/30") resolves at quote from the chosen banner. The per-kit
     // width gate lives on only as a label-parsing rule (tested above) for
     // sheets that still declare an arm length.
-    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.size).toBe('30x60')
+    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.[0]?.size).toBe('30x60')
   })
 
   it('never stores a panel size on a non-banner accessory', () => {
@@ -737,17 +737,17 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-12',
         specOptions: { pole: { options: ['FSTR'] } },
-        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 0, size: '24x48' } },
+        accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 0, size: '24x48' }] },
       }),
     )
-    expect(repaired.accessoryPlacements?.FSTR?.size).toBeUndefined()
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.size).toBeUndefined()
   })
 
   it('both paths share the structural rules; kit windows differentiate by data', () => {
     // The legacy NAFCO path carries no CR-PLC-08 window, so it keeps the
     // structural ceiling (20 − 4 − 1 = 15); WiLLstudio's BAX kit caps at its
     // own 10 ft bottom-arm rule. Same shared function, different value data.
-    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt
+    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.[0]?.heightFt
     const nafcoCfg = repairConfig(
       catalog,
       config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
@@ -1292,16 +1292,16 @@ describe('accessory placements (Phase 0.10.5)', () => {
   it('repairConfig clamps placement height to the shaft and orientation to the compass set', () => {
     const repaired = repairConfig(catalog, {
       ...withFstr(),
-      accessoryPlacements: { FSTR: { heightFt: 99, orientation: 45 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 99, orientation: 45 }] },
     })
     // 12 ft pole → max 11 ft; bad orientation resets to 0.
-    expect(repaired.accessoryPlacements).toEqual({ FSTR: { heightFt: 11, orientation: 0 } })
+    expect(repaired.accessoryPlacements).toEqual({ FSTR: [{ heightFt: 11, orientation: 0 }] })
   })
 
   it('repairConfig drops placements whose code is not selected', () => {
     const repaired = repairConfig(catalog, {
       ...config({}),
-      accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 90 }] },
     })
     expect(repaired.accessoryPlacements).toBeUndefined()
   })
@@ -1326,14 +1326,14 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
     const repaired = repairConfig(catalog, {
       ...base,
       accessoryPlacements: {
-        BAX: { heightFt: 10, orientation: 90, sides: 4 },
-        FH: { heightFt: 8, orientation: 0, sides: 4 }, // FH allows 1|2 → clamps to 1
-        FSTR: { heightFt: 6, orientation: 0, sides: 2 }, // FSTR has no sides → stripped
+        BAX: [{ heightFt: 10, orientation: 90, sides: 4 }],
+        FH: [{ heightFt: 8, orientation: 0, sides: 4 }], // FH allows 1|2 → clamps to 1
+        FSTR: [{ heightFt: 6, orientation: 0, sides: 2 }], // FSTR has no sides → stripped
       },
     })
-    expect(repaired.accessoryPlacements?.BAX?.sides).toBe(4)
-    expect(repaired.accessoryPlacements?.FH?.sides).toBe(1)
-    expect(repaired.accessoryPlacements?.FSTR?.sides).toBeUndefined()
+    expect(repaired.accessoryPlacements?.BAX?.[0]?.sides).toBe(4)
+    expect(repaired.accessoryPlacements?.FH?.[0]?.sides).toBe(1)
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.sides).toBeUndefined()
   })
 
   it('repairConfig honors FSTR’s 37-inch label minimum', () => {
@@ -1345,8 +1345,8 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
     })
     const repaired = repairConfig(catalog, {
       ...base,
-      accessoryPlacements: { FSTR: { heightFt: 0, orientation: 0 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 0, orientation: 0 }] },
     })
-    expect(repaired.accessoryPlacements?.FSTR?.heightFt).toBeCloseTo(37 / 12, 5)
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.heightFt).toBeCloseTo(37 / 12, 5)
   })
 })

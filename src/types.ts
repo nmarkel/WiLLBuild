@@ -235,7 +235,14 @@ export interface SpecOptionValue {
    * fall back to the generic rules (label minimum / pole-top clearance /
    * 1-inch granularity). The pole's own ceiling still applies on short poles.
    */
-  placement?: { minFt?: number; maxFt?: number; defaultFt?: number; stepIn?: number }
+  placement?: {
+    minFt?: number
+    maxFt?: number
+    defaultFt?: number
+    stepIn?: number
+    /** CR-OPT-11: this accessory may repeat on one pole, each instance placed. */
+    multi?: boolean
+  }
 }
 
 /** One column of the ordering matrix = one configurator choice. */
@@ -453,7 +460,14 @@ export interface PoleConfig {
    * code (FSTR, CPL-P-12, FH, …). Only meaningful while the code is selected
    * in the pole's options — repairConfig prunes the rest.
    */
-  accessoryPlacements?: Record<string, AccessoryPlacement>
+  /**
+   * CR-OPT-11 (Tyler 8/14): placements are INSTANCED — an accessory marked
+   * `placement.multi` (couplings, hand holes) may repeat on one pole, each
+   * instance with its own height/orientation. Arrays are canonical; legacy
+   * single-object entries (old share URLs, pre-8/14 configs) are normalized
+   * at the boundaries (placementInstances / the URL parser).
+   */
+  accessoryPlacements?: Record<string, AccessoryPlacement[]>
   /**
    * Phase 0.8 (D), reshaped in 0.10.5: selected spec-sheet option codes, keyed by
    * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":

@@ -87,7 +87,9 @@ class PoleConfig(BaseModel):
     # Phase 0.10.5 viewer/ordering axes accepted so a full config round-trips
     # without loss.  Neither reaches the geometry kit yet.
     armOrientation: int | None = None
-    accessoryPlacements: dict[str, AccessoryPlacement] | None = None
+    # CR-OPT-11 (Tyler 8/14): placements are INSTANCED — arrays are canonical;
+    # single objects accepted for pre-8/14 payload compatibility.
+    accessoryPlacements: dict[str, list[AccessoryPlacement] | AccessoryPlacement] | None = None
 
 
 class GenerateRequest(BaseModel):

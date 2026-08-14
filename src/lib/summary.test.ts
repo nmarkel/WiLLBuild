@@ -233,7 +233,7 @@ describe('accessory placement in summary (Phase 0.10.5)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-12',
         specOptions: { pole: { options: ['FSTR'] } },
-        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+        accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 90 }] },
       }),
     )
     expect(summary).toContain('FSTR — Festoon Power Provision')

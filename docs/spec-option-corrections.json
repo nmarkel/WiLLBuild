@@ -238,15 +238,18 @@
               "values": [
                 {
                   "buildable": null,
-                  "code": "HHXR",
+                  "code": "HHUR",
                   "label": "Additional Hand Hole",
                   "mapsTo": null,
-                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it. Standard or reinforced, confirmed with your quote",
+                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it. Reinforced version available on request",
                   "placeable": true,
                   "resolvesByDiameter": {
-                    "4": "HHXR-4",
-                    "5": "HHXR-5",
-                    "6": "HHXR-6"
+                    "4": "HHUR-4",
+                    "5": "HHUR-5",
+                    "6": "HHUR-6"
+                  },
+                  "placement": {
+                    "multi": true
                   }
                 },
                 {
@@ -277,7 +280,10 @@
                   "label": "Threaded Coupling",
                   "mapsTo": null,
                   "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote",
-                  "placeable": true
+                  "placeable": true,
+                  "placement": {
+                    "multi": true
+                  }
                 }
               ]
             }

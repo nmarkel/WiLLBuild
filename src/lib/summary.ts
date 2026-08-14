@@ -3,6 +3,7 @@ import { bannerSummaryLine, formatPanelSize } from './banner'
 import {
   cordCodeFor,
   exclusiveFamily,
+  placementInstances,
   ACCENT_FINISH_KEY,
   accentFinishFor,
   bannerPanelSize,
@@ -56,7 +57,13 @@ function addOnCodes(catalog: Catalog, part: CatalogPart, config: PoleConfig, slo
         const sized = poleDiameter
           ? value?.resolvesByDiameter?.[String(poleDiameter)]
           : undefined
-        return [sized ?? mapped ?? code]
+        const resolved = sized ?? mapped ?? code
+        // CR-OPT-11: a multi accessory prints once PER CONFIGURED INSTANCE
+        // (two couplings → …-CPLX-CPLX); unplaced selection prints once.
+        const count = value?.placement?.multi
+          ? Math.max(1, placementInstances(config, code).length)
+          : 1
+        return Array(count).fill(resolved)
       }),
     )
 }
@@ -241,19 +248,26 @@ export function buildSummaryText(
           const value = opt.values.find((v) => v.code === code)
           const quote = value && value.buildable !== true ? ' (quote only)' : ''
           // Placed accessories carry their shaft position for the quote.
-          const placement = config.accessoryPlacements?.[code]
-          const sides = placement?.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
-          // Phase 0.11 (D): say what the height measures TO, and name the
-          // ordered panel — a bare "12 ft" is exactly the ambiguity the
-          // centre-vs-bottom bug hid behind.
-          const panel =
-            placement && isBannerKitLabel(value?.label ?? '')
+          // CR-OPT-11: instanced placements — one quote line per instance
+          // (each coupling/hand hole carries its own position).
+          const instances = placementInstances(config, code)
+          if (instances.length === 0) {
+            partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}`)
+          }
+          for (const placement of instances) {
+            const sides =
+              placement.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
+            // Phase 0.11 (D): say what the height measures TO, and name the
+            // ordered panel — a bare "12 ft" is exactly the ambiguity the
+            // centre-vs-bottom bug hid behind.
+            const panel = isBannerKitLabel(value?.label ?? '')
               ? `, ${formatPanelSize(bannerPanelSize(catalog, placement.size))} panel`
               : ''
-          const placed = placement
-            ? ` — placed ${placement.heightFt} ft to bottom @ ${placement.orientation}°${sides}${panel}`
-            : ''
-          partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`)
+            const placed = ` — placed ${placement.heightFt} ft to bottom @ ${placement.orientation}°${sides}${panel}`
+            partLines.push(
+              `  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`,
+            )
+          }
         }
       }
     }

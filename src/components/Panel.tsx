@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, poleAccessoryValue, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -618,9 +618,80 @@ function AccessoryPlacementBox({
   label: string
 }) {
   const setAccessoryPlacement = useConfigurator((s) => s.setAccessoryPlacement)
+  // CR-OPT-11: placements are instanced; multi accessories (couplings, hand
+  // holes) render one box per instance plus an "Add another" affordance.
+  const instances = placementInstances(config, code)
+  const accessoryValueOuter = poleAccessoryValue(catalog, config, code)
+  const isMulti = accessoryValueOuter?.placement?.multi === true
+  const shown = instances.length > 0 ? instances : [undefined]
+  const commit = (idx: number, p: import('../types').AccessoryPlacement) => {
+    const next = [...(instances.length > 0 ? instances : [])]
+    next[idx] = p
+    setAccessoryPlacement(code, next)
+  }
+  return (
+    <>
+      {shown.map((existingInstance, idx) => (
+        <PlacementInstance
+          key={idx}
+          catalog={catalog}
+          code={code}
+          config={config}
+          poleFt={poleFt}
+          label={label}
+          existing={existingInstance}
+          onChange={(p) => commit(idx, p)}
+          onRemove={
+            isMulti && idx > 0
+              ? () => setAccessoryPlacement(code, instances.filter((_, i) => i !== idx))
+              : undefined
+          }
+          ordinal={isMulti && shown.length > 1 ? idx + 1 : undefined}
+        />
+      ))}
+      {isMulti && (
+        <button
+          type="button"
+          className="placement-add"
+          onClick={() => {
+            const base = shown[shown.length - 1]
+            const template = base ?? { heightFt: 4, orientation: 0 }
+            setAccessoryPlacement(code, [
+              ...(instances.length > 0 ? instances : [template]),
+              { ...template },
+            ])
+          }}
+        >
+          + Add another {label.split(',')[0].toLowerCase()}
+        </button>
+      )}
+    </>
+  )
+}
+
+function PlacementInstance({
+  catalog,
+  code,
+  config,
+  poleFt,
+  label,
+  existing,
+  onChange,
+  onRemove,
+  ordinal,
+}: {
+  catalog: Catalog
+  code: string
+  config: PoleConfig
+  poleFt: number
+  label: string
+  existing: import('../types').AccessoryPlacement | undefined
+  onChange: (p: import('../types').AccessoryPlacement) => void
+  onRemove?: () => void
+  ordinal?: number
+}) {
   const sideOptions = accessorySideOptions(label)
   const bannerKit = isBannerKitLabel(label)
-  const existing = config.accessoryPlacements?.[code]
   // Phase 0.11 (D3): the height window comes from the same function
   // repairConfig clamps with. Before 0.11 this box floored banner kits at 2 ft
   // while repairConfig floored them at 8 ft, so the slider offered heights the
@@ -653,6 +724,16 @@ function AccessoryPlacementBox({
   }
   return (
     <div className="placement-box">
+      {(ordinal !== undefined || onRemove) && (
+        <div className="placement-instance-head">
+          {ordinal !== undefined && <span className="placement-ordinal">#{ordinal}</span>}
+          {onRemove && (
+            <button type="button" className="placement-remove" onClick={onRemove}>
+              Remove
+            </button>
+          )}
+        </div>
+      )}
       {/* Phase 0.11 (D2): panel size on a banner kit — only the sizes this
           kit's arms can carry (BA24's 24" arms can't fly a 30" banner). */}
       {bannerKit && (
@@ -665,7 +746,7 @@ function AccessoryPlacementBox({
                 className={`arm-count-chip ${
                   bannerPanelSize(catalog, placement.size).id === s.id ? 'selected' : ''
                 }`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, size: s.id })}
+                onClick={() => onChange({ ...placement, size: s.id })}
               >
                 <span className="arm-count-name">{formatPanelSize(s)}</span>
                 {s.default && <span className="arm-count-sub">Most common</span>}
@@ -687,7 +768,7 @@ function AccessoryPlacementBox({
           max={maxFt}
           step={stepFt}
           value={Math.min(Math.max(placement.heightFt, minFt), maxFt)}
-          onChange={(e) => setAccessoryPlacement(code, { ...placement, heightFt: Number(e.target.value) })}
+          onChange={(e) => onChange({ ...placement, heightFt: Number(e.target.value) })}
         />
       </label>
       {!fits &&
@@ -710,7 +791,7 @@ function AccessoryPlacementBox({
               <button
                 key={n}
                 className={`arm-count-chip ${(placement.sides ?? 1) === n ? 'selected' : ''}`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, sides: n })}
+                onClick={() => onChange({ ...placement, sides: n })}
                 title={SIDE_LABELS[n] ?? `${n} sides`}
               >
                 <span className="arm-count-name">{SIDE_LABELS[n] ?? `${n} sides`}</span>
@@ -730,7 +811,7 @@ function AccessoryPlacementBox({
               <button
                 key={deg}
                 className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
+                onClick={() => onChange({ ...placement, orientation: deg })}
                 title={`${deg}° from the hand-hole reference`}
               >
                 <span className="arm-count-name">{deg}°</span>

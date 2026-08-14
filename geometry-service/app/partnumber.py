@@ -304,7 +304,14 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
                 if pole_diameter
                 else None
             )
-            segments.append(sized or mapped or code)
+            resolved = sized or mapped or code
+            # CR-OPT-11: a multi accessory prints once per configured instance.
+            count = 1
+            if ((value or {}).get("placement") or {}).get("multi"):
+                raw = (getattr(cfg, "accessoryPlacements", None) or {}).get(code)
+                instances = raw if isinstance(raw, list) else ([raw] if raw else [])
+                count = max(1, len(instances))
+            segments.extend([resolved] * count)
 
     # CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard).
     if slot == "fixture":
