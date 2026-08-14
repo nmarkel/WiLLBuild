@@ -1,5 +1,5 @@
 {
-  "note": "Phase 0.12 \u2014 declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
+  "note": "Phase 0.12 — declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
   "rules": "Each entry replaces ONE raw column (matched by `rawKey`) with an ordered list of corrected columns. Fractional orderPosition values keep a split column adjacent to its neighbours without renumbering the sheet. No value here is invented: pole columns were lifted verbatim from the reviewed catalog, TEX columns re-partitioned from the raw parse.",
   "products": {
     "willstudio-decorative-aluminum-light-poles": {
@@ -241,7 +241,7 @@
                   "code": "HHUR",
                   "label": "Additional Hand Hole",
                   "mapsTo": null,
-                  "note": "An extra access opening with its own cover \u2014 placed wherever you need it. Reinforced version available on request",
+                  "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
                   "placeable": true,
                   "resolvesByDiameter": {
                     "4": "HHUR-4",
@@ -263,7 +263,7 @@
                   "code": "FSTR",
                   "label": "Festoon Power Provision",
                   "mapsTo": null,
-                  "note": "Electrical Component Provision, Component & Wiring by others \u2014 Minimum 37\u201d above the base",
+                  "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
                   "placeable": true,
                   "placement": {
                     "minFt": 3.0833333333333335,
@@ -281,7 +281,7 @@
         },
         {
           "rawKey": "options-2",
-          "why": "Tyler 8/12: consolidate all five coupling variants (pipe/straight thread \u00d7 sizes) into one generic line; thread type and size resolve at quote.",
+          "why": "Tyler 8/12: consolidate all five coupling variants (pipe/straight thread × sizes) into one generic line; thread type and size resolve at quote.",
           "columns": [
             {
               "key": "options-2",
@@ -294,7 +294,7 @@
                   "code": "CPLX",
                   "label": "Threaded Coupling",
                   "mapsTo": null,
-                  "note": "A welded-on mounting point for cameras, signs, or receptacles \u2014 thread type and size confirmed with your quote. Custom orientation available upon request",
+                  "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
                   "placeable": true,
                   "placement": {
                     "minFt": 3,
@@ -324,7 +324,7 @@
                   "code": "BAX",
                   "label": "Banner Arm Kit",
                   "mapsTo": null,
-                  "note": "Available with 18\u201d, 24\u201d and 30\u201d arms \u2014 the arm follows your banner size (24\u201d shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+                  "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
                   "placeable": true,
                   "resolvesBySize": {
                     "18x36": "BA18",
@@ -344,7 +344,7 @@
                   "code": "FH",
                   "label": "Flag Holder Kit",
                   "mapsTo": null,
-                  "note": "A single flag bracket with stainless hardware \u2014 field installed. A 3\u00d75 ft flag is shown in the preview",
+                  "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
                   "placeable": true,
                   "placement": {
                     "minFt": 8,
@@ -359,7 +359,7 @@
                   "code": "PH",
                   "label": "Plant Holder Kit",
                   "mapsTo": null,
-                  "note": "A single planter bracket with stainless hardware \u2014 field installed",
+                  "note": "A single planter bracket with stainless hardware — field installed",
                   "placeable": true,
                   "placement": {
                     "minFt": 8,
@@ -375,7 +375,7 @@
         },
         {
           "rawKey": "fixture-mounting",
-          "why": "CR-OPT-14 (Tyler 8/14): PF Flush Arm Fit requires a D (.188) or E (.250) wall \u2014 the flush fit machines into the wall, so the thin C (.125) wall is out. Encoded as a value-level `requires` dependency.",
+          "why": "CR-OPT-14 (Tyler 8/14): PF Flush Arm Fit requires a D (.188) or E (.250) wall — the flush fit machines into the wall, so the thin C (.125) wall is out. Encoded as a value-level `requires` dependency.",
           "columns": [
             {
               "group": "ordering",
@@ -402,7 +402,7 @@
                   "code": "PF",
                   "label": "Flush Arm Fit",
                   "mapsTo": null,
-                  "note": "Needs a D (.188\u201d) or E (.250\u201d) wall",
+                  "note": "Needs a D (.188”) or E (.250”) wall",
                   "requires": {
                     "wall-thickness": [
                       "D",
@@ -455,63 +455,63 @@
                 {
                   "buildable": null,
                   "code": "P1",
-                  "label": "4\u201d OD x 5\u201d Long Tenon",
+                  "label": "4” OD x 5” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P2",
-                  "label": "2.38\u201d OD x 4\u201d Long Tenon",
+                  "label": "2.38” OD x 4” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P3",
-                  "label": "3.50\u201d OD x 6\u201d Long Tenon",
+                  "label": "3.50” OD x 6” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P4",
-                  "label": "4\u201d OD x 6\u201d Long Tenon",
+                  "label": "4” OD x 6” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P5",
-                  "label": "2.88\u201d OD x 4\u201d Long",
+                  "label": "2.88” OD x 4” Long",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P6",
-                  "label": "2.88\u201d OD x 5\u201d Long Tenon",
+                  "label": "2.88” OD x 5” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "P7",
-                  "label": "2.38\u201d OD x 5\u201d Long Tenon",
+                  "label": "2.38” OD x 5” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "PQ",
-                  "label": "2.38\u201d OD x 12\u201d Long Tenon",
+                  "label": "2.38” OD x 12” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
                 {
                   "buildable": null,
                   "code": "PD",
-                  "label": "3\u201d OD x 3\u201d Long Tenon",
+                  "label": "3” OD x 3” Long Tenon",
                   "mapsTo": null,
                   "note": null
                 },
@@ -529,11 +529,11 @@
       ]
     },
     "willstudio-tex-post-top-area": {
-      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number \u2014 see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
+      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number — see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
       "replace": [
         {
           "rawKey": "lumen-output",
-          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-\u2026 (no design), with none it resolved WD-TEX-\u2026 (no lumen). Split restores both.",
+          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-… (no design), with none it resolved WD-TEX-… (no lumen). Split restores both.",
           "columns": [
             {
               "key": "design",
@@ -774,7 +774,7 @@
       ]
     },
     "willstudio-gvx-pendant": {
-      "reason": "Tyler's 8/12 config-pass directive (docs/spec-defaults-request.md Request 1): collapse voltage/length variants into generic X-codes that go into the part number as-is (the concrete variant resolves at quote time), simplify labels, and drop 90D from the customer list. Unlike the parse-artifact rules above, these values ARE deliberate simplifications, not sheet transcriptions \u2014 provenance is the Tyler directive, pending Puddy's confirmation that the X-code convention is orderable.",
+      "reason": "Tyler's 8/12 config-pass directive (docs/spec-defaults-request.md Request 1): collapse voltage/length variants into generic X-codes that go into the part number as-is (the concrete variant resolves at quote time), simplify labels, and drop 90D from the customer list. Unlike the parse-artifact rules above, these values ARE deliberate simplifications, not sheet transcriptions — provenance is the Tyler directive, pending Puddy's confirmation that the X-code convention is orderable.",
       "replace": [
         {
           "rawKey": "options",
@@ -791,7 +791,7 @@
                   "code": "WHPXNP",
                   "label": "Cord w/o Plug, Stripped Pigtail",
                   "mapsTo": null,
-                  "note": "Included with your WiLLstudio bracket \u2014 6\u2019 cord w/o plug, stripped pigtail (2\u2019 with the PM1 arm), per the ordering sheet",
+                  "note": "Included with your WiLLstudio bracket — 6’ cord w/o plug, stripped pigtail (2’ with the PM1 arm), per the ordering sheet",
                   "derived": true
                 },
                 {
@@ -820,7 +820,7 @@
                   "code": "MPS",
                   "label": "Motion Sensor",
                   "mapsTo": null,
-                  "note": "Programmable on/off, dimming & photocontrol \u2014 tune it over Bluetooth"
+                  "note": "Programmable on/off, dimming & photocontrol — tune it over Bluetooth"
                 }
               ]
             }
@@ -828,7 +828,7 @@
         },
         {
           "rawKey": "accessories",
-          "why": "Label simplification only \u2014 same three accessories, shorter customer-facing names.",
+          "why": "Label simplification only — same three accessories, shorter customer-facing names.",
           "columns": [
             {
               "key": "accessories",
@@ -848,18 +848,50 @@
                   "code": "GFX",
                   "label": "Wireless DMX Control",
                   "mapsTo": null,
-                  "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
+                  "note": "Consult factory — we’ll coordinate the details with your quote"
                 },
                 {
                   "buildable": null,
                   "code": "GFM",
                   "label": "Wireless Mesh Control",
                   "mapsTo": null,
-                  "note": "Consult factory \u2014 we\u2019ll coordinate the details with your quote"
+                  "note": "Consult factory — we’ll coordinate the details with your quote"
                 }
               ]
             }
           ]
+        }
+      ]
+    },
+    "willstudio-decorative-base-covers": {
+      "reason": "Tyler 8/14 (Puddy check D): CLE (Clamshell Base Extender) is an OFFICIAL accessory line on the CL1/CL2/CL3 ordering sheets — and only there, never on the SC1/SC2 spun collars. This rule makes the previously hand-added column regen-proof: apply-spec-option-corrections restores it if it drifts. NOTE the base covers have NO machine-parsed sheet (docs/spec-options.json has no entry for this handle), so their whole options block is curated catalog data — running merge-spec-options.mjs alone still wipes it (documented hazard); this rule protects CLE within the preferred apply-corrections flow.",
+      "replace": [
+        {
+          "rawKey": "accessories",
+          "parts": [
+            "bc-cl1-small-clamshell",
+            "bc-cl2-medium-clamshell",
+            "bc-cl3-large-clamshell"
+          ],
+          "why": "CLE appends to the end of the base-cover part number after finish (WP-CL1-4R-BK-CLE). Column captured verbatim from the reviewed catalog.",
+          "columns": [
+            {
+              "key": "accessories",
+              "label": "Accessories",
+              "group": "options-accessories",
+              "orderPosition": 9,
+              "values": [
+                {
+                  "buildable": null,
+                  "code": "CLE",
+                  "label": "Clamshell Base Extender",
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ],
+          "append": true
         }
       ]
     }

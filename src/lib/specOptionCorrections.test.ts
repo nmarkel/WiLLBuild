@@ -62,6 +62,18 @@ describe('spec-option corrections are applied in the shipped catalog', () => {
       for (const rule of entry.replace) {
         it(`${rule.rawKey} -> ${rule.columns.map((c) => c.key).join(' + ')}`, () => {
           for (const part of partsFor(handle)) {
+            // Phase 0.14 (CLE): a `parts`-scoped rule applies only to the named
+            // catalog ids — the other parts sharing the handle are on a sheet
+            // that never carried the column, and must NOT have it.
+            if (rule.parts && !rule.parts.includes(part.id)) {
+              for (const col of rule.columns) {
+                expect(
+                  part.options!.find((o) => o.key === col.key),
+                  `${part.id} is outside the rule's parts scope but carries ${col.key}`,
+                ).toBeUndefined()
+              }
+              continue
+            }
             const keys = part.options!.map((o) => o.key)
 
             // The merged column must be gone — unless the split legitimately
