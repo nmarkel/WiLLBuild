@@ -186,6 +186,70 @@ describe('resolveAssemblyLayout', () => {
   })
 })
 
+// ---- Phase 0.14 (Tyler 8/14): partial builds render from the FIRST pick ----
+describe('resolveAssemblyLayout — partial builds', () => {
+  it('a lone fixture renders as a component preview (no light data)', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '', arm: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['fix'])
+    // No pole → no ground → no night pool/glow points.
+    expect(l.lightPx).toBeUndefined()
+  })
+
+  it('fixture + arm without a pole compose via the same socket walk, anchored at origin', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['arm', 'fix'])
+    // The fixture still hangs at the arm's pendant socket (1, 0.5) relative to
+    // the arm mount — identical geometry to the full assembly, just unmoored.
+    const arm = l.layers.find((x) => x.partId === 'arm')!
+    const fix = l.layers.find((x) => x.partId === 'fix')!
+    const armAnchor = [arm.left + 10, arm.top + 78]
+    const fixAnchor = [fix.left + 45, fix.top + 5]
+    expect(fixAnchor[0] - armAnchor[0]).toBe(100)
+    expect(fixAnchor[1] - armAnchor[1]).toBe(-50)
+  })
+
+  it('a lone arm renders', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '', fixture: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['arm'])
+  })
+
+  it('a lone base cover renders', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', arm: '', fixture: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['base'])
+  })
+
+  it('fixture + pole with no bracket hovers the fixture above the pole top, awaiting its bracket', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, baseCover: '', arm: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['fix', 'pole'])
+    // Fixture anchor sits ABOVE the pole top socket (0,6,0): clearance =
+    // hangM (unset here → 0) + 0.15 m → 15 px up in the test rig.
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    const fix = l.layers.find((x) => x.partId === 'fix')!
+    const poleTopY = pole.top + 600 - 600 // pole anchor is its base; top socket 6m up → anchor px - 600
+    const fixAnchorY = fix.top + 5
+    expect(fixAnchorY).toBe(poleTopY - 15)
+    // It never claims a mount: no light data either (no arm walk ran)…
+    expect(l.lightPx).toBeUndefined()
+  })
+
+  it('a base cover alongside other parts (no pole) waits for its pole instead of overlapping', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '' })
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['arm', 'fix'])
+  })
+
+  it('the full assembly is byte-identical to before (partial paths change nothing when complete)', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, config)
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['pole', 'base', 'arm', 'fix'])
+    expect(l.lightPx).toBeDefined()
+  })
+})
+
 // ---- Phase 0.8 (A): radial multi-arm helpers + fan-out ----
 
 describe('angleKeyForAzimuth', () => {

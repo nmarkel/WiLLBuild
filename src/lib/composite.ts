@@ -315,9 +315,20 @@ export function resolveAssemblyLayout(
       if (s)
         placements.push({ layerId: baseCover.id, part: baseCover, angle: HERO_ANGLE, world: s.position, z: SLOT_Z.baseCover })
     }
-    if (arm) {
-      const armSocket = attachSocket(arm, pole)
-      if (armSocket) {
+  }
+
+  // Phase 0.14 (Tyler 8/14): the build previews from the FIRST pick, not the
+  // last. Without a pole the arm stack anchors at the world origin — an
+  // explicitly partial component preview, not an assembly claim; the viewer
+  // suppresses ground furniture (shadow, compass, silhouette, night pool)
+  // until a pole grounds the scene.
+  {
+    const armMount: [number, number, number] | null = !arm
+      ? null
+      : pole
+        ? (attachSocket(arm, pole)?.position ?? null)
+        : [0, 0, 0]
+    if (arm && armMount) {
         const count = Math.max(1, Math.floor(config.armCount ?? 1))
         // Phase 0.10.5: orientation rotates the whole arrangement about the pole
         // (0/90/180/270) and the view rotation subtracts on top — each arm
@@ -344,9 +355,9 @@ export function resolveAssemblyLayout(
           // part's native frame and ride along with it.
           const mo = arm.mountOffset ?? [0, 0, 0]
           const armWorld: [number, number, number] = [
-            armSocket.position[0] + mo[0],
-            armSocket.position[1] + mo[1],
-            armSocket.position[2] + mo[2],
+            armMount[0] + mo[0],
+            armMount[1] + mo[1],
+            armMount[2] + mo[2],
           ]
           // The unrotated single arm keeps the historic fixed z-order; rotated
           // or radial arms z-sort by camera depth so ones reaching behind the
@@ -398,6 +409,9 @@ export function resolveAssemblyLayout(
         })
       }
     }
+  // Banner arms and placed kits are mid-SHAFT hardware — they only exist once
+  // there is a shaft, so this whole section stays pole-gated.
+  if (pole) {
     // Phase 0.8 (C): banner-arm accessory — a mid-shaft bracket set repeated on
     // `count` radial sides. Same positional machinery as arms (per-azimuth
     // renders + camera-depth z-order), only at a parametric shaft height rather
@@ -463,6 +477,34 @@ export function resolveAssemblyLayout(
     }
   }
 
+  // Phase 0.14: a fixture with no arm still previews — alone at the origin,
+  // or, when a pole is already chosen but no bracket yet, hovering above the
+  // pole top with a clearance that scales with its own hang length, visibly
+  // awaiting its bracket rather than silently vanishing from the view. The
+  // hover is a preview cue only; nothing about mounting is being claimed.
+  if (fixture && !arm) {
+    const fixtureAngle = angleKeyForAzimuth((((0 - viewYaw) % 360) + 360) % 360)
+    const topY = pole
+      ? Math.max(0, ...Object.values(pole.sockets ?? {}).map((s) => s.position[1]))
+      : 0
+    const world: [number, number, number] = pole
+      ? [0, topY + (fixture.hangM ?? 0) + 0.15, 0]
+      : [0, 0, 0]
+    placements.push({ layerId: fixture.id, part: fixture, angle: fixtureAngle, world, z: SLOT_Z.fixture })
+  }
+
+  // A base cover picked first previews alone; the moment any other part is
+  // chosen it waits for the pole it wraps (the attachSocket walk above).
+  if (baseCover && !pole && !arm && !fixture) {
+    placements.push({
+      layerId: baseCover.id,
+      part: baseCover,
+      angle: HERO_ANGLE,
+      world: [0, 0, 0],
+      z: SLOT_Z.baseCover,
+    })
+  }
+
   const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
   for (const { layerId, part, angle, world, z } of placements) {
@@ -514,7 +556,10 @@ export function resolveAssemblyLayout(
     missing,
     appliedViewYaw: viewYaw,
   }
-  if (lightWorlds.length && !missing.length) {
+  // Night-light points only make sense once a pole grounds the scene — for a
+  // floating partial preview the pool/beam would hang mid-air, so the layout
+  // simply carries no light data and night view dims without glow.
+  if (pole && lightWorlds.length && !missing.length) {
     const lightPxs = lightWorlds.map((w) => pointInLayout(layout, manifest, w))
     layout.lightPxs = lightPxs
     layout.lightPx = lightPxs[0]

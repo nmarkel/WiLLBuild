@@ -95,6 +95,14 @@ const HUMAN_OFFSET: [number, number, number] = [1.4, 0, 0.6]
 /** Ground shadow ellipse size in meters (width, height), converted via pxPerMeterY. */
 const GROUND_SHADOW_M: [number, number] = [2.6, 0.6]
 
+// Plain-English slot names for the partial-build hint pill.
+const SLOT_HINT_LABELS: Record<Slot, string> = {
+  fixture: 'a fixture',
+  arm: 'an arm',
+  pole: 'a pole',
+  baseCover: 'a base cover',
+}
+
 /**
  * Layered image-compositing assembly viewer — drop-in replacement for the R3F
  * <Scene>. Stacks the pre-rendered part images from the render manifest at
@@ -368,10 +376,16 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   useEffect(() => {
     if (!layout || !manifest) return
     registerSnapshot(() =>
-      compositeToBlob(layout, { night, pxPerMeterY: manifest.rig.pxPerMeterY, showScale }),
+      compositeToBlob(layout, {
+        night,
+        pxPerMeterY: manifest.rig.pxPerMeterY,
+        // A pole-less partial preview floats — the silhouette has no ground
+        // line to stand on, so the snapshot drops it too (matches the viewer).
+        showScale: showScale && Boolean(config.pole),
+      }),
     )
     return () => registerSnapshot(null)
-  }, [layout, manifest, night, showScale, registerSnapshot])
+  }, [layout, manifest, night, showScale, config.pole, registerSnapshot])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     // Presses on the viewer's own controls (rotate/zoom/reset) must stay
@@ -420,9 +434,11 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
     Boolean,
   )
 
-  // Phase 0.12_TO (Tyler 8/12, blank slate): an empty or partial build is an
-  // INVITED state, not a missing-render error. Slots the brand offers but the
-  // customer hasn't chosen yet:
+  // Phase 0.12_TO (Tyler 8/12, blank slate): an EMPTY build is an invited
+  // state. Phase 0.14 (Tyler 8/14): a PARTIAL build is not — the first pick
+  // renders immediately (resolveAssemblyLayout composes whatever subset is
+  // selected), and the remaining slots are suggested by a hint pill overlaid
+  // on the art instead of a full-screen "Keep building" placeholder.
   const neededSlots = (['fixture', 'arm', 'pole', 'baseCover'] as Slot[]).filter(
     (slot) => !config[slot] && compatibleParts(catalog, config, slot).length > 0,
   )
@@ -437,23 +453,14 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   }
 
   if (!manifest || !layout || layout.layers.length === 0 || layout.missing.length > 0) {
-    if (neededSlots.length > 0) {
-      const labels: Record<Slot, string> = {
-        fixture: 'a fixture',
-        arm: 'an arm',
-        pole: 'a pole',
-        baseCover: 'a base cover',
-      }
-      return (
-        <div className="composite-start">
-          <h2>Keep building</h2>
-          <p>Add {neededSlots.map((s) => labels[s]).join(', ')} to complete the preview.</p>
-        </div>
-      )
-    }
     const missingIds = layout && layout.missing.length > 0 ? layout.missing : configPartIds
     return <RenderFallback catalog={catalog} partIds={missingIds} label="Preview render coming" />
   }
+
+  // No pole yet → the layout is a floating component preview: nothing is
+  // grounded, so the ground furniture (contact shadow, compass ring, human
+  // silhouette; night pool is already absent from the layout) stays hidden.
+  const grounded = Boolean(config.pole)
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
   // The yaw the layout actually drew (snapped to the assembly's shared step).
@@ -569,10 +576,12 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         aria-label="Assembled pole preview"
         style={{ width: layout.width, height: layout.height, transform: stageTransform }}
       >
-        <div
-          className="composite-ground-shadow"
-          style={{ left: layout.origin[0], top: layout.origin[1], width: shadowWidthPx, height: shadowHeightPx }}
-        />
+        {grounded && (
+          <div
+            className="composite-ground-shadow"
+            style={{ left: layout.origin[0], top: layout.origin[1], width: shadowWidthPx, height: shadowHeightPx }}
+          />
+        )}
 
         {lights.map((light, i) => (
           <div key={`pool-${i}`}>
@@ -618,7 +627,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
             reference, so it rotates with the assembly spin. Projected through
             the same rig map as everything else, so it lies on the ground
             plane in correct perspective. */}
-        {showCompass && (
+        {showCompass && grounded && (
           <svg className="composite-compass" style={{ overflow: 'visible' }} aria-hidden="true">
             <polygon
               points={Array.from({ length: 48 }, (_, i) => {
@@ -641,7 +650,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           </svg>
         )}
 
-        {showScale && (
+        {showScale && grounded && (
           <svg
             className="composite-scale-figure"
             style={{ left: humanFootX, top: humanFootY, width: humanWidthPx, height: humanHeightPx }}
@@ -699,6 +708,14 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           ›
         </button>
       </div>
+
+      {/* Phase 0.14: partial-build hint — an unobtrusive pill over the art,
+          never a full-screen state. Lists only slots this brand offers. */}
+      {neededSlots.length > 0 && (
+        <div className="composite-hint" aria-live="polite">
+          Add {neededSlots.map((s) => SLOT_HINT_LABELS[s]).join(', ')} to complete your pole
+        </div>
+      )}
     </div>
   )
 }

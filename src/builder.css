@@ -291,6 +291,34 @@
   text-shadow: none;
 }
 
+/* ---- Partial-build hint (Phase 0.14): pill over the art, never a full-screen
+   state — the render always shows from the first pick. Bottom-center, above
+   the viewport controls' corner cluster. ---- */
+
+.composite-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--will-gray);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 1px 6px rgba(66, 65, 61, 0.15);
+  pointer-events: none;
+}
+
+.composite-viewer.night .composite-hint {
+  background: rgba(40, 40, 38, 0.88);
+  color: var(--will-silver);
+  border-color: rgba(230, 231, 232, 0.25);
+}
+
 /* ---- Base configuration: single-select boxes (replace the dropdowns) ---- */
 
 .builder-app .spec-choices {
