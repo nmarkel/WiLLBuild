@@ -314,6 +314,24 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
                 else None
             )
             resolved = sized or mapped or code
+            # CR-OPT-15 (Tyler 8/14): size-resolved codes print PER INSTANCE,
+            # keyed by that instance's panel size id (banner arm: BA18/BA24/
+            # BA30 following the banner width; default panel when unstored).
+            # Mirrors addOnCodes in src/lib/summary.ts.
+            by_size = (value or {}).get("resolvesBySize")
+            if by_size:
+                fallback = next(
+                    (s.get("id") for s in catalog.get("bannerPanelSizes", []) if s.get("default")),
+                    "",
+                )
+                raw = (getattr(cfg, "accessoryPlacements", None) or {}).get(code)
+                instances = raw if isinstance(raw, list) else ([raw] if raw else [])
+                if not instances:
+                    instances = [None]
+                for inst in instances:
+                    size_id = getattr(inst, "size", None) if inst is not None else None
+                    segments.append(by_size.get(size_id or fallback, resolved))
+                continue
             # CR-OPT-11: a multi accessory prints once per configured instance.
             count = 1
             if ((value or {}).get("placement") or {}).get("multi"):

@@ -237,6 +237,13 @@ export interface SpecOptionValue {
    */
   resolvesByDiameter?: Record<string, string>
   /**
+   * CR-OPT-15 (Tyler 8/14): like resolvesBy, but keyed by the placement
+   * instance's PANEL SIZE id and resolved per instance — the banner arm kit
+   * prints BA18/BA24/BA30, the arm length following each banner's width.
+   * Instances without a stored size use the catalog's default panel.
+   */
+  resolvesBySize?: Record<string, string>
+  /**
    * CR-OPT-14 (Tyler 8/14): choosing this value REQUIRES the named columns'
    * selections to be among the allowed codes (PF flush arm fit → wall D/E).
    * The UI disables incompatible chips; repair clears a constrained column's

@@ -324,8 +324,13 @@
                   "code": "BAX",
                   "label": "Banner Arm Kit",
                   "mapsTo": null,
-                  "note": "Available in 24\u201d and 30\u201d arms (24\u201d shown in the preview) \u2014 wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+                  "note": "Available with 18\u201d, 24\u201d and 30\u201d arms \u2014 the arm follows your banner size (24\u201d shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
                   "placeable": true,
+                  "resolvesBySize": {
+                    "18x36": "BA18",
+                    "24x48": "BA24",
+                    "30x60": "BA30"
+                  },
                   "placement": {
                     "minFt": 8,
                     "maxFt": 10,
@@ -339,7 +344,7 @@
                   "code": "FH",
                   "label": "Flag Holder Kit",
                   "mapsTo": null,
-                  "note": "A single flag bracket with stainless hardware \u2014 field installed",
+                  "note": "A single flag bracket with stainless hardware \u2014 field installed. A 3\u00d75 ft flag is shown in the preview",
                   "placeable": true,
                   "placement": {
                     "minFt": 8,

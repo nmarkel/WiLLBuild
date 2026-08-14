@@ -59,6 +59,21 @@ function addOnCodes(catalog: Catalog, part: CatalogPart, config: PoleConfig, slo
           ? value?.resolvesByDiameter?.[String(poleDiameter)]
           : undefined
         const resolved = sized ?? mapped ?? code
+        // CR-OPT-15 (Tyler 8/14): a size-resolved code prints PER INSTANCE,
+        // keyed by that instance's own panel size id — the banner arm kit is
+        // BA18/BA24/BA30, the arm length following the banner width. An
+        // instance (or selection) without a stored size uses the catalog's
+        // default panel. Distinct from CR-OPT-07/10, which resolve once per
+        // config: two banners of different sizes print two different codes.
+        if (value?.resolvesBySize) {
+          const fallback =
+            catalog.bannerPanelSizes?.find((s) => s.default)?.id ?? ''
+          const instances = placementInstances(config, code)
+          const list = instances.length > 0 ? instances : [undefined]
+          return list.map(
+            (inst) => value.resolvesBySize?.[inst?.size ?? fallback] ?? resolved,
+          )
+        }
         // CR-OPT-11: a multi accessory prints once PER CONFIGURED INSTANCE
         // (two couplings → …-CPLX-CPLX); unplaced selection prints once.
         const count = value?.placement?.multi
