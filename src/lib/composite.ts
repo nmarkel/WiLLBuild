@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel } from './compat'
+import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -475,6 +475,34 @@ export function resolveAssemblyLayout(
         }
       }
     }
+    // Phase 0.14 (Tyler 8/14): placed shaft accessories with render layers —
+    // additional hand hole, festoon provision, threaded coupling, flag/plant
+    // holder kits. Each configured INSTANCE places its accessory part's layer
+    // at the instance's height + orientation: the banner-kit machinery above,
+    // generalized through the option value's `renderPartId` (set in
+    // docs/spec-option-corrections.json; banner kits carry none, so the two
+    // paths cannot double-draw). The accessory part ids live under slot
+    // 'accessory' — render-only, never selectable (the banner-part pattern).
+    for (const code of placeableAccessoryCodes(catalog, config)) {
+      const value = poleAccessoryValue(catalog, config, code)
+      const accPart = value?.renderPartId ? partById(catalog, value.renderPartId) : undefined
+      if (!value || !accPart) continue
+      // A checked accessory whose placement box hasn't been touched yet still
+      // draws — one instance at the value's own defaults.
+      const stored = config.accessoryPlacements?.[code]
+      const instances = stored && stored.length > 0 ? stored : [{}]
+      instances.forEach((inst: { heightFt?: number; orientation?: number }, i) => {
+        const heightM = (inst.heightFt ?? value.placement?.defaultFt ?? value.placement?.minFt ?? 0) * FT_TO_M
+        const deg = ((((inst.orientation ?? 0) - viewYaw) % 360) + 360) % 360
+        placements.push({
+          layerId: `${accPart.id}@${code}#${i}`,
+          part: accPart,
+          angle: angleKeyForAzimuth(deg),
+          world: [0, heightM, 0],
+          z: SLOT_Z.pole + armDepthProxy(manifest.rig, deg),
+        })
+      })
+    }
   }
 
   // Phase 0.14: a fixture with no arm still previews — alone at the origin,
@@ -512,10 +540,12 @@ export function resolveAssemblyLayout(
     // the slot has no override — see finishFor), at the nearest available
     // angle (exact for rig-rendered parts; real-render parts may lack the
     // 45° compass until re-rendered from their design files).
+    // Phase 0.14: shaft accessories are painted with the pole they weld/bolt
+    // to, so their layers resolve in the POLE's finish, not the base finish.
     const asset = resolveRenderAsset(
       manifest,
       part.id,
-      finishFor(config, part.slot),
+      finishFor(config, part.slot === 'accessory' ? 'pole' : part.slot),
       nearestAngleKey(manifest, part.id, angle),
     )
     if (!asset) {

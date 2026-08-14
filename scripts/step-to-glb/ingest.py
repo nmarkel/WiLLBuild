@@ -75,6 +75,58 @@ INGEST: list[dict] = [
          design="SS1", fit="40F", origin="mount", mode="mono", tol=0.5),
     dict(file="AR1-40F.STEP", part="willstudio-suspension-arm-pole-top-brackets",
          design="AR1", fit="40F", origin="mount", mode="mono", tol=0.5),
+    # --- Phase 0.13 (Nick) recorded in 0.14: the four remaining C1 arms cleared
+    #     axis + socket alignment and were mapped in real-parts.json (PM1 with
+    #     the reversed rotateY +90 the 8/11 audit predicted), but 0.13 left
+    #     their entries in UNMAPPED and never regenerated the provenance record
+    #     — which is exactly what kept generate.test.mjs red. These entries
+    #     complete the record to match the shipped mapping. ---
+    dict(file="PA1-40F.STEP", part="pa1-pendant-arm", design="PA1", fit="40F",
+         origin="mount", mode="mono", tol=0.5),
+    dict(file="PM1-40F.STEP", part="pm1-pendant-arm", design="PM1", fit="40F",
+         origin="mount", mode="mono", tol=0.5),
+    dict(file="HS1-40F.STEP", part="willstudio-hsx-decorative-upsweep-arms",
+         design="HS1", fit="40F", origin="mount", mode="mono", tol=0.5),
+    dict(file="SD1-40F.STEP", part="willstudio-supported-decorative-arms",
+         design="SD1", fit="40F", origin="mount", mode="mono", tol=0.5),
+    # --- Phase 0.14 (Tyler 8/14): placed shaft accessories get render layers.
+    #     These are order-code adders, not slot parts — but the instanced
+    #     accessoryPlacements system gives each checked instance a height +
+    #     orientation, so a layer at that placement now renders the TRUTH of
+    #     the configuration rather than a guess. Each maps to a render-only
+    #     catalog part (slot "accessory", never selectable — the banner-part
+    #     pattern), added by scripts/merge-accessory-parts.mjs and placed by
+    #     the compositor from accessoryPlacements via the option value's
+    #     renderPartId (docs/spec-option-corrections.json). ---
+    dict(file="HH-4R.STEP", part="willstudio-acc-hand-hole", design="HHX", fit="4R",
+         origin="mount-center", mode="mono", tol=0.5,
+         note="Additional Hand Hole, 4in round — a 6in pole SECTION centred on "
+              "the pole axis (measured x/z exactly +/-0.0508 = 4.00in OD), hole "
+              "frame reaching +X natively, so no rotateY. Origin at the "
+              "section's vertical centre: the placement height reads to the "
+              "hole centreline. WiLLstudio poles are all diameterIn 4, so 4R is "
+              "the one render source; HH-5R/6R stay unmapped below."),
+    dict(file="FH-4R.STEP", part="willstudio-acc-flag-holder", design="FH", fit="4R",
+         origin="native", mode="mono", tol=0.5,
+         note="Single Flag Holder Kit, staff included (measured 2.183 m tall, "
+              "1.448 m reach along +Z -> rotateY -90 in real-parts.json). "
+              "origin='native': the CAD's y=0 is the shaft bracket itself — the "
+              "reference the placement height drives — with the staff running "
+              "-0.868..+1.315 around it, so bbox re-basing would move the "
+              "origin off the bracket."),
+    dict(file="PH-4R.STEP", part="willstudio-acc-plant-holder", design="PH", fit="4R",
+         origin="native", mode="mono", tol=0.5,
+         note="Single Plant Holder Kit (measured 0.811 m reach along +X — no "
+              "rotateY — basket hanging to y=-0.553 below the bracket at the "
+              "native y=0; origin='native' for the same reason as FH-4R)."),
+    dict(file="CPL-P-12.STEP", part="willstudio-acc-coupling", design="CPL-P-12",
+         fit=None, origin="mount-center", mode="mono", tol=0.5,
+         note="Threaded Coupling, painted — like HH-4R a 6in pole SECTION on "
+              "the pole axis with the coupling boss reaching +X natively "
+              "(25 mm proud of the 4in OD), no rotateY. Origin at the vertical "
+              "centre so the placement height reads to the boss centreline. "
+              "Thread details (NPT vs NPSM, diameter) resolve at quote/order "
+              "entry per Tyler 8/13; the render shows the exported boss."),
     # --- base covers: CL1/CL2/CL3 are SIZES (Small/Medium/Large Clamshell) and
     #     SC1/SC2 are the 1-piece / split Spun Base Collar, per the Aluminum
     #     Round Straight Decorative pole spec sheet (8/4).  This corrects 0.10's
@@ -163,15 +215,11 @@ CLUSTERS: list[dict] = [
 ]
 
 # Files with no catalog PART mapping — recorded, never guessed.
-# FH/PH are Accessory "adders" (pole spec sheet terminology), configured as
-# order codes with a shaft placement, not as slot parts, so they get no
-# render layer of their own.
+# (0.14: FH/PH/HH-4R/CPL-P-12 moved UP into INGEST — the instanced-placement
+# system made an accessory layer the truth of the configuration, so "adders
+# get no layer" no longer holds for placeable accessories with real CAD.)
 UNMAPPED: list[dict] = [
-    dict(file="FH-4R.STEP", part=None, design="FH", fit="4R",
-         note="Flag Holder — Single Flag Holder Kit. An Accessory adder, not a slot part."),
-    dict(file="PH-4R.STEP", part=None, design="PH", fit="4R",
-         note="Plant Holder — Single Plant Holder Kit. An Accessory adder, not a slot part."),
-    # --- Phase 0.13: Cole's 8/12 accessory exports.  Adders, so no layer. ---
+    # --- Phase 0.13: Cole's 8/12 accessory exports. ---
     dict(file="HSS-GVX.STEP", part=None, design="HSS-GVX", fit=None,
          note="House Side Shield for the GVX, as its own component (0.29 MB; the "
               "fitted assembly is GVX-HSS.STEP in CLUSTERS). Measured 405 x 127 x "
@@ -180,25 +228,19 @@ UNMAPPED: list[dict] = [
               "code on gvx-pendant, not a slot part, so it gets no render layer."),
     # HH-*R are the hand hole itself, NOT a cover plate: each is a 6in-tall
     # section of round pole at its named OD (4R = 4.00in, 5R = 4.98in, 6R =
-    # 6.00in, all 152.40 mm tall), 12 faces against a plain tube's 6, and
-    # 198.7 cm3 against 149.6 cm3 for the same tube at 0.125in wall — i.e. the
-    # opening plus its frame.  An `HHX` order code on every pole (Tyler
-    # consolidated HHUR/HHRR-4/5/6 into one line on 8/12), so no slot part and
-    # no layer of its own.
+    # 6.00in, all 152.40 mm tall) — the opening plus its frame.  0.14 mapped
+    # HH-4R (the WiLLstudio fit — `diameterIn: 4` on all 8 poles) as the
+    # ADDITIONAL-hand-hole render layer; 5R/6R wait for a 5/6in pole line.
     #
-    # ⚠️ These are, however, the real geometry for the ONE thing the render rig
-    # currently fakes: RSAA-4040-12.STEP has no hand hole (see the note under
-    # DERIVED below), so the rig grafts a placeholder box, which Tyler thinned
-    # twice on 8/11 (20 -> 12 -> 8 mm) to read as a plate.  Swapping that graft
-    # for HH-4R is a real improvement and a DELIBERATE, SEPARATE decision: it
-    # re-renders all 8 poles, and the graft doubles as the rig's visible 0-degree
-    # homing reference, so a recessed real hole must be checked to still read at
-    # 360 px/m before it replaces a protruding plate.  Not done here.
-    dict(file="HH-4R.STEP", part=None, design="HHX", fit="4R",
-         note="Additional Hand Hole, 4in round pole — the WiLLstudio fit "
-              "(`diameterIn: 4` on all 8 poles). See the block comment above."),
-    dict(file="HH-5R.STEP", part=None, design="HHX", fit="5R", note="See HH-4R."),
-    dict(file="HH-6R.STEP", part=None, design="HHX", fit="6R", note="See HH-4R."),
+    # ⚠️ Separate, still-open decision: the pole's OWN hand hole is a grafted
+    # placeholder box Tyler thinned twice on 8/11 (20 -> 12 -> 8 mm). Swapping
+    # that graft for HH-4R geometry re-renders all 8 poles, and the graft
+    # doubles as the rig's visible 0-degree homing reference, so a recessed
+    # real hole must be checked to still read at 360 px/m first.
+    dict(file="HH-5R.STEP", part=None, design="HHX", fit="5R",
+         note="Additional Hand Hole, 5in round — no 5in pole in the catalog."),
+    dict(file="HH-6R.STEP", part=None, design="HHX", fit="6R",
+         note="Additional Hand Hole, 6in round — no 6in pole in the catalog."),
     # --- Phase 0.11 (Workstream I): CONVERTED BUT NOT MAPPED — pending socket
     #     alignment. These five DO have an unambiguous catalog part (each file's
     #     code is that part's own `modelCodes` entry) and each converts cleanly
@@ -229,20 +271,9 @@ UNMAPPED: list[dict] = [
     #
     #     The STEP files, the GLBs and this record are all in place, so the next
     #     pass starts from measurement, not from re-ingest.
-    dict(file="PA1-40F.STEP", part=None, design="PA1", fit="40F",
-         note="Intended part pa1-pendant-arm (modelCodes {1: PA1}). Converted OK "
-              "(8,932 tris). Blocked on axis + socket alignment — see above."),
-    dict(file="PM1-40F.STEP", part=None, design="PM1", fit="40F",
-         note="Intended part pm1-pendant-arm (modelCodes {1: PM1}). Converted OK "
-              "(13,508 tris). Blocked on axis + socket alignment — see above."),
-    dict(file="HS1-40F.STEP", part=None, design="HS1", fit="40F",
-         note="Intended part willstudio-hsx-decorative-upsweep-arms (modelCodes "
-              "{1: HS1, 2: HS2}). Converted OK (24,111 tris). Blocked on axis + "
-              "socket alignment — see above."),
-    dict(file="SD1-40F.STEP", part=None, design="SD1", fit="40F",
-         note="Intended part willstudio-supported-decorative-arms (modelCodes "
-              "{1: SD1, 2: SD2}). Converted OK (22,832 tris). Blocked on axis + "
-              "socket alignment — see above."),
+    # (0.14: PA1/PM1/HS1/SD1 moved UP into INGEST — 0.13 cleared their axis +
+    # socket alignment and mapped them in real-parts.json; the block comment
+    # above survives as the record of WHY they were held back through 0.12.)
     # --- Phase 0.11 (Workstream I): the rest of Cole's 8/6 batch. Each of these
     #     has real CAD but NO defensible catalog part, so each is recorded with
     #     the reason rather than mapped. Mapping any of them would put invented

@@ -6,7 +6,7 @@ export type Slot = 'pole' | 'baseCover' | 'arm' | 'fixture'
  * kept out of `Slot` so the generic slot machinery (SLOT_ORDER, repairConfig's
  * slot sweep, config[slot]) never treats it as a scalar assembly selection.
  */
-export type PartSlot = Slot | 'standalone' | 'banner'
+export type PartSlot = Slot | 'standalone' | 'banner' | 'accessory'
 
 export type ProductLine = 'NAFCO' | 'WiLLsport' | 'WiLLstudio' | 'WiLLev' | 'WiLLcloud' | 'Other'
 export type ProductClass = 'assembly-part' | 'standalone'
@@ -248,6 +248,13 @@ export interface SpecOptionValue {
    * SELECTED (banner kits: engineering reviews every application at quote).
    */
   disclaimer?: string
+  /**
+   * Phase 0.14 (Tyler 8/14): the render-only catalog part (slot 'accessory' —
+   * the banner-part pattern, never selectable) whose layer the compositor
+   * places at each of this accessory's configured instances. Absent → the
+   * accessory has no visual (or, for banner kits, uses the banner path).
+   */
+  renderPartId?: string
   /**
    * CR-PLC-07 (Tyler 8/14): bespoke shaft-placement window for this
    * accessory — floor/ceiling/default in feet, step in inches. Absent fields

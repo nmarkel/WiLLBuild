@@ -132,13 +132,16 @@ describe('the realCad flag tracks the render rig', () => {
     }
   })
 
-  it('matches the matrix scoreboard, plus what 0.12 and 0.13 have landed', () => {
+  it('matches the matrix scoreboard, plus what 0.12–0.14 have landed', () => {
     // The 8/11 audit measured 23 of 117; A1 added FR2, and 0.13 added PA1, PM1,
     // SD and HS1 — 28 of 117. That is FIVE of the six C1 arms; only CR2 is left,
-    // parked on its tenon-shoulder question.
-    expect(catalog.parts.length).toBe(117)
-    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length)
-    expect(catalog.parts.filter((p) => p.realCad).length).toBe(28)
+    // parked on its tenon-shoulder question. Phase 0.14 added 5 render-only
+    // accessory parts (117 → 122), 4 of them from real CAD (HH-4R, FH-4R,
+    // PH-4R, CPL-P-12) — 32 — with the festoon on a placeholder awaiting CAD.
+    expect(catalog.parts.length).toBe(122)
+    expect(catalog.parts.filter((p) => p.slot === 'accessory').length).toBe(5)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length + 4)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(32)
   })
 })
 

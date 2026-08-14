@@ -255,7 +255,8 @@
                     "minGapFt": 1.5,
                     "spacingGroup": "shaft-access",
                     "groupMaxInstances": 2
-                  }
+                  },
+                  "renderPartId": "willstudio-acc-hand-hole"
                 },
                 {
                   "buildable": null,
@@ -271,7 +272,8 @@
                     "minGapFt": 1.5,
                     "spacingGroup": "shaft-access",
                     "groupMaxInstances": 2
-                  }
+                  },
+                  "renderPartId": "willstudio-acc-festoon"
                 }
               ]
             }
@@ -300,7 +302,8 @@
                     "multi": true,
                     "maxInstances": 3,
                     "minGapFt": 0.5
-                  }
+                  },
+                  "renderPartId": "willstudio-acc-coupling"
                 }
               ]
             }
@@ -343,7 +346,8 @@
                     "maxFt": 12,
                     "defaultFt": 10,
                     "stepIn": 6
-                  }
+                  },
+                  "renderPartId": "willstudio-acc-flag-holder"
                 },
                 {
                   "buildable": null,
@@ -357,7 +361,8 @@
                     "maxFt": 12,
                     "defaultFt": 9,
                     "stepIn": 6
-                  }
+                  },
+                  "renderPartId": "willstudio-acc-plant-holder"
                 }
               ]
             }

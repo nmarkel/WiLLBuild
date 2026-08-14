@@ -51259,6 +51259,2446 @@
         }
       }
     },
+    "willstudio-acc-coupling": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-coupling--hero--black-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-coupling--hero--bronze-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-coupling--hero--custom-ral.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-coupling--hero--dark-platinum.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-coupling--hero--forest-green.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-coupling--hero--gloss-white.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-coupling--hero--graphite-metallic.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-coupling--hero--light-gray.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-coupling--hero--matte-black.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-coupling--hero--satin-silver-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-coupling--hero--silver.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-coupling--hero--slate-gray.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-coupling--hero--statuary-bronze.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                24.75,
+                35.23
+              ]
+            }
+          }
+        },
+        "az90": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-coupling--az90--black-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-coupling--az90--bronze-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-coupling--az90--custom-ral.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-coupling--az90--dark-platinum.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-coupling--az90--forest-green.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-coupling--az90--gloss-white.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-coupling--az90--graphite-metallic.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-coupling--az90--light-gray.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-coupling--az90--matte-black.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-coupling--az90--satin-silver-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-coupling--az90--silver.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-coupling--az90--slate-gray.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-coupling--az90--statuary-bronze.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                24.88,
+                35.89
+              ]
+            }
+          }
+        },
+        "az180": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-coupling--az180--black-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-coupling--az180--bronze-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-coupling--az180--custom-ral.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-coupling--az180--dark-platinum.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-coupling--az180--forest-green.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-coupling--az180--gloss-white.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-coupling--az180--graphite-metallic.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-coupling--az180--light-gray.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-coupling--az180--matte-black.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-coupling--az180--satin-silver-anodized.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-coupling--az180--silver.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-coupling--az180--slate-gray.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-coupling--az180--statuary-bronze.webp",
+              "width": 56,
+              "height": 71,
+              "anchor": [
+                31.25,
+                35.77
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-coupling--az270--black-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-coupling--az270--bronze-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-coupling--az270--custom-ral.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-coupling--az270--dark-platinum.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-coupling--az270--forest-green.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-coupling--az270--gloss-white.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-coupling--az270--graphite-metallic.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-coupling--az270--light-gray.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-coupling--az270--matte-black.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-coupling--az270--satin-silver-anodized.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-coupling--az270--silver.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-coupling--az270--slate-gray.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-coupling--az270--statuary-bronze.webp",
+              "width": 51,
+              "height": 71,
+              "anchor": [
+                26.12,
+                35.11
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-acc-festoon": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-festoon--hero--black-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-festoon--hero--bronze-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-festoon--hero--custom-ral.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-festoon--hero--dark-platinum.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-festoon--hero--forest-green.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-festoon--hero--gloss-white.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-festoon--hero--graphite-metallic.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-festoon--hero--light-gray.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-festoon--hero--matte-black.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-festoon--hero--satin-silver-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-festoon--hero--silver.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-festoon--hero--slate-gray.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-festoon--hero--statuary-bronze.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                0.43,
+                29.36
+              ]
+            }
+          }
+        },
+        "az90": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-festoon--az90--black-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-festoon--az90--bronze-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-festoon--az90--custom-ral.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-festoon--az90--dark-platinum.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-festoon--az90--forest-green.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-festoon--az90--gloss-white.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-festoon--az90--graphite-metallic.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-festoon--az90--light-gray.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-festoon--az90--matte-black.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-festoon--az90--satin-silver-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-festoon--az90--silver.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-festoon--az90--slate-gray.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-festoon--az90--statuary-bronze.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                9.1,
+                31.63
+              ]
+            }
+          }
+        },
+        "az180": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-festoon--az180--black-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-festoon--az180--bronze-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-festoon--az180--custom-ral.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-festoon--az180--dark-platinum.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-festoon--az180--forest-green.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-festoon--az180--gloss-white.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-festoon--az180--graphite-metallic.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-festoon--az180--light-gray.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-festoon--az180--matte-black.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-festoon--az180--satin-silver-anodized.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-festoon--az180--silver.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-festoon--az180--slate-gray.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-festoon--az180--statuary-bronze.webp",
+              "width": 32,
+              "height": 61,
+              "anchor": [
+                31.57,
+                31.64
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-festoon--az270--black-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-festoon--az270--bronze-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-festoon--az270--custom-ral.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-festoon--az270--dark-platinum.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-festoon--az270--forest-green.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-festoon--az270--gloss-white.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-festoon--az270--graphite-metallic.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-festoon--az270--light-gray.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-festoon--az270--matte-black.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-festoon--az270--satin-silver-anodized.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-festoon--az270--silver.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-festoon--az270--slate-gray.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-festoon--az270--statuary-bronze.webp",
+              "width": 40,
+              "height": 60,
+              "anchor": [
+                30.9,
+                28.37
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-acc-flag-holder": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--hero--black-anodized.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--hero--bronze-anodized.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-flag-holder--hero--custom-ral.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-flag-holder--hero--dark-platinum.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-flag-holder--hero--forest-green.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-flag-holder--hero--gloss-white.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-flag-holder--hero--graphite-metallic.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-flag-holder--hero--light-gray.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-flag-holder--hero--matte-black.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--hero--satin-silver-anodized.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-flag-holder--hero--silver.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-flag-holder--hero--slate-gray.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-flag-holder--hero--statuary-bronze.webp",
+              "width": 442,
+              "height": 800,
+              "anchor": [
+                394.37,
+                504.77
+              ]
+            }
+          }
+        },
+        "az90": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az90--black-anodized.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az90--bronze-anodized.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-flag-holder--az90--custom-ral.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-flag-holder--az90--dark-platinum.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-flag-holder--az90--forest-green.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-flag-holder--az90--gloss-white.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-flag-holder--az90--graphite-metallic.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az90--light-gray.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-flag-holder--az90--matte-black.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az90--satin-silver-anodized.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-flag-holder--az90--silver.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az90--slate-gray.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-flag-holder--az90--statuary-bronze.webp",
+              "width": 321,
+              "height": 785,
+              "anchor": [
+                281.12,
+                437.77
+              ]
+            }
+          }
+        },
+        "az180": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az180--black-anodized.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az180--bronze-anodized.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-flag-holder--az180--custom-ral.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-flag-holder--az180--dark-platinum.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-flag-holder--az180--forest-green.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-flag-holder--az180--gloss-white.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-flag-holder--az180--graphite-metallic.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az180--light-gray.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-flag-holder--az180--matte-black.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az180--satin-silver-anodized.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-flag-holder--az180--silver.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az180--slate-gray.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-flag-holder--az180--statuary-bronze.webp",
+              "width": 442,
+              "height": 787,
+              "anchor": [
+                47.63,
+                449.46
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az270--black-anodized.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az270--bronze-anodized.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-flag-holder--az270--custom-ral.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-flag-holder--az270--dark-platinum.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-flag-holder--az270--forest-green.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-flag-holder--az270--gloss-white.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-flag-holder--az270--graphite-metallic.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az270--light-gray.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-flag-holder--az270--matte-black.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-flag-holder--az270--satin-silver-anodized.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-flag-holder--az270--silver.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-flag-holder--az270--slate-gray.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-flag-holder--az270--statuary-bronze.webp",
+              "width": 320,
+              "height": 802,
+              "anchor": [
+                39.88,
+                516.45
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-acc-hand-hole": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--hero--black-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--hero--bronze-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-hand-hole--hero--custom-ral.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-hand-hole--hero--dark-platinum.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-hand-hole--hero--forest-green.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-hand-hole--hero--gloss-white.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-hand-hole--hero--graphite-metallic.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-hand-hole--hero--light-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-hand-hole--hero--matte-black.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--hero--satin-silver-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-hand-hole--hero--silver.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-hand-hole--hero--slate-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-hand-hole--hero--statuary-bronze.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            }
+          }
+        },
+        "az90": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az90--black-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az90--bronze-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-hand-hole--az90--custom-ral.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-hand-hole--az90--dark-platinum.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-hand-hole--az90--forest-green.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-hand-hole--az90--gloss-white.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-hand-hole--az90--graphite-metallic.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az90--light-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-hand-hole--az90--matte-black.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az90--satin-silver-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-hand-hole--az90--silver.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az90--slate-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-hand-hole--az90--statuary-bronze.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            }
+          }
+        },
+        "az180": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az180--black-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az180--bronze-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-hand-hole--az180--custom-ral.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-hand-hole--az180--dark-platinum.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-hand-hole--az180--forest-green.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-hand-hole--az180--gloss-white.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-hand-hole--az180--graphite-metallic.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az180--light-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-hand-hole--az180--matte-black.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az180--satin-silver-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-hand-hole--az180--silver.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az180--slate-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-hand-hole--az180--statuary-bronze.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az270--black-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az270--bronze-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-hand-hole--az270--custom-ral.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-hand-hole--az270--dark-platinum.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-hand-hole--az270--forest-green.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-hand-hole--az270--gloss-white.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-hand-hole--az270--graphite-metallic.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az270--light-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-hand-hole--az270--matte-black.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-hand-hole--az270--satin-silver-anodized.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-hand-hole--az270--silver.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-hand-hole--az270--slate-gray.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-hand-hole--az270--statuary-bronze.webp",
+              "width": 49,
+              "height": 72,
+              "anchor": [
+                24.5,
+                36
+              ]
+            }
+          }
+        }
+      }
+    },
+    "willstudio-acc-plant-holder": {
+      "angles": {
+        "hero": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--hero--black-anodized.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--hero--bronze-anodized.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-plant-holder--hero--custom-ral.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-plant-holder--hero--dark-platinum.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-plant-holder--hero--forest-green.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-plant-holder--hero--gloss-white.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-plant-holder--hero--graphite-metallic.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-plant-holder--hero--light-gray.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-plant-holder--hero--matte-black.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--hero--satin-silver-anodized.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-plant-holder--hero--silver.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-plant-holder--hero--slate-gray.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-plant-holder--hero--statuary-bronze.webp",
+              "width": 268,
+              "height": 238,
+              "anchor": [
+                49.2,
+                22.26
+              ]
+            }
+          }
+        },
+        "az90": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az90--black-anodized.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az90--bronze-anodized.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-plant-holder--az90--custom-ral.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-plant-holder--az90--dark-platinum.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-plant-holder--az90--forest-green.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-plant-holder--az90--gloss-white.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-plant-holder--az90--graphite-metallic.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az90--light-gray.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-plant-holder--az90--matte-black.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az90--satin-silver-anodized.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-plant-holder--az90--silver.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az90--slate-gray.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-plant-holder--az90--statuary-bronze.webp",
+              "width": 219,
+              "height": 217,
+              "anchor": [
+                37.36,
+                24.81
+              ]
+            }
+          }
+        },
+        "az180": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az180--black-anodized.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az180--bronze-anodized.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-plant-holder--az180--custom-ral.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-plant-holder--az180--dark-platinum.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-plant-holder--az180--forest-green.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-plant-holder--az180--gloss-white.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-plant-holder--az180--graphite-metallic.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az180--light-gray.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-plant-holder--az180--matte-black.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az180--satin-silver-anodized.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-plant-holder--az180--silver.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az180--slate-gray.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-plant-holder--az180--statuary-bronze.webp",
+              "width": 268,
+              "height": 217,
+              "anchor": [
+                218.8,
+                21.2
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az270--black-anodized.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az270--bronze-anodized.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/willstudio-acc-plant-holder--az270--custom-ral.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/willstudio-acc-plant-holder--az270--dark-platinum.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "forest-green": {
+              "file": "renders/willstudio-acc-plant-holder--az270--forest-green.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/willstudio-acc-plant-holder--az270--gloss-white.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/willstudio-acc-plant-holder--az270--graphite-metallic.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "light-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az270--light-gray.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "matte-black": {
+              "file": "renders/willstudio-acc-plant-holder--az270--matte-black.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/willstudio-acc-plant-holder--az270--satin-silver-anodized.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "silver": {
+              "file": "renders/willstudio-acc-plant-holder--az270--silver.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/willstudio-acc-plant-holder--az270--slate-gray.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/willstudio-acc-plant-holder--az270--statuary-bronze.webp",
+              "width": 219,
+              "height": 242,
+              "anchor": [
+                181.64,
+                22.65
+              ]
+            }
+          }
+        }
+      }
+    },
     "willstudio-ba1-banner-arm": {
       "angles": {
         "az180": {

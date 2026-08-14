@@ -49,48 +49,62 @@ def test_sc_files_are_no_longer_unmapped():
     assert "SC2-4R.STEP" not in unmapped_files
 
 
-def test_flag_and_plant_holders_stay_unmapped_as_accessories():
-    """FH/PH are Accessory adders, not slot parts — they get no render layer."""
-    unmapped_files = {e["file"] for e in ingest.UNMAPPED}
-    assert "FH-4R.STEP" in unmapped_files
-    assert "PH-4R.STEP" in unmapped_files
+def test_placed_accessories_map_to_render_only_accessory_parts():
+    """Phase 0.14 (Tyler 8/14): FH/PH/HH-4R/CPL-P-12 ARE render sources now.
+
+    The old rule — "adders get no layer" — was about honesty: a layer with no
+    configured position would be a guess.  The instanced accessoryPlacements
+    system inverted that: each checked instance carries a height + orientation,
+    so a layer AT that placement renders the truth of the configuration.  The
+    honesty condition survives in a new form, asserted here: every promoted
+    accessory file maps to its OWN catalog part, in the render-only 'accessory'
+    slot (never selectable — the banner-part pattern), so no slot part ever
+    presents another file's art.
+    """
+    by_file = {e["file"]: e["part"] for e in ingest.INGEST}
+    expected = {
+        "HH-4R.STEP": "willstudio-acc-hand-hole",
+        "FH-4R.STEP": "willstudio-acc-flag-holder",
+        "PH-4R.STEP": "willstudio-acc-plant-holder",
+        "CPL-P-12.STEP": "willstudio-acc-coupling",
+    }
+    for f, part_id in expected.items():
+        assert by_file.get(f) == part_id, f"{f} must map to {part_id}"
+        assert BY_ID[part_id]["slot"] == "accessory", f"{part_id} must be render-only"
 
 
 def test_cole_0_13_exports_are_classified_below_the_render_line():
-    """Phase 0.13: none of Cole's six 8/11-8/12 files is a render source.
+    """Phase 0.13/0.14: the variant + unmatched files stay below the render line.
 
-    This is the assertion that keeps real-CAD coverage honest.  Anything landing
-    in INGEST gets a GLB, a layer, and `realCad: true` — which drives Coming
-    Soon — so a file promoted into INGEST without its own catalog part would
-    present placeholder-mismatched art as configurable.  All six belong below
-    that line:
+    Anything landing in INGEST gets a GLB, a layer, and `realCad: true` — so a
+    file promoted into INGEST without its own catalog part would present
+    placeholder-mismatched art as configurable.  (0.14 promoted HH-4R — WITH
+    its own part; see test_placed_accessories_map_to_render_only_accessory_parts.)
 
       * TEX-AREA / GVX-HSS  -> CLUSTERS: real CAD for a configured code on a part
         that already renders from its own master (a second mounting, and an
         accessory-installed variant).  The compositor keys layers by part id, so
         neither has anywhere to render to.
-      * HSS-GVX / HH-4R/5R/6R -> UNMAPPED: order-code adders with no slot part.
+      * HSS-GVX / HH-5R/6R -> UNMAPPED: no catalog part to render for (the
+        shield renders inside GVX-HSS; no 5/6in pole exists).
     """
     ingest_files = {e["file"] for e in ingest.INGEST}
     clusters = {e["file"] for e in ingest.CLUSTERS}
     unmapped = {e["file"] for e in ingest.UNMAPPED}
 
-    new_files = {
-        "TEX-AREA.STEP", "GVX-HSS.STEP", "HSS-GVX.STEP",
-        "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP",
-    }
-    assert new_files.isdisjoint(ingest_files), (
-        "a 0.13 export was promoted to a render source; it has no catalog part"
+    still_below = {"TEX-AREA.STEP", "GVX-HSS.STEP", "HSS-GVX.STEP", "HH-5R.STEP", "HH-6R.STEP"}
+    assert still_below.isdisjoint(ingest_files), (
+        "a variant/unmatched export was promoted to a render source without a part"
     )
     assert {"TEX-AREA.STEP", "GVX-HSS.STEP"} <= clusters
-    assert {"HSS-GVX.STEP", "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"} <= unmapped
+    assert {"HSS-GVX.STEP", "HH-5R.STEP", "HH-6R.STEP"} <= unmapped
 
     # The variant files carry the part they vary; the adders carry no part at all.
     by_file = {e["file"]: e for e in ingest.CLUSTERS}
     assert by_file["TEX-AREA.STEP"]["part"] == "tex-post-top"
     assert by_file["GVX-HSS.STEP"]["part"] == "gvx-pendant"
     for e in ingest.UNMAPPED:
-        if e["file"] in {"HSS-GVX.STEP", "HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"}:
+        if e["file"] in {"HSS-GVX.STEP", "HH-5R.STEP", "HH-6R.STEP"}:
             assert e["part"] is None, f"{e['file']} must not claim a catalog part"
 
 

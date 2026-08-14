@@ -3486,7 +3486,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -3502,7 +3503,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -3525,7 +3527,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -3562,7 +3565,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -3576,7 +3580,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -4191,7 +4196,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -4207,7 +4213,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -4230,7 +4237,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -4267,7 +4275,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -4281,7 +4290,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -4896,7 +4906,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -4912,7 +4923,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -4935,7 +4947,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -4972,7 +4985,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -4986,7 +5000,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -5601,7 +5616,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -5617,7 +5633,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -5640,7 +5657,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -5677,7 +5695,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -5691,7 +5710,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -6306,7 +6326,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -6322,7 +6343,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -6345,7 +6367,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -6382,7 +6405,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -6396,7 +6420,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -7011,7 +7036,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -7027,7 +7053,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -7050,7 +7077,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -7087,7 +7115,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -7101,7 +7130,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -7716,7 +7746,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -7732,7 +7763,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -7755,7 +7787,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -7792,7 +7825,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -7806,7 +7840,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -8421,7 +8456,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
@@ -8437,7 +8473,8 @@
                 "minGapFt": 1.5,
                 "spacingGroup": "shaft-access",
                 "groupMaxInstances": 2
-              }
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -8460,7 +8497,8 @@
                 "multi": true,
                 "maxInstances": 3,
                 "minGapFt": 0.5
-              }
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -8497,7 +8535,8 @@
                 "maxFt": 12,
                 "defaultFt": 10,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -8511,7 +8550,8 @@
                 "maxFt": 12,
                 "defaultFt": 9,
                 "stepIn": 6
-              }
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -17722,6 +17762,293 @@
         4
       ],
       "realCad": false
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-hand-hole",
+      "name": "Additional Hand Hole",
+      "family": "HHX",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.004,
+                0.152,
+                0.102
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0528,
+              -0.076,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-festoon",
+      "name": "Festoon Power Provision",
+      "family": "FSTR",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.004,
+                0.127,
+                0.089
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0528,
+              -0.0635,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": false
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-coupling",
+      "name": "Threaded Coupling",
+      "family": "CPLX",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.026,
+                0.05,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0508,
+              -0.025,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-flag-holder",
+      "name": "Flag Holder Kit",
+      "family": "FH",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.15,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.051,
+              -0.075,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                1.9,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.12,
+              -0.4,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-plant-holder",
+      "name": "Plant Holder Kit",
+      "family": "PH",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.04,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.05,
+              -0.04,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.25,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.4,
+              -0.3,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
     }
   ],
   "categories": {
