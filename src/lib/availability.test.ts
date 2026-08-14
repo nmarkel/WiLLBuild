@@ -96,7 +96,16 @@ const LANDED_SINCE_AUDIT = [
  */
 // tex-post-top joined the holds 8/12 (Tyler): fixture cut narrows to GVX
 // only for the Casey pilot. Held ≠ deleted — TEX re-enables by clearing the flag.
-const EDITORIAL_HOLDS = ['drx-post-top', 'mvx-coach', 'tex-post-top', 'willstudio-dwx-flood-spot']
+// willstudio-rxb-sxb-bollard: held by Tyler 8/14 the same hour it joined the
+// builder (CR-GM-01) — visible in the Fixture step, badged, not selectable
+// until its ordering matrix is encoded and the render is blessed.
+const EDITORIAL_HOLDS = [
+  'drx-post-top',
+  'mvx-coach',
+  'tex-post-top',
+  'willstudio-dwx-flood-spot',
+  'willstudio-rxb-sxb-bollard',
+]
 
 /**
  * Tyler 8/12: parts approved to SELL from placeholder art — an explicit,
