@@ -324,12 +324,29 @@ export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): 
 }
 
 /**
- * Order codes pre-selected whenever a part offering them is chosen. Composes
- * with the blank slate: the builder still OPENS empty — these seed at the
- * moment the customer picks a part that offers them, and stay uncheckable.
- * WHPXNP (Tyler 8/12): the generic cord line is the standard build.
+ * Order codes pre-selected whenever a part offering them is chosen.
+ * EMPTY since CR-OPT-06 (Tyler 8/14): the cord is no longer a seeded
+ * SELECTION — it is required and DERIVED from the bracket (cordCodeFor),
+ * like the base cover's pole fit. The mechanism stays for future defaults.
  */
-const DEFAULT_OPTION_CODES: string[] = ['WHPXNP']
+const DEFAULT_OPTION_CODES: string[] = []
+
+/**
+ * CR-OPT-06 (Tyler 8/14): the cord code a pendant fixture ships with — a
+ * REQUIRED, bracket-derived inclusion, never a customer choice. WHP7NP is
+ * the standard; short-drop brackets carry their own code on the part
+ * (PM1 → WHP3NP; WM1/WM2/PC1 → WHP3NP and PC3 → WHP11NP when those parts
+ * land). Undefined when the fixture isn't a pendant or the arm isn't a
+ * WiLLstudio bracket.
+ */
+export function cordCodeFor(catalog: Catalog, config: PoleConfig): string | undefined {
+  const fixture = partById(catalog, config.fixture)
+  const arm = partById(catalog, config.arm)
+  if (!fixture || !arm) return undefined
+  if (fixture.mount !== 'pendant') return undefined
+  if (arm.line !== 'WiLLstudio' || arm.pseudoPart) return undefined
+  return arm.cordCode ?? 'WHP7NP'
+}
 
 /**
  * The default multi-select choices for a freshly chosen part: each default

@@ -17,7 +17,7 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
         "baseCover": "WP-CL1-BK-4R"
@@ -45,7 +45,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-80-30-MV-5W-BK",
+        "fixture": "WD-GVX-80-30-MV-5W-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
         "baseCover": "WP-CL1-BK-4R"
@@ -70,7 +70,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-WH",
+        "fixture": "WD-GVX-_-_-_-_-WH-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-DG",
         "baseCover": "WP-CL1-DB-4R"
@@ -90,7 +90,7 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BA",
+        "fixture": "WD-GVX-_-_-_-_-BA-WHP7NP",
         "arm": "WP-SH1-BA",
         "pole": "WP-RSAA-20-_-_-AB-SB-AN-BA",
         "baseCover": "WP-CL1-BA-4R"
@@ -116,7 +116,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-RAL",
         "baseCover": "WP-CL1-BK-4R"
@@ -137,7 +137,7 @@
         "armCount": 3
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SS3-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
         "baseCover": "WP-CL1-BK-4R"
@@ -158,7 +158,7 @@
         "armCount": 3
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": null,
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
         "baseCover": "WP-CL1-BK-4R"
@@ -206,7 +206,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-BA24-FH",
         "baseCover": "WP-CL1-BK-4R"
@@ -226,7 +226,7 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-15-_-_-AB-SB-FP-BK",
         "baseCover": "WP-CL1-BK-4R"
@@ -254,7 +254,7 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": "WP-SH1-BK",
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-FH-BA24",
         "baseCover": "WP-CL1-BK-4R"

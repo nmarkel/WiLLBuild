@@ -85,7 +85,7 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
     // Nothing chosen: WD (single-value family) - GVX (part card) - four open
     // columns - BK (matte-black via mapsTo).
     const pn = buildPartNumber(catalog, config({}), 'fixture')
-    expect(pn).toBe('WD-GVX-_-_-_-_-BK')
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP')
   })
 
   it('fills chosen base-config codes and tracks the per-part finish', () => {
@@ -97,7 +97,7 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
       }),
       'fixture',
     )
-    expect(pn).toBe('WD-GVX-80-30-MV-_-NA')
+    expect(pn).toBe('WD-GVX-80-30-MV-_-NA-WHP7NP')
   })
 
   it('appends options and accessories codes with a dash each', () => {
@@ -110,7 +110,9 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
       }),
       'fixture',
     )
-    expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP-SRG27710-HSS-GVX')
+    // Chosen cord codes are ignored (derived cord rides at the end);
+    // legacy concrete codes like SRG27710 pass through untouched.
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK-SRG27710-HSS-GVX-WHP7NP')
   })
 
   it('returns undefined for an empty or unknown selection', () => {
@@ -136,7 +138,7 @@ describe('custom RAL in summary + part number (Phase 0.10.5)', () => {
 
   it('part number uses the palette code for finishes newer than the parsed sheet', () => {
     const pn = buildPartNumber(catalog, config({ finishes: { fixture: 'custom-ral' } }), 'fixture')
-    expect(pn).toBe('WD-GVX-_-_-_-_-RAL')
+    expect(pn).toBe('WD-GVX-_-_-_-_-RAL-WHP7NP')
   })
 })
 

@@ -1,6 +1,8 @@
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
 import { bannerSummaryLine, formatPanelSize } from './banner'
 import {
+  cordCodeFor,
+  exclusiveFamily,
   ACCENT_FINISH_KEY,
   accentFinishFor,
   bannerPanelSize,
@@ -33,10 +35,25 @@ import { isComingSoon } from './availability'
  */
 function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
   const chosen = config.specOptions?.[slot] ?? {}
+  // CR-OPT-07: a value may resolve its printed code by the chosen voltage
+  // (surge: SRGXXX10 → SRG27710 on MV / SRG48010 on HV). CR-OPT-06: derived
+  // rows (the bracket cord) never print their own code — the resolver
+  // appends the derived one separately.
+  const voltage = specCodes(chosen['voltage'])[0]
   return (part.options ?? [])
     .filter((o) => o.group === 'options-accessories')
     .sort((a, b) => a.orderPosition - b.orderPosition)
-    .flatMap((o) => specCodes(chosen[o.key]))
+    .flatMap((o) =>
+      specCodes(chosen[o.key]).flatMap((code) => {
+        // CR-OPT-06: cord codes in SELECTIONS never print (old share URLs
+        // carry them) — the bracket-derived cord is the only authority.
+        if (exclusiveFamily(code) === 'cord') return []
+        const value = o.values.find((v) => v.code === code)
+        if (value?.derived) return []
+        const mapped = voltage ? value?.resolvesBy?.[voltage] : undefined
+        return [mapped ?? code]
+      }),
+    )
 }
 
 /**
@@ -129,6 +146,12 @@ export function buildPartNumber(
     }
   }
   segments.push(...addOnCodes(part, config, slot))
+  // CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard) — appended
+  // like an add-on, but from the arm pairing, never from a selection.
+  if (slot === 'fixture') {
+    const cord = cordCodeFor(catalog, config)
+    if (cord) segments.push(cord)
+  }
   // Derived Pole Fit rides at the very end (after finish + add-ons): the
   // pole's OD selects the matching fit code (4" round pole → 4R).
   const fitColumn = options.find((o) => o.key === 'pole-fit')

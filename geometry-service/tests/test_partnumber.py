@@ -276,7 +276,8 @@ class TestPerSlotFinishReachesTheNumber:
             finishes={"fixture": "gloss-white", "pole": "forest-green",
                       "baseCover": "statuary-bronze"},
         )
-        assert build_part_number(catalog, cfg, "fixture").endswith("-WH")
+        # Cord (derived) rides after the finish now — WH is interior.
+        assert "-WH-" in build_part_number(catalog, cfg, "fixture")
         # Trailing unanswered columns no longer print — DG is the last segment.
         assert build_part_number(catalog, cfg, "pole").endswith("-DG")
         # The derived Pole Fit rides after the colour (Tyler 8/12): …-DB-4R.

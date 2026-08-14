@@ -90,7 +90,9 @@ describe('part-number contract (shared with geometry-service)', () => {
         },
       },
     } as PoleConfig
-    expect(buildPartNumber(catalog, config, 'fixture')).toBe('WD-GVX-80-30-MV-5W-BK')
+    // CR-OPT-06 (Tyler 8/14): the sheet example rides an SH1 bracket, so the
+    // REQUIRED derived cord joins the number.
+    expect(buildPartNumber(catalog, config, 'fixture')).toBe('WD-GVX-80-30-MV-5W-BK-WHP7NP')
   })
 
   it('a slot with no ordering data resolves to no number, never a guess', () => {

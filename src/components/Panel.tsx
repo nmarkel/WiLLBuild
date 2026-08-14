@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -424,6 +424,21 @@ function StepSpecOptions({
               <div className="spec-option spec-option-group" key={opt.key}>
                 {showLabel && <p className="spec-option-group-label">{label}</p>}
                 {values.map((v) => {
+                  // CR-OPT-06: a derived row (the bracket cord) isn't a
+                  // choice — it renders as a locked "included" box once the
+                  // pairing that derives it exists, and hides until then.
+                  if (v.derived) {
+                    if (!cordCodeFor(catalog, config)) return null
+                    return (
+                      <div key={v.code} className="spec-check checked derived">
+                        <span className="spec-check-text">
+                          <span className="spec-check-name">{v.label}</span>
+                          {v.note && <span className="spec-check-note">{v.note}</span>}
+                        </span>
+                        <span className="spec-check-included">Included</span>
+                      </div>
+                    )
+                  }
                   const checked = specCodes(chosen[opt.key]).includes(v.code)
                   const placeable = slot === 'pole' && isPlaceable(v)
                   const family = exclusiveFamily(v.code)

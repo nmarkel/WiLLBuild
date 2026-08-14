@@ -581,21 +581,29 @@
                   "code": "WHPXNP",
                   "label": "Cord w/o Plug, Stripped Pigtail",
                   "mapsTo": null,
-                  "note": "Sized to your installation \u2014 we'll confirm the length with your quote"
+                  "note": "Included with your WiLLstudio bracket \u2014 cord length matched to the bracket (6 ft standard)",
+                  "derived": true
                 },
                 {
                   "buildable": null,
                   "code": "SRGXXX10",
                   "label": "10kA Surge Suppressor",
                   "mapsTo": null,
-                  "note": "We'll match it to your project's voltage"
+                  "note": "We'll match it to your project's voltage",
+                  "resolvesBy": {
+                    "MV": "SRG27710",
+                    "HV": "SRG48010"
+                  }
                 },
                 {
                   "buildable": null,
                   "code": "BPCX",
                   "label": "Button Photocontrol",
                   "mapsTo": null,
-                  "note": "We'll match it to your project's voltage"
+                  "note": "We'll match it to your project's voltage",
+                  "resolvesBy": {
+                    "MV": "BPC1"
+                  }
                 },
                 {
                   "buildable": null,

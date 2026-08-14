@@ -80,6 +80,12 @@ export interface CatalogPart {
       Pole Fit code — a function of the pole, never a customer choice. */
   diameterIn?: number
   /**
+   * CR-OPT-06 (Tyler 8/14): arms only — the cord code a pendant fixture gets
+   * when hung from this bracket. Absent → the WHP7NP standard. The cord is
+   * REQUIRED with a WiLLstudio bracket and derived, never customer-chosen.
+   */
+  cordCode?: string
+  /**
    * Phase 0.12_TO (Tyler 8/12): this part may sell from PLACEHOLDER art — an
    * explicit, per-part exemption from the geometry-gap Coming Soon rule.
    *
@@ -196,6 +202,20 @@ export interface SpecOptionValue {
    * whose sheets haven't had the copy treatment.
    */
   placeable?: boolean
+  /**
+   * CR-OPT-06 (Tyler 8/14): this row is DERIVED — shown checked and locked in
+   * the UI (it ships with the build), and its own code never enters the part
+   * number; the resolver appends the derived code instead (cord: from the
+   * bracket). Old share URLs may still carry the row's code harmlessly.
+   */
+  derived?: boolean
+  /**
+   * CR-OPT-07 (Tyler 8/14): when this row is selected, the code that enters
+   * the part number resolves by the part's chosen VOLTAGE code (MV/HV) —
+   * e.g. the surge suppressor's SRGXXX10 becomes SRG27710 (MV) / SRG48010
+   * (HV). Unmapped or unchosen voltage → the row's own code prints as-is.
+   */
+  resolvesBy?: Record<string, string>
 }
 
 /** One column of the ordering matrix = one configurator choice. */

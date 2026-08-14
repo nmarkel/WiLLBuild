@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
 import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
   autofillConfig,
+  cordCodeFor,
 } from './compat'
 import { bannerGeometry } from './banner'
 
@@ -1018,26 +1019,33 @@ describe('voltage → options compatibility (Phase 0.10.5)', () => {
   })
 })
 
-describe('default spec options — the generic cord (Phase 0.12_TO)', () => {
-  it('seeds the WHPXNP cord when the picked part offers it — and nothing else', () => {
-    // Composes with the blank slate: the builder opens empty; this seeds at
-    // part-PICK time (Tyler 8/12: "select Cord w/o Plug by default").
-    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHPXNP'] })
-    for (const id of ['drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
+describe('cord — required, bracket-derived (CR-OPT-06, Tyler 8/14)', () => {
+  it('seeds nothing any more — the cord is derived, not selected', () => {
+    for (const id of ['gvx-pendant', 'drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
       expect(defaultSpecOptions(partById(catalog, id)), id).toBeUndefined()
     }
   })
 
-  it('the mechanism still works when a part carries specDefaults', () => {
-    // The machinery stays (catalog `specDefaults` + DEFAULT_OPTION_CODES) for
-    // the day a default earns its way back; pin it with a synthetic part.
-    const gvx = partById(catalog, 'gvx-pendant')!
-    const seeded = defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })
-    expect(seeded).toEqual({ 'lumen-output': '115', options: ['WHPXNP'] })
-    // A code the sheet does not offer never seeds (the cord still does).
+  it('cordCodeFor: WHP7NP standard, per-bracket overrides, pendant-only', () => {
+    const base = config({ fixture: 'gvx-pendant' })
+    expect(cordCodeFor(catalog, { ...base, arm: 'sh1-shepherds-hook' })).toBe('WHP7NP')
     expect(
-      defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': 'NOT-A-CODE' } }),
-    ).toEqual({ options: ['WHPXNP'] })
+      cordCodeFor(catalog, { ...base, arm: 'willstudio-side-shepherds-hook-pole-top-brackets' }),
+    ).toBe('WHP7NP')
+    // PM1 is a short-drop bracket: 3-ft cord code on the part.
+    expect(cordCodeFor(catalog, { ...base, arm: 'pm1-pendant-arm' })).toBe('WHP3NP')
+    // No arm chosen, non-pendant fixture, pseudo-arm: no cord.
+    expect(cordCodeFor(catalog, { ...base, arm: '' })).toBeUndefined()
+    expect(
+      cordCodeFor(catalog, config({ fixture: 'drx-post-top', arm: 'direct-mount' })),
+    ).toBeUndefined()
+  })
+
+  it('the specDefaults mechanism still works (dormant)', () => {
+    const gvx = partById(catalog, 'gvx-pendant')!
+    expect(defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })).toEqual({
+      'lumen-output': '115',
+    })
   })
 
   it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {

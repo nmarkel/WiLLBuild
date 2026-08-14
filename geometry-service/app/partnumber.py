@@ -166,6 +166,24 @@ def _finish_code(catalog: dict, values: list[dict], finish_id: str) -> str:
     return (finish or {}).get("code") or UNSPECIFIED
 
 
+def _cord_code_for(catalog: dict, cfg: PoleConfig) -> str | None:
+    """CR-OPT-06 (Tyler 8/14): the bracket-derived required cord.
+
+    Mirrors ``cordCodeFor`` in src/lib/compat.ts: pendant fixture + WiLLstudio
+    bracket → the arm's ``cordCode`` or the WHP7NP standard; anything else →
+    no cord.
+    """
+    fixture = _find_part(catalog, getattr(cfg, "fixture", ""))
+    arm = _find_part(catalog, getattr(cfg, "arm", ""))
+    if not fixture or not arm:
+        return None
+    if fixture.get("mount") != "pendant":
+        return None
+    if arm.get("line") != "WiLLstudio" or arm.get("pseudoPart"):
+        return None
+    return arm.get("cordCode") or "WHP7NP"
+
+
 def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     """One component's full ordering part number, or None when it has no sheet.
 
@@ -252,11 +270,30 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         else:
             segments.append(UNSPECIFIED)
 
+    # CR-OPT-07: voltage-resolved codes; CR-OPT-06: derived rows never print
+    # their own code.  Mirrors addOnCodes in src/lib/summary.ts.
+    voltage = (spec_codes(chosen.get("voltage")) or [None])[0]
     for opt in sorted(
         (o for o in options if o.get("group") == "options-accessories"),
         key=lambda o: o.get("orderPosition", 0),
     ):
-        segments.extend(spec_codes(chosen.get(opt.get("key", ""))))
+        values = opt.get("values") or []
+        for code in spec_codes(chosen.get(opt.get("key", ""))):
+            # CR-OPT-06: cord codes in selections never print — the derived
+            # cord is the only authority (mirrors exclusiveFamily 'cord').
+            if code.startswith("WHP"):
+                continue
+            value = next((v for v in values if v.get("code") == code), None)
+            if value and value.get("derived"):
+                continue
+            mapped = (value or {}).get("resolvesBy", {}).get(voltage) if voltage else None
+            segments.append(mapped or code)
+
+    # CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard).
+    if slot == "fixture":
+        cord = _cord_code_for(catalog, cfg)
+        if cord:
+            segments.append(cord)
 
     # Derived Pole Fit rides at the very end (after finish + add-ons).
     fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)

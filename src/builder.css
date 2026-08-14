@@ -877,3 +877,21 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Derived rows (the bracket cord): included, not a choice. */
+.builder-app .spec-check.derived {
+  cursor: default;
+}
+
+.builder-app .spec-check-included {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--will-gray);
+  background: var(--will-yellow);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
