@@ -125,8 +125,9 @@ INGEST: list[dict] = [
               "the pole axis with the coupling boss reaching +X natively "
               "(25 mm proud of the 4in OD), no rotateY. Origin at the vertical "
               "centre so the placement height reads to the boss centreline. "
-              "Thread details (NPT vs NPSM, diameter) resolve at quote/order "
-              "entry per Tyler 8/13; the render shows the exported boss."),
+              "Tyler confirmed 8/14 this file IS the coupling's visual "
+              "representation in the tool; thread details (NPT vs NPSM, "
+              "diameter) still resolve at quote/order entry per Tyler 8/13."),
     # --- base covers: CL1/CL2/CL3 are SIZES (Small/Medium/Large Clamshell) and
     #     SC1/SC2 are the 1-piece / split Spun Base Collar, per the Aluminum
     #     Round Straight Decorative pole spec sheet (8/4).  This corrects 0.10's

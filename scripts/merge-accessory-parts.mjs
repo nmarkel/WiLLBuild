@@ -96,16 +96,21 @@ const ACCESSORY_PARTS = [
     id: 'willstudio-acc-festoon',
     name: 'Festoon Power Provision',
     family: 'FSTR',
-    // No CAD export yet (flagged to Tyler 8/14) — a placeholder outlet-cover
-    // plate on the shaft, sized like a small hand-hole cover. Origin at the
-    // plate's vertical centre, proud of a 4in pole (r=0.0508) like the pole's
-    // own grafted cover (2 mm proud, 4 mm sheet).
+    // No CAD export exists (Tyler 8/14: "put a best guess representation into
+    // the tool") — a weatherproof-outlet read: cover plate on the shaft with
+    // a receptacle boss proud of it. Origin at the plate's vertical centre,
+    // proud of a 4in pole (r=0.0508) like the pole's own grafted cover.
+    // Swaps to real CAD automatically the day Cole exports one.
     placeholder: {
       kind: 'group',
       children: [
         {
-          spec: { kind: 'box', sizeM: [0.004, 0.127, 0.089], direction: 'up' },
+          spec: { kind: 'box', sizeM: [0.006, 0.127, 0.089], direction: 'up' },
           position: [0.0528, -0.0635, 0],
+        },
+        {
+          spec: { kind: 'box', sizeM: [0.018, 0.06, 0.045], direction: 'up' },
+          position: [0.0588, -0.03, 0],
         },
       ],
     },

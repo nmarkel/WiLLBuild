@@ -2572,7 +2572,7 @@
               "code": "WHPXNP",
               "label": "Cord w/o Plug, Stripped Pigtail",
               "mapsTo": null,
-              "note": "Included with your WiLLstudio bracket — cord length matched to the bracket (6 ft standard)",
+              "note": "Included with your WiLLstudio bracket — 6’ cord w/o plug, stripped pigtail (2’ with the PM1 arm), per the ordering sheet",
               "derived": true
             },
             {
@@ -17889,7 +17889,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.004,
+                0.006,
                 0.127,
                 0.089
               ],
@@ -17898,6 +17898,22 @@
             "position": [
               0.0528,
               -0.0635,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.018,
+                0.06,
+                0.045
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0588,
+              -0.03,
               0
             ]
           }

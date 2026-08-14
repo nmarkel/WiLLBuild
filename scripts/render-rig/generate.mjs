@@ -102,6 +102,29 @@ export function placeholderGraftChildren(part) {
 }
 
 /**
+ * Spec D8a, upgraded Phase 0.14 (Tyler 8/14): the pole's hand hole grafts
+ * Cole's REAL HH-4R geometry when its GLB is on this machine — AND KEEPS the
+ * cover-plate box on top of it. Measured first (0.14 crops): the real section
+ * is a 6in wrap of the pole itself (x/z exactly the 4in OD, mount-center
+ * origin) whose opening is FLUSH — rendered alone it vanishes at 360 px/m,
+ * which would delete the visible 0° homing reference, exactly the risk the
+ * 0.13 note predicted. A real installed hand hole carries its cover plate
+ * screwed on proud of the opening, so frame + plate together are the truthful
+ * picture: the real HH-4R at the box cover's vertical centre, with Tyler's
+ * 4 mm sheet / 2 mm proud plate (the box) over the opening. Machines without
+ * the accessory GLB fall back to the box graft alone.
+ */
+export const HH_GRAFT_GLB = 'real-assets/glb/willstudio-acc-hand-hole.glb'
+export function poleGraftPlan(part, { glbPresent } = { glbPresent: existsSync(resolve(__dirname, HH_GRAFT_GLB)) }) {
+  const boxes = placeholderGraftChildren(part)
+  if (boxes.length === 0) return { boxes: [], glbs: [] }
+  if (!glbPresent) return { boxes, glbs: [] }
+  const box = boxes[0]
+  const centerY = box.position[1] + box.spec.sizeM[1] / 2
+  return { boxes, glbs: [{ glb: HH_GRAFT_GLB, position: [0, centerY, 0] }] }
+}
+
+/**
  * A page that has gone away mid-render (CDP session/target closed, or the
  * "Attempted to use detached Frame" error a long-lived renderer throws once
  * it runs out of memory) surfaces as a distinct Puppeteer error class from an
@@ -208,16 +231,23 @@ async function main() {
         if (glbPresent) {
           const b64 = (await readFile(glbPath)).toString('base64')
           // Spec D8a: the pole's real export has no hand hole, but the viewer
-          // homes its 0° orientation on the placeholder's hand-hole cover — so
-          // graft it onto the real tube, at native size, after this GLB load.
-          const graftChildren = placeholderGraftChildren(part)
+          // homes its 0° orientation on the hand-hole cover — so graft one
+          // onto the real tube, at native size, after this GLB load: Cole's
+          // real HH-4R section when its GLB is here (0.14), else the box.
+          const graftPlan = poleGraftPlan(part)
+          const glbGrafts = []
+          for (const g of graftPlan.glbs) {
+            const gb64 = (await readFile(resolve(__dirname, g.glb))).toString('base64')
+            glbGrafts.push({ b64: gb64, position: g.position })
+          }
           try {
             await page.evaluate(
-              (pid, data, rot, grafts) => window.loadRealModel(pid, data, rot, grafts),
+              (pid, data, rot, grafts, glbs) => window.loadRealModel(pid, data, rot, grafts, glbs),
               part.id,
               b64,
               rotateY,
-              graftChildren,
+              graftPlan.boxes,
+              glbGrafts,
             )
             console.log(`  loaded real geometry for ${part.id} (${(b64.length / 1e6).toFixed(1)}MB b64)`)
             realLoaded = true

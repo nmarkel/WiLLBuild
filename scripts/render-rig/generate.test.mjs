@@ -4,6 +4,7 @@ import {
   ANGLES_FOR_SLOT,
   assertNoPlaceholderForRealPart,
   placeholderGraftChildren,
+  poleGraftPlan,
 } from './generate.mjs'
 
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -72,6 +73,36 @@ describe('pole hand-hole graft (spec D8a)', () => {
       const part = catalog.parts.find((p) => p.id === id)
       expect(placeholderGraftChildren(part)).toEqual([])
     }
+  })
+
+  // Phase 0.14 (Tyler 8/14): with Cole's HH-4R GLB on the machine the graft is
+  // real frame + cover plate TOGETHER — measured first: the real opening is
+  // flush and vanishes alone at 360 px/m, which would delete the 0° homing
+  // reference. The plate (a real installed hand hole's cover, proud of the
+  // opening) keeps the reference visible; the frame adds the true geometry.
+  it('grafts the real HH-4R section AND keeps the cover plate when the GLB is present', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    const plan = poleGraftPlan(pole, { glbPresent: true })
+    expect(plan.boxes).toHaveLength(1)
+    expect(plan.boxes[0].spec.kind).toBe('box')
+    expect(plan.glbs).toHaveLength(1)
+    expect(plan.glbs[0].glb).toMatch(/willstudio-acc-hand-hole\.glb$/)
+    // Positioned to keep the box cover's vertical CENTRE (box base + h/2),
+    // on the pole axis — the section is a full wrap, not a proud plate.
+    const box = plan.boxes[0]
+    expect(plan.glbs[0].position).toEqual([0, box.position[1] + box.spec.sizeM[1] / 2, 0])
+  })
+
+  it('falls back to the box graft alone on a machine without the accessory GLB', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    const plan = poleGraftPlan(pole, { glbPresent: false })
+    expect(plan.glbs).toEqual([])
+    expect(plan.boxes).toHaveLength(1)
+  })
+
+  it('plans no graft for non-pole parts', () => {
+    const arm = catalog.parts.find((p) => p.id === 'sh1-shepherds-hook')
+    expect(poleGraftPlan(arm, { glbPresent: true })).toEqual({ boxes: [], glbs: [] })
   })
 
   it('keeps the hand hole at native size and height regardless of pole length', () => {

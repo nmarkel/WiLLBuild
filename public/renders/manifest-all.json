@@ -21,244 +21,123 @@
   "parts": {
     "alum-pole-10": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-10--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--black-anodized.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-10--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-10--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--custom-ral.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-10--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--dark-platinum.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-10--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--forest-green.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-10--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--gloss-white.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-10--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-10--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--light-gray.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-10--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--matte-black.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-10--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-10--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--silver.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-10--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-10--hero--slate-gray.webp",
+              "width": 54,
               "height": 1107,
               "anchor": [
-                30.09,
-                1099.18
+                24.71,
+                1099.11
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-10--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1107,
-              "anchor": [
-                30.09,
-                1099.18
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-10--az270--black-anodized.webp",
+              "file": "renders/alum-pole-10--hero--statuary-bronze.webp",
               "width": 54,
               "height": 1107,
               "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-10--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-10--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-10--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-10--az270--forest-green.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-10--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-10--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-10--az270--light-gray.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-10--az270--matte-black.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-10--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-10--az270--silver.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-10--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-10--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1107,
-              "anchor": [
-                29.41,
-                1099.07
+                24.71,
+                1099.11
               ]
             }
           }
@@ -270,8 +149,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "bronze-anodized": {
@@ -279,8 +158,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "custom-ral": {
@@ -288,8 +167,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "dark-platinum": {
@@ -297,8 +176,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "forest-green": {
@@ -306,8 +185,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "gloss-white": {
@@ -315,8 +194,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "graphite-metallic": {
@@ -324,8 +203,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "light-gray": {
@@ -333,8 +212,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "matte-black": {
@@ -342,8 +221,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "satin-silver-anodized": {
@@ -351,8 +230,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "silver": {
@@ -360,8 +239,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "slate-gray": {
@@ -369,8 +248,8 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             },
             "statuary-bronze": {
@@ -378,129 +257,250 @@
               "width": 53,
               "height": 1107,
               "anchor": [
-                24.59,
-                1099.2
+                24.79,
+                1099.17
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-10--hero--black-anodized.webp",
+              "file": "renders/alum-pole-10--az180--black-anodized.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-10--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-10--az180--bronze-anodized.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-10--hero--custom-ral.webp",
+              "file": "renders/alum-pole-10--az180--custom-ral.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-10--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-10--az180--dark-platinum.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-10--hero--forest-green.webp",
+              "file": "renders/alum-pole-10--az180--forest-green.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-10--hero--gloss-white.webp",
+              "file": "renders/alum-pole-10--az180--gloss-white.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-10--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-10--az180--graphite-metallic.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-10--hero--light-gray.webp",
+              "file": "renders/alum-pole-10--az180--light-gray.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-10--hero--matte-black.webp",
+              "file": "renders/alum-pole-10--az180--matte-black.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-10--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-10--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-10--hero--silver.webp",
+              "file": "renders/alum-pole-10--az180--silver.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-10--hero--slate-gray.webp",
+              "file": "renders/alum-pole-10--az180--slate-gray.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-10--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-10--az180--statuary-bronze.webp",
               "width": 55,
               "height": 1107,
               "anchor": [
-                24.91,
-                1099.09
+                30.29,
+                1099.16
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-10--az270--black-anodized.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-10--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-10--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-10--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-10--az270--forest-green.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-10--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-10--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-10--az270--light-gray.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-10--az270--matte-black.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-10--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-10--az270--silver.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-10--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-10--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1107,
+              "anchor": [
+                28.21,
+                1099.1
               ]
             }
           }
@@ -509,244 +509,123 @@
     },
     "alum-pole-12": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-12--az180--black-anodized.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--black-anodized.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-12--az180--bronze-anodized.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--bronze-anodized.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-12--az180--custom-ral.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--custom-ral.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-12--az180--dark-platinum.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--dark-platinum.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-12--az180--forest-green.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--forest-green.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-12--az180--gloss-white.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--gloss-white.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-12--az180--graphite-metallic.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--graphite-metallic.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-12--az180--light-gray.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--light-gray.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-12--az180--matte-black.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--matte-black.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-12--az180--satin-silver-anodized.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--satin-silver-anodized.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-12--az180--silver.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--silver.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-12--az180--slate-gray.webp",
-              "width": 55,
-              "height": 1326,
+              "file": "renders/alum-pole-12--hero--slate-gray.webp",
+              "width": 54,
+              "height": 1327,
               "anchor": [
-                30.09,
-                1317.3
+                24.71,
+                1318.24
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-12--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1326,
-              "anchor": [
-                30.09,
-                1317.3
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-12--az270--black-anodized.webp",
+              "file": "renders/alum-pole-12--hero--statuary-bronze.webp",
               "width": 54,
-              "height": 1326,
+              "height": 1327,
               "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-12--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-12--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-12--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-12--az270--forest-green.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-12--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-12--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-12--az270--light-gray.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-12--az270--matte-black.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-12--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-12--az270--silver.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-12--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-12--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1326,
-              "anchor": [
-                29.41,
-                1318.2
+                24.71,
+                1318.24
               ]
             }
           }
@@ -758,8 +637,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "bronze-anodized": {
@@ -767,8 +646,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "custom-ral": {
@@ -776,8 +655,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "dark-platinum": {
@@ -785,8 +664,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "forest-green": {
@@ -794,8 +673,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "gloss-white": {
@@ -803,8 +682,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "graphite-metallic": {
@@ -812,8 +691,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "light-gray": {
@@ -821,8 +700,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "matte-black": {
@@ -830,8 +709,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "satin-silver-anodized": {
@@ -839,8 +718,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "silver": {
@@ -848,8 +727,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "slate-gray": {
@@ -857,8 +736,8 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             },
             "statuary-bronze": {
@@ -866,129 +745,250 @@
               "width": 53,
               "height": 1326,
               "anchor": [
-                24.59,
-                1317.32
+                24.79,
+                1317.29
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-12--hero--black-anodized.webp",
+              "file": "renders/alum-pole-12--az180--black-anodized.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-12--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-12--az180--bronze-anodized.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-12--hero--custom-ral.webp",
+              "file": "renders/alum-pole-12--az180--custom-ral.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-12--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-12--az180--dark-platinum.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-12--hero--forest-green.webp",
+              "file": "renders/alum-pole-12--az180--forest-green.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-12--hero--gloss-white.webp",
+              "file": "renders/alum-pole-12--az180--gloss-white.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-12--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-12--az180--graphite-metallic.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-12--hero--light-gray.webp",
+              "file": "renders/alum-pole-12--az180--light-gray.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-12--hero--matte-black.webp",
+              "file": "renders/alum-pole-12--az180--matte-black.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-12--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-12--az180--satin-silver-anodized.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-12--hero--silver.webp",
+              "file": "renders/alum-pole-12--az180--silver.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-12--hero--slate-gray.webp",
+              "file": "renders/alum-pole-12--az180--slate-gray.webp",
               "width": 55,
-              "height": 1327,
+              "height": 1326,
               "anchor": [
-                24.91,
-                1318.22
+                30.29,
+                1317.28
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-12--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-12--az180--statuary-bronze.webp",
               "width": 55,
+              "height": 1326,
+              "anchor": [
+                30.29,
+                1317.28
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-12--az270--black-anodized.webp",
+              "width": 53,
               "height": 1327,
               "anchor": [
-                24.91,
-                1318.22
+                28.21,
+                1318.23
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-12--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-12--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-12--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-12--az270--forest-green.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-12--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-12--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-12--az270--light-gray.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-12--az270--matte-black.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-12--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-12--az270--silver.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-12--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-12--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1327,
+              "anchor": [
+                28.21,
+                1318.23
               ]
             }
           }
@@ -997,244 +997,123 @@
     },
     "alum-pole-14": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-14--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--black-anodized.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-14--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-14--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--custom-ral.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-14--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--dark-platinum.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-14--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--forest-green.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-14--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--gloss-white.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-14--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-14--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--light-gray.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-14--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--matte-black.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-14--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-14--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--silver.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-14--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-14--hero--slate-gray.webp",
+              "width": 54,
               "height": 1544,
               "anchor": [
-                30.09,
-                1535.93
+                24.71,
+                1535.87
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-14--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1544,
-              "anchor": [
-                30.09,
-                1535.93
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-14--az270--black-anodized.webp",
+              "file": "renders/alum-pole-14--hero--statuary-bronze.webp",
               "width": 54,
               "height": 1544,
               "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-14--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-14--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-14--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-14--az270--forest-green.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-14--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-14--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-14--az270--light-gray.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-14--az270--matte-black.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-14--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-14--az270--silver.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-14--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-14--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1544,
-              "anchor": [
-                29.41,
-                1535.83
+                24.71,
+                1535.87
               ]
             }
           }
@@ -1246,8 +1125,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "bronze-anodized": {
@@ -1255,8 +1134,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "custom-ral": {
@@ -1264,8 +1143,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "dark-platinum": {
@@ -1273,8 +1152,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "forest-green": {
@@ -1282,8 +1161,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "gloss-white": {
@@ -1291,8 +1170,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "graphite-metallic": {
@@ -1300,8 +1179,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "light-gray": {
@@ -1309,8 +1188,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "matte-black": {
@@ -1318,8 +1197,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "satin-silver-anodized": {
@@ -1327,8 +1206,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "silver": {
@@ -1336,8 +1215,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "slate-gray": {
@@ -1345,8 +1224,8 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             },
             "statuary-bronze": {
@@ -1354,129 +1233,250 @@
               "width": 53,
               "height": 1544,
               "anchor": [
-                24.59,
-                1535.95
+                24.79,
+                1535.92
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-14--hero--black-anodized.webp",
+              "file": "renders/alum-pole-14--az180--black-anodized.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-14--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-14--az180--bronze-anodized.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-14--hero--custom-ral.webp",
+              "file": "renders/alum-pole-14--az180--custom-ral.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-14--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-14--az180--dark-platinum.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-14--hero--forest-green.webp",
+              "file": "renders/alum-pole-14--az180--forest-green.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-14--hero--gloss-white.webp",
+              "file": "renders/alum-pole-14--az180--gloss-white.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-14--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-14--az180--graphite-metallic.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-14--hero--light-gray.webp",
+              "file": "renders/alum-pole-14--az180--light-gray.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-14--hero--matte-black.webp",
+              "file": "renders/alum-pole-14--az180--matte-black.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-14--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-14--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-14--hero--silver.webp",
+              "file": "renders/alum-pole-14--az180--silver.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-14--hero--slate-gray.webp",
+              "file": "renders/alum-pole-14--az180--slate-gray.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-14--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-14--az180--statuary-bronze.webp",
               "width": 55,
               "height": 1544,
               "anchor": [
-                24.91,
-                1535.85
+                30.29,
+                1535.91
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-14--az270--black-anodized.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-14--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-14--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-14--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-14--az270--forest-green.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-14--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-14--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-14--az270--light-gray.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-14--az270--matte-black.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-14--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-14--az270--silver.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-14--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-14--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1544,
+              "anchor": [
+                28.21,
+                1535.86
               ]
             }
           }
@@ -1485,244 +1485,123 @@
     },
     "alum-pole-15": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-15--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--black-anodized.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-15--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-15--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--custom-ral.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-15--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--dark-platinum.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-15--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--forest-green.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-15--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--gloss-white.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-15--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-15--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--light-gray.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-15--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--matte-black.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-15--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-15--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--silver.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-15--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-15--hero--slate-gray.webp",
+              "width": 54,
               "height": 1653,
               "anchor": [
-                30.09,
-                1644.99
+                24.71,
+                1644.93
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-15--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1653,
-              "anchor": [
-                30.09,
-                1644.99
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-15--az270--black-anodized.webp",
+              "file": "renders/alum-pole-15--hero--statuary-bronze.webp",
               "width": 54,
               "height": 1653,
               "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-15--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-15--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-15--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-15--az270--forest-green.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-15--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-15--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-15--az270--light-gray.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-15--az270--matte-black.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-15--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-15--az270--silver.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-15--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-15--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1653,
-              "anchor": [
-                29.41,
-                1644.89
+                24.71,
+                1644.93
               ]
             }
           }
@@ -1734,8 +1613,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "bronze-anodized": {
@@ -1743,8 +1622,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "custom-ral": {
@@ -1752,8 +1631,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "dark-platinum": {
@@ -1761,8 +1640,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "forest-green": {
@@ -1770,8 +1649,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "gloss-white": {
@@ -1779,8 +1658,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "graphite-metallic": {
@@ -1788,8 +1667,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "light-gray": {
@@ -1797,8 +1676,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "matte-black": {
@@ -1806,8 +1685,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "satin-silver-anodized": {
@@ -1815,8 +1694,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "silver": {
@@ -1824,8 +1703,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "slate-gray": {
@@ -1833,8 +1712,8 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             },
             "statuary-bronze": {
@@ -1842,129 +1721,250 @@
               "width": 53,
               "height": 1653,
               "anchor": [
-                24.59,
-                1645.01
+                24.79,
+                1644.98
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-15--hero--black-anodized.webp",
+              "file": "renders/alum-pole-15--az180--black-anodized.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-15--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-15--az180--bronze-anodized.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-15--hero--custom-ral.webp",
+              "file": "renders/alum-pole-15--az180--custom-ral.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-15--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-15--az180--dark-platinum.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-15--hero--forest-green.webp",
+              "file": "renders/alum-pole-15--az180--forest-green.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-15--hero--gloss-white.webp",
+              "file": "renders/alum-pole-15--az180--gloss-white.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-15--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-15--az180--graphite-metallic.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-15--hero--light-gray.webp",
+              "file": "renders/alum-pole-15--az180--light-gray.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-15--hero--matte-black.webp",
+              "file": "renders/alum-pole-15--az180--matte-black.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-15--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-15--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-15--hero--silver.webp",
+              "file": "renders/alum-pole-15--az180--silver.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-15--hero--slate-gray.webp",
+              "file": "renders/alum-pole-15--az180--slate-gray.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-15--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-15--az180--statuary-bronze.webp",
               "width": 55,
               "height": 1653,
               "anchor": [
-                24.91,
-                1644.91
+                30.29,
+                1644.97
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-15--az270--black-anodized.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-15--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-15--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-15--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-15--az270--forest-green.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-15--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-15--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-15--az270--light-gray.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-15--az270--matte-black.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-15--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-15--az270--silver.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-15--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-15--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1653,
+              "anchor": [
+                28.21,
+                1644.92
               ]
             }
           }
@@ -1973,244 +1973,123 @@
     },
     "alum-pole-16": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-16--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--black-anodized.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-16--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-16--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--custom-ral.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-16--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--dark-platinum.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-16--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--forest-green.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-16--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--gloss-white.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-16--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-16--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--light-gray.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-16--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--matte-black.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-16--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-16--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--silver.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-16--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-16--hero--slate-gray.webp",
+              "width": 54,
               "height": 1762,
               "anchor": [
-                30.09,
-                1754.06
+                24.71,
+                1753.99
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-16--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1762,
-              "anchor": [
-                30.09,
-                1754.06
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-16--az270--black-anodized.webp",
+              "file": "renders/alum-pole-16--hero--statuary-bronze.webp",
               "width": 54,
               "height": 1762,
               "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-16--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-16--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-16--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-16--az270--forest-green.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-16--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-16--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-16--az270--light-gray.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-16--az270--matte-black.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-16--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-16--az270--silver.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-16--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-16--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1762,
-              "anchor": [
-                29.41,
-                1753.95
+                24.71,
+                1753.99
               ]
             }
           }
@@ -2222,8 +2101,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "bronze-anodized": {
@@ -2231,8 +2110,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "custom-ral": {
@@ -2240,8 +2119,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "dark-platinum": {
@@ -2249,8 +2128,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "forest-green": {
@@ -2258,8 +2137,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "gloss-white": {
@@ -2267,8 +2146,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "graphite-metallic": {
@@ -2276,8 +2155,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "light-gray": {
@@ -2285,8 +2164,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "matte-black": {
@@ -2294,8 +2173,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "satin-silver-anodized": {
@@ -2303,8 +2182,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "silver": {
@@ -2312,8 +2191,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "slate-gray": {
@@ -2321,8 +2200,8 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             },
             "statuary-bronze": {
@@ -2330,129 +2209,250 @@
               "width": 53,
               "height": 1762,
               "anchor": [
-                24.59,
-                1754.08
+                24.79,
+                1754.05
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-16--hero--black-anodized.webp",
+              "file": "renders/alum-pole-16--az180--black-anodized.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-16--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-16--az180--bronze-anodized.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-16--hero--custom-ral.webp",
+              "file": "renders/alum-pole-16--az180--custom-ral.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-16--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-16--az180--dark-platinum.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-16--hero--forest-green.webp",
+              "file": "renders/alum-pole-16--az180--forest-green.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-16--hero--gloss-white.webp",
+              "file": "renders/alum-pole-16--az180--gloss-white.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-16--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-16--az180--graphite-metallic.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-16--hero--light-gray.webp",
+              "file": "renders/alum-pole-16--az180--light-gray.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-16--hero--matte-black.webp",
+              "file": "renders/alum-pole-16--az180--matte-black.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-16--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-16--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-16--hero--silver.webp",
+              "file": "renders/alum-pole-16--az180--silver.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-16--hero--slate-gray.webp",
+              "file": "renders/alum-pole-16--az180--slate-gray.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-16--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-16--az180--statuary-bronze.webp",
               "width": 55,
               "height": 1762,
               "anchor": [
-                24.91,
-                1753.97
+                30.29,
+                1754.04
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-16--az270--black-anodized.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-16--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-16--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-16--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-16--az270--forest-green.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-16--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-16--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-16--az270--light-gray.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-16--az270--matte-black.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-16--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-16--az270--silver.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-16--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-16--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1762,
+              "anchor": [
+                28.21,
+                1753.98
               ]
             }
           }
@@ -2461,244 +2461,123 @@
     },
     "alum-pole-18": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-18--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--black-anodized.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-18--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-18--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--custom-ral.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-18--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--dark-platinum.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-18--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--forest-green.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-18--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--gloss-white.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-18--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-18--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--light-gray.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-18--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--matte-black.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-18--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-18--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--silver.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-18--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-18--hero--slate-gray.webp",
+              "width": 54,
               "height": 1980,
               "anchor": [
-                30.09,
-                1972.19
+                24.71,
+                1972.12
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-18--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 1980,
-              "anchor": [
-                30.09,
-                1972.19
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-18--az270--black-anodized.webp",
+              "file": "renders/alum-pole-18--hero--statuary-bronze.webp",
               "width": 54,
               "height": 1980,
               "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-18--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-18--az270--custom-ral.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-18--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-18--az270--forest-green.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-18--az270--gloss-white.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-18--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-18--az270--light-gray.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-18--az270--matte-black.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-18--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-18--az270--silver.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-18--az270--slate-gray.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-18--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 1980,
-              "anchor": [
-                29.41,
-                1972.08
+                24.71,
+                1972.12
               ]
             }
           }
@@ -2710,8 +2589,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "bronze-anodized": {
@@ -2719,8 +2598,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "custom-ral": {
@@ -2728,8 +2607,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "dark-platinum": {
@@ -2737,8 +2616,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "forest-green": {
@@ -2746,8 +2625,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "gloss-white": {
@@ -2755,8 +2634,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "graphite-metallic": {
@@ -2764,8 +2643,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "light-gray": {
@@ -2773,8 +2652,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "matte-black": {
@@ -2782,8 +2661,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "satin-silver-anodized": {
@@ -2791,8 +2670,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "silver": {
@@ -2800,8 +2679,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "slate-gray": {
@@ -2809,8 +2688,8 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             },
             "statuary-bronze": {
@@ -2818,129 +2697,250 @@
               "width": 53,
               "height": 1980,
               "anchor": [
-                24.59,
-                1972.2
+                24.79,
+                1972.17
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-18--hero--black-anodized.webp",
+              "file": "renders/alum-pole-18--az180--black-anodized.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-18--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-18--az180--bronze-anodized.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-18--hero--custom-ral.webp",
+              "file": "renders/alum-pole-18--az180--custom-ral.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-18--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-18--az180--dark-platinum.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-18--hero--forest-green.webp",
+              "file": "renders/alum-pole-18--az180--forest-green.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-18--hero--gloss-white.webp",
+              "file": "renders/alum-pole-18--az180--gloss-white.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-18--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-18--az180--graphite-metallic.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-18--hero--light-gray.webp",
+              "file": "renders/alum-pole-18--az180--light-gray.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-18--hero--matte-black.webp",
+              "file": "renders/alum-pole-18--az180--matte-black.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-18--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-18--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-18--hero--silver.webp",
+              "file": "renders/alum-pole-18--az180--silver.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-18--hero--slate-gray.webp",
+              "file": "renders/alum-pole-18--az180--slate-gray.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-18--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-18--az180--statuary-bronze.webp",
               "width": 55,
               "height": 1980,
               "anchor": [
-                24.91,
-                1972.1
+                30.29,
+                1972.16
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-18--az270--black-anodized.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-18--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-18--az270--custom-ral.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-18--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-18--az270--forest-green.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-18--az270--gloss-white.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-18--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-18--az270--light-gray.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-18--az270--matte-black.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-18--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-18--az270--silver.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-18--az270--slate-gray.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-18--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 1980,
+              "anchor": [
+                28.21,
+                1972.11
               ]
             }
           }
@@ -2949,244 +2949,123 @@
     },
     "alum-pole-20": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-20--az180--black-anodized.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--black-anodized.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-20--az180--bronze-anodized.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--bronze-anodized.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-20--az180--custom-ral.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--custom-ral.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-20--az180--dark-platinum.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--dark-platinum.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-20--az180--forest-green.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--forest-green.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-20--az180--gloss-white.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--gloss-white.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-20--az180--graphite-metallic.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--graphite-metallic.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-20--az180--light-gray.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--light-gray.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-20--az180--matte-black.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--matte-black.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-20--az180--satin-silver-anodized.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--satin-silver-anodized.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-20--az180--silver.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--silver.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-20--az180--slate-gray.webp",
-              "width": 55,
-              "height": 2199,
+              "file": "renders/alum-pole-20--hero--slate-gray.webp",
+              "width": 54,
+              "height": 2200,
               "anchor": [
-                30.09,
-                2190.31
+                24.71,
+                2191.25
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-20--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 2199,
-              "anchor": [
-                30.09,
-                2190.31
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-20--az270--black-anodized.webp",
+              "file": "renders/alum-pole-20--hero--statuary-bronze.webp",
               "width": 54,
-              "height": 2199,
+              "height": 2200,
               "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-20--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-20--az270--custom-ral.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-20--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-20--az270--forest-green.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-20--az270--gloss-white.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-20--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-20--az270--light-gray.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-20--az270--matte-black.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-20--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-20--az270--silver.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-20--az270--slate-gray.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-20--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 2199,
-              "anchor": [
-                29.41,
-                2191.21
+                24.71,
+                2191.25
               ]
             }
           }
@@ -3198,8 +3077,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "bronze-anodized": {
@@ -3207,8 +3086,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "custom-ral": {
@@ -3216,8 +3095,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "dark-platinum": {
@@ -3225,8 +3104,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "forest-green": {
@@ -3234,8 +3113,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "gloss-white": {
@@ -3243,8 +3122,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "graphite-metallic": {
@@ -3252,8 +3131,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "light-gray": {
@@ -3261,8 +3140,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "matte-black": {
@@ -3270,8 +3149,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "satin-silver-anodized": {
@@ -3279,8 +3158,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "silver": {
@@ -3288,8 +3167,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "slate-gray": {
@@ -3297,8 +3176,8 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             },
             "statuary-bronze": {
@@ -3306,129 +3185,250 @@
               "width": 53,
               "height": 2199,
               "anchor": [
-                24.59,
-                2190.33
+                24.79,
+                2190.3
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-20--hero--black-anodized.webp",
+              "file": "renders/alum-pole-20--az180--black-anodized.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-20--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-20--az180--bronze-anodized.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-20--hero--custom-ral.webp",
+              "file": "renders/alum-pole-20--az180--custom-ral.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-20--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-20--az180--dark-platinum.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-20--hero--forest-green.webp",
+              "file": "renders/alum-pole-20--az180--forest-green.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-20--hero--gloss-white.webp",
+              "file": "renders/alum-pole-20--az180--gloss-white.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-20--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-20--az180--graphite-metallic.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-20--hero--light-gray.webp",
+              "file": "renders/alum-pole-20--az180--light-gray.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-20--hero--matte-black.webp",
+              "file": "renders/alum-pole-20--az180--matte-black.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-20--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-20--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-20--hero--silver.webp",
+              "file": "renders/alum-pole-20--az180--silver.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-20--hero--slate-gray.webp",
+              "file": "renders/alum-pole-20--az180--slate-gray.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-20--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-20--az180--statuary-bronze.webp",
               "width": 55,
               "height": 2200,
               "anchor": [
-                24.91,
-                2191.23
+                30.29,
+                2191.29
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-20--az270--black-anodized.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-20--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-20--az270--custom-ral.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-20--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-20--az270--forest-green.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-20--az270--gloss-white.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-20--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-20--az270--light-gray.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-20--az270--matte-black.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-20--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-20--az270--silver.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-20--az270--slate-gray.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-20--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 2200,
+              "anchor": [
+                28.21,
+                2191.24
               ]
             }
           }
@@ -3437,244 +3437,123 @@
     },
     "alum-pole-8": {
       "angles": {
-        "az180": {
+        "hero": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-8--az180--black-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--black-anodized.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-8--az180--bronze-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--bronze-anodized.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-8--az180--custom-ral.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--custom-ral.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-8--az180--dark-platinum.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--dark-platinum.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-8--az180--forest-green.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--forest-green.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-8--az180--gloss-white.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--gloss-white.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-8--az180--graphite-metallic.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--graphite-metallic.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-8--az180--light-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--light-gray.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-8--az180--matte-black.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--matte-black.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-8--az180--satin-silver-anodized.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--satin-silver-anodized.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-8--az180--silver.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--silver.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-8--az180--slate-gray.webp",
-              "width": 55,
+              "file": "renders/alum-pole-8--hero--slate-gray.webp",
+              "width": 54,
               "height": 889,
               "anchor": [
-                30.09,
-                881.05
+                24.71,
+                880.99
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-8--az180--statuary-bronze.webp",
-              "width": 55,
-              "height": 889,
-              "anchor": [
-                30.09,
-                881.05
-              ]
-            }
-          }
-        },
-        "az270": {
-          "finishes": {
-            "black-anodized": {
-              "file": "renders/alum-pole-8--az270--black-anodized.webp",
+              "file": "renders/alum-pole-8--hero--statuary-bronze.webp",
               "width": 54,
               "height": 889,
               "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "bronze-anodized": {
-              "file": "renders/alum-pole-8--az270--bronze-anodized.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "custom-ral": {
-              "file": "renders/alum-pole-8--az270--custom-ral.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "dark-platinum": {
-              "file": "renders/alum-pole-8--az270--dark-platinum.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "forest-green": {
-              "file": "renders/alum-pole-8--az270--forest-green.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "gloss-white": {
-              "file": "renders/alum-pole-8--az270--gloss-white.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "graphite-metallic": {
-              "file": "renders/alum-pole-8--az270--graphite-metallic.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "light-gray": {
-              "file": "renders/alum-pole-8--az270--light-gray.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "matte-black": {
-              "file": "renders/alum-pole-8--az270--matte-black.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "satin-silver-anodized": {
-              "file": "renders/alum-pole-8--az270--satin-silver-anodized.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "silver": {
-              "file": "renders/alum-pole-8--az270--silver.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "slate-gray": {
-              "file": "renders/alum-pole-8--az270--slate-gray.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
-              ]
-            },
-            "statuary-bronze": {
-              "file": "renders/alum-pole-8--az270--statuary-bronze.webp",
-              "width": 54,
-              "height": 889,
-              "anchor": [
-                29.41,
-                880.95
+                24.71,
+                880.99
               ]
             }
           }
@@ -3686,8 +3565,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "bronze-anodized": {
@@ -3695,8 +3574,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "custom-ral": {
@@ -3704,8 +3583,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "dark-platinum": {
@@ -3713,8 +3592,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "forest-green": {
@@ -3722,8 +3601,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "gloss-white": {
@@ -3731,8 +3610,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "graphite-metallic": {
@@ -3740,8 +3619,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "light-gray": {
@@ -3749,8 +3628,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "matte-black": {
@@ -3758,8 +3637,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "satin-silver-anodized": {
@@ -3767,8 +3646,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "silver": {
@@ -3776,8 +3655,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "slate-gray": {
@@ -3785,8 +3664,8 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             },
             "statuary-bronze": {
@@ -3794,129 +3673,250 @@
               "width": 53,
               "height": 889,
               "anchor": [
-                24.59,
-                881.07
+                24.79,
+                881.04
               ]
             }
           }
         },
-        "hero": {
+        "az180": {
           "finishes": {
             "black-anodized": {
-              "file": "renders/alum-pole-8--hero--black-anodized.webp",
+              "file": "renders/alum-pole-8--az180--black-anodized.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "bronze-anodized": {
-              "file": "renders/alum-pole-8--hero--bronze-anodized.webp",
+              "file": "renders/alum-pole-8--az180--bronze-anodized.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "custom-ral": {
-              "file": "renders/alum-pole-8--hero--custom-ral.webp",
+              "file": "renders/alum-pole-8--az180--custom-ral.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "dark-platinum": {
-              "file": "renders/alum-pole-8--hero--dark-platinum.webp",
+              "file": "renders/alum-pole-8--az180--dark-platinum.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "forest-green": {
-              "file": "renders/alum-pole-8--hero--forest-green.webp",
+              "file": "renders/alum-pole-8--az180--forest-green.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "gloss-white": {
-              "file": "renders/alum-pole-8--hero--gloss-white.webp",
+              "file": "renders/alum-pole-8--az180--gloss-white.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "graphite-metallic": {
-              "file": "renders/alum-pole-8--hero--graphite-metallic.webp",
+              "file": "renders/alum-pole-8--az180--graphite-metallic.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "light-gray": {
-              "file": "renders/alum-pole-8--hero--light-gray.webp",
+              "file": "renders/alum-pole-8--az180--light-gray.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "matte-black": {
-              "file": "renders/alum-pole-8--hero--matte-black.webp",
+              "file": "renders/alum-pole-8--az180--matte-black.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "satin-silver-anodized": {
-              "file": "renders/alum-pole-8--hero--satin-silver-anodized.webp",
+              "file": "renders/alum-pole-8--az180--satin-silver-anodized.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "silver": {
-              "file": "renders/alum-pole-8--hero--silver.webp",
+              "file": "renders/alum-pole-8--az180--silver.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "slate-gray": {
-              "file": "renders/alum-pole-8--hero--slate-gray.webp",
+              "file": "renders/alum-pole-8--az180--slate-gray.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
               ]
             },
             "statuary-bronze": {
-              "file": "renders/alum-pole-8--hero--statuary-bronze.webp",
+              "file": "renders/alum-pole-8--az180--statuary-bronze.webp",
               "width": 55,
               "height": 889,
               "anchor": [
-                24.91,
-                880.96
+                30.29,
+                881.03
+              ]
+            }
+          }
+        },
+        "az270": {
+          "finishes": {
+            "black-anodized": {
+              "file": "renders/alum-pole-8--az270--black-anodized.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "bronze-anodized": {
+              "file": "renders/alum-pole-8--az270--bronze-anodized.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "custom-ral": {
+              "file": "renders/alum-pole-8--az270--custom-ral.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "dark-platinum": {
+              "file": "renders/alum-pole-8--az270--dark-platinum.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "forest-green": {
+              "file": "renders/alum-pole-8--az270--forest-green.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "gloss-white": {
+              "file": "renders/alum-pole-8--az270--gloss-white.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "graphite-metallic": {
+              "file": "renders/alum-pole-8--az270--graphite-metallic.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "light-gray": {
+              "file": "renders/alum-pole-8--az270--light-gray.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "matte-black": {
+              "file": "renders/alum-pole-8--az270--matte-black.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "satin-silver-anodized": {
+              "file": "renders/alum-pole-8--az270--satin-silver-anodized.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "silver": {
+              "file": "renders/alum-pole-8--az270--silver.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "slate-gray": {
+              "file": "renders/alum-pole-8--az270--slate-gray.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
+              ]
+            },
+            "statuary-bronze": {
+              "file": "renders/alum-pole-8--az270--statuary-bronze.webp",
+              "width": 53,
+              "height": 889,
+              "anchor": [
+                28.21,
+                880.98
               ]
             }
           }
@@ -51753,119 +51753,119 @@
           "finishes": {
             "black-anodized": {
               "file": "renders/willstudio-acc-festoon--hero--black-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "bronze-anodized": {
               "file": "renders/willstudio-acc-festoon--hero--bronze-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "custom-ral": {
               "file": "renders/willstudio-acc-festoon--hero--custom-ral.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "dark-platinum": {
               "file": "renders/willstudio-acc-festoon--hero--dark-platinum.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "forest-green": {
               "file": "renders/willstudio-acc-festoon--hero--forest-green.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-acc-festoon--hero--gloss-white.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "graphite-metallic": {
               "file": "renders/willstudio-acc-festoon--hero--graphite-metallic.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "light-gray": {
               "file": "renders/willstudio-acc-festoon--hero--light-gray.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-acc-festoon--hero--matte-black.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "satin-silver-anodized": {
               "file": "renders/willstudio-acc-festoon--hero--satin-silver-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "silver": {
               "file": "renders/willstudio-acc-festoon--hero--silver.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "slate-gray": {
               "file": "renders/willstudio-acc-festoon--hero--slate-gray.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-acc-festoon--hero--statuary-bronze.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                0.43,
-                29.36
+                0.66,
+                29.23
               ]
             }
           }
@@ -51877,8 +51877,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "bronze-anodized": {
@@ -51886,8 +51886,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "custom-ral": {
@@ -51895,8 +51895,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "dark-platinum": {
@@ -51904,8 +51904,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "forest-green": {
@@ -51913,8 +51913,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "gloss-white": {
@@ -51922,8 +51922,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "graphite-metallic": {
@@ -51931,8 +51931,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "light-gray": {
@@ -51940,8 +51940,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "matte-black": {
@@ -51949,8 +51949,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "satin-silver-anodized": {
@@ -51958,8 +51958,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "silver": {
@@ -51967,8 +51967,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "slate-gray": {
@@ -51976,8 +51976,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             },
             "statuary-bronze": {
@@ -51985,8 +51985,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                9.1,
-                31.63
+                8.86,
+                31.81
               ]
             }
           }
@@ -51995,119 +51995,119 @@
           "finishes": {
             "black-anodized": {
               "file": "renders/willstudio-acc-festoon--az180--black-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "bronze-anodized": {
               "file": "renders/willstudio-acc-festoon--az180--bronze-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "custom-ral": {
               "file": "renders/willstudio-acc-festoon--az180--custom-ral.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "dark-platinum": {
               "file": "renders/willstudio-acc-festoon--az180--dark-platinum.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "forest-green": {
               "file": "renders/willstudio-acc-festoon--az180--forest-green.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "gloss-white": {
               "file": "renders/willstudio-acc-festoon--az180--gloss-white.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "graphite-metallic": {
               "file": "renders/willstudio-acc-festoon--az180--graphite-metallic.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "light-gray": {
               "file": "renders/willstudio-acc-festoon--az180--light-gray.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "matte-black": {
               "file": "renders/willstudio-acc-festoon--az180--matte-black.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "satin-silver-anodized": {
               "file": "renders/willstudio-acc-festoon--az180--satin-silver-anodized.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "silver": {
               "file": "renders/willstudio-acc-festoon--az180--silver.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "slate-gray": {
               "file": "renders/willstudio-acc-festoon--az180--slate-gray.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             },
             "statuary-bronze": {
               "file": "renders/willstudio-acc-festoon--az180--statuary-bronze.webp",
-              "width": 32,
+              "width": 33,
               "height": 61,
               "anchor": [
-                31.57,
-                31.64
+                32.34,
+                31.77
               ]
             }
           }
@@ -52119,8 +52119,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "bronze-anodized": {
@@ -52128,8 +52128,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "custom-ral": {
@@ -52137,8 +52137,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "dark-platinum": {
@@ -52146,8 +52146,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "forest-green": {
@@ -52155,8 +52155,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "gloss-white": {
@@ -52164,8 +52164,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "graphite-metallic": {
@@ -52173,8 +52173,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "light-gray": {
@@ -52182,8 +52182,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "matte-black": {
@@ -52191,8 +52191,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "satin-silver-anodized": {
@@ -52200,8 +52200,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "silver": {
@@ -52209,8 +52209,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "slate-gray": {
@@ -52218,8 +52218,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             },
             "statuary-bronze": {
@@ -52227,8 +52227,8 @@
               "width": 40,
               "height": 60,
               "anchor": [
-                30.9,
-                28.37
+                31.14,
+                28.19
               ]
             }
           }
