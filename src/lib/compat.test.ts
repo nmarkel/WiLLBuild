@@ -653,6 +653,53 @@ describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
   })
 })
 
+describe('hand hole + festoon rules (CR-OPT-13, Tyler 8/14)', () => {
+  const withShaft = (placements: Record<string, { heightFt: number; orientation: number }[]>) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { options: Object.keys(placements) } },
+      accessoryPlacements: placements,
+    })
+
+  it('caps at 2 COMBINED across hand holes + festoons (mix and match)', () => {
+    const three = withShaft({ HHUR: [
+      { heightFt: 4, orientation: 0 },
+      { heightFt: 7, orientation: 90 },
+      { heightFt: 10, orientation: 180 },
+    ]})
+    expect(three.accessoryPlacements?.HHUR).toHaveLength(2)
+    const mixed = withShaft({
+      HHUR: [{ heightFt: 4, orientation: 0 }, { heightFt: 7, orientation: 90 }],
+      FSTR: [{ heightFt: 10, orientation: 0 }],
+    })
+    const total =
+      (mixed.accessoryPlacements?.HHUR?.length ?? 0) +
+      (mixed.accessoryPlacements?.FSTR?.length ?? 0)
+    expect(total).toBe(2)
+  })
+
+  it('keeps 18" between a hand hole and a festoon regardless of orientation', () => {
+    const cfg = withShaft({
+      HHUR: [{ heightFt: 6, orientation: 0 }],
+      FSTR: [{ heightFt: 6, orientation: 180 }],
+    })
+    const heights = [
+      cfg.accessoryPlacements?.HHUR?.[0]?.heightFt,
+      cfg.accessoryPlacements?.FSTR?.[0]?.heightFt,
+    ].sort()
+    expect(heights).toEqual([6, 7.5])
+  })
+
+  it('floors both at 37 inches; first step lands 42", then the 6" grid', () => {
+    const at = (h: number) =>
+      withShaft({ HHUR: [{ heightFt: h, orientation: 0 }] }).accessoryPlacements?.HHUR?.[0]?.heightFt
+    expect(at(1)).toBeCloseTo(37 / 12, 5)
+    expect(at(3.4)).toBe(3.5) // 42" — the 5" first increment
+    expect(at(3.8)).toBe(4) // 48" — 6" grid from there
+  })
+})
+
 describe('coupling rules (CR-OPT-12, Tyler 8/14)', () => {
   const withCouplings = (instances: { heightFt: number; orientation: number }[]) =>
     repairConfig(catalog, {
@@ -1375,7 +1422,7 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
     expect(repaired.accessoryPlacements?.FSTR?.[0]?.sides).toBeUndefined()
   })
 
-  it('repairConfig honors FSTR’s 37-inch label minimum', () => {
+  it('repairConfig honors FSTR’s 37-inch floor (36" was briefly specced 8/14, reverted same day)', () => {
     const base = config({
       fixture: 'drx-post-top',
       arm: 'direct-mount',

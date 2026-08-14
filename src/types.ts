@@ -246,6 +246,14 @@ export interface SpecOptionValue {
     maxInstances?: number
     /** CR-OPT-12: minimum vertical gap between same-orientation instances, ft. */
     minGapFt?: number
+    /**
+     * CR-OPT-13: when set, minGapFt applies ACROSS every accessory sharing
+     * this group, regardless of orientation (hand holes + festoons share the
+     * shaft-access group — an opening is an opening).
+     */
+    spacingGroup?: string
+    /** CR-OPT-13: combined instance cap across the spacing group (HH+FSTR: 2, mix and match). */
+    groupMaxInstances?: number
   }
 }
 

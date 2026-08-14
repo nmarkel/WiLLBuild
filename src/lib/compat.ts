@@ -130,6 +130,19 @@ export function fixtureBottomFt(catalog: Catalog, config: PoleConfig): number | 
   return poleFt + socket.position[1] * M_TO_FT - fixture.hangM * M_TO_FT
 }
 
+/**
+ * CR-OPT-13 (amended): snap a placement height onto its legal ladder — the
+ * exact floor (which may sit OFF the step grid, like the 37" hand-hole /
+ * festoon minimum), then the step grid anchored at the next round increment
+ * (37" → 42" → 48" → …). On-grid floors degrade to plain grid snapping.
+ */
+export function snapPlacementHeightFt(heightFt: number, minFt: number, stepFt: number): number {
+  const anchor = Math.ceil(minFt / stepFt - 1e-9) * stepFt
+  if (heightFt < (minFt + anchor) / 2) return Math.round(minFt * 12) / 12
+  const snapped = Math.max(anchor, Math.round(heightFt / stepFt) * stepFt)
+  return Math.round(snapped * 12) / 12
+}
+
 export function bannerHeightRange(
   catalog: Catalog,
   poleFt: number,
@@ -771,8 +784,10 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
           fixtureBottomFt(catalog, next),
           accessoryValue?.placement,
         )
-        const snapped = Math.round(p.heightFt / stepFt) * stepFt
-        const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(snapped * 12) / 12))
+        const heightFt = Math.min(
+          maxFt,
+          Math.max(Math.round(minFt * 12) / 12, snapPlacementHeightFt(p.heightFt, minFt, stepFt)),
+        )
         // Tyler 8/12: fold the orientation onto the arrangement's distinct set.
         const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
         const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
@@ -799,6 +814,56 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
         }
       }
       cleaned[code] = clamped
+    }
+    // CR-OPT-13: cross-code spacing groups — instances of every code sharing
+    // a spacingGroup (hand holes + festoons) keep their gap regardless of
+    // orientation; later instances nudge UP deterministically.
+    const groups = new Map<
+      string,
+      { code: string; idx: number; gapFt: number; cap?: number }[]
+    >()
+    for (const code of Object.keys(cleaned)) {
+      const pl = poleAccessoryValue(catalog, next, code)?.placement
+      if (!pl?.spacingGroup || !pl.minGapFt) continue
+      const list = groups.get(pl.spacingGroup) ?? []
+      cleaned[code].forEach((_, idx) =>
+        list.push({ code, idx, gapFt: pl.minGapFt!, cap: pl.groupMaxInstances }),
+      )
+      groups.set(pl.spacingGroup, list)
+    }
+    for (const members of groups.values()) {
+      // CR-OPT-13: combined cap across the group (mix and match) — keep the
+      // first N in code/instance order, drop the rest deterministically.
+      const cap = members.find((m) => m.cap !== undefined)?.cap
+      if (cap !== undefined && members.length > cap) {
+        const dropped = members.slice(cap)
+        for (const m of dropped) {
+          cleaned[m.code] = cleaned[m.code].filter((_, i) => i !== m.idx)
+        }
+        // Re-index survivors after the removals.
+        members.length = 0
+        for (const code of Object.keys(cleaned)) {
+          const pl = poleAccessoryValue(catalog, next, code)?.placement
+          if (!pl?.spacingGroup || !pl.minGapFt) continue
+          cleaned[code].forEach((_, idx) =>
+            members.push({ code, idx, gapFt: pl.minGapFt!, cap: pl.groupMaxInstances }),
+          )
+        }
+        for (const code of Object.keys(cleaned)) {
+          if (cleaned[code].length === 0) delete cleaned[code]
+        }
+      }
+    }
+    for (const members of groups.values()) {
+      members.sort((a, b) => cleaned[a.code][a.idx].heightFt - cleaned[b.code][b.idx].heightFt)
+      let lastTop: number | undefined
+      for (const m of members) {
+        const inst = cleaned[m.code][m.idx]
+        if (lastTop !== undefined && inst.heightFt - lastTop < m.gapFt) {
+          inst.heightFt = Math.round((lastTop + m.gapFt) * 12) / 12
+        }
+        lastTop = inst.heightFt
+      }
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined
   }

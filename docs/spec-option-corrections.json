@@ -249,7 +249,12 @@
                     "6": "HHUR-6"
                   },
                   "placement": {
-                    "multi": true
+                    "minFt": 3.0833333333333335,
+                    "stepIn": 6,
+                    "multi": true,
+                    "minGapFt": 1.5,
+                    "spacingGroup": "shaft-access",
+                    "groupMaxInstances": 2
                   }
                 },
                 {
@@ -258,7 +263,15 @@
                   "label": "Festoon Power Provision",
                   "mapsTo": null,
                   "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
-                  "placeable": true
+                  "placeable": true,
+                  "placement": {
+                    "minFt": 3.0833333333333335,
+                    "stepIn": 6,
+                    "multi": true,
+                    "minGapFt": 1.5,
+                    "spacingGroup": "shaft-access",
+                    "groupMaxInstances": 2
+                  }
                 }
               ]
             }

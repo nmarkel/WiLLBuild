@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, snapPlacementHeightFt, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -623,6 +623,22 @@ function AccessoryPlacementBox({
   const instances = placementInstances(config, code)
   const accessoryValueOuter = poleAccessoryValue(catalog, config, code)
   const isMulti = accessoryValueOuter?.placement?.multi === true
+  // CR-OPT-13: a spacing group's combined cap (hand holes + festoons: 2,
+  // mix and match) counts every group member's instances.
+  const groupName = accessoryValueOuter?.placement?.spacingGroup
+  const groupCap = accessoryValueOuter?.placement?.groupMaxInstances
+  const groupCount = groupName
+    ? (partById(catalog, config.pole)?.options ?? [])
+        .filter((o) => o.group === 'options-accessories')
+        .flatMap((o) => o.values)
+        .filter((v) => v.placement?.spacingGroup === groupName)
+        .reduce((n, v) => n + placementInstances(config, v.code).length, 0)
+    : instances.length
+  const effectiveCap = Math.min(
+    accessoryValueOuter?.placement?.maxInstances ?? Infinity,
+    groupCap ?? Infinity,
+  )
+  const capCount = groupCap !== undefined ? groupCount : instances.length
   const shown = instances.length > 0 ? instances : [undefined]
   const commit = (idx: number, p: import('../types').AccessoryPlacement) => {
     const next = [...(instances.length > 0 ? instances : [])]
@@ -649,14 +665,12 @@ function AccessoryPlacementBox({
           ordinal={isMulti && shown.length > 1 ? idx + 1 : undefined}
         />
       ))}
-      {isMulti &&
-        shown.length >= (accessoryValueOuter?.placement?.maxInstances ?? Infinity) && (
-          <p className="spec-options-note">
-            Need more than {accessoryValueOuter?.placement?.maxInstances}? Reach out to
-            engineering — we’ll spec it with you.
-          </p>
-        )}
-      {isMulti && shown.length < (accessoryValueOuter?.placement?.maxInstances ?? Infinity) && (
+      {isMulti && capCount >= effectiveCap && (
+        <p className="spec-options-note">
+          Need more than {effectiveCap}? Reach out to engineering — we’ll spec it with you.
+        </p>
+      )}
+      {isMulti && capCount < effectiveCap && (
         <button
           type="button"
           className="placement-add"
@@ -773,9 +787,19 @@ function PlacementInstance({
           type="range"
           min={minFt}
           max={maxFt}
-          step={stepFt}
+          // "any" + snap-on-change: the 37" floor sits OFF the 6" grid (first
+          // step is 5", to 42"), which a native stepped range can't express.
+          step="any"
           value={Math.min(Math.max(placement.heightFt, minFt), maxFt)}
-          onChange={(e) => onChange({ ...placement, heightFt: Number(e.target.value) })}
+          onChange={(e) =>
+            onChange({
+              ...placement,
+              heightFt: Math.min(
+                maxFt,
+                snapPlacementHeightFt(Number(e.target.value), minFt, stepFt),
+              ),
+            })
+          }
         />
       </label>
       {!fits &&
