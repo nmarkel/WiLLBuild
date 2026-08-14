@@ -262,7 +262,7 @@
                   "code": "FSTR",
                   "label": "Festoon Power Provision",
                   "mapsTo": null,
-                  "note": "A built-in electrical outlet provision, wiring by others \u2014 Minimum 37\u201d above the base",
+                  "note": "Electrical Component Provision, Component & Wiring by others \u2014 Minimum 37\u201d above the base",
                   "placeable": true,
                   "placement": {
                     "minFt": 3.0833333333333335,
