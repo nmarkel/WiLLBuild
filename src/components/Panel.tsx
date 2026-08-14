@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -68,7 +68,8 @@ function isFinishColumn(opt: SpecOption): boolean {
 // pole height they already picked would let the two disagree.
 // pole-fit is derived from the chosen pole's diameter (Tyler 8/12) — the
 // base cover asks the customer nothing.
-const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit'])
+// fixture-mounting is derived from the bracket (CR-OPT-15) — never asked.
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit', 'fixture-mounting'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
   // Single-value columns (fixed segments like AB anchor bolts / SB base type /
@@ -380,7 +381,14 @@ function StepSpecOptions({
                     {opt.values.map((v) => {
                       // CR-OPT-14: grey out values incompatible with other
                       // chosen columns (PF flush fit → walls C is out).
-                      const compatible = valueCompatibleWithChosen(part, chosen, opt.key, v)
+                      // CR-OPT-15: the bracket-derived mounting counts as
+                      // chosen (SH1 → PF greys the C wall).
+                      const derivedMounting =
+                        slot === 'pole' ? poleMountingCodeFor(catalog, config) : undefined
+                      const effective = derivedMounting
+                        ? { ...chosen, 'fixture-mounting': derivedMounting }
+                        : chosen
+                      const compatible = valueCompatibleWithChosen(part, effective, opt.key, v)
                       return (
                         <button
                           key={v.code}

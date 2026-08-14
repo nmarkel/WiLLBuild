@@ -674,8 +674,29 @@ describe('PF flush arm fit requires a D/E wall (CR-OPT-14, Tyler 8/14)', () => {
     expect(e.specOptions?.pole?.['wall-thickness']).toBe('E')
   })
 
-  it('C wall stays fine without PF', () => {
-    expect(withPole({ 'wall-thickness': 'C' }).specOptions?.pole?.['wall-thickness']).toBe('C')
+  it('C wall stays fine when nothing implies PF', () => {
+    // CR-OPT-15: brackets DERIVE the mounting (SH1 → PF), so the autofilled
+    // GVX+SH1 build would clear a C wall. A direct-mount post-top implies
+    // nothing — C survives there.
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      fixture: 'drx-post-top',
+      arm: 'direct-mount',
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'wall-thickness': 'C' } },
+    })
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBe('C')
+  })
+
+  it('a bracket-derived PF clears a C wall with no mounting chosen at all (CR-OPT-15)', () => {
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'wall-thickness': 'C' } },
+    })
+    // autofill's arm is SH1 → derived PF → the .125" wall clears.
+    expect(cfg.arm).toBe('sh1-shepherds-hook')
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBeUndefined()
   })
 })
 

@@ -178,7 +178,7 @@ class TestAssemblyResolution:
     def test_text_line_prints_the_number(self, catalog):
         cfg = _config(CASES[0])
         # Tyler 8/12: the arm number carries its finish colour.
-        assert part_number_text(catalog, cfg, "arm") == "Arm: WP-SH1-BK"
+        assert part_number_text(catalog, cfg, "arm") == "Arm: WP-SH1-_-BK"
 
 
 class TestConfigHashCoupling:
@@ -278,8 +278,8 @@ class TestPerSlotFinishReachesTheNumber:
         )
         # Cord (derived) rides after the finish now — WH is interior.
         assert "-WH-" in build_part_number(catalog, cfg, "fixture")
-        # Trailing unanswered columns no longer print — DG is the last segment.
-        assert build_part_number(catalog, cfg, "pole").endswith("-DG")
+        # The SH1 bracket derives PF mounting (CR-OPT-15) — DG is interior now.
+        assert "-DG-" in build_part_number(catalog, cfg, "pole")
         # Fit sits in the sheet position (Tyler 8/14 final): WP-CL1-4R-DB.
         assert build_part_number(catalog, cfg, "baseCover").endswith("-DB")
 

@@ -4,6 +4,7 @@ import {
   cordCodeFor,
   exclusiveFamily,
   placementInstances,
+  poleMountingCodeFor,
   ACCENT_FINISH_KEY,
   accentFinishFor,
   bannerPanelSize,
@@ -104,9 +105,12 @@ export function buildPartNumber(
     // Arms have no sheet columns, so the code comes from the palette itself.
     const armFinish = catalog.finishes.find((f) => f.id === finishFor(config, slot))?.code
     // Phase 0.11 (Workstream C): a model-code arm still carries its chosen
-    // options. Tyler 8/12: arms lead with the WP product-family code like
-    // every other WiLLstudio number — `WP-SS2-BK-CF2`.
-    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
+    // options. Tyler 8/12: arms lead with the WP product-family code.
+    // CR-PN-09 (Tyler 8/14): the Pole/Tenon Fit slot prints a BLANK
+    // placeholder between design and finish (the matrix structure is
+    // Family-Design-Fit-Finish[-Options]) — deliberately attention-catching,
+    // resolved at quote. Derivable as 40F from the 4" poles later if wanted.
+    return ['WP', base, '_', ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -118,6 +122,12 @@ export function buildPartNumber(
   const segments: string[] = []
   for (const opt of options.filter((o) => o.group === 'ordering').sort(byPosition)) {
     const selected = specCodes(chosen[opt.key])[0]
+    if (opt.key === 'fixture-mounting') {
+      // CR-OPT-15: derived from the bracket (PF; FR2 → PD); `_` when the
+      // bracket doesn't decide it. Selections are ignored — never a choice.
+      segments.push(poleMountingCodeFor(catalog, config) ?? '_')
+      continue
+    }
     if (opt.key === 'pole-fit') {
       // CR-PN-04 (final form, Tyler 8/14): Pole Fit is a function of the
       // chosen pole's diameter, never a customer choice, and it lives in the

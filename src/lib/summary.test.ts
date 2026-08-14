@@ -150,12 +150,12 @@ describe('arm model code as part number (Phase 0.10.5)', () => {
       armCount: 3,
     })
     // Tyler 8/12: the arm's finish colour joins its number.
-    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('WP-AR3-BK')
-    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: WP-AR3-BK')
+    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('WP-AR3-_-BK')
+    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: WP-AR3-_-BK')
   })
 
   it('single-only arms report their fixed code', () => {
-    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('WP-SH1-BK')
+    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('WP-SH1-_-BK')
   })
 
   it('the upsweep has no code yet (24"/36" length model pending)', () => {
@@ -171,12 +171,12 @@ describe('pole part number — fixed and derived segments (Phase 0.10.5)', () =>
     })
     // product-family(WP) design(RSAA) length(14, from part.heightFt) diameter
     // wall AB SB FP color(SG) mounting(_)
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG-PF')
   })
 
   it('an anodized color flips the finish type to AN', () => {
     const cfg = config({ finishes: { pole: 'black-anodized' } })
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA-PF')
   })
 })
 
@@ -208,7 +208,7 @@ describe('buildPartNumber — pole (8/4 spec sheet target)', () => {
       },
     })
     expect(buildPartNumber(catalog, config, 'pole')).toBe(
-      'WP-RSAA-16-5050-D-AB-SB-FP-BK-PL',
+      'WP-RSAA-16-5050-D-AB-SB-FP-BK',
     )
   })
 

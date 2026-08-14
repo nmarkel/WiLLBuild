@@ -218,9 +218,12 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         arm_finish = (finish or {}).get("code")
         if arm_finish:
             base = f"{base}-{arm_finish}"
-        # Tyler 8/12: arms lead with the WP family code like every other
-        # WiLLstudio number — WP-SS2-BK-CF2.
-        return _with_add_ons(f"WP-{base}", part, cfg, slot)
+        # Tyler 8/12: arms lead with the WP family code.  CR-PN-09 (8/14):
+        # the Pole/Tenon Fit slot prints a blank placeholder between design
+        # and finish — Family-Design-Fit-Finish[-Options].
+        parts = base.split("-", 1)
+        with_fit = f"{parts[0]}-{UNSPECIFIED}-{parts[1]}" if len(parts) == 2 else f"{base}-{UNSPECIFIED}"
+        return _with_add_ons(f"WP-{with_fit}", part, cfg, slot)
 
     options = part.get("options")
     if not options:
@@ -238,6 +241,12 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         key = opt.get("key", "")
         values = opt.get("values") or []
         selected = spec_codes(chosen.get(key))
+        if key == "fixture-mounting":
+            # CR-OPT-15: derived from the bracket (PF; FR2 -> PD); "_" when
+            # the bracket doesn't decide it.  Selections are ignored.
+            arm = _find_part(catalog, getattr(cfg, "arm", ""))
+            segments.append((arm or {}).get("mountingCode") or UNSPECIFIED)
+            continue
         if key == "pole-fit":
             # CR-PN-04 (final form, Tyler 8/14): derived, in the sheet's own
             # column position; blank placeholder when no pole is chosen.

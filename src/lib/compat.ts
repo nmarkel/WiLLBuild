@@ -445,6 +445,16 @@ const DEFAULT_OPTION_CODES: string[] = []
  * land). Undefined when the fixture isn't a pendant or the arm isn't a
  * WiLLstudio bracket.
  */
+/**
+ * CR-OPT-15: the pole's fixture-mounting code implied by the chosen bracket
+ * (PF for nearly all WiLLstudio brackets; FR2 → PD). Undefined when no arm is
+ * chosen or the bracket doesn't decide it — the column prints `_`, resolved
+ * at quote.
+ */
+export function poleMountingCodeFor(catalog: Catalog, config: PoleConfig): string | undefined {
+  return partById(catalog, config.arm)?.mountingCode
+}
+
 export function cordCodeFor(catalog: Catalog, config: PoleConfig): string | undefined {
   const fixture = partById(catalog, config.fixture)
   const arm = partById(catalog, config.arm)
@@ -759,17 +769,23 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
       // CR-OPT-14: clear choices violating another chosen value's `requires`
       // (PF flush fit → wall must be D/E). The requires-OWNER wins; the
       // CONSTRAINED column clears back to unchosen — repair never re-picks.
+      // CR-OPT-15: the DERIVED fixture-mounting (from the bracket) counts as
+      // chosen for these checks — an SH1 bracket implies PF, so C walls clear.
+      const derivedMounting = slot === 'pole' ? poleMountingCodeFor(catalog, next) : undefined
+      const effectiveChosen = derivedMounting
+        ? { ...kept, 'fixture-mounting': derivedMounting }
+        : kept
       for (const opt of options) {
-        const current = specCodes(kept[opt.key])[0]
+        const current = specCodes(effectiveChosen[opt.key])[0]
         if (!current || opt.group !== 'ordering') continue
         const value = opt.values.find((v) => v.code === current)
         if (!value) continue
-        if (!valueCompatibleWithChosen(part, kept, opt.key, value)) {
+        if (!valueCompatibleWithChosen(part, effectiveChosen, opt.key, value)) {
           // Only clear if this value is the CONSTRAINED side (some other
           // chosen value's requires names this column).
           const constrainedByOther = (part.options ?? []).some((o) => {
             if (o.key === opt.key) return false
-            const c = specCodes(kept[o.key])[0]
+            const c = specCodes(effectiveChosen[o.key])[0]
             const cv = c ? o.values.find((v2) => v2.code === c) : undefined
             const allowed = cv?.requires?.[opt.key]
             return !!allowed && !allowed.includes(current)

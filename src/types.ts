@@ -86,6 +86,13 @@ export interface CatalogPart {
    */
   cordCode?: string
   /**
+   * CR-OPT-15 (Tyler 8/14): arms only — the pole's fixture-mounting code this
+   * bracket implies (PF flush arm fit for nearly all; FR2 → PD). Derived,
+   * never customer-chosen; absent → blank placeholder, determined at quote.
+   * NOT an exclusivity claim — other mountings may be compatible.
+   */
+  mountingCode?: string
+  /**
    * Phase 0.12_TO (Tyler 8/12): this part may sell from PLACEHOLDER art — an
    * explicit, per-part exemption from the geometry-gap Coming Soon rule.
    *
