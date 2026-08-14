@@ -484,7 +484,7 @@ function StepSpecOptions({
                   return (
                     <div key={v.code}>
                       <label
-                        className={`spec-check ${checked ? 'checked' : ''}`}
+                        className={`spec-check ${checked ? 'checked' : ''}${groupFull ? ' incompatible' : ''}`}
                         title={
                           family && checked ? 'Click again to clear this choice' : undefined
                         }
