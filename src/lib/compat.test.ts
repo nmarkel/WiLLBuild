@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
 import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
   autofillConfig,
+  cordCodeFor,
+  fixtureBottomFt,
 } from './compat'
 import { bannerGeometry } from './banner'
 
@@ -27,17 +29,52 @@ const sortedIds = (parts: { id: string }[]) => parts.map((p) => p.id).sort()
 
 describe('compatibleParts (fixture-first)', () => {
   it('offers every fixture unconditionally', () => {
-    // DRX, TEX, MVX, GVX + the DWX flood (Phase 0.10.5)
-    expect(compatibleParts(catalog, config({}), 'fixture')).toHaveLength(5)
+    // DRX, TEX, MVX, GVX + the DWX flood (Phase 0.10.5), + the RXB/SXB
+    // bollard — a ground-mounted standalone offered in the Fixture step
+    // (Phase 0.14, Tyler 8/14).
+    const fixtures = compatibleParts(catalog, config({}), 'fixture')
+    expect(fixtures).toHaveLength(6)
+    expect(fixtures.some((p) => p.id === 'willstudio-rxb-sxb-bollard')).toBe(true)
+  })
+
+  // ---- Phase 0.14 (Tyler 8/14): ground-mounted products in the builder ----
+  describe('ground-mounted fixture (RXB/SXB bollard)', () => {
+    const withBollard = config({ fixture: 'willstudio-rxb-sxb-bollard' })
+
+    it('empties bracket, pole and base cover — nothing mounts a complete product', () => {
+      expect(compatibleParts(catalog, withBollard, 'arm')).toEqual([])
+      expect(compatibleParts(catalog, withBollard, 'pole')).toEqual([])
+      expect(compatibleParts(catalog, withBollard, 'baseCover')).toEqual([])
+    })
+
+    it('repair accepts the bollard as the fixture and evicts mounting parts', () => {
+      const repaired = repairConfig(catalog, {
+        ...withBollard,
+        arm: 'sh1-shepherds-hook',
+        pole: 'alum-pole-20',
+        baseCover: 'bc-cl1-small-clamshell',
+      })
+      expect(repaired.fixture).toBe('willstudio-rxb-sxb-bollard')
+      expect(repaired.arm).toBe('')
+      expect(repaired.pole).toBe('')
+      expect(repaired.baseCover).toBe('')
+    })
+
+    it('the flag is pinned on exactly the bollard', () => {
+      const flagged = catalog.parts.filter((p) => p.groundMounted).map((p) => p.id)
+      expect(flagged).toEqual(['willstudio-rxb-sxb-bollard'])
+    })
   })
 
   it('offers only pendant arms for the GVX pendant', () => {
     // SD + HS joined the pendant carriers 8/12 (Tyler's GVX bracket list) —
     // their placeholder-era sockets said post-top / arm-mount.
+    // PA1 left the list 8/13 (Tyler): its fitting doesn't work with the GVX,
+    // so its carry socket is its own type (pendant-pa1) that no fixture
+    // mounts today — socket matching stays the only compatibility mechanism.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'gvx-pendant' }), 'arm'))
     expect(ids).toEqual(
       [
-        'pa1-pendant-arm',
         'pm1-pendant-arm',
         'sh1-shepherds-hook',
         'willstudio-hsx-decorative-upsweep-arms',
@@ -97,7 +134,6 @@ describe('P1 pole-system promotions (Workstream G)', () => {
   ].sort()
 
   const PENDANT_ARMS = [
-    'pa1-pendant-arm',
     'pm1-pendant-arm',
     'sh1-shepherds-hook',
     'willstudio-hsx-decorative-upsweep-arms',
@@ -633,6 +669,197 @@ describe('banner mounting rules (Phase 0.11, Workstream D)', () => {
   })
 })
 
+describe('FH/PH placement windows (CR-PLC-07, Tyler 8/14)', () => {
+  const withHolder = (code: string, heightFt: number) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: [code] } },
+      accessoryPlacements: { [code]: [{ heightFt, orientation: 0, sides: 1 }] },
+    })
+
+  it('flag + plant holders clamp to 8–12 ft and snap to 6-inch steps', () => {
+    expect(withHolder('FH', 3).accessoryPlacements?.FH?.[0]?.heightFt).toBe(8)
+    expect(withHolder('FH', 19).accessoryPlacements?.FH?.[0]?.heightFt).toBe(12)
+    // 9.7 ft snaps to the 6" grid → 9.5 ft.
+    expect(withHolder('PH', 9.7).accessoryPlacements?.PH?.[0]?.heightFt).toBe(9.5)
+  })
+})
+
+describe('PF flush arm fit requires a D/E wall (CR-OPT-14, Tyler 8/14)', () => {
+  const withPole = (specOptions: Record<string, string>) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: specOptions },
+    })
+
+  it('clears a C wall when PF mounting is chosen (constrained column, never re-picked)', () => {
+    const cfg = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'C' })
+    expect(cfg.specOptions?.pole?.['fixture-mounting']).toBe('PF')
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBeUndefined()
+  })
+
+  it('keeps compliant walls with PF', () => {
+    const d = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'D' })
+    expect(d.specOptions?.pole?.['wall-thickness']).toBe('D')
+    const e = withPole({ 'fixture-mounting': 'PF', 'wall-thickness': 'E' })
+    expect(e.specOptions?.pole?.['wall-thickness']).toBe('E')
+  })
+
+  it('C wall stays fine when nothing implies PF', () => {
+    // CR-OPT-15: brackets DERIVE the mounting (SH1 → PF), so the autofilled
+    // GVX+SH1 build would clear a C wall. A direct-mount post-top implies
+    // nothing — C survives there.
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      fixture: 'drx-post-top',
+      arm: 'direct-mount',
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'wall-thickness': 'C' } },
+    })
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBe('C')
+  })
+
+  it('a bracket-derived PF clears a C wall with no mounting chosen at all (CR-OPT-15)', () => {
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'wall-thickness': 'C' } },
+    })
+    // autofill's arm is SH1 → derived PF → the .125" wall clears.
+    expect(cfg.arm).toBe('sh1-shepherds-hook')
+    expect(cfg.specOptions?.pole?.['wall-thickness']).toBeUndefined()
+  })
+})
+
+describe('hand hole + festoon rules (CR-OPT-13, Tyler 8/14)', () => {
+  const withShaft = (placements: Record<string, { heightFt: number; orientation: number }[]>) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { options: Object.keys(placements) } },
+      accessoryPlacements: placements,
+    })
+
+  it('caps at 2 COMBINED across hand holes + festoons (mix and match)', () => {
+    const three = withShaft({ HHUR: [
+      { heightFt: 4, orientation: 0 },
+      { heightFt: 7, orientation: 90 },
+      { heightFt: 10, orientation: 180 },
+    ]})
+    expect(three.accessoryPlacements?.HHUR).toHaveLength(2)
+    const mixed = withShaft({
+      HHUR: [{ heightFt: 4, orientation: 0 }, { heightFt: 7, orientation: 90 }],
+      FSTR: [{ heightFt: 10, orientation: 0 }],
+    })
+    const total =
+      (mixed.accessoryPlacements?.HHUR?.length ?? 0) +
+      (mixed.accessoryPlacements?.FSTR?.length ?? 0)
+    expect(total).toBe(2)
+  })
+
+  it('keeps 18" between a hand hole and a festoon regardless of orientation', () => {
+    const cfg = withShaft({
+      HHUR: [{ heightFt: 6, orientation: 0 }],
+      FSTR: [{ heightFt: 6, orientation: 180 }],
+    })
+    const heights = [
+      cfg.accessoryPlacements?.HHUR?.[0]?.heightFt,
+      cfg.accessoryPlacements?.FSTR?.[0]?.heightFt,
+    ].sort()
+    expect(heights).toEqual([6, 7.5])
+  })
+
+  it('floors both at 37 inches; first step lands 42", then the 6" grid', () => {
+    const at = (h: number) =>
+      withShaft({ HHUR: [{ heightFt: h, orientation: 0 }] }).accessoryPlacements?.HHUR?.[0]?.heightFt
+    expect(at(1)).toBeCloseTo(37 / 12, 5)
+    expect(at(3.4)).toBe(3.5) // 42" — the 5" first increment
+    expect(at(3.8)).toBe(4) // 48" — 6" grid from there
+  })
+})
+
+describe('coupling rules (CR-OPT-12, Tyler 8/14)', () => {
+  const withCouplings = (instances: { heightFt: number; orientation: number }[]) =>
+    repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { 'options-2': ['CPLX'] } },
+      accessoryPlacements: { CPLX: instances },
+    })
+
+  it('caps at 3 instances (more via engineering)', () => {
+    const four = withCouplings([
+      { heightFt: 4, orientation: 0 },
+      { heightFt: 6, orientation: 90 },
+      { heightFt: 8, orientation: 180 },
+      { heightFt: 10, orientation: 270 },
+    ])
+    expect(withCouplings([{ heightFt: 4, orientation: 0 }]).accessoryPlacements?.CPLX).toHaveLength(1)
+    expect(four.accessoryPlacements?.CPLX).toHaveLength(3)
+  })
+
+  it('floors at 3 ft (18" above the standard hand hole, on the 6" grid)', () => {
+    expect(withCouplings([{ heightFt: 1, orientation: 0 }]).accessoryPlacements?.CPLX?.[0].heightFt).toBe(3)
+  })
+
+  it('same-orientation instances keep a 6" gap; different orientations may share a height', () => {
+    const nudged = withCouplings([
+      { heightFt: 6, orientation: 0 },
+      { heightFt: 6, orientation: 0 },
+    ])
+    expect(nudged.accessoryPlacements?.CPLX?.map((p) => p.heightFt).sort()).toEqual([6, 6.5])
+    const shared = withCouplings([
+      { heightFt: 6, orientation: 0 },
+      { heightFt: 6, orientation: 90 },
+    ])
+    expect(shared.accessoryPlacements?.CPLX?.map((p) => p.heightFt)).toEqual([6, 6])
+  })
+})
+
+describe('banner bottom-arm window (CR-PLC-08, Tyler 8/14)', () => {
+  it('BAX clamps 8–10 ft with an 8 ft default on a 20 ft pole', () => {
+    const cfg = repairConfig(catalog, {
+      ...autofillConfig(catalog, defaultConfig(catalog)),
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: ['BAX'] } },
+      accessoryPlacements: { BAX: [{ heightFt: 15, orientation: 0, sides: 1 }] },
+    })
+    // 15 ft exceeds the kit's own 10 ft bottom-arm cap — tighter than the
+    // pole/panel rule (which would allow 15 on a 20 ft pole).
+    expect(cfg.accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
+  })
+})
+
+describe('banner top clears the fixture bottom (CR-PLC-05, Tyler 8/14)', () => {
+  it('the AR suspension pendant pulls the banner ceiling below the pole-top rule', () => {
+    // GVX hangs 0.505 m below its mount; AR carries it at +0.143 m — the
+    // fixture bottom sits ~1.19 ft below the pole top, so the fixture rule
+    // binds. SH1 (+0.514 m socket) leaves the pole-top rule binding.
+    const ar = autofillConfig(catalog, {
+      ...defaultConfig(catalog),
+      fixture: 'gvx-pendant',
+      arm: 'willstudio-suspension-arm-pole-top-brackets',
+      pole: 'alum-pole-20',
+    })
+    const bottom = fixtureBottomFt(catalog, ar)!
+    expect(bottom).toBeLessThan(20)
+    const range = bannerHeightRange(catalog, 20, '24x48', bottom)
+    expect(range.maxFt).toBeCloseTo(Math.round((bottom - 1 - 4) * 12) / 12, 5)
+    expect(range.maxFt).toBeLessThan(15) // stricter than pole-top ceiling
+    const sh1 = { ...ar, arm: 'sh1-shepherds-hook' }
+    const sh1Range = bannerHeightRange(catalog, 20, '24x48', fixtureBottomFt(catalog, sh1))
+    expect(sh1Range.maxFt).toBe(15) // pole-top rule still binds for SH1
+  })
+
+  it('post-top fixtures carry no hangM — the rule stays inert', () => {
+    expect(
+      fixtureBottomFt(catalog, config({ fixture: 'drx-post-top', arm: 'direct-mount' })),
+    ).toBeUndefined()
+  })
+})
+
 describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
   const withKit = (code: string, size?: string, heightFt = 9) =>
     repairConfig(
@@ -642,21 +869,21 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-20',
         specOptions: { pole: { accessories: [code] } },
-        accessoryPlacements: { [code]: { heightFt, orientation: 0, sides: 1, ...(size ? { size } : {}) } },
+        accessoryPlacements: { [code]: [{ heightFt, orientation: 0, sides: 1, ...(size ? { size } : {}) }] },
       }),
     )
 
   it('applies the 8 ft banner floor a placement UI once ignored', () => {
     // Pre-0.11 divergence: repairConfig floored banner kits at BANNER_MIN_FT
     // while Panel's slider floored them at 2 ft. Both now use one function.
-    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.heightFt).toBe(8)
+    expect(withKit('BAX', undefined, 3).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(8)
   })
 
-  it('reserves the panel height under the pole top', () => {
-    // 20 ft pole − 4 ft default panel − 1 ft clearance.
-    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt).toBe(15)
-    // 20 ft pole − 5 ft panel − 1 ft clearance.
-    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.heightFt).toBe(14)
+  it('reserves the panel height under the pole top — within the kit window', () => {
+    // CR-PLC-08 (Tyler 8/14): BAX's own bottom-arm cap (10 ft) is tighter
+    // than the structural 20 − panel − 1 ceilings, so it binds either size.
+    expect(withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
+    expect(withKit('BAX', '30x60', 99).accessoryPlacements?.BAX?.[0]?.heightFt).toBe(10)
   })
 
   it('keeps a size the kit can carry and drops one it cannot', () => {
@@ -664,7 +891,7 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
     // length (24"/30") resolves at quote from the chosen banner. The per-kit
     // width gate lives on only as a label-parsing rule (tested above) for
     // sheets that still declare an arm length.
-    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.size).toBe('30x60')
+    expect(withKit('BAX', '30x60').accessoryPlacements?.BAX?.[0]?.size).toBe('30x60')
   })
 
   it('never stores a panel size on a non-banner accessory', () => {
@@ -675,16 +902,17 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-12',
         specOptions: { pole: { options: ['FSTR'] } },
-        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 0, size: '24x48' } },
+        accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 0, size: '24x48' }] },
       }),
     )
-    expect(repaired.accessoryPlacements?.FSTR?.size).toBeUndefined()
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.size).toBeUndefined()
   })
 
-  it('a banner reads the same height whichever path configured it', () => {
-    // 20 ft pole either way: alum-pole-20 for the kit path, the NAFCO fallback
-    // for the legacy path.
-    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.heightFt
+  it('both paths share the structural rules; kit windows differentiate by data', () => {
+    // The legacy NAFCO path carries no CR-PLC-08 window, so it keeps the
+    // structural ceiling (20 − 4 − 1 = 15); WiLLstudio's BAX kit caps at its
+    // own 10 ft bottom-arm rule. Same shared function, different value data.
+    const kit = withKit('BAX', undefined, 99).accessoryPlacements?.BAX?.[0]?.heightFt
     const nafcoCfg = repairConfig(
       catalog,
       config({ brand: 'NAFCO', fixture: 'nafco-chx-cobrahead', pole: '', arm: '', baseCover: '' }),
@@ -693,7 +921,8 @@ describe('repairConfig — banner-kit placements (Phase 0.11, D1/D3)', () => {
       ...nafcoCfg,
       banner: { armId: 'nafco-ba1-banner-arm', count: 1, heightFt: 99 },
     }).banner?.heightFt
-    expect(kit).toBe(legacy)
+    expect(kit).toBe(10)
+    expect(legacy).toBe(15)
   })
 })
 
@@ -1017,26 +1246,33 @@ describe('voltage → options compatibility (Phase 0.10.5)', () => {
   })
 })
 
-describe('default spec options — the generic cord (Phase 0.12_TO)', () => {
-  it('seeds the WHPXNP cord when the picked part offers it — and nothing else', () => {
-    // Composes with the blank slate: the builder opens empty; this seeds at
-    // part-PICK time (Tyler 8/12: "select Cord w/o Plug by default").
-    expect(defaultSpecOptions(partById(catalog, 'gvx-pendant'))).toEqual({ options: ['WHPXNP'] })
-    for (const id of ['drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
+describe('cord — required, bracket-derived (CR-OPT-06, Tyler 8/14)', () => {
+  it('seeds nothing any more — the cord is derived, not selected', () => {
+    for (const id of ['gvx-pendant', 'drx-post-top', 'tex-post-top', 'sh1-shepherds-hook']) {
       expect(defaultSpecOptions(partById(catalog, id)), id).toBeUndefined()
     }
   })
 
-  it('the mechanism still works when a part carries specDefaults', () => {
-    // The machinery stays (catalog `specDefaults` + DEFAULT_OPTION_CODES) for
-    // the day a default earns its way back; pin it with a synthetic part.
-    const gvx = partById(catalog, 'gvx-pendant')!
-    const seeded = defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })
-    expect(seeded).toEqual({ 'lumen-output': '115', options: ['WHPXNP'] })
-    // A code the sheet does not offer never seeds (the cord still does).
+  it('cordCodeFor: WHP7NP standard, per-bracket overrides, pendant-only', () => {
+    const base = config({ fixture: 'gvx-pendant' })
+    expect(cordCodeFor(catalog, { ...base, arm: 'sh1-shepherds-hook' })).toBe('WHP7NP')
     expect(
-      defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': 'NOT-A-CODE' } }),
-    ).toEqual({ options: ['WHPXNP'] })
+      cordCodeFor(catalog, { ...base, arm: 'willstudio-side-shepherds-hook-pole-top-brackets' }),
+    ).toBe('WHP7NP')
+    // PM1 is a short-drop bracket: 3-ft cord code on the part.
+    expect(cordCodeFor(catalog, { ...base, arm: 'pm1-pendant-arm' })).toBe('WHP3NP')
+    // No arm chosen, non-pendant fixture, pseudo-arm: no cord.
+    expect(cordCodeFor(catalog, { ...base, arm: '' })).toBeUndefined()
+    expect(
+      cordCodeFor(catalog, config({ fixture: 'drx-post-top', arm: 'direct-mount' })),
+    ).toBeUndefined()
+  })
+
+  it('the specDefaults mechanism still works (dormant)', () => {
+    const gvx = partById(catalog, 'gvx-pendant')!
+    expect(defaultSpecOptions({ ...gvx, specDefaults: { 'lumen-output': '115' } })).toEqual({
+      'lumen-output': '115',
+    })
   })
 
   it('defaultConfig seeds the default fixture\'s own spec-sheet defaults', () => {
@@ -1221,16 +1457,16 @@ describe('accessory placements (Phase 0.10.5)', () => {
   it('repairConfig clamps placement height to the shaft and orientation to the compass set', () => {
     const repaired = repairConfig(catalog, {
       ...withFstr(),
-      accessoryPlacements: { FSTR: { heightFt: 99, orientation: 45 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 99, orientation: 45 }] },
     })
     // 12 ft pole → max 11 ft; bad orientation resets to 0.
-    expect(repaired.accessoryPlacements).toEqual({ FSTR: { heightFt: 11, orientation: 0 } })
+    expect(repaired.accessoryPlacements).toEqual({ FSTR: [{ heightFt: 11, orientation: 0 }] })
   })
 
   it('repairConfig drops placements whose code is not selected', () => {
     const repaired = repairConfig(catalog, {
       ...config({}),
-      accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 90 }] },
     })
     expect(repaired.accessoryPlacements).toBeUndefined()
   })
@@ -1239,7 +1475,8 @@ describe('accessory placements (Phase 0.10.5)', () => {
 describe('accessory placement sides (Phase 0.10.5)', () => {
   it('side sets come from what the accessory is', () => {
     expect(accessorySideOptions('24" Wind Shedding Banner Arm Kit, ... (Specify Pole Height & Orientation)')).toEqual([1, 2, 4])
-    expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toEqual([1, 2])
+    // CR-OPT-12: couplings are instanced, not paired — no sides option.
+    expect(accessorySideOptions('1" NPT Pipe-Thread Female Coupling (Specify Pole Height & Orientation)')).toBeUndefined()
     expect(accessorySideOptions('Single Flag Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
     expect(accessorySideOptions('Single Plant Holder Kit (Specify Pole Height & Orientation)')).toEqual([1, 2])
     expect(accessorySideOptions('Festoon Provision, Electrical by Others')).toBeUndefined()
@@ -1255,17 +1492,17 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
     const repaired = repairConfig(catalog, {
       ...base,
       accessoryPlacements: {
-        BAX: { heightFt: 10, orientation: 90, sides: 4 },
-        FH: { heightFt: 8, orientation: 0, sides: 4 }, // FH allows 1|2 → clamps to 1
-        FSTR: { heightFt: 6, orientation: 0, sides: 2 }, // FSTR has no sides → stripped
+        BAX: [{ heightFt: 10, orientation: 90, sides: 4 }],
+        FH: [{ heightFt: 8, orientation: 0, sides: 4 }], // FH allows 1|2 → clamps to 1
+        FSTR: [{ heightFt: 6, orientation: 0, sides: 2 }], // FSTR has no sides → stripped
       },
     })
-    expect(repaired.accessoryPlacements?.BAX?.sides).toBe(4)
-    expect(repaired.accessoryPlacements?.FH?.sides).toBe(1)
-    expect(repaired.accessoryPlacements?.FSTR?.sides).toBeUndefined()
+    expect(repaired.accessoryPlacements?.BAX?.[0]?.sides).toBe(4)
+    expect(repaired.accessoryPlacements?.FH?.[0]?.sides).toBe(1)
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.sides).toBeUndefined()
   })
 
-  it('repairConfig honors FSTR’s 37-inch label minimum', () => {
+  it('repairConfig honors FSTR’s 37-inch floor (36" was briefly specced 8/14, reverted same day)', () => {
     const base = config({
       fixture: 'drx-post-top',
       arm: 'direct-mount',
@@ -1274,8 +1511,8 @@ describe('accessory placement sides (Phase 0.10.5)', () => {
     })
     const repaired = repairConfig(catalog, {
       ...base,
-      accessoryPlacements: { FSTR: { heightFt: 0, orientation: 0 } },
+      accessoryPlacements: { FSTR: [{ heightFt: 0, orientation: 0 }] },
     })
-    expect(repaired.accessoryPlacements?.FSTR?.heightFt).toBeCloseTo(37 / 12, 5)
+    expect(repaired.accessoryPlacements?.FSTR?.[0]?.heightFt).toBeCloseTo(37 / 12, 5)
   })
 })

@@ -166,6 +166,24 @@ def _finish_code(catalog: dict, values: list[dict], finish_id: str) -> str:
     return (finish or {}).get("code") or UNSPECIFIED
 
 
+def _cord_code_for(catalog: dict, cfg: PoleConfig) -> str | None:
+    """CR-OPT-06 (Tyler 8/14): the bracket-derived required cord.
+
+    Mirrors ``cordCodeFor`` in src/lib/compat.ts: pendant fixture + WiLLstudio
+    bracket → the arm's ``cordCode`` or the WHP7NP standard; anything else →
+    no cord.
+    """
+    fixture = _find_part(catalog, getattr(cfg, "fixture", ""))
+    arm = _find_part(catalog, getattr(cfg, "arm", ""))
+    if not fixture or not arm:
+        return None
+    if fixture.get("mount") != "pendant":
+        return None
+    if arm.get("line") != "WiLLstudio" or arm.get("pseudoPart"):
+        return None
+    return arm.get("cordCode") or "WHP7NP"
+
+
 def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
     """One component's full ordering part number, or None when it has no sheet.
 
@@ -200,9 +218,12 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         arm_finish = (finish or {}).get("code")
         if arm_finish:
             base = f"{base}-{arm_finish}"
-        # Tyler 8/12: arms lead with the WP family code like every other
-        # WiLLstudio number — WP-SS2-BK-CF2.
-        return _with_add_ons(f"WP-{base}", part, cfg, slot)
+        # Tyler 8/12: arms lead with the WP family code.  CR-PN-09 (8/14):
+        # the Pole/Tenon Fit slot prints a blank placeholder between design
+        # and finish — Family-Design-Fit-Finish[-Options].
+        parts = base.split("-", 1)
+        with_fit = f"{parts[0]}-{UNSPECIFIED}-{parts[1]}" if len(parts) == 2 else f"{base}-{UNSPECIFIED}"
+        return _with_add_ons(f"WP-{with_fit}", part, cfg, slot)
 
     options = part.get("options")
     if not options:
@@ -220,9 +241,24 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         key = opt.get("key", "")
         values = opt.get("values") or []
         selected = spec_codes(chosen.get(key))
+        if key == "fixture-mounting":
+            # CR-OPT-15: derived from the bracket (PF; FR2 -> PD); "_" when
+            # the bracket doesn't decide it.  Selections are ignored.
+            arm = _find_part(catalog, getattr(cfg, "arm", ""))
+            segments.append((arm or {}).get("mountingCode") or UNSPECIFIED)
+            continue
         if key == "pole-fit":
-            # Phase 0.12_TO (Tyler 8/12): Pole Fit derives from the chosen
-            # pole's diameter — appended after the finish, at the end.
+            # CR-PN-04 (final form, Tyler 8/14): derived, in the sheet's own
+            # column position; blank placeholder when no pole is chosen.
+            pole = _find_part(catalog, getattr(cfg, "pole", ""))
+            diameter = (pole or {}).get("diameterIn")
+            fit = None
+            if diameter:
+                want = f"{_js_number(diameter)}R"
+                fit = next(
+                    (v["code"] for v in values if v.get("code") == want), None
+                )
+            segments.append(fit or UNSPECIFIED)
             continue
         if selected:
             segments.append(selected[0])
@@ -252,25 +288,65 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         else:
             segments.append(UNSPECIFIED)
 
+    # CR-OPT-07: voltage-resolved codes; CR-OPT-06: derived rows never print
+    # their own code.  Mirrors addOnCodes in src/lib/summary.ts.
+    voltage = (spec_codes(chosen.get("voltage")) or [None])[0]
+    _pole = _find_part(catalog, getattr(cfg, "pole", ""))
+    pole_diameter = (_pole or {}).get("diameterIn")
     for opt in sorted(
         (o for o in options if o.get("group") == "options-accessories"),
         key=lambda o: o.get("orderPosition", 0),
     ):
-        segments.extend(spec_codes(chosen.get(opt.get("key", ""))))
+        values = opt.get("values") or []
+        for code in spec_codes(chosen.get(opt.get("key", ""))):
+            # CR-OPT-06: cord codes in selections never print — the derived
+            # cord is the only authority (mirrors exclusiveFamily 'cord').
+            if code.startswith("WHP"):
+                continue
+            value = next((v for v in values if v.get("code") == code), None)
+            if value and value.get("derived"):
+                continue
+            mapped = (value or {}).get("resolvesBy", {}).get(voltage) if voltage else None
+            # CR-OPT-10: pole-diameter-resolved codes (hand-hole size digit).
+            sized = (
+                (value or {}).get("resolvesByDiameter", {}).get(_js_number(pole_diameter))
+                if pole_diameter
+                else None
+            )
+            resolved = sized or mapped or code
+            # CR-OPT-15 (Tyler 8/14): size-resolved codes print PER INSTANCE,
+            # keyed by that instance's panel size id (banner arm: BA18/BA24/
+            # BA30 following the banner width; default panel when unstored).
+            # Mirrors addOnCodes in src/lib/summary.ts.
+            by_size = (value or {}).get("resolvesBySize")
+            if by_size:
+                fallback = next(
+                    (s.get("id") for s in catalog.get("bannerPanelSizes", []) if s.get("default")),
+                    "",
+                )
+                raw = (getattr(cfg, "accessoryPlacements", None) or {}).get(code)
+                instances = raw if isinstance(raw, list) else ([raw] if raw else [])
+                if not instances:
+                    instances = [None]
+                for inst in instances:
+                    size_id = getattr(inst, "size", None) if inst is not None else None
+                    segments.append(by_size.get(size_id or fallback, resolved))
+                continue
+            # CR-OPT-11: a multi accessory prints once per configured instance.
+            count = 1
+            if ((value or {}).get("placement") or {}).get("multi"):
+                raw = (getattr(cfg, "accessoryPlacements", None) or {}).get(code)
+                instances = raw if isinstance(raw, list) else ([raw] if raw else [])
+                count = max(1, len(instances))
+            segments.extend([resolved] * count)
+
+    # CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard).
+    if slot == "fixture":
+        cord = _cord_code_for(catalog, cfg)
+        if cord:
+            segments.append(cord)
 
     # Derived Pole Fit rides at the very end (after finish + add-ons).
-    fit_column = next((o for o in options if o.get("key") == "pole-fit"), None)
-    pole = _find_part(catalog, getattr(cfg, "pole", ""))
-    diameter = (pole or {}).get("diameterIn")
-    if fit_column and diameter:
-        want = f"{_js_number(diameter)}R"
-        fit = next(
-            (v["code"] for v in fit_column.get("values") or [] if v.get("code") == want),
-            None,
-        )
-        if fit:
-            segments.append(fit)
-
     # Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
     # pole with nothing chosen ends after its colour code.  Interior blanks
     # stay: they keep the sheet's column positions readable.

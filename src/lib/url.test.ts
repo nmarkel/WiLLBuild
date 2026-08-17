@@ -97,7 +97,7 @@ describe('banner <-> URL params (Phase 0.8 C/A4)', () => {
 
 describe('accessory placement size <-> URL params (Phase 0.11 D)', () => {
   it('round-trips a banner kit with both sides and size', () => {
-    const accessoryPlacements = { BA24: { heightFt: 12, orientation: 90, sides: 2, size: '18x36' } }
+    const accessoryPlacements = { BA24: [{ heightFt: 12, orientation: 90, sides: 2, size: '18x36' }] }
     const params = configToParams({ ...config, accessoryPlacements })
     expect(params.get('place')).toBe('BA24~12~90~2~18x36')
     expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
@@ -106,7 +106,7 @@ describe('accessory placement size <-> URL params (Phase 0.11 D)', () => {
   it('emits an empty sides field when a size follows but sides is absent', () => {
     // `sides` is positional — shifting the size into its slot would parse the
     // panel id as a side count.
-    const accessoryPlacements = { BA24: { heightFt: 12, orientation: 0, size: '30x60' } }
+    const accessoryPlacements = { BA24: [{ heightFt: 12, orientation: 0, size: '30x60' }] }
     const params = configToParams({ ...config, accessoryPlacements })
     expect(params.get('place')).toBe('BA24~12~0~~30x60')
     expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
@@ -115,10 +115,10 @@ describe('accessory placement size <-> URL params (Phase 0.11 D)', () => {
   it('still reads pre-0.11 three- and four-field placement links', () => {
     expect(
       paramsToPartialConfig(new URLSearchParams('?place=FSTR~6~90'))?.accessoryPlacements,
-    ).toEqual({ FSTR: { heightFt: 6, orientation: 90 } })
+    ).toEqual({ FSTR: [{ heightFt: 6, orientation: 90 }] })
     expect(
       paramsToPartialConfig(new URLSearchParams('?place=BA24~12~90~4'))?.accessoryPlacements,
-    ).toEqual({ BA24: { heightFt: 12, orientation: 90, sides: 4 } })
+    ).toEqual({ BA24: [{ heightFt: 12, orientation: 90, sides: 4 }] })
   })
 })
 
@@ -376,7 +376,7 @@ describe('arm orientation <-> URL params (Phase 0.10.5)', () => {
 
 describe('accessory placements <-> URL params (Phase 0.10.5)', () => {
   it('round-trips placements as code~ft~deg', () => {
-    const accessoryPlacements = { FSTR: { heightFt: 6, orientation: 90 }, FH: { heightFt: 9, orientation: 0 } }
+    const accessoryPlacements = { FSTR: [{ heightFt: 6, orientation: 90 }], FH: [{ heightFt: 9, orientation: 0 }] }
     const params = configToParams({ ...config, accessoryPlacements })
     expect(params.get('place')).toBe('FH~9~0,FSTR~6~90')
     expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)
@@ -384,13 +384,13 @@ describe('accessory placements <-> URL params (Phase 0.10.5)', () => {
 
   it('drops malformed placement entries', () => {
     const partial = paramsToPartialConfig(new URLSearchParams('?place=FSTR~x~90,FH~9~0'))
-    expect(partial?.accessoryPlacements).toEqual({ FH: { heightFt: 9, orientation: 0 } })
+    expect(partial?.accessoryPlacements).toEqual({ FH: [{ heightFt: 9, orientation: 0 }] })
   })
 })
 
 describe('accessory placement sides <-> URL (Phase 0.10.5)', () => {
   it('round-trips the optional sides token', () => {
-    const accessoryPlacements = { BA24: { heightFt: 10, orientation: 90, sides: 2 } }
+    const accessoryPlacements = { BA24: [{ heightFt: 10, orientation: 90, sides: 2 }] }
     const params = configToParams({ ...config, accessoryPlacements })
     expect(params.get('place')).toBe('BA24~10~90~2')
     expect(paramsToPartialConfig(params)?.accessoryPlacements).toEqual(accessoryPlacements)

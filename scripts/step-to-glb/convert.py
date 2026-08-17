@@ -108,6 +108,13 @@ def _normalize(pos_mm: np.ndarray, origin: str) -> np.ndarray:
         # native X/Z already sits on the pole axis, so only Y is re-based.
         ycenter = (pos[:,1].min() + pos[:,1].max()) / 2
         pos = pos - np.array([0.0, ycenter, 0.0])
+    elif origin == "native":
+        # Phase 0.14: trust the CAD frame ENTIRELY — X/Z on the pole axis AND
+        # Y zeroed where Engineering put it. Used when the export's own origin
+        # IS the catalog reference point (FH/PH kits: y=0 is the shaft bracket
+        # the placement height drives; the staff/basket extends above AND below
+        # it, so any bbox re-basing would move the origin off the bracket).
+        pass
     return pos
 
 def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndarray:

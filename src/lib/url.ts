@@ -103,13 +103,17 @@ export function configToParams(config: PoleConfig, scene: Scene = DEFAULT_SCENE)
   // is positional, so a placement with a size but no sides emits an EMPTY
   // sides field (`FSTR~6~90~~30x60`) rather than shifting size into its slot.
   if (config.accessoryPlacements) {
+    // CR-OPT-11: instanced — one entry PER INSTANCE, the code repeating
+    // (CPLX~6~0,CPLX~12~90). Old single-instance links parse identically.
     const place = Object.entries(config.accessoryPlacements)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([code, p]) => {
-        const head = `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}`
-        if (p.size) return `${head}~${p.sides ?? ''}~${p.size}`
-        return p.sides !== undefined ? `${head}~${p.sides}` : head
-      })
+      .flatMap(([code, list]) =>
+        (Array.isArray(list) ? list : [list]).map((p) => {
+          const head = `${code}~${+p.heightFt.toFixed(2)}~${p.orientation}`
+          if (p.size) return `${head}~${p.sides ?? ''}~${p.size}`
+          return p.sides !== undefined ? `${head}~${p.sides}` : head
+        }),
+      )
       .join(',')
     if (place) params.set('place', place)
   }
@@ -241,12 +245,13 @@ export function paramsToPartialConfig(params: URLSearchParams): Partial<PoleConf
         // `sides` may be an EMPTY field when a size follows it (see the
         // serializer) — treat '' as absent rather than as Number('') === 0.
         const sides = sidesStr ? Number(sidesStr) : undefined
-        accessoryPlacements[code] = {
+        // CR-OPT-11: repeated codes accumulate into instance arrays.
+        ;(accessoryPlacements[code] ??= []).push({
           heightFt,
           orientation,
           ...(sides !== undefined && Number.isFinite(sides) ? { sides } : {}),
           ...(sizeStr ? { size: sizeStr } : {}),
-        }
+        })
       }
     }
     if (Object.keys(accessoryPlacements).length > 0) {

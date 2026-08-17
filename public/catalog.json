@@ -2572,21 +2572,29 @@
               "code": "WHPXNP",
               "label": "Cord w/o Plug, Stripped Pigtail",
               "mapsTo": null,
-              "note": "Sized to your installation — we'll confirm the length with your quote"
+              "note": "Included with your WiLLstudio bracket — 6’ cord w/o plug, stripped pigtail (2’ with the PM1 arm), per the ordering sheet",
+              "derived": true
             },
             {
               "buildable": null,
               "code": "SRGXXX10",
               "label": "10kA Surge Suppressor",
               "mapsTo": null,
-              "note": "We'll match it to your project's voltage"
+              "note": "We'll match it to your project's voltage",
+              "resolvesBy": {
+                "MV": "SRG27710",
+                "HV": "SRG48010"
+              }
             },
             {
               "buildable": null,
               "code": "BPCX",
               "label": "Button Photocontrol",
               "mapsTo": null,
-              "note": "We'll match it to your project's voltage"
+              "note": "We'll match it to your project's voltage",
+              "resolvesBy": {
+                "MV": "BPC1"
+              }
             },
             {
               "buildable": null,
@@ -2633,7 +2641,8 @@
         "parseStatus": "ok",
         "gaps": []
       },
-      "realCad": true
+      "realCad": true,
+      "hangM": 0.505
     },
     {
       "id": "sh1-shepherds-hook",
@@ -2755,7 +2764,8 @@
           "Center-feature codes transcribed from docs/ordering-matrix.json armOptions (the arms sheet's Options column). Bare 'CF' (Custom) is deliberately excluded per armOptionsNote — a custom feature is a quote conversation, not an assemblable code. Offered on SH1 only until Tyler confirms whether SS crossarms carry a logo feature."
         ]
       },
-      "realCad": true
+      "realCad": true,
+      "mountingCode": "PF"
     },
     {
       "id": "upsweep",
@@ -2857,7 +2867,7 @@
       "mount": "tenon-3in",
       "sockets": {
         "fixture": {
-          "type": "pendant",
+          "type": "pendant-pa1",
           "position": [
             0.914,
             0.092,
@@ -2922,7 +2932,8 @@
         0,
         -0.3257,
         0
-      ]
+      ],
+      "mountingCode": "PF"
     },
     {
       "id": "pm1-pendant-arm",
@@ -2999,7 +3010,9 @@
         0,
         -0.0127,
         0
-      ]
+      ],
+      "cordCode": "WHP3NP",
+      "mountingCode": "PF"
     },
     {
       "id": "direct-mount",
@@ -3121,7 +3134,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -3130,6 +3143,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -3326,7 +3356,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -3450,19 +3486,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -3477,8 +3536,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -3493,16 +3560,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -3510,7 +3596,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -3773,7 +3866,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -3782,6 +3875,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -3978,7 +4088,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -4102,19 +4218,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -4129,8 +4268,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -4145,16 +4292,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -4162,7 +4328,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -4425,7 +4598,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -4434,6 +4607,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -4630,7 +4820,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -4754,19 +4950,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -4781,8 +5000,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -4797,16 +5024,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -4814,7 +5060,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -5077,7 +5330,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -5086,6 +5339,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -5282,7 +5552,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -5406,19 +5682,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -5433,8 +5732,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -5449,16 +5756,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -5466,7 +5792,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -5729,7 +6062,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -5738,6 +6071,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -5934,7 +6284,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -6058,19 +6414,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -6085,8 +6464,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -6101,16 +6488,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -6118,7 +6524,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -6381,7 +6794,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -6390,6 +6803,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -6586,7 +7016,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -6710,19 +7146,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -6737,8 +7196,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -6753,16 +7220,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -6770,7 +7256,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -7033,7 +7526,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -7042,6 +7535,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -7238,7 +7748,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -7362,19 +7878,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -7389,8 +7928,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -7405,16 +7952,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -7422,7 +7988,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -7685,7 +8258,7 @@
             "spec": {
               "kind": "box",
               "sizeM": [
-                0.008,
+                0.004,
                 0.127,
                 0.07619999999999999
               ],
@@ -7694,6 +8267,23 @@
             "position": [
               0.0508,
               0.3175,
+              0
+            ]
+          },
+          {
+            "name": "base-plate",
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.2192,
+                0.0254,
+                0.2192
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }
@@ -7890,7 +8480,13 @@
               "code": "PF",
               "label": "Flush Arm Fit",
               "mapsTo": null,
-              "note": null
+              "note": "Needs a D (.188”) or E (.250”) wall",
+              "requires": {
+                "wall-thickness": [
+                  "D",
+                  "E"
+                ]
+              }
             },
             {
               "buildable": null,
@@ -8014,19 +8610,42 @@
           "values": [
             {
               "buildable": null,
-              "code": "HHX",
+              "code": "HHUR",
               "label": "Additional Hand Hole",
               "mapsTo": null,
-              "note": "An extra access opening with its own cover — placed wherever you need it",
-              "placeable": true
+              "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+              "placeable": true,
+              "resolvesByDiameter": {
+                "4": "HHUR-4",
+                "5": "HHUR-5",
+                "6": "HHUR-6"
+              },
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-hand-hole"
             },
             {
               "buildable": null,
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "A built-in electrical outlet provision, wiring by others — Minimum 37” above the base",
-              "placeable": true
+              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "placeable": true,
+              "placement": {
+                "minFt": 3.0833333333333335,
+                "stepIn": 6,
+                "multi": true,
+                "minGapFt": 1.5,
+                "spacingGroup": "shaft-access",
+                "groupMaxInstances": 2
+              },
+              "renderPartId": "willstudio-acc-festoon"
             }
           ]
         },
@@ -8041,8 +8660,16 @@
               "code": "CPLX",
               "label": "Threaded Coupling",
               "mapsTo": null,
-              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote",
-              "placeable": true
+              "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+              "placeable": true,
+              "placement": {
+                "minFt": 3,
+                "stepIn": 6,
+                "multi": true,
+                "maxInstances": 3,
+                "minGapFt": 0.5
+              },
+              "renderPartId": "willstudio-acc-coupling"
             }
           ]
         },
@@ -8057,16 +8684,35 @@
               "code": "BAX",
               "label": "Banner Arm Kit",
               "mapsTo": null,
-              "note": "Available in 24” and 30” arms (24” shown in the preview) — wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-              "placeable": true
+              "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+              "placeable": true,
+              "resolvesBySize": {
+                "18x36": "BA18",
+                "24x48": "BA24",
+                "30x60": "BA30"
+              },
+              "placement": {
+                "minFt": 8,
+                "maxFt": 10,
+                "defaultFt": 8,
+                "stepIn": 6
+              },
+              "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
             },
             {
               "buildable": null,
               "code": "FH",
               "label": "Flag Holder Kit",
               "mapsTo": null,
-              "note": "A single flag bracket with stainless hardware — field installed",
-              "placeable": true
+              "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 10,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-flag-holder"
             },
             {
               "buildable": null,
@@ -8074,7 +8720,14 @@
               "label": "Plant Holder Kit",
               "mapsTo": null,
               "note": "A single planter bracket with stainless hardware — field installed",
-              "placeable": true
+              "placeable": true,
+              "placement": {
+                "minFt": 8,
+                "maxFt": 12,
+                "defaultFt": 9,
+                "stepIn": 6
+              },
+              "renderPartId": "willstudio-acc-plant-holder"
             }
           ]
         },
@@ -8443,6 +9096,21 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "accessories",
+          "label": "Accessories",
+          "group": "options-accessories",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell Base Extender",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "realCad": true
@@ -8623,6 +9291,21 @@
               "note": null
             }
           ]
+        },
+        {
+          "key": "accessories",
+          "label": "Accessories",
+          "group": "options-accessories",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell Base Extender",
+              "mapsTo": null,
+              "note": null
+            }
+          ]
         }
       ],
       "realCad": true
@@ -8800,6 +9483,21 @@
               "label": "Custom RAL Match",
               "buildable": true,
               "mapsTo": "custom-ral",
+              "note": null
+            }
+          ]
+        },
+        {
+          "key": "accessories",
+          "label": "Accessories",
+          "group": "options-accessories",
+          "orderPosition": 9,
+          "values": [
+            {
+              "buildable": null,
+              "code": "CLE",
+              "label": "Clamshell Base Extender",
+              "mapsTo": null,
               "note": null
             }
           ]
@@ -14671,7 +15369,8 @@
         3,
         4
       ],
-      "realCad": false
+      "realCad": false,
+      "mountingCode": "PF"
     },
     {
       "id": "aluminum-light-pole-base-covers",
@@ -15865,7 +16564,8 @@
       "modelCodes": {
         "1": "CR2"
       },
-      "realCad": false
+      "realCad": false,
+      "mountingCode": "PF"
     },
     {
       "id": "willstudio-dwx-flood-spot",
@@ -16083,7 +16783,8 @@
       "modelCodes": {
         "1": "FR2"
       },
-      "realCad": true
+      "realCad": true,
+      "mountingCode": "PD"
     },
     {
       "id": "willstudio-hsx-decorative-upsweep-arms",
@@ -16173,7 +16874,8 @@
         "2": "HS2"
       },
       "realCad": true,
-      "placeholderApproved": true
+      "placeholderApproved": true,
+      "mountingCode": "PF"
     },
     {
       "id": "willstudio-pendant-ceiling-mounts",
@@ -16344,7 +17046,9 @@
           }
         ]
       },
-      "realCad": true
+      "realCad": true,
+      "groundMounted": true,
+      "comingSoon": true
     },
     {
       "id": "willstudio-side-shepherds-hook-pole-top-brackets",
@@ -16468,7 +17172,8 @@
             }
           ]
         }
-      ]
+      ],
+      "mountingCode": "PF"
     },
     {
       "id": "willstudio-supported-decorative-arms",
@@ -16552,7 +17257,8 @@
         "2": "SD2"
       },
       "realCad": true,
-      "placeholderApproved": true
+      "placeholderApproved": true,
+      "mountingCode": "PF"
     },
     {
       "id": "willstudio-suspension-arm-pole-top-brackets",
@@ -16629,7 +17335,8 @@
         "3": "AR3",
         "4": "AR4"
       },
-      "realCad": true
+      "realCad": true,
+      "mountingCode": "PF"
     },
     {
       "id": "willstudio-ba1-banner-arm",
@@ -17233,6 +17940,309 @@
         4
       ],
       "realCad": false
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-hand-hole",
+      "name": "Additional Hand Hole",
+      "family": "HHX",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.004,
+                0.152,
+                0.102
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0528,
+              -0.076,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-festoon",
+      "name": "Festoon Power Provision",
+      "family": "FSTR",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.006,
+                0.127,
+                0.089
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0528,
+              -0.0635,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.018,
+                0.06,
+                0.045
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0588,
+              -0.03,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": false
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-coupling",
+      "name": "Threaded Coupling",
+      "family": "CPLX",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.026,
+                0.05,
+                0.05
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.0508,
+              -0.025,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-flag-holder",
+      "name": "Flag Holder Kit",
+      "family": "FH",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.06,
+                0.15,
+                0.1
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.051,
+              -0.075,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.03,
+                1.9,
+                0.03
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.12,
+              -0.4,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-plant-holder",
+      "name": "Plant Holder Kit",
+      "family": "PH",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.5,
+                0.04,
+                0.04
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.05,
+              -0.04,
+              0
+            ]
+          },
+          {
+            "spec": {
+              "kind": "box",
+              "sizeM": [
+                0.3,
+                0.25,
+                0.3
+              ],
+              "direction": "up"
+            },
+            "position": [
+              0.4,
+              -0.3,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
     }
   ],
   "categories": {

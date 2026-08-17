@@ -32,14 +32,32 @@ interface GraftChild {
   position: Vec3
 }
 
+/** A REAL-geometry graft (Phase 0.14): a sibling GLB merged into the part at a
+ *  fixed local position — the pole's hand hole grafting Cole's HH-4R section
+ *  in place of the placeholder cover box. Same native-size, after-scale
+ *  semantics as the box graft. */
+interface GlbGraft {
+  b64: string
+  position: Vec3
+}
+
 async function loadRealModel(
   partId: string,
   base64: string,
   rotateYDeg = 0,
   graftChildren: GraftChild[] = [],
+  glbGrafts: GlbGraft[] = [],
 ): Promise<void> {
   const buf = b64ToArrayBuffer(base64)
   const gltf = await gltfLoader.parseAsync(buf, '')
+  for (const g of glbGrafts) {
+    // Parsed like the part itself; 'will-body' materials pick up the finish in
+    // instantiateRealModel's traversal, and root.rotation.y spins the graft
+    // with its host, so the hole keeps facing the 0° homing azimuth.
+    const child = await gltfLoader.parseAsync(b64ToArrayBuffer(g.b64), '')
+    child.scene.position.set(g.position[0], g.position[1], g.position[2])
+    gltf.scene.add(child.scene)
+  }
   if (graftChildren.length) {
     // Reuse the same 'group' path specToObject already uses for the
     // placeholder pole itself: each child gets its own sub-group at its

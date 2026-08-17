@@ -291,6 +291,64 @@
   text-shadow: none;
 }
 
+/* ---- Partial-build hint (Phase 0.14): pill over the art, never a full-screen
+   state — the render always shows from the first pick. Bottom-center, sitting
+   ABOVE the scene/night/compass toolbar (which owns the bottom-center strip). ---- */
+
+.composite-hint {
+  position: absolute;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--will-gray);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 1px 6px rgba(66, 65, 61, 0.15);
+  pointer-events: none;
+}
+
+.composite-viewer.night .composite-hint {
+  background: rgba(40, 40, 38, 0.88);
+  color: var(--will-silver);
+  border-color: rgba(230, 231, 232, 0.25);
+}
+
+/* ---- Ground-mounted fixture (Phase 0.14): Bracket / Pole / Base Cover gray
+   out instead of vanishing — the customer sees they're deliberately not
+   applicable to a complete product like the RXB/SXB bollard. ---- */
+
+.builder-app .step-na {
+  opacity: 0.55;
+}
+
+.builder-app .step-na-heading {
+  cursor: default;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 4px;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.builder-app .step-na .step-selected {
+  font-style: italic;
+}
+
+.builder-app .step-na-note {
+  margin: 0 4px 14px 40px;
+  font-size: 13px;
+  color: var(--will-gray);
+}
+
 /* ---- Base configuration: single-select boxes (replace the dropdowns) ---- */
 
 .builder-app .spec-choices {
@@ -876,4 +934,40 @@
 .builder-app .step:not(.open) .step-heading:hover .step-label {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Derived rows (the bracket cord): included, not a choice. */
+.builder-app .spec-check.derived {
+  cursor: default;
+}
+
+.builder-app .spec-check-included {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--will-gray);
+  background: var(--will-yellow);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* CR-OPT-14: spec values incompatible with the current selections. */
+.builder-app .spec-choice.incompatible {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* CR-PLC-09: engineering disclaimer on selected accessories (banner kits). */
+.builder-app .placement-disclaimer {
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--will-yellow);
+  background: var(--yellow-soft);
+  font-size: 12.5px;
+  color: var(--text);
+  border-radius: 0 8px 8px 0;
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, isPlaceable, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, specCodes, voltageCompatible } from '../lib/compat'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, partsForSlot, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -68,7 +68,8 @@ function isFinishColumn(opt: SpecOption): boolean {
 // pole height they already picked would let the two disagree.
 // pole-fit is derived from the chosen pole's diameter (Tyler 8/12) — the
 // base cover asks the customer nothing.
-const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit'])
+// fixture-mounting is derived from the bracket (CR-OPT-15) — never asked.
+const IMPLIED_COLUMNS = new Set(['product-family', 'design', 'finish-type', 'length', 'pole-fit', 'fixture-mounting'])
 
 function isImpliedColumn(_slot: Slot, opt: SpecOption): boolean {
   // Single-value columns (fixed segments like AB anchor bolts / SB base type /
@@ -85,8 +86,20 @@ export function Panel({ catalog, config }: Props) {
   const openStep = useConfigurator((s) => s.openStep)
   const setOpenStep = useConfigurator((s) => s.setOpenStep)
 
-  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers)
-  const steps = STEPS.filter((step) => compatibleParts(catalog, config, step.key).length > 0)
+  // Phase 0.14 (Tyler 8/14): a ground-mounted fixture (RXB/SXB bollard) is a
+  // complete product — Bracket / Pole / Base Cover GRAY OUT rather than
+  // vanish, so the customer sees they're deliberately not applicable.
+  const groundMounted = Boolean(partById(catalog, config.fixture)?.groundMounted)
+
+  // Hide steps the brand has no parts for (e.g. NAFCO has no base covers) —
+  // but keep a section the bollard EMPTIED visible in its grayed state.
+  const steps = STEPS.filter(
+    (step) =>
+      compatibleParts(catalog, config, step.key).length > 0 ||
+      (groundMounted &&
+        step.key !== 'fixture' &&
+        partsForSlot(catalog, step.key, config.brand).length > 0),
+  )
 
   // Phase 0.10.5_TO (Tesla-style): every section always open in one scroll —
   // no accordion, no "Continue" ceremony. The heavy sub-UI self-collapses
@@ -96,6 +109,28 @@ export function Panel({ catalog, config }: Props) {
       {steps.map((step, i) => {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
+
+        // Phase 0.14: grayed "not applicable" section — the chosen fixture is
+        // a complete ground-mounted product, so nothing can be picked here.
+        const notApplicable =
+          groundMounted &&
+          step.key !== 'fixture' &&
+          compatibleParts(catalog, config, step.key).length === 0
+        if (notApplicable) {
+          return (
+            <section key={step.key} id={`builder-step-${step.key}`} className="step step-na">
+              <div className="step-heading step-na-heading">
+                <span className="step-num">{i + 1}</span>
+                <span className="step-label">{step.label}</span>
+                <span className="step-selected">Not applicable</span>
+              </div>
+              <p className="step-na-note">
+                This product is ground-mounted and complete on its own — no{' '}
+                {step.label.toLowerCase()} to configure.
+              </p>
+            </section>
+          )
+        }
 
         const open = openStep === step.key
         return (
@@ -377,21 +412,38 @@ function StepSpecOptions({
                 <div className="spec-option" key={opt.key}>
                   <span className="spec-option-label">{optionLabel(opt)}</span>
                   <div className="spec-choices" role="radiogroup" aria-label={optionLabel(opt)}>
-                    {opt.values.map((v) => (
-                      <button
-                        key={v.code}
-                        type="button"
-                        role="radio"
-                        aria-checked={current === v.code}
-                        className={`spec-choice${current === v.code ? ' selected' : ''}`}
-                        onClick={() =>
-                          setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
-                        }
-                        title={`${v.code} — ${v.label}`}
-                      >
-                        {v.label}
-                      </button>
-                    ))}
+                    {opt.values.map((v) => {
+                      // CR-OPT-14: grey out values incompatible with other
+                      // chosen columns (PF flush fit → walls C is out).
+                      // CR-OPT-15: the bracket-derived mounting counts as
+                      // chosen (SH1 → PF greys the C wall).
+                      const derivedMounting =
+                        slot === 'pole' ? poleMountingCodeFor(catalog, config) : undefined
+                      const effective = derivedMounting
+                        ? { ...chosen, 'fixture-mounting': derivedMounting }
+                        : chosen
+                      const compatible = valueCompatibleWithChosen(part, effective, opt.key, v)
+                      return (
+                        <button
+                          key={v.code}
+                          type="button"
+                          role="radio"
+                          aria-checked={current === v.code}
+                          className={`spec-choice${current === v.code ? ' selected' : ''}${compatible ? '' : ' incompatible'}`}
+                          disabled={!compatible}
+                          onClick={() =>
+                            setSpecOption(slot, opt.key, current === v.code ? '' : v.code)
+                          }
+                          title={
+                            compatible
+                              ? `${v.code} — ${v.label}`
+                              : `Not available with the current selections${v.note ? ` — ${v.note}` : ''}`
+                          }
+                        >
+                          {v.label}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )
@@ -424,13 +476,49 @@ function StepSpecOptions({
               <div className="spec-option spec-option-group" key={opt.key}>
                 {showLabel && <p className="spec-option-group-label">{label}</p>}
                 {values.map((v) => {
+                  // CR-OPT-06: a derived row (the bracket cord) isn't a
+                  // choice — it renders as a locked "included" box once the
+                  // pairing that derives it exists, and hides until then.
+                  if (v.derived) {
+                    if (!cordCodeFor(catalog, config)) return null
+                    return (
+                      <div key={v.code} className="spec-check checked derived">
+                        <span className="spec-check-text">
+                          <span className="spec-check-name">{v.label}</span>
+                          {v.note && <span className="spec-check-note">{v.note}</span>}
+                        </span>
+                        <span className="spec-check-included">Included</span>
+                      </div>
+                    )
+                  }
                   const checked = specCodes(chosen[opt.key]).includes(v.code)
+                  // CR-OPT-13 (UI): the shaft-access group caps at 2 TOTAL.
+                  // A checked accessory with no committed placement still
+                  // occupies a slot, so it counts as 1. When full, unchecked
+                  // group members lock and say why.
+                  const vGroup = v.placement?.spacingGroup
+                  const vGroupCap = v.placement?.groupMaxInstances
+                  const groupFull =
+                    !checked &&
+                    vGroup !== undefined &&
+                    vGroupCap !== undefined &&
+                    (part.options ?? [])
+                      .filter((o2) => o2.group === 'options-accessories')
+                      .flatMap((o2) => o2.values)
+                      .filter((v2) => v2.placement?.spacingGroup === vGroup)
+                      .reduce((n, v2) => {
+                        const inst = placementInstances(config, v2.code).length
+                        const isChecked = (part.options ?? []).some((o2) =>
+                          specCodes(chosen[o2.key]).includes(v2.code),
+                        )
+                        return n + (isChecked ? Math.max(1, inst) : inst)
+                      }, 0) >= vGroupCap
                   const placeable = slot === 'pole' && isPlaceable(v)
                   const family = exclusiveFamily(v.code)
                   return (
                     <div key={v.code}>
                       <label
-                        className={`spec-check ${checked ? 'checked' : ''}`}
+                        className={`spec-check ${checked ? 'checked' : ''}${groupFull ? ' incompatible' : ''}`}
                         title={
                           family && checked ? 'Click again to clear this choice' : undefined
                         }
@@ -446,13 +534,15 @@ function StepSpecOptions({
                             name={`${slot}-${family}`}
                             checked={checked}
                             readOnly
-                            onClick={() => toggleSpecOption(slot, opt.key, v.code)}
+                            onClick={() => !groupFull && toggleSpecOption(slot, opt.key, v.code)}
+                            disabled={groupFull}
                           />
                         ) : (
                           <input
                             type="checkbox"
                             checked={checked}
-                            onChange={() => toggleSpecOption(slot, opt.key, v.code)}
+                            onChange={() => !groupFull && toggleSpecOption(slot, opt.key, v.code)}
+                            disabled={groupFull}
                           />
                         )}
                         {/* Phase 0.12_TO (Tyler): plain English only — the
@@ -463,6 +553,15 @@ function StepSpecOptions({
                           {v.note && <span className="spec-check-note">{v.note}</span>}
                         </span>
                       </label>
+                      {groupFull && (
+                        <p className="spec-options-note placement-blocked">
+                          Maximum of {vGroupCap} total hand holes + festoons per pole — reach
+                          out to engineering if you need more.
+                        </p>
+                      )}
+                      {checked && v.disclaimer && (
+                        <p className="placement-disclaimer">{v.disclaimer}</p>
+                      )}
                       {checked && placeable && (
                         <AccessoryPlacementBox
                           catalog={catalog}
@@ -603,17 +702,126 @@ function AccessoryPlacementBox({
   label: string
 }) {
   const setAccessoryPlacement = useConfigurator((s) => s.setAccessoryPlacement)
+  // CR-OPT-11: placements are instanced; multi accessories (couplings, hand
+  // holes) render one box per instance plus an "Add another" affordance.
+  const instances = placementInstances(config, code)
+  const accessoryValueOuter = poleAccessoryValue(catalog, config, code)
+  const isMulti = accessoryValueOuter?.placement?.multi === true
+  // CR-OPT-13: a spacing group's combined cap (hand holes + festoons: 2,
+  // mix and match) counts every group member's instances.
+  const groupName = accessoryValueOuter?.placement?.spacingGroup
+  const groupCap = accessoryValueOuter?.placement?.groupMaxInstances
+  const groupCount = groupName
+    ? (partById(catalog, config.pole)?.options ?? [])
+        .filter((o) => o.group === 'options-accessories')
+        .flatMap((o) => o.values)
+        .filter((v) => v.placement?.spacingGroup === groupName)
+        .reduce((n, v) => n + placementInstances(config, v.code).length, 0)
+    : instances.length
+  const effectiveCap = Math.min(
+    accessoryValueOuter?.placement?.maxInstances ?? Infinity,
+    groupCap ?? Infinity,
+  )
+  const capCount = groupCap !== undefined ? groupCount : instances.length
+  const shown = instances.length > 0 ? instances : [undefined]
+  const commit = (idx: number, p: import('../types').AccessoryPlacement) => {
+    const next = [...(instances.length > 0 ? instances : [])]
+    next[idx] = p
+    setAccessoryPlacement(code, next)
+  }
+  return (
+    <>
+      {shown.map((existingInstance, idx) => (
+        <PlacementInstance
+          key={idx}
+          catalog={catalog}
+          code={code}
+          config={config}
+          poleFt={poleFt}
+          label={label}
+          existing={existingInstance}
+          onChange={(p) => commit(idx, p)}
+          onRemove={
+            isMulti && idx > 0
+              ? () => setAccessoryPlacement(code, instances.filter((_, i) => i !== idx))
+              : undefined
+          }
+          ordinal={isMulti && shown.length > 1 ? idx + 1 : undefined}
+        />
+      ))}
+      {isMulti && capCount >= effectiveCap && (
+        <p className="spec-options-note">
+          Need more than {effectiveCap}? Reach out to engineering — we’ll spec it with you.
+        </p>
+      )}
+      {isMulti && capCount < effectiveCap && (
+        <button
+          type="button"
+          className="placement-add"
+          onClick={() => {
+            const base = shown[shown.length - 1]
+            const template = base ?? { heightFt: 4, orientation: 0 }
+            setAccessoryPlacement(code, [
+              ...(instances.length > 0 ? instances : [template]),
+              { ...template },
+            ])
+          }}
+        >
+          + Add another {label.split(',')[0].toLowerCase()}
+        </button>
+      )}
+    </>
+  )
+}
+
+function PlacementInstance({
+  catalog,
+  code,
+  config,
+  poleFt,
+  label,
+  existing,
+  onChange,
+  onRemove,
+  ordinal,
+}: {
+  catalog: Catalog
+  code: string
+  config: PoleConfig
+  poleFt: number
+  label: string
+  existing: import('../types').AccessoryPlacement | undefined
+  onChange: (p: import('../types').AccessoryPlacement) => void
+  onRemove?: () => void
+  ordinal?: number
+}) {
   const sideOptions = accessorySideOptions(label)
   const bannerKit = isBannerKitLabel(label)
-  const existing = config.accessoryPlacements?.[code]
   // Phase 0.11 (D3): the height window comes from the same function
   // repairConfig clamps with. Before 0.11 this box floored banner kits at 2 ft
   // while repairConfig floored them at 8 ft, so the slider offered heights the
   // store immediately overrode.
-  const { minFt, maxFt, fits } = accessoryHeightRange(catalog, poleFt, label, existing?.size)
+  const accessoryValue = poleAccessoryValue(catalog, config, code)
+  const { minFt, maxFt, fits } = accessoryHeightRange(
+    catalog,
+    poleFt,
+    label,
+    existing?.size,
+    // CR-PLC-05: banner top ≥ 1 ft below the fixture bottom (pendants).
+    fixtureBottomFt(catalog, config),
+    // CR-PLC-07: the accessory's own window (FH/PH: 8–12 ft).
+    accessoryValue?.placement,
+  )
+  const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
+  const ruleDefaultFt = accessoryValue?.placement?.defaultFt
   // A label-declared minimum (FSTR's 37", a banner kit's 8 ft floor) is also
   // the default placement.
-  const defaultFt = minFt > 2 ? minFt : Math.min(4, maxFt)
+  // CR-PLC-07: the accessory's own default (FH 10 ft / PH 9 ft) beats the
+  // generic floor-or-4ft heuristic; always clamped to the live window.
+  const defaultFt = Math.min(
+    maxFt,
+    Math.max(minFt, ruleDefaultFt ?? (minFt > 2 ? minFt : Math.min(4, maxFt))),
+  )
   const placement = existing ?? {
     heightFt: defaultFt,
     orientation: 0,
@@ -621,6 +829,16 @@ function AccessoryPlacementBox({
   }
   return (
     <div className="placement-box">
+      {(ordinal !== undefined || onRemove) && (
+        <div className="placement-instance-head">
+          {ordinal !== undefined && <span className="placement-ordinal">#{ordinal}</span>}
+          {onRemove && (
+            <button type="button" className="placement-remove" onClick={onRemove}>
+              Remove
+            </button>
+          )}
+        </div>
+      )}
       {/* Phase 0.11 (D2): panel size on a banner kit — only the sizes this
           kit's arms can carry (BA24's 24" arms can't fly a 30" banner). */}
       {bannerKit && (
@@ -633,7 +851,7 @@ function AccessoryPlacementBox({
                 className={`arm-count-chip ${
                   bannerPanelSize(catalog, placement.size).id === s.id ? 'selected' : ''
                 }`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, size: s.id })}
+                onClick={() => onChange({ ...placement, size: s.id })}
               >
                 <span className="arm-count-name">{formatPanelSize(s)}</span>
                 {s.default && <span className="arm-count-sub">Most common</span>}
@@ -653,9 +871,19 @@ function AccessoryPlacementBox({
           type="range"
           min={minFt}
           max={maxFt}
-          step={1 / 12}
+          // "any" + snap-on-change: the 37" floor sits OFF the 6" grid (first
+          // step is 5", to 42"), which a native stepped range can't express.
+          step="any"
           value={Math.min(Math.max(placement.heightFt, minFt), maxFt)}
-          onChange={(e) => setAccessoryPlacement(code, { ...placement, heightFt: Number(e.target.value) })}
+          onChange={(e) =>
+            onChange({
+              ...placement,
+              heightFt: Math.min(
+                maxFt,
+                snapPlacementHeightFt(Number(e.target.value), minFt, stepFt),
+              ),
+            })
+          }
         />
       </label>
       {!fits &&
@@ -678,7 +906,7 @@ function AccessoryPlacementBox({
               <button
                 key={n}
                 className={`arm-count-chip ${(placement.sides ?? 1) === n ? 'selected' : ''}`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, sides: n })}
+                onClick={() => onChange({ ...placement, sides: n })}
                 title={SIDE_LABELS[n] ?? `${n} sides`}
               >
                 <span className="arm-count-name">{SIDE_LABELS[n] ?? `${n} sides`}</span>
@@ -698,7 +926,7 @@ function AccessoryPlacementBox({
               <button
                 key={deg}
                 className={`arm-count-chip ${placement.orientation === deg ? 'selected' : ''}`}
-                onClick={() => setAccessoryPlacement(code, { ...placement, orientation: deg })}
+                onClick={() => onChange({ ...placement, orientation: deg })}
                 title={`${deg}° from the hand-hole reference`}
               >
                 <span className="arm-count-name">{deg}°</span>

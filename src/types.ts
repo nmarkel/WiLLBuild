@@ -6,7 +6,7 @@ export type Slot = 'pole' | 'baseCover' | 'arm' | 'fixture'
  * kept out of `Slot` so the generic slot machinery (SLOT_ORDER, repairConfig's
  * slot sweep, config[slot]) never treats it as a scalar assembly selection.
  */
-export type PartSlot = Slot | 'standalone' | 'banner'
+export type PartSlot = Slot | 'standalone' | 'banner' | 'accessory'
 
 export type ProductLine = 'NAFCO' | 'WiLLsport' | 'WiLLstudio' | 'WiLLev' | 'WiLLcloud' | 'Other'
 export type ProductClass = 'assembly-part' | 'standalone'
@@ -69,6 +69,14 @@ export interface CatalogPart {
    */
   comingSoon?: boolean
   /**
+   * Phase 0.14 (Tyler 8/14): a complete, self-contained GROUND-MOUNTED product
+   * (RXB/SXB bollard) offered in the builder's Fixture step although its slot
+   * stays 'standalone' (it keeps its standalone product view). Selecting one
+   * grays out Bracket / Pole / Base Cover — compatibleParts returns [] for
+   * those slots and repair evicts prior choices. Hand-set, like `comingSoon`.
+   */
+  groundMounted?: boolean
+  /**
    * Phase 0.12_TO (Tyler 8/12): curated default codes for this part's
    * ORDERING columns, keyed by column key — seeds `config.specOptions` when
    * the part is chosen so the derived part number is complete out of the
@@ -79,6 +87,19 @@ export interface CatalogPart {
   /** Pole OD in inches (WiLLstudio RSAA = 4). Drives the derived base-cover
       Pole Fit code — a function of the pole, never a customer choice. */
   diameterIn?: number
+  /**
+   * CR-OPT-06 (Tyler 8/14): arms only — the cord code a pendant fixture gets
+   * when hung from this bracket. Absent → the WHP7NP standard. The cord is
+   * REQUIRED with a WiLLstudio bracket and derived, never customer-chosen.
+   */
+  cordCode?: string
+  /**
+   * CR-OPT-15 (Tyler 8/14): arms only — the pole's fixture-mounting code this
+   * bracket implies (PF flush arm fit for nearly all; FR2 → PD). Derived,
+   * never customer-chosen; absent → blank placeholder, determined at quote.
+   * NOT an exclusivity claim — other mountings may be compatible.
+   */
+  mountingCode?: string
   /**
    * Phase 0.12_TO (Tyler 8/12): this part may sell from PLACEHOLDER art — an
    * explicit, per-part exemption from the geometry-gap Coming Soon rule.
@@ -154,6 +175,13 @@ export interface CatalogPart {
    * fixture origin, in meters — drives the conceptual night-mode light.
    */
   lightOffset?: [number, number, number]
+  /**
+   * CR-PLC-05 (Tyler 8/14): pendant fixtures only — how far the body hangs
+   * BELOW its mount point, in meters. Measured from the part's own render
+   * (asset height minus anchor y, over pxPerMeterY), never guessed. Drives
+   * the banner-top clearance below the fixture.
+   */
+  hangM?: number
   /** GLB path; null while parts are placeholder primitives. */
   model: string | null
   /** Parametric primitive spec for preview; optional for standalone (photo-card tier). */
@@ -196,6 +224,78 @@ export interface SpecOptionValue {
    * whose sheets haven't had the copy treatment.
    */
   placeable?: boolean
+  /**
+   * CR-OPT-06 (Tyler 8/14): this row is DERIVED — shown checked and locked in
+   * the UI (it ships with the build), and its own code never enters the part
+   * number; the resolver appends the derived code instead (cord: from the
+   * bracket). Old share URLs may still carry the row's code harmlessly.
+   */
+  derived?: boolean
+  /**
+   * CR-OPT-07 (Tyler 8/14): when this row is selected, the code that enters
+   * the part number resolves by the part's chosen VOLTAGE code (MV/HV) —
+   * e.g. the surge suppressor's SRGXXX10 becomes SRG27710 (MV) / SRG48010
+   * (HV). Unmapped or unchosen voltage → the row's own code prints as-is.
+   */
+  resolvesBy?: Record<string, string>
+  /**
+   * CR-OPT-10 (Tyler 8/14): like resolvesBy, but keyed by the chosen POLE's
+   * outside diameter in inches — the hand hole's size digit is a function of
+   * the pole (HHX → HHX-4 on a 4" pole). No/unknown diameter → own code.
+   */
+  resolvesByDiameter?: Record<string, string>
+  /**
+   * CR-OPT-15 (Tyler 8/14): like resolvesBy, but keyed by the placement
+   * instance's PANEL SIZE id and resolved per instance — the banner arm kit
+   * prints BA18/BA24/BA30, the arm length following each banner's width.
+   * Instances without a stored size use the catalog's default panel.
+   */
+  resolvesBySize?: Record<string, string>
+  /**
+   * CR-OPT-14 (Tyler 8/14): choosing this value REQUIRES the named columns'
+   * selections to be among the allowed codes (PF flush arm fit → wall D/E).
+   * The UI disables incompatible chips; repair clears a constrained column's
+   * violating choice back to unchosen (never auto-picks a replacement).
+   */
+  requires?: Record<string, string[]>
+  /**
+   * CR-PLC-09 (Tyler 8/14): attention line shown when this accessory is
+   * SELECTED (banner kits: engineering reviews every application at quote).
+   */
+  disclaimer?: string
+  /**
+   * Phase 0.14 (Tyler 8/14): the render-only catalog part (slot 'accessory' —
+   * the banner-part pattern, never selectable) whose layer the compositor
+   * places at each of this accessory's configured instances. Absent → the
+   * accessory has no visual (or, for banner kits, uses the banner path).
+   */
+  renderPartId?: string
+  /**
+   * CR-PLC-07 (Tyler 8/14): bespoke shaft-placement window for this
+   * accessory — floor/ceiling/default in feet, step in inches. Absent fields
+   * fall back to the generic rules (label minimum / pole-top clearance /
+   * 1-inch granularity). The pole's own ceiling still applies on short poles.
+   */
+  placement?: {
+    minFt?: number
+    maxFt?: number
+    defaultFt?: number
+    stepIn?: number
+    /** CR-OPT-11: this accessory may repeat on one pole, each instance placed. */
+    multi?: boolean
+    /** CR-OPT-12: instance cap (couplings: 3 — more via engineering). */
+    maxInstances?: number
+    /** CR-OPT-12: minimum vertical gap between same-orientation instances, ft. */
+    minGapFt?: number
+    /**
+     * CR-OPT-13: when set, minGapFt applies ACROSS every accessory sharing
+     * this group, regardless of orientation (hand holes + festoons share the
+     * shaft-access group — an opening is an opening).
+     */
+    spacingGroup?: string
+    /** CR-OPT-13: combined instance cap across the spacing group (HH+FSTR: 2, mix and match). */
+    groupMaxInstances?: number
+  }
 }
 
 /** One column of the ordering matrix = one configurator choice. */
@@ -413,7 +513,14 @@ export interface PoleConfig {
    * code (FSTR, CPL-P-12, FH, …). Only meaningful while the code is selected
    * in the pole's options — repairConfig prunes the rest.
    */
-  accessoryPlacements?: Record<string, AccessoryPlacement>
+  /**
+   * CR-OPT-11 (Tyler 8/14): placements are INSTANCED — an accessory marked
+   * `placement.multi` (couplings, hand holes) may repeat on one pole, each
+   * instance with its own height/orientation. Arrays are canonical; legacy
+   * single-object entries (old share URLs, pre-8/14 configs) are normalized
+   * at the boundaries (placementInstances / the URL parser).
+   */
+  accessoryPlacements?: Record<string, AccessoryPlacement[]>
   /**
    * Phase 0.8 (D), reshaped in 0.10.5: selected spec-sheet option codes, keyed by
    * slot then SpecOption.key (e.g. {"fixture":{"lumen-output":"80"},"pole":

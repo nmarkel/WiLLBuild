@@ -45,7 +45,7 @@ for (const part of catalog.parts || []) {
   const handle = handleFromUrl(part.productUrl);
   if (!handle || !corrections[handle]) continue;
 
-  const result = applyCorrections(part.options, handle, corrections);
+  const result = applyCorrections(part.options, handle, corrections, part.id);
   skippedRules += result.skipped;
   if (result.applied > 0) {
     part.options = result.options;

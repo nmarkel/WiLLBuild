@@ -40,9 +40,10 @@ function isApplied(options, columns) {
  * @param {Array} options  the part's ordering/options columns
  * @param {string} handle  willbrands.com product handle
  * @param {object} corrections  the `products` map from the corrections file
+ * @param {string} [partId]  the catalog part id, for rules scoped by `parts`
  * @returns {{options: Array, applied: number, skipped: number}}
  */
-export function applyCorrections(options, handle, corrections) {
+export function applyCorrections(options, handle, corrections, partId) {
   const entry = corrections[handle];
   if (!entry) return { options, applied: 0, skipped: 0 };
 
@@ -51,6 +52,13 @@ export function applyCorrections(options, handle, corrections) {
   let skipped = 0;
 
   for (const rule of entry.replace || []) {
+    // Phase 0.14 (CLE): one handle can cover parts whose SHEETS differ — the
+    // five base covers share willstudio-decorative-base-covers, but the CLE
+    // accessory line exists only on the clamshells' ordering sheet, never the
+    // spun collars'. A rule with `parts` applies only to those catalog ids
+    // and is silently inapplicable elsewhere (not an error: the other parts
+    // are outside the rule's sheet).
+    if (rule.parts && (!partId || !rule.parts.includes(partId))) continue;
     // "Already applied" must be tested BEFORE looking for rawKey, because a
     // split legitimately re-emits a column under the raw key it replaces
     // (`lumen-output` -> `design` + `lumen-output`). Matching on rawKey alone
@@ -61,6 +69,16 @@ export function applyCorrections(options, handle, corrections) {
     }
     const at = out.findIndex((o) => o.key === rule.rawKey);
     if (at < 0) {
+      // Phase 0.14 (CLE): an ADDITIVE rule owns a column that has no raw-parse
+      // source at all (the base covers have no machine-parsed sheet), so the
+      // anchor being absent is the very drift the rule heals — append instead
+      // of throwing. Non-append rules keep the loud failure: for them a
+      // missing rawKey means the parse changed underneath the correction.
+      if (rule.append) {
+        out = [...out, ...structuredClone(rule.columns)];
+        applied += rule.columns.length;
+        continue;
+      }
       throw new Error(
         `spec-option correction for "${handle}" targets column "${rule.rawKey}", which is ` +
           `neither present in the input nor already applied. Re-check ` +

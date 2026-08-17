@@ -1,4 +1,5 @@
 import type {
+  SpecOptionValue,
   BannerPanelSize,
   Catalog,
   CatalogPart,
@@ -112,14 +113,60 @@ export interface HeightRange {
  * the ceiling has to leave room for the panel itself, or a tall banner's top
  * would run off the pole.
  */
+const M_TO_FT = 3.280839895
+
+/**
+ * CR-PLC-05 (Tyler 8/14): how high the chosen fixture's BOTTOM sits above
+ * grade, in feet — pole top, plus the arm's fixture-socket height, minus the
+ * fixture's measured hang. Undefined when any piece is missing (post-top
+ * fixtures carry no hangM, so the rule is pendant-only by data).
+ */
+export function fixtureBottomFt(catalog: Catalog, config: PoleConfig): number | undefined {
+  const fixture = partById(catalog, config.fixture)
+  const arm = partById(catalog, config.arm)
+  const poleFt = partById(catalog, config.pole)?.heightFt
+  if (!fixture?.hangM || !arm || !poleFt) return undefined
+  const socket = Object.values(arm.sockets ?? {}).find((s) => s.type === fixture.mount)
+  if (!socket) return undefined
+  return poleFt + socket.position[1] * M_TO_FT - fixture.hangM * M_TO_FT
+}
+
+/**
+ * CR-OPT-13 (amended): snap a placement height onto its legal ladder — the
+ * exact floor (which may sit OFF the step grid, like the 37" hand-hole /
+ * festoon minimum), then the step grid anchored at the next round increment
+ * (37" → 42" → 48" → …). On-grid floors degrade to plain grid snapping.
+ */
+export function snapPlacementHeightFt(heightFt: number, minFt: number, stepFt: number): number {
+  const anchor = Math.ceil(minFt / stepFt - 1e-9) * stepFt
+  if (heightFt < (minFt + anchor) / 2) return Math.round(minFt * 12) / 12
+  const snapped = Math.max(anchor, Math.round(heightFt / stepFt) * stepFt)
+  return Math.round(snapped * 12) / 12
+}
+
 export function bannerHeightRange(
   catalog: Catalog,
   poleFt: number,
   sizeId?: string,
+  fixtureBottom?: number,
+  placement?: { minFt?: number; maxFt?: number },
 ): HeightRange {
-  const minFt = bannerMinFt(poleFt)
+  // CR-PLC-08: the kit's own window (BAX bottom arm: 8–10 ft) combines with
+  // the structural rules — every ceiling applies, tightest wins.
+  const minFt = Math.max(bannerMinFt(poleFt), placement?.minFt ?? 0)
   const panelFt = bannerPanelSize(catalog, sizeId).heightIn / 12
-  const ceiling = Math.round((poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT) * 12) / 12
+  // CR-PLC-05: the banner's TOP stays at least 1 ft below the fixture's
+  // bottom — the binding ceiling when a pendant hangs below the pole top.
+  const belowFixture =
+    fixtureBottom !== undefined ? fixtureBottom - ACCESSORY_TOP_CLEARANCE_FT - panelFt : Infinity
+  const ceiling =
+    Math.round(
+      Math.min(
+        poleFt - panelFt - ACCESSORY_TOP_CLEARANCE_FT,
+        belowFixture,
+        placement?.maxFt ?? Infinity,
+      ) * 12,
+    ) / 12
   // A pole too short to hold this panel above the floor collapses to the floor
   // rather than inverting the range (the "floor wins" rule pre-dates 0.11).
   // `fits: false` says so out loud instead of quietly returning a height whose
@@ -138,10 +185,15 @@ export function accessoryHeightRange(
   poleFt: number,
   label: string,
   sizeId?: string,
+  fixtureBottom?: number,
+  placement?: { minFt?: number; maxFt?: number },
 ): HeightRange {
-  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId)
-  const minFt = labelMinFt(label) ?? 2
-  const ceiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
+  if (isBannerKitLabel(label)) return bannerHeightRange(catalog, poleFt, sizeId, fixtureBottom, placement)
+  // CR-PLC-07: an accessory's own window (FH/PH: 8–12 ft) beats the generic
+  // rules; the pole's physical ceiling still applies on short poles.
+  const minFt = placement?.minFt ?? labelMinFt(label) ?? 2
+  const poleCeiling = Math.round(poleFt - ACCESSORY_TOP_CLEARANCE_FT)
+  const ceiling = Math.min(placement?.maxFt ?? Infinity, poleCeiling)
   return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
 }
 
@@ -235,7 +287,8 @@ export function isPlaceable(v: { label: string; placeable?: boolean }): boolean 
  */
 export function accessorySideOptions(label: string): number[] | undefined {
   if (label.includes('Banner Arm Kit')) return [1, 2, 4]
-  if (label.includes('Coupling')) return [1, 2]
+  // CR-OPT-12 (Tyler 8/14): couplings are INSTANCED, not paired — an
+  // "opposite pair" is two instances at 0° and 180°, so no sides option.
   if (label.includes('Flag Holder') || label.includes('Plant Holder')) return [1, 2]
   return undefined
 }
@@ -244,12 +297,36 @@ export function accessorySideOptions(label: string): number[] | undefined {
     placement rules — constraints like the festoon minimum live in the caption
     since the plain-English pass. */
 export function poleAccessoryLabel(catalog: Catalog, config: PoleConfig, code: string): string {
+  const value = poleAccessoryValue(catalog, config, code)
+  return value ? valueText(value) : ''
+}
+
+/**
+ * CR-OPT-11: an accessory's placement instances, whatever shape the config
+ * carries (legacy single object, array, or nothing → []).
+ */
+export function placementInstances(
+  config: PoleConfig,
+  code: string,
+): import('../types').AccessoryPlacement[] {
+  // Legacy single-object entries reach here through old URLs / saved configs
+  // typed loosely — normalize defensively even though arrays are canonical.
+  const raw = config.accessoryPlacements?.[code] as
+    | import('../types').AccessoryPlacement[]
+    | import('../types').AccessoryPlacement
+    | undefined
+  if (!raw) return []
+  return Array.isArray(raw) ? raw : [raw]
+}
+
+/** The selected pole accessory's full value object (placement window etc.). */
+export function poleAccessoryValue(catalog: Catalog, config: PoleConfig, code: string) {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue
     const value = opt.values.find((v) => v.code === code)
-    if (value) return valueText(value)
+    if (value) return value
   }
-  return ''
+  return undefined
 }
 
 /**
@@ -314,6 +391,35 @@ export function exclusiveFamily(code: string): string | undefined {
 const CENTER_FEATURE_MODEL_CODES = new Set(['SH1', 'SS1'])
 
 /**
+ * CR-OPT-14: whether choosing `value` in `opt` is compatible with the other
+ * columns' CURRENT choices — both directions: this value's own `requires`
+ * against chosen columns, and other chosen values' `requires` against this
+ * column. Used by the UI to disable chips and by repair to clear violations.
+ */
+export function valueCompatibleWithChosen(
+  part: CatalogPart,
+  chosen: Record<string, string | string[]>,
+  optKey: string,
+  value: SpecOptionValue,
+): boolean {
+  // This value's own requirements vs already-chosen columns.
+  for (const [col, allowed] of Object.entries(value.requires ?? {})) {
+    const current = specCodes(chosen[col])[0]
+    if (current && !allowed.includes(current)) return false
+  }
+  // Other chosen values' requirements vs this column.
+  for (const opt of part.options ?? []) {
+    if (opt.key === optKey) continue
+    const current = specCodes(chosen[opt.key])[0]
+    if (!current) continue
+    const chosenValue = opt.values.find((v) => v.code === current)
+    const allowed = chosenValue?.requires?.[optKey]
+    if (allowed && !allowed.includes(value.code)) return false
+  }
+  return true
+}
+
+/**
  * Whether a part may offer a given option/accessory code at all. This is the
  * part-level counterpart to `voltageCompatible`: `voltageCompatible` filters on
  * a chosen value, this one filters on which product the sheet's code belongs to.
@@ -324,12 +430,39 @@ export function codeAllowedOnPart(part: CatalogPart | undefined, code: string): 
 }
 
 /**
- * Order codes pre-selected whenever a part offering them is chosen. Composes
- * with the blank slate: the builder still OPENS empty — these seed at the
- * moment the customer picks a part that offers them, and stay uncheckable.
- * WHPXNP (Tyler 8/12): the generic cord line is the standard build.
+ * Order codes pre-selected whenever a part offering them is chosen.
+ * EMPTY since CR-OPT-06 (Tyler 8/14): the cord is no longer a seeded
+ * SELECTION — it is required and DERIVED from the bracket (cordCodeFor),
+ * like the base cover's pole fit. The mechanism stays for future defaults.
  */
-const DEFAULT_OPTION_CODES: string[] = ['WHPXNP']
+const DEFAULT_OPTION_CODES: string[] = []
+
+/**
+ * CR-OPT-06 (Tyler 8/14): the cord code a pendant fixture ships with — a
+ * REQUIRED, bracket-derived inclusion, never a customer choice. WHP7NP is
+ * the standard; short-drop brackets carry their own code on the part
+ * (PM1 → WHP3NP; WM1/WM2/PC1 → WHP3NP and PC3 → WHP11NP when those parts
+ * land). Undefined when the fixture isn't a pendant or the arm isn't a
+ * WiLLstudio bracket.
+ */
+/**
+ * CR-OPT-15: the pole's fixture-mounting code implied by the chosen bracket
+ * (PF for nearly all WiLLstudio brackets; FR2 → PD). Undefined when no arm is
+ * chosen or the bracket doesn't decide it — the column prints `_`, resolved
+ * at quote.
+ */
+export function poleMountingCodeFor(catalog: Catalog, config: PoleConfig): string | undefined {
+  return partById(catalog, config.arm)?.mountingCode
+}
+
+export function cordCodeFor(catalog: Catalog, config: PoleConfig): string | undefined {
+  const fixture = partById(catalog, config.fixture)
+  const arm = partById(catalog, config.arm)
+  if (!fixture || !arm) return undefined
+  if (fixture.mount !== 'pendant') return undefined
+  if (arm.line !== 'WiLLstudio' || arm.pseudoPart) return undefined
+  return arm.cordCode ?? 'WHP7NP'
+}
 
 /**
  * The default multi-select choices for a freshly chosen part: each default
@@ -401,7 +534,13 @@ export function partById(catalog: Catalog, id: string): CatalogPart | undefined 
 
 /** Wizard parts for a slot; brand-scoped when a brand is given (each line has its own builder). */
 export function partsForSlot(catalog: Catalog, slot: Slot, brand?: ProductLine): CatalogPart[] {
-  return catalog.parts.filter((p) => p.slot === slot && (!brand || p.line === brand))
+  // Phase 0.14: ground-mounted products (RXB/SXB bollard) join the Fixture
+  // step from the standalone slot — see `groundMounted` in types.ts.
+  return catalog.parts.filter(
+    (p) =>
+      (p.slot === slot || (slot === 'fixture' && p.groundMounted === true)) &&
+      (!brand || p.line === brand),
+  )
 }
 
 /** A host can carry a part when it exposes a socket of the part's mount type. */
@@ -425,13 +564,19 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
     // customer's own picks start narrowing it.
     case 'arm': {
       const fixture = partById(catalog, config.fixture)
+      // Phase 0.14: a ground-mounted product is complete — nothing mounts it,
+      // nothing stands under it. All three mounting slots go empty (the Panel
+      // shows them grayed as "not applicable", repair evicts prior choices).
+      if (fixture?.groundMounted) return []
       return fixture ? options.filter((arm) => canHost(arm, fixture)) : options
     }
     case 'pole': {
+      if (partById(catalog, config.fixture)?.groundMounted) return []
       const arm = partById(catalog, config.arm)
       return arm ? options.filter((pole) => canHost(pole, arm)) : options
     }
     case 'baseCover': {
+      if (partById(catalog, config.fixture)?.groundMounted) return []
       const pole = partById(catalog, config.pole)
       return pole ? options.filter((cover) => canHost(pole, cover)) : options
     }
@@ -535,7 +680,13 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     if (!next[slot]) continue
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
-      if (fixture?.slot !== 'fixture' || fixture.line !== next.brand) {
+      // Phase 0.14: ground-mounted products (slot 'standalone') are legal
+      // fixture choices — see `groundMounted` in types.ts.
+      const legal =
+        fixture !== undefined &&
+        (fixture.slot === 'fixture' || fixture.groundMounted === true) &&
+        fixture.line === next.brand
+      if (!legal) {
         next.fixture = ''
       }
       continue
@@ -633,6 +784,33 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
         })
         if (codes.length > 0) kept[opt.key] = codes
       }
+      // CR-OPT-14: clear choices violating another chosen value's `requires`
+      // (PF flush fit → wall must be D/E). The requires-OWNER wins; the
+      // CONSTRAINED column clears back to unchosen — repair never re-picks.
+      // CR-OPT-15: the DERIVED fixture-mounting (from the bracket) counts as
+      // chosen for these checks — an SH1 bracket implies PF, so C walls clear.
+      const derivedMounting = slot === 'pole' ? poleMountingCodeFor(catalog, next) : undefined
+      const effectiveChosen = derivedMounting
+        ? { ...kept, 'fixture-mounting': derivedMounting }
+        : kept
+      for (const opt of options) {
+        const current = specCodes(effectiveChosen[opt.key])[0]
+        if (!current || opt.group !== 'ordering') continue
+        const value = opt.values.find((v) => v.code === current)
+        if (!value) continue
+        if (!valueCompatibleWithChosen(part, effectiveChosen, opt.key, value)) {
+          // Only clear if this value is the CONSTRAINED side (some other
+          // chosen value's requires names this column).
+          const constrainedByOther = (part.options ?? []).some((o) => {
+            if (o.key === opt.key) return false
+            const c = specCodes(effectiveChosen[o.key])[0]
+            const cv = c ? o.values.find((v2) => v2.code === c) : undefined
+            const allowed = cv?.requires?.[opt.key]
+            return !!allowed && !allowed.includes(current)
+          })
+          if (constrainedByOther) delete kept[opt.key]
+        }
+      }
       if (Object.keys(kept).length > 0) cleaned[slot] = kept
     }
     next.specOptions = Object.keys(cleaned).length > 0 ? cleaned : undefined
@@ -655,40 +833,121 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     const placeable = new Set(placeableAccessoryCodes(catalog, next))
     const poleFt = partById(catalog, next.pole)?.heightFt ?? 20
     const cleaned: NonNullable<PoleConfig['accessoryPlacements']> = {}
-    for (const [code, p] of Object.entries(next.accessoryPlacements)) {
-      if (!placeable.has(code) || !p) continue
+    for (const code of Object.keys(next.accessoryPlacements)) {
+      const instances = placementInstances(next, code)
+      if (!placeable.has(code) || instances.length === 0) continue
       const label = poleAccessoryLabel(catalog, next, code)
-      // Phase 0.11 (D2): a panel size is meaningful only on a banner kit, and
-      // only when the kit's arms are long enough for it (BA24 can't fly a 30"
-      // banner). Anything else — unknown id, size on a festoon — is dropped.
-      const size = isBannerKitLabel(label)
-        ? bannerSizesForLabel(catalog, label).find((s) => s.id === p.size)?.id
-        : undefined
-      // Phase 0.11 (D3): ONE height window, shared with the placement UI —
-      // banner kits measure to the bottom of the banner and reserve the panel's
-      // own height under the pole top; other accessories keep their label
-      // minimum (FSTR's 37") under 1 ft of pole-top clearance. Heights stay
-      // inch-granular so such minimums are representable exactly.
-      const { minFt, maxFt } = accessoryHeightRange(catalog, poleFt, label, size)
-      const heightFt = Math.min(maxFt, Math.max(minFt, Math.round(p.heightFt * 12) / 12))
-      // Sides exist only where the accessory supports them, clamped to its set.
+      const accessoryValue = poleAccessoryValue(catalog, next, code)
       const sideOptions = accessorySideOptions(label)
-      const sides =
-        sideOptions && p.sides !== undefined
-          ? sideOptions.includes(p.sides)
-            ? p.sides
-            : 1
+      const stepFt = (accessoryValue?.placement?.stepIn ?? 1) / 12
+      // CR-OPT-11: only `multi` accessories keep several instances;
+      // CR-OPT-12: capped (couplings: 3 — more via engineering).
+      const cap = accessoryValue?.placement?.multi
+        ? (accessoryValue.placement.maxInstances ?? Infinity)
+        : 1
+      const kept = instances.slice(0, cap)
+      const clamped = kept.map((p) => {
+        // Phase 0.11 (D2): a panel size is meaningful only on a banner kit.
+        const size = isBannerKitLabel(label)
+          ? bannerSizesForLabel(catalog, label).find((s2) => s2.id === p.size)?.id
           : undefined
-      // Tyler 8/12: fold the orientation onto the arrangement's distinct set —
-      // an opposite pair repeats every 180° (0/90 only); four sides repeat
-      // every 90° (orientation moot), same rule as the radial arm twin.
-      const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
-      const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
-      cleaned[code] = {
-        heightFt,
-        orientation,
-        ...(sides !== undefined ? { sides } : {}),
-        ...(size !== undefined ? { size } : {}),
+        // Sides exist only where the accessory supports them, clamped to its set.
+        const sides =
+          sideOptions && p.sides !== undefined
+            ? sideOptions.includes(p.sides)
+              ? p.sides
+              : 1
+            : undefined
+        // Phase 0.11 (D3): ONE height window shared with the placement UI;
+        // CR-PLC-05 fixture clearance and CR-PLC-07/08 windows apply per
+        // instance, and heights snap to the accessory's step grid.
+        const { minFt, maxFt } = accessoryHeightRange(
+          catalog,
+          poleFt,
+          label,
+          size,
+          fixtureBottomFt(catalog, next),
+          accessoryValue?.placement,
+        )
+        const heightFt = Math.min(
+          maxFt,
+          Math.max(Math.round(minFt * 12) / 12, snapPlacementHeightFt(p.heightFt, minFt, stepFt)),
+        )
+        // Tyler 8/12: fold the orientation onto the arrangement's distinct set.
+        const rawOrientation = ARM_ORIENTATIONS.includes(p.orientation) ? p.orientation : 0
+        const orientation = foldArmOrientation(rawOrientation, sides ?? 1)
+        return {
+          heightFt,
+          orientation,
+          ...(sides !== undefined ? { sides } : {}),
+          ...(size !== undefined ? { size } : {}),
+        }
+      })
+      // CR-OPT-12: same-orientation instances keep a minimum vertical gap —
+      // later instances nudge UP in step increments (deterministic), clamped
+      // to the window; engineering resolves anything the pole can't fit.
+      const minGap = accessoryValue?.placement?.minGapFt
+      if (minGap && clamped.length > 1) {
+        const byOrientation = new Map<number, number>()
+        const ordered = [...clamped].sort((a, b) => a.heightFt - b.heightFt)
+        for (const inst of ordered) {
+          const lastTop = byOrientation.get(inst.orientation)
+          if (lastTop !== undefined && inst.heightFt - lastTop < minGap) {
+            inst.heightFt = Math.round((lastTop + minGap) * 12) / 12
+          }
+          byOrientation.set(inst.orientation, inst.heightFt)
+        }
+      }
+      cleaned[code] = clamped
+    }
+    // CR-OPT-13: cross-code spacing groups — instances of every code sharing
+    // a spacingGroup (hand holes + festoons) keep their gap regardless of
+    // orientation; later instances nudge UP deterministically.
+    const groups = new Map<
+      string,
+      { code: string; idx: number; gapFt: number; cap?: number }[]
+    >()
+    for (const code of Object.keys(cleaned)) {
+      const pl = poleAccessoryValue(catalog, next, code)?.placement
+      if (!pl?.spacingGroup || !pl.minGapFt) continue
+      const list = groups.get(pl.spacingGroup) ?? []
+      cleaned[code].forEach((_, idx) =>
+        list.push({ code, idx, gapFt: pl.minGapFt!, cap: pl.groupMaxInstances }),
+      )
+      groups.set(pl.spacingGroup, list)
+    }
+    for (const members of groups.values()) {
+      // CR-OPT-13: combined cap across the group (mix and match) — keep the
+      // first N in code/instance order, drop the rest deterministically.
+      const cap = members.find((m) => m.cap !== undefined)?.cap
+      if (cap !== undefined && members.length > cap) {
+        const dropped = members.slice(cap)
+        for (const m of dropped) {
+          cleaned[m.code] = cleaned[m.code].filter((_, i) => i !== m.idx)
+        }
+        // Re-index survivors after the removals.
+        members.length = 0
+        for (const code of Object.keys(cleaned)) {
+          const pl = poleAccessoryValue(catalog, next, code)?.placement
+          if (!pl?.spacingGroup || !pl.minGapFt) continue
+          cleaned[code].forEach((_, idx) =>
+            members.push({ code, idx, gapFt: pl.minGapFt!, cap: pl.groupMaxInstances }),
+          )
+        }
+        for (const code of Object.keys(cleaned)) {
+          if (cleaned[code].length === 0) delete cleaned[code]
+        }
+      }
+    }
+    for (const members of groups.values()) {
+      members.sort((a, b) => cleaned[a.code][a.idx].heightFt - cleaned[b.code][b.idx].heightFt)
+      let lastTop: number | undefined
+      for (const m of members) {
+        const inst = cleaned[m.code][m.idx]
+        if (lastTop !== undefined && inst.heightFt - lastTop < m.gapFt) {
+          inst.heightFt = Math.round((lastTop + m.gapFt) * 12) / 12
+        }
+        lastTop = inst.heightFt
       }
     }
     next.accessoryPlacements = Object.keys(cleaned).length > 0 ? cleaned : undefined

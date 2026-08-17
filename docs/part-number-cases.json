@@ -17,10 +17,10 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -45,10 +45,10 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-80-30-MV-5W-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-80-30-MV-5W-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -70,10 +70,10 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-WH",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-DG",
-        "baseCover": "WP-CL1-DB-4R"
+        "fixture": "WD-GVX-_-_-_-_-WH-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-DG-PF",
+        "baseCover": "WP-CL1-4R-DB"
       }
     },
     {
@@ -90,10 +90,10 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BA",
-        "arm": "WP-SH1-BA",
-        "pole": "WP-RSAA-20-_-_-AB-SB-AN-BA",
-        "baseCover": "WP-CL1-BA-4R"
+        "fixture": "WD-GVX-_-_-_-_-BA-WHP7NP",
+        "arm": "WP-SH1-_-BA",
+        "pole": "WP-RSAA-20-_-_-AB-SB-AN-BA-PF",
+        "baseCover": "WP-CL1-4R-BA"
       }
     },
     {
@@ -116,10 +116,10 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-RAL",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-RAL-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -137,10 +137,10 @@
         "armCount": 3
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SS3-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SS3-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -158,10 +158,10 @@
         "armCount": 3
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
         "arm": null,
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -181,7 +181,7 @@
         "fixture": "WD-GVX-_-_-_-_-BK",
         "arm": null,
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -206,10 +206,10 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-BA24-FH",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF-BA24-FH",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -226,10 +226,10 @@
         "rev": 1
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-15-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-15-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -254,10 +254,10 @@
         }
       },
       "expected": {
-        "fixture": "WD-GVX-_-_-_-_-BK",
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-_-FH-BA24",
-        "baseCover": "WP-CL1-BK-4R"
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF-FH-BA24",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -277,7 +277,7 @@
         "fixture": null,
         "arm": null,
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -310,9 +310,9 @@
       },
       "expected": {
         "fixture": null,
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -342,9 +342,9 @@
       },
       "expected": {
         "fixture": null,
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -377,9 +377,9 @@
       },
       "expected": {
         "fixture": null,
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
       }
     },
     {
@@ -412,9 +412,79 @@
       },
       "expected": {
         "fixture": null,
-        "arm": "WP-SH1-BK",
-        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
-        "baseCover": "WP-CL1-BK-4R"
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF",
+        "baseCover": "WP-CL1-4R-BK"
+      }
+    },
+    {
+      "name": "Banner arm kit resolves BA24 from the default panel (CR-OPT-15)",
+      "why": "Tyler 8/14 (Puddy check A): the BAX placeholder is retired from the printed number — the arm code is BA18/BA24/BA30, following each instance's banner panel width. A checked kit whose placement box was never touched uses the catalog's default panel (24x48 -> BA24). Both languages must resolve per instance identically.",
+      "config": {
+        "configId": "pn-case-0017",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "pole": {
+            "accessories": [
+              "BAX"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF-BA24",
+        "baseCover": "WP-CL1-4R-BK"
+      }
+    },
+    {
+      "name": "Two banners of different sizes print two different arm codes (CR-OPT-15)",
+      "why": "Size resolution is PER INSTANCE, not per config: a 30x60 banner and an 18x36 banner on one pole print BA30 and BA18 — the one shape CR-OPT-07/10 (single-resolution) cannot express, which is why resolvesBySize exists.",
+      "config": {
+        "configId": "pn-case-0018",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "sh1-shepherds-hook",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "pole": {
+            "accessories": [
+              "BAX"
+            ]
+          }
+        },
+        "accessoryPlacements": {
+          "BAX": [
+            {
+              "heightFt": 8,
+              "orientation": 0,
+              "sides": 1,
+              "size": "30x60"
+            },
+            {
+              "heightFt": 9.5,
+              "orientation": 90,
+              "sides": 1,
+              "size": "18x36"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP7NP",
+        "arm": "WP-SH1-_-BK",
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF-BA30-BA18",
+        "baseCover": "WP-CL1-4R-BK"
       }
     }
   ]

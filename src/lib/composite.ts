@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel } from './compat'
+import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -315,9 +315,20 @@ export function resolveAssemblyLayout(
       if (s)
         placements.push({ layerId: baseCover.id, part: baseCover, angle: HERO_ANGLE, world: s.position, z: SLOT_Z.baseCover })
     }
-    if (arm) {
-      const armSocket = attachSocket(arm, pole)
-      if (armSocket) {
+  }
+
+  // Phase 0.14 (Tyler 8/14): the build previews from the FIRST pick, not the
+  // last. Without a pole the arm stack anchors at the world origin — an
+  // explicitly partial component preview, not an assembly claim; the viewer
+  // suppresses ground furniture (shadow, compass, silhouette, night pool)
+  // until a pole grounds the scene.
+  {
+    const armMount: [number, number, number] | null = !arm
+      ? null
+      : pole
+        ? (attachSocket(arm, pole)?.position ?? null)
+        : [0, 0, 0]
+    if (arm && armMount) {
         const count = Math.max(1, Math.floor(config.armCount ?? 1))
         // Phase 0.10.5: orientation rotates the whole arrangement about the pole
         // (0/90/180/270) and the view rotation subtracts on top — each arm
@@ -344,9 +355,9 @@ export function resolveAssemblyLayout(
           // part's native frame and ride along with it.
           const mo = arm.mountOffset ?? [0, 0, 0]
           const armWorld: [number, number, number] = [
-            armSocket.position[0] + mo[0],
-            armSocket.position[1] + mo[1],
-            armSocket.position[2] + mo[2],
+            armMount[0] + mo[0],
+            armMount[1] + mo[1],
+            armMount[2] + mo[2],
           ]
           // The unrotated single arm keeps the historic fixed z-order; rotated
           // or radial arms z-sort by camera depth so ones reaching behind the
@@ -398,6 +409,9 @@ export function resolveAssemblyLayout(
         })
       }
     }
+  // Banner arms and placed kits are mid-SHAFT hardware — they only exist once
+  // there is a shaft, so this whole section stays pole-gated.
+  if (pole) {
     // Phase 0.8 (C): banner-arm accessory — a mid-shaft bracket set repeated on
     // `count` radial sides. Same positional machinery as arms (per-azimuth
     // renders + camera-depth z-order), only at a parametric shaft height rather
@@ -435,7 +449,9 @@ export function resolveAssemblyLayout(
       const bannerPart = catalog.parts.find((p) => p.slot === 'banner' && p.line === config.brand)
       if (bannerPart) {
         for (const code of kitCodes) {
-          const placement = config.accessoryPlacements?.[code]
+          // CR-OPT-11: placements are instanced; the banner kit is
+          // single-instance by data, so the first instance is the banner.
+          const placement = config.accessoryPlacements?.[code]?.[0]
           // Same bottom reference as the legacy path above. The fallback tracks
           // the pole-height-dependent floor (10 ft on a 25 ft pole) rather than
           // the old hardcoded 8.
@@ -459,6 +475,62 @@ export function resolveAssemblyLayout(
         }
       }
     }
+    // Phase 0.14 (Tyler 8/14): placed shaft accessories with render layers —
+    // additional hand hole, festoon provision, threaded coupling, flag/plant
+    // holder kits. Each configured INSTANCE places its accessory part's layer
+    // at the instance's height + orientation: the banner-kit machinery above,
+    // generalized through the option value's `renderPartId` (set in
+    // docs/spec-option-corrections.json; banner kits carry none, so the two
+    // paths cannot double-draw). The accessory part ids live under slot
+    // 'accessory' — render-only, never selectable (the banner-part pattern).
+    for (const code of placeableAccessoryCodes(catalog, config)) {
+      const value = poleAccessoryValue(catalog, config, code)
+      const accPart = value?.renderPartId ? partById(catalog, value.renderPartId) : undefined
+      if (!value || !accPart) continue
+      // A checked accessory whose placement box hasn't been touched yet still
+      // draws — one instance at the value's own defaults.
+      const stored = config.accessoryPlacements?.[code]
+      const instances = stored && stored.length > 0 ? stored : [{}]
+      instances.forEach((inst: { heightFt?: number; orientation?: number }, i) => {
+        const heightM = (inst.heightFt ?? value.placement?.defaultFt ?? value.placement?.minFt ?? 0) * FT_TO_M
+        const deg = ((((inst.orientation ?? 0) - viewYaw) % 360) + 360) % 360
+        placements.push({
+          layerId: `${accPart.id}@${code}#${i}`,
+          part: accPart,
+          angle: angleKeyForAzimuth(deg),
+          world: [0, heightM, 0],
+          z: SLOT_Z.pole + armDepthProxy(manifest.rig, deg),
+        })
+      })
+    }
+  }
+
+  // Phase 0.14: a fixture with no arm still previews — alone at the origin,
+  // or, when a pole is already chosen but no bracket yet, hovering above the
+  // pole top with a clearance that scales with its own hang length, visibly
+  // awaiting its bracket rather than silently vanishing from the view. The
+  // hover is a preview cue only; nothing about mounting is being claimed.
+  if (fixture && !arm) {
+    const fixtureAngle = angleKeyForAzimuth((((0 - viewYaw) % 360) + 360) % 360)
+    const topY = pole
+      ? Math.max(0, ...Object.values(pole.sockets ?? {}).map((s) => s.position[1]))
+      : 0
+    const world: [number, number, number] = pole
+      ? [0, topY + (fixture.hangM ?? 0) + 0.15, 0]
+      : [0, 0, 0]
+    placements.push({ layerId: fixture.id, part: fixture, angle: fixtureAngle, world, z: SLOT_Z.fixture })
+  }
+
+  // A base cover picked first previews alone; the moment any other part is
+  // chosen it waits for the pole it wraps (the attachSocket walk above).
+  if (baseCover && !pole && !arm && !fixture) {
+    placements.push({
+      layerId: baseCover.id,
+      part: baseCover,
+      angle: HERO_ANGLE,
+      world: [0, 0, 0],
+      z: SLOT_Z.baseCover,
+    })
   }
 
   const missingSet = new Set<string>()
@@ -468,10 +540,12 @@ export function resolveAssemblyLayout(
     // the slot has no override — see finishFor), at the nearest available
     // angle (exact for rig-rendered parts; real-render parts may lack the
     // 45° compass until re-rendered from their design files).
+    // Phase 0.14: shaft accessories are painted with the pole they weld/bolt
+    // to, so their layers resolve in the POLE's finish, not the base finish.
     const asset = resolveRenderAsset(
       manifest,
       part.id,
-      finishFor(config, part.slot),
+      finishFor(config, part.slot === 'accessory' ? 'pole' : part.slot),
       nearestAngleKey(manifest, part.id, angle),
     )
     if (!asset) {
@@ -512,7 +586,10 @@ export function resolveAssemblyLayout(
     missing,
     appliedViewYaw: viewYaw,
   }
-  if (lightWorlds.length && !missing.length) {
+  // Night-light points only make sense once a pole grounds the scene — for a
+  // floating partial preview the pool/beam would hang mid-air, so the layout
+  // simply carries no light data and night view dims without glow.
+  if (pole && lightWorlds.length && !missing.length) {
     const lightPxs = lightWorlds.map((w) => pointInLayout(layout, manifest, w))
     layout.lightPxs = lightPxs
     layout.lightPx = lightPxs[0]

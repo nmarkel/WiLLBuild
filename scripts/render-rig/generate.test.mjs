@@ -4,6 +4,7 @@ import {
   ANGLES_FOR_SLOT,
   assertNoPlaceholderForRealPart,
   placeholderGraftChildren,
+  poleGraftPlan,
 } from './generate.mjs'
 
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -58,13 +59,21 @@ describe('real-CAD-first rule (spec D8)', () => {
 })
 
 describe('pole hand-hole graft (spec D8a)', () => {
-  it('grafts the placeholder hand-hole child onto a real pole', () => {
+  it('grafts the hand-hole cover AND the base plate onto a real pole', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
     const graft = placeholderGraftChildren(pole)
-    expect(graft).toHaveLength(1)
-    // The cover box, not the pole cylinder itself.
-    expect(graft[0].spec.kind).toBe('box')
-    expect(graft[0].position).toEqual([0.0508, 0.3175, 0])
+    // Phase 0.14 (Tyler 8/14): two box children — the cover (proud of the
+    // shaft) and the anchor-base plate (on the axis at y=0, 8.63in square
+    // for the 4in pole per Tyler's base drawings; 1in thickness assumed).
+    expect(graft).toHaveLength(2)
+    const cover = graft.find((c) => c.position[0] > 0)
+    const plate = graft.find((c) => c.name === 'base-plate')
+    expect(cover?.spec.kind).toBe('box')
+    expect(cover?.position).toEqual([0.0508, 0.3175, 0])
+    expect(plate?.spec.kind).toBe('box')
+    expect(plate?.position).toEqual([0, 0, 0])
+    expect(plate?.spec.sizeM[0]).toBeCloseTo(8.63 * 0.0254, 3)
+    expect(plate?.spec.sizeM[0]).toBe(plate?.spec.sizeM[2])
   })
 
   it('grafts nothing onto parts whose real geometry is already complete', () => {
@@ -72,6 +81,35 @@ describe('pole hand-hole graft (spec D8a)', () => {
       const part = catalog.parts.find((p) => p.id === id)
       expect(placeholderGraftChildren(part)).toEqual([])
     }
+  })
+
+  // Phase 0.14 (Tyler 8/14): with Cole's HH-4R GLB on the machine the graft is
+  // real frame + cover plate TOGETHER — measured first: the real opening is
+  // flush and vanishes alone at 360 px/m, which would delete the 0° homing
+  // reference. The plate (a real installed hand hole's cover, proud of the
+  // opening) keeps the reference visible; the frame adds the true geometry.
+  it('grafts the real HH-4R section AND keeps the cover plate when the GLB is present', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    const plan = poleGraftPlan(pole, { glbPresent: true })
+    expect(plan.boxes).toHaveLength(2) // cover + base plate (0.14)
+    expect(plan.glbs).toHaveLength(1)
+    expect(plan.glbs[0].glb).toMatch(/willstudio-acc-hand-hole\.glb$/)
+    // Positioned to keep the COVER's vertical CENTRE (cover base + h/2), on
+    // the pole axis — the frame anchors on the cover, never the base plate.
+    const cover = plan.boxes.find((b) => b.position[0] > 0)
+    expect(plan.glbs[0].position).toEqual([0, cover.position[1] + cover.spec.sizeM[1] / 2, 0])
+  })
+
+  it('falls back to the box grafts alone on a machine without the accessory GLB', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    const plan = poleGraftPlan(pole, { glbPresent: false })
+    expect(plan.glbs).toEqual([])
+    expect(plan.boxes).toHaveLength(2)
+  })
+
+  it('plans no graft for non-pole parts', () => {
+    const arm = catalog.parts.find((p) => p.id === 'sh1-shepherds-hook')
+    expect(poleGraftPlan(arm, { glbPresent: true })).toEqual({ boxes: [], glbs: [] })
   })
 
   it('keeps the hand hole at native size and height regardless of pole length', () => {

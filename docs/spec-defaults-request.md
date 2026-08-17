@@ -11,6 +11,12 @@ specced; the contract fixture was regenerated and verified against the Python
 mirror. Still open for Puddy: are WHPXNP / SRGXXX10 / BPCX real orderable
 conventions?
 
+**Still needs Nick's machine — pole re-render:** the hand-hole cover spec is
+now a 4mm sheet-metal plate (2mm proud; was 20mm → 12mm → 8mm → 4mm across
+Tyler's passes, commits 1338881a / 0ac019e4 / this one). The shipped renders
+still show the original 20mm block — one `npm run render-rig` for the poles
+on the machine with the real-CAD GLBs makes all of Tyler's thinning visible.
+
 The original request text follows for the record.
 
 ---

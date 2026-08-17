@@ -186,6 +186,190 @@ describe('resolveAssemblyLayout', () => {
   })
 })
 
+// ---- Phase 0.14 (Tyler 8/14): partial builds render from the FIRST pick ----
+describe('resolveAssemblyLayout — partial builds', () => {
+  it('a lone fixture renders as a component preview (no light data)', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '', arm: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['fix'])
+    // No pole → no ground → no night pool/glow points.
+    expect(l.lightPx).toBeUndefined()
+  })
+
+  it('fixture + arm without a pole compose via the same socket walk, anchored at origin', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['arm', 'fix'])
+    // The fixture still hangs at the arm's pendant socket (1, 0.5) relative to
+    // the arm mount — identical geometry to the full assembly, just unmoored.
+    const arm = l.layers.find((x) => x.partId === 'arm')!
+    const fix = l.layers.find((x) => x.partId === 'fix')!
+    const armAnchor = [arm.left + 10, arm.top + 78]
+    const fixAnchor = [fix.left + 45, fix.top + 5]
+    expect(fixAnchor[0] - armAnchor[0]).toBe(100)
+    expect(fixAnchor[1] - armAnchor[1]).toBe(-50)
+  })
+
+  it('a lone arm renders', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', baseCover: '', fixture: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['arm'])
+  })
+
+  it('a lone base cover renders', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '', arm: '', fixture: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['base'])
+  })
+
+  it('fixture + pole with no bracket hovers the fixture above the pole top, awaiting its bracket', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, baseCover: '', arm: '' })
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['fix', 'pole'])
+    // Fixture anchor sits ABOVE the pole top socket (0,6,0): clearance =
+    // hangM (unset here → 0) + 0.15 m → 15 px up in the test rig.
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    const fix = l.layers.find((x) => x.partId === 'fix')!
+    const poleTopY = pole.top + 600 - 600 // pole anchor is its base; top socket 6m up → anchor px - 600
+    const fixAnchorY = fix.top + 5
+    expect(fixAnchorY).toBe(poleTopY - 15)
+    // It never claims a mount: no light data either (no arm walk ran)…
+    expect(l.lightPx).toBeUndefined()
+  })
+
+  it('a base cover alongside other parts (no pole) waits for its pole instead of overlapping', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, { ...config, pole: '' })
+    expect(l.layers.map((x) => x.partId).sort()).toEqual(['arm', 'fix'])
+  })
+
+  it('the full assembly is byte-identical to before (partial paths change nothing when complete)', () => {
+    const l = resolveAssemblyLayout(catalog, manifest, config)
+    expect(l.missing).toEqual([])
+    expect(l.layers.map((x) => x.partId)).toEqual(['pole', 'base', 'arm', 'fix'])
+    expect(l.lightPx).toBeDefined()
+  })
+})
+
+// ---- Phase 0.14 (Tyler 8/14): placed shaft accessories render layers ----
+describe('resolveAssemblyLayout — placed accessories (renderPartId)', () => {
+  // A pole whose options carry a placeable accessory pointing at a render-only
+  // accessory part — the shape apply-spec-option-corrections.mjs produces.
+  const accManifest: RenderManifest = {
+    rig,
+    parts: {
+      ...manifest.parts,
+      acc: {
+        angles: {
+          [HERO_ANGLE]: {
+            finishes: {
+              black: asset('renders/acc.webp', 30, 30, [0, 15]),
+              white: asset('renders/acc-white.webp', 30, 30, [0, 15]),
+            },
+          },
+        },
+      },
+    },
+  }
+  const accCatalog: Catalog = {
+    ...catalog,
+    parts: [
+      ...catalog.parts.map((p) =>
+        p.id === 'pole'
+          ? {
+              ...p,
+              options: [
+                {
+                  key: 'options',
+                  label: 'Options',
+                  group: 'options-accessories',
+                  values: [
+                    {
+                      code: 'HHUR',
+                      label: 'Additional Hand Hole',
+                      buildable: null,
+                      mapsTo: null,
+                      note: null,
+                      placeable: true,
+                      placement: { minFt: 3, stepIn: 6, multi: true, defaultFt: 3 },
+                      renderPartId: 'acc',
+                    },
+                  ],
+                },
+              ],
+            }
+          : p,
+      ),
+      {
+        id: 'acc', slot: 'accessory', name: 'Hand Hole', family: 'HHX', line: 'WiLLstudio',
+        category: 'Pole Accessories', productClass: 'assembly-part', dropShip: false, tier: 2,
+        mount: 'shaft', sockets: {}, finishes: [], keywords: [], model: null,
+        placeholder: { kind: 'box', sizeM: [0.1, 0.1, 0.1], direction: 'up' },
+        thumbnail: null, productUrl: '',
+      },
+    ] as Catalog['parts'],
+  }
+  const checked: PoleConfig = {
+    ...config,
+    specOptions: { pole: { options: ['HHUR'] } },
+  }
+
+  it('a checked accessory with a stored instance draws its layer at the instance height', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, {
+      ...checked,
+      accessoryPlacements: { HHUR: [{ heightFt: 10, orientation: 0 }] },
+    })
+    const acc = l.layers.find((x) => x.partId === 'acc@HHUR#0')!
+    expect(acc).toBeDefined()
+    // 10 ft = 3.048 m up → 304.8 px above the pole anchor in the test rig.
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    const poleAnchorY = pole.top + 600
+    const accAnchorY = acc.top + 15
+    expect(poleAnchorY - accAnchorY).toBeCloseTo(304.8, 5)
+  })
+
+  it('a checked accessory with NO stored placement still draws one instance at its default', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, checked)
+    const acc = l.layers.find((x) => x.partId === 'acc@HHUR#0')!
+    expect(acc).toBeDefined()
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    expect(pole.top + 600 - (acc.top + 15)).toBeCloseTo(3 * 0.3048 * 100, 5)
+  })
+
+  it('multiple instances each draw their own layer', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, {
+      ...checked,
+      accessoryPlacements: { HHUR: [{ heightFt: 4, orientation: 0 }, { heightFt: 8, orientation: 90 }] },
+    })
+    expect(l.layers.filter((x) => x.partId.startsWith('acc@HHUR#'))).toHaveLength(2)
+  })
+
+  it('an unchecked accessory draws nothing', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, {
+      ...config,
+      accessoryPlacements: { HHUR: [{ heightFt: 10, orientation: 0 }] },
+    })
+    expect(l.layers.some((x) => x.partId.startsWith('acc@'))).toBe(false)
+  })
+
+  it('accessory layers paint in the POLE\'s finish, not the base finish', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, {
+      ...checked,
+      finishes: { pole: 'white' },
+    })
+    const acc = l.layers.find((x) => x.partId === 'acc@HHUR#0')!
+    expect(acc.asset.file).toBe('renders/acc-white.webp')
+  })
+
+  it('needs a pole — no accessory layer floats on a pole-less build', () => {
+    const l = resolveAssemblyLayout(accCatalog, accManifest, {
+      ...checked,
+      pole: '',
+      accessoryPlacements: { HHUR: [{ heightFt: 10, orientation: 0 }] },
+    })
+    expect(l.layers.some((x) => x.partId.startsWith('acc@'))).toBe(false)
+  })
+})
+
 // ---- Phase 0.8 (A): radial multi-arm helpers + fan-out ----
 
 describe('angleKeyForAzimuth', () => {

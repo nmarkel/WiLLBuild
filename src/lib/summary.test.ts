@@ -85,7 +85,7 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
     // Nothing chosen: WD (single-value family) - GVX (part card) - four open
     // columns - BK (matte-black via mapsTo).
     const pn = buildPartNumber(catalog, config({}), 'fixture')
-    expect(pn).toBe('WD-GVX-_-_-_-_-BK')
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP')
   })
 
   it('fills chosen base-config codes and tracks the per-part finish', () => {
@@ -97,7 +97,7 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
       }),
       'fixture',
     )
-    expect(pn).toBe('WD-GVX-80-30-MV-_-NA')
+    expect(pn).toBe('WD-GVX-80-30-MV-_-NA-WHP7NP')
   })
 
   it('appends options and accessories codes with a dash each', () => {
@@ -110,7 +110,9 @@ describe('buildPartNumber (Phase 0.10.5)', () => {
       }),
       'fixture',
     )
-    expect(pn).toBe('WD-GVX-_-_-_-_-BK-WHP7NP-SRG27710-HSS-GVX')
+    // Chosen cord codes are ignored (derived cord rides at the end);
+    // legacy concrete codes like SRG27710 pass through untouched.
+    expect(pn).toBe('WD-GVX-_-_-_-_-BK-SRG27710-HSS-GVX-WHP7NP')
   })
 
   it('returns undefined for an empty or unknown selection', () => {
@@ -136,7 +138,7 @@ describe('custom RAL in summary + part number (Phase 0.10.5)', () => {
 
   it('part number uses the palette code for finishes newer than the parsed sheet', () => {
     const pn = buildPartNumber(catalog, config({ finishes: { fixture: 'custom-ral' } }), 'fixture')
-    expect(pn).toBe('WD-GVX-_-_-_-_-RAL')
+    expect(pn).toBe('WD-GVX-_-_-_-_-RAL-WHP7NP')
   })
 })
 
@@ -148,12 +150,12 @@ describe('arm model code as part number (Phase 0.10.5)', () => {
       armCount: 3,
     })
     // Tyler 8/12: the arm's finish colour joins its number.
-    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('WP-AR3-BK')
-    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: WP-AR3-BK')
+    expect(buildPartNumber(catalog, cfg, 'arm')).toBe('WP-AR3-_-BK')
+    expect(buildSummaryText(catalog, cfg)).toContain('  Part No: WP-AR3-_-BK')
   })
 
   it('single-only arms report their fixed code', () => {
-    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('WP-SH1-BK')
+    expect(buildPartNumber(catalog, config({ arm: 'sh1-shepherds-hook' }), 'arm')).toBe('WP-SH1-_-BK')
   })
 
   it('the upsweep has no code yet (24"/36" length model pending)', () => {
@@ -169,12 +171,12 @@ describe('pole part number — fixed and derived segments (Phase 0.10.5)', () =>
     })
     // product-family(WP) design(RSAA) length(14, from part.heightFt) diameter
     // wall AB SB FP color(SG) mounting(_)
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-5050-D-AB-SB-FP-SG-PF')
   })
 
   it('an anodized color flips the finish type to AN', () => {
     const cfg = config({ finishes: { pole: 'black-anodized' } })
-    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA')
+    expect(buildPartNumber(catalog, cfg, 'pole')).toBe('WP-RSAA-14-_-_-AB-SB-AN-BKA-PF')
   })
 })
 
@@ -206,7 +208,7 @@ describe('buildPartNumber — pole (8/4 spec sheet target)', () => {
       },
     })
     expect(buildPartNumber(catalog, config, 'pole')).toBe(
-      'WP-RSAA-16-5050-D-AB-SB-FP-BK-PL',
+      'WP-RSAA-16-5050-D-AB-SB-FP-BK',
     )
   })
 
@@ -231,7 +233,7 @@ describe('accessory placement in summary (Phase 0.10.5)', () => {
         arm: 'direct-mount',
         pole: 'alum-pole-12',
         specOptions: { pole: { options: ['FSTR'] } },
-        accessoryPlacements: { FSTR: { heightFt: 6, orientation: 90 } },
+        accessoryPlacements: { FSTR: [{ heightFt: 6, orientation: 90 }] },
       }),
     )
     expect(summary).toContain('FSTR — Festoon Power Provision')
@@ -253,7 +255,7 @@ describe('base cover part number (Phase 0.10.5)', () => {
       // ignored, and the derived fit rides at the END, after the colour.
       specOptions: { baseCover: { 'pole-fit': '5R' } },
     })
-    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-BK-4R')
+    expect(buildPartNumber(catalog, cfg, 'baseCover')).toBe('WP-CL2-4R-BK')
   })
 })
 

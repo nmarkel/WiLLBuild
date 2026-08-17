@@ -1,6 +1,10 @@
 import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
 import { bannerSummaryLine, formatPanelSize } from './banner'
 import {
+  cordCodeFor,
+  exclusiveFamily,
+  placementInstances,
+  poleMountingCodeFor,
   ACCENT_FINISH_KEY,
   accentFinishFor,
   bannerPanelSize,
@@ -31,12 +35,53 @@ import { isComingSoon } from './availability'
  * spec-sheet part append their add-ons identically. Mirrored by
  * `_with_add_ons` in geometry-service/app/partnumber.py.
  */
-function addOnCodes(part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
+function addOnCodes(catalog: Catalog, part: CatalogPart, config: PoleConfig, slot: Slot): string[] {
   const chosen = config.specOptions?.[slot] ?? {}
+  // CR-OPT-07: a value may resolve its printed code by the chosen voltage
+  // (surge: SRGXXX10 → SRG27710 on MV / SRG48010 on HV). CR-OPT-06: derived
+  // rows (the bracket cord) never print their own code — the resolver
+  // appends the derived one separately.
+  const voltage = specCodes(chosen['voltage'])[0]
+  const poleDiameter = partById(catalog, config.pole)?.diameterIn
   return (part.options ?? [])
     .filter((o) => o.group === 'options-accessories')
     .sort((a, b) => a.orderPosition - b.orderPosition)
-    .flatMap((o) => specCodes(chosen[o.key]))
+    .flatMap((o) =>
+      specCodes(chosen[o.key]).flatMap((code) => {
+        // CR-OPT-06: cord codes in SELECTIONS never print (old share URLs
+        // carry them) — the bracket-derived cord is the only authority.
+        if (exclusiveFamily(code) === 'cord') return []
+        const value = o.values.find((v) => v.code === code)
+        if (value?.derived) return []
+        const mapped = voltage ? value?.resolvesBy?.[voltage] : undefined
+        // CR-OPT-10: pole-diameter-resolved codes (hand hole size digit).
+        const sized = poleDiameter
+          ? value?.resolvesByDiameter?.[String(poleDiameter)]
+          : undefined
+        const resolved = sized ?? mapped ?? code
+        // CR-OPT-15 (Tyler 8/14): a size-resolved code prints PER INSTANCE,
+        // keyed by that instance's own panel size id — the banner arm kit is
+        // BA18/BA24/BA30, the arm length following the banner width. An
+        // instance (or selection) without a stored size uses the catalog's
+        // default panel. Distinct from CR-OPT-07/10, which resolve once per
+        // config: two banners of different sizes print two different codes.
+        if (value?.resolvesBySize) {
+          const fallback =
+            catalog.bannerPanelSizes?.find((s) => s.default)?.id ?? ''
+          const instances = placementInstances(config, code)
+          const list = instances.length > 0 ? instances : [undefined]
+          return list.map(
+            (inst) => value.resolvesBySize?.[inst?.size ?? fallback] ?? resolved,
+          )
+        }
+        // CR-OPT-11: a multi accessory prints once PER CONFIGURED INSTANCE
+        // (two couplings → …-CPLX-CPLX); unplaced selection prints once.
+        const count = value?.placement?.multi
+          ? Math.max(1, placementInstances(config, code).length)
+          : 1
+        return Array(count).fill(resolved)
+      }),
+    )
 }
 
 /**
@@ -75,9 +120,12 @@ export function buildPartNumber(
     // Arms have no sheet columns, so the code comes from the palette itself.
     const armFinish = catalog.finishes.find((f) => f.id === finishFor(config, slot))?.code
     // Phase 0.11 (Workstream C): a model-code arm still carries its chosen
-    // options. Tyler 8/12: arms lead with the WP product-family code like
-    // every other WiLLstudio number — `WP-SS2-BK-CF2`.
-    return ['WP', base, ...(armFinish ? [armFinish] : []), ...addOnCodes(part, config, slot)].join('-')
+    // options. Tyler 8/12: arms lead with the WP product-family code.
+    // CR-PN-09 (Tyler 8/14): the Pole/Tenon Fit slot prints a BLANK
+    // placeholder between design and finish (the matrix structure is
+    // Family-Design-Fit-Finish[-Options]) — deliberately attention-catching,
+    // resolved at quote. Derivable as 40F from the 4" poles later if wanted.
+    return ['WP', base, '_', ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -89,10 +137,23 @@ export function buildPartNumber(
   const segments: string[] = []
   for (const opt of options.filter((o) => o.group === 'ordering').sort(byPosition)) {
     const selected = specCodes(chosen[opt.key])[0]
+    if (opt.key === 'fixture-mounting') {
+      // CR-OPT-15: derived from the bracket (PF; FR2 → PD); `_` when the
+      // bracket doesn't decide it. Selections are ignored — never a choice.
+      segments.push(poleMountingCodeFor(catalog, config) ?? '_')
+      continue
+    }
     if (opt.key === 'pole-fit') {
-      // Phase 0.12_TO (Tyler 8/12): a base cover's Pole Fit is a function of
-      // the chosen pole's diameter, not a customer choice — derived below and
-      // appended AFTER the finish, at the end of the number.
+      // CR-PN-04 (final form, Tyler 8/14): Pole Fit is a function of the
+      // chosen pole's diameter, never a customer choice, and it lives in the
+      // sheet's own column position — WP-CL1-4R-BK derived, WP-CL1-_-BK when
+      // no pole is chosen (the blank is interior, finish follows it).
+      const poleDiameter = partById(catalog, config.pole)?.diameterIn
+      segments.push(
+        (poleDiameter
+          ? opt.values.find((v) => v.code === `${poleDiameter}R`)?.code
+          : undefined) ?? '_',
+      )
       continue
     }
     if (selected) {
@@ -128,15 +189,15 @@ export function buildPartNumber(
       segments.push('_')
     }
   }
-  segments.push(...addOnCodes(part, config, slot))
+  segments.push(...addOnCodes(catalog, part, config, slot))
+  // CR-OPT-06: the REQUIRED bracket-derived cord (WHP7NP standard) — appended
+  // like an add-on, but from the arm pairing, never from a selection.
+  if (slot === 'fixture') {
+    const cord = cordCodeFor(catalog, config)
+    if (cord) segments.push(cord)
+  }
   // Derived Pole Fit rides at the very end (after finish + add-ons): the
   // pole's OD selects the matching fit code (4" round pole → 4R).
-  const fitColumn = options.find((o) => o.key === 'pole-fit')
-  const poleDiameter = partById(catalog, config.pole)?.diameterIn
-  const fit = fitColumn && poleDiameter
-    ? fitColumn.values.find((v) => v.code === `${poleDiameter}R`)?.code
-    : undefined
-  if (fit) segments.push(fit)
   // Phase 0.12_TO (Tyler 8/12): trailing unanswered columns don't print — a
   // pole with nothing chosen ends after its colour code, not with `-_`.
   // Interior blanks stay: they keep the sheet's column positions readable.
@@ -212,19 +273,26 @@ export function buildSummaryText(
           const value = opt.values.find((v) => v.code === code)
           const quote = value && value.buildable !== true ? ' (quote only)' : ''
           // Placed accessories carry their shaft position for the quote.
-          const placement = config.accessoryPlacements?.[code]
-          const sides = placement?.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
-          // Phase 0.11 (D): say what the height measures TO, and name the
-          // ordered panel — a bare "12 ft" is exactly the ambiguity the
-          // centre-vs-bottom bug hid behind.
-          const panel =
-            placement && isBannerKitLabel(value?.label ?? '')
+          // CR-OPT-11: instanced placements — one quote line per instance
+          // (each coupling/hand hole carries its own position).
+          const instances = placementInstances(config, code)
+          if (instances.length === 0) {
+            partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}`)
+          }
+          for (const placement of instances) {
+            const sides =
+              placement.sides && placement.sides > 1 ? `, ${placement.sides} sides` : ''
+            // Phase 0.11 (D): say what the height measures TO, and name the
+            // ordered panel — a bare "12 ft" is exactly the ambiguity the
+            // centre-vs-bottom bug hid behind.
+            const panel = isBannerKitLabel(value?.label ?? '')
               ? `, ${formatPanelSize(bannerPanelSize(catalog, placement.size))} panel`
               : ''
-          const placed = placement
-            ? ` — placed ${placement.heightFt} ft to bottom @ ${placement.orientation}°${sides}${panel}`
-            : ''
-          partLines.push(`  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`)
+            const placed = ` — placed ${placement.heightFt} ft to bottom @ ${placement.orientation}°${sides}${panel}`
+            partLines.push(
+              `  ${optionLabel(opt)}: ${code}${value ? ` — ${value.label}` : ''}${quote}${placed}`,
+            )
+          }
         }
       }
     }

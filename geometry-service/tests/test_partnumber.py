@@ -178,7 +178,7 @@ class TestAssemblyResolution:
     def test_text_line_prints_the_number(self, catalog):
         cfg = _config(CASES[0])
         # Tyler 8/12: the arm number carries its finish colour.
-        assert part_number_text(catalog, cfg, "arm") == "Arm: WP-SH1-BK"
+        assert part_number_text(catalog, cfg, "arm") == "Arm: WP-SH1-_-BK"
 
 
 class TestConfigHashCoupling:
@@ -276,11 +276,12 @@ class TestPerSlotFinishReachesTheNumber:
             finishes={"fixture": "gloss-white", "pole": "forest-green",
                       "baseCover": "statuary-bronze"},
         )
-        assert build_part_number(catalog, cfg, "fixture").endswith("-WH")
-        # Trailing unanswered columns no longer print — DG is the last segment.
-        assert build_part_number(catalog, cfg, "pole").endswith("-DG")
-        # The derived Pole Fit rides after the colour (Tyler 8/12): …-DB-4R.
-        assert "-DB-" in build_part_number(catalog, cfg, "baseCover")
+        # Cord (derived) rides after the finish now — WH is interior.
+        assert "-WH-" in build_part_number(catalog, cfg, "fixture")
+        # The SH1 bracket derives PF mounting (CR-OPT-15) — DG is interior now.
+        assert "-DG-" in build_part_number(catalog, cfg, "pole")
+        # Fit sits in the sheet position (Tyler 8/14 final): WP-CL1-4R-DB.
+        assert build_part_number(catalog, cfg, "baseCover").endswith("-DB")
 
     def test_anodized_colour_drives_the_finish_type_segment(self, catalog):
         painted = PoleConfig(

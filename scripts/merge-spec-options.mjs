@@ -116,7 +116,7 @@ for (const part of catalog.parts || []) {
 
   // Inject ONLY the options data we own, with the reviewed column corrections
   // applied on top of the raw parse (see docs/spec-option-corrections.json).
-  const corrected = applyCorrections(entry.options, handle, corrections);
+  const corrected = applyCorrections(entry.options, handle, corrections, part.id);
   correctedColumns += corrected.applied;
   part.options = corrected.options;
   part.optionsMeta = {

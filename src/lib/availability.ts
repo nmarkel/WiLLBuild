@@ -55,6 +55,11 @@ export function isComingSoon(part: CatalogPart | undefined): boolean {
   if (part.comingSoon) return true
   if (!COMING_SOON_LINES.includes(part.line)) return false
   if (part.pseudoPart) return false
+  // Phase 0.14: render-only accessory parts (slot 'accessory') are never
+  // selectable — they exist so a placed order code has a layer to draw. A
+  // placeholder-backed one (festoon, awaiting CAD) draws its placeholder;
+  // badging it would wrongly imply the ORDER CODE is not orderable.
+  if (part.slot === 'accessory') return false
   // Tyler 8/12: named parts may sell from placeholder art — an explicit
   // per-part exemption from the geometry gap (see types.ts). An editorial
   // hold above still wins; this only bypasses the realCad check.
