@@ -128,7 +128,16 @@ def _built(catalog):
 
 
 def test_combo_count(catalog):
-    """Sanity: the kit enumerates the expected 800 valid combos.
+    """Sanity: the kit enumerates the expected 760 valid combos.
+
+    Was 800 until the 0.14 merge; 760 as of Phase 0.15.  Measured attribution
+    (2026-08-18, pair-by-pair enumeration of Dev pre-merge vs post-merge):
+    exactly one fixture-arm pair disappeared — gvx-pendant + pa1-pendant-arm
+    (40 = 8 poles x 5 base covers) — and it is Tyler's 8/13 call, not a
+    regression: commit 5189606c gave PA1's carry socket its own type
+    (`pendant-pa1`) that no fixture mounts today, because "PA1 doesn't work
+    with the GVX" and compatibility stays socket-matching only.  Nothing was
+    gained, no other pair changed, and no fixture lost its last arm.
 
     Was 561 (17 fixture-arm pairs x 11 poles x 3 base covers) before Phase
     0.10.5 re-slotted bc-fluted/bc-round to 'standalone' and the catalog grew
@@ -157,7 +166,7 @@ def test_combo_count(catalog):
     catalog (WiLLstudio + NAFCO + WiLLsport each have their own socket families),
     so this is a regression guard on that count, not a hand-derived product.
     """
-    assert len(valid_combos(catalog)) == 800
+    assert len(valid_combos(catalog)) == 760
 
 
 def test_every_combo_has_positive_volume(catalog, _built):
