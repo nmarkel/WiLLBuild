@@ -10,7 +10,8 @@
     "test": "vitest run",
     "preview": "vite preview",
     "render-rig": "node scripts/render-rig/generate.mjs",
-    "render-manifest": "node scripts/render-rig/merge-manifests.mjs"
+    "render-manifest": "node scripts/render-rig/merge-manifests.mjs",
+    "web-glb": "node scripts/web-glb/build.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.0.3",
+    "gltfpack": "^1.2.0",
     "oxlint": "^1.71.0",
     "puppeteer": "^24.43.1",
     "typescript": "~6.0.2",

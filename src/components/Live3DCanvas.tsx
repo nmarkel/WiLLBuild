@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import type { FinishDef } from '../types'
 import {
   LIVE_AZIMUTH_DEG,
@@ -13,7 +14,7 @@ import {
 } from '../lib/live3dFrame'
 
 /**
- * Phase 0.15 (Workstream A) — the live 3D focus canvas.
+ * Phase 0.15 (Workstreams A + C) — the live 3D focus canvas.
  *
  * This file is the ONLY place in the app bundle that imports three, and it is
  * only ever loaded through React.lazy when a live focus actually opens — the
@@ -29,14 +30,24 @@ import {
  * tinted live model must sit next to the tinted WebP renders without a visible
  * seam, so the two pipelines must not drift apart. If the rig's look changes,
  * change it here the same day.
+ *
+ * Workstream C: the canvas renders a LIST of positioned models — the focused
+ * part plus its mated partner (fixture at the arm's catalog socket, exactly
+ * the offset the image compositor projects) — so junction occlusion is real:
+ * the GVX stem disappears INTO the bracket bore because a depth buffer says
+ * so, which the layered-image assembly view can never do. The pair spins
+ * about its combined center; the frustum frames only the PRIMARY part's swept
+ * box, which is what keeps the Arm stop and the Fixture stop distinct views.
  */
 
-interface Props {
+export interface LiveModelSpec {
   /** Absolute URL of the web GLB (already BASE_URL-resolved). */
   url: string
   /** Yaw aligning the GLB's native reach with the catalog +X convention. */
   rotateYDeg: number
-  /** The catalog finish to tint the paintable body with. */
+  /** Placement in the primary part's catalog frame (its socket offset). */
+  position: [number, number, number]
+  /** The catalog finish tinting this model's paintable body. */
   finish: FinishDef
   /**
    * Effective paint color. Usually finish.hex; for `custom-ral` it is the
@@ -45,6 +56,12 @@ interface Props {
    * truthful than the image here.
    */
   tintHex: string
+  /** The framing target. Exactly one spec should set this. */
+  primary?: boolean
+}
+
+interface Props {
+  models: LiveModelSpec[]
   /** Fired once the first frame has rendered — the parent fades the image out. */
   onReady: () => void
   /** Any failure (WebGL, fetch, parse) — the parent falls back to the image. */
@@ -61,7 +78,12 @@ const modelCache = new Map<string, Promise<THREE.Group>>()
 function loadModel(url: string): Promise<THREE.Group> {
   let p = modelCache.get(url)
   if (!p) {
-    p = new GLTFLoader().loadAsync(url).then((gltf) => gltf.scene)
+    // Workstream B web GLBs are meshopt-compressed (gltfpack -cc). The decoder
+    // is bundled with three — no external wasm fetch — and is a no-op for
+    // uncompressed files.
+    const loader = new GLTFLoader()
+    loader.setMeshoptDecoder(MeshoptDecoder)
+    p = loader.loadAsync(url).then((gltf) => gltf.scene)
     modelCache.set(url, p)
   }
   return p
@@ -80,19 +102,25 @@ function makeFinishMaterial(f: FinishDef, hex: string): THREE.MeshPhysicalMateri
   })
 }
 
-export default function Live3DCanvas({ url, rotateYDeg, finish, tintHex, onReady, onError }: Props) {
+/** Identity of the geometry on stage — a change re-builds the scene; finish
+ *  changes deliberately do NOT appear here (they re-tint in place). */
+function sceneKey(models: LiveModelSpec[]): string {
+  return models.map((m) => `${m.url}|${m.rotateYDeg}|${m.position.join(',')}`).join('+')
+}
+
+export default function Live3DCanvas({ models, onReady, onError }: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null)
-  // The single finish material instance — the tint effect mutates it in place.
-  const finishMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null)
-  // Latest callbacks without retriggering the scene effect.
+  // Per-model finish material instances — the tint effect mutates them in place.
+  const finishMatsRef = useRef<(THREE.MeshPhysicalMaterial | null)[]>([])
+  // Latest callbacks/models without retriggering the scene effect.
   const onReadyRef = useRef(onReady)
   onReadyRef.current = onReady
   const onErrorRef = useRef(onError)
   onErrorRef.current = onError
-  // Initial finish for the scene effect; later changes go through the tint
-  // effect below instead of tearing the scene down.
-  const finishRef = useRef({ finish, tintHex })
-  finishRef.current = { finish, tintHex }
+  const modelsRef = useRef(models)
+  modelsRef.current = models
+
+  const key = sceneKey(models)
 
   useEffect(() => {
     const host = hostRef.current
@@ -159,37 +187,52 @@ export default function Live3DCanvas({ url, rotateYDeg, finish, tintHex, onReady
       raf = requestAnimationFrame(tick)
     }
 
-    loadModel(url)
-      .then((src) => {
+    const specs = modelsRef.current
+    Promise.all(specs.map((m) => loadModel(m.url)))
+      .then((sources) => {
         if (disposed) return
-        const root = src.clone(true)
-        // The rig's finish rule: `will-body` (or unnamed) takes the catalog
-        // finish; `will-fixed-*` keep their GLTF-authored materials.
-        const init = finishRef.current
-        const finishMat = makeFinishMaterial(init.finish, init.tintHex)
-        finishMatRef.current = finishMat
-        root.traverse((o) => {
-          const m = o as THREE.Mesh
-          if (!m.isMesh) return
-          const matName = (m.material as THREE.Material)?.name ?? ''
-          if (matName === 'will-body' || matName === '') m.material = finishMat
+        const content = new THREE.Group()
+        const holders: THREE.Group[] = []
+        finishMatsRef.current = specs.map(() => null)
+        specs.forEach((spec, i) => {
+          const root = sources[i].clone(true)
+          // The rig's finish rule: `will-body` (or unnamed) takes the catalog
+          // finish; `will-fixed-*` keep their GLTF-authored materials.
+          const finishMat = makeFinishMaterial(spec.finish, spec.tintHex)
+          finishMatsRef.current[i] = finishMat
+          root.traverse((o) => {
+            const m = o as THREE.Mesh
+            if (!m.isMesh) return
+            const matName = (m.material as THREE.Material)?.name ?? ''
+            if (matName === 'will-body' || matName === '') m.material = finishMat
+          })
+          root.rotation.y = (spec.rotateYDeg * Math.PI) / 180
+          const holder = new THREE.Group()
+          holder.position.set(...spec.position)
+          holder.add(root)
+          content.add(holder)
+          holders.push(holder)
         })
-        root.rotation.y = (rotateYDeg * Math.PI) / 180
 
-        // Turntable about the model's own bbox center: pivot at the center,
-        // model offset so the center sits on the pivot's axis.
-        const box = new THREE.Box3().setFromObject(root)
+        // Turntable about the PAIR's combined bbox center; frustum framed on
+        // the primary part's swept box about that same pivot.
+        content.updateMatrixWorld(true)
+        const unionBox = new THREE.Box3().setFromObject(content)
+        const pivot = unionBox.getCenter(new THREE.Vector3())
+        const primaryIdx = Math.max(0, specs.findIndex((s) => s.primary))
+        const primaryBox = new THREE.Box3().setFromObject(holders[primaryIdx])
         extents = turntableExtents(
-          [box.min.x, box.min.y, box.min.z],
-          [box.max.x, box.max.y, box.max.z],
+          [primaryBox.min.x, primaryBox.min.y, primaryBox.min.z],
+          [primaryBox.max.x, primaryBox.max.y, primaryBox.max.z],
           basis,
+          5,
+          [pivot.x, pivot.y, pivot.z],
         )
-        const center = new THREE.Vector3(...extents.center)
         spin = new THREE.Group()
-        spin.position.copy(center)
+        spin.position.copy(pivot)
         const inner = new THREE.Group()
-        inner.position.copy(center.clone().negate())
-        inner.add(root)
+        inner.position.copy(pivot.clone().negate())
+        inner.add(content)
         spin.add(inner)
         scene.add(spin)
         applyFrustum()
@@ -206,33 +249,33 @@ export default function Live3DCanvas({ url, rotateYDeg, finish, tintHex, onReady
       disposed = true
       cancelAnimationFrame(raf)
       ro.disconnect()
-      if (spin) {
-        scene.remove(spin)
-        // Geometry belongs to the shared cache clone's source buffers — three
-        // clones share geometry, so dispose materials only; the cached model
-        // keeps its geometry for the next open.
-      }
-      finishMatRef.current?.dispose()
-      finishMatRef.current = null
+      // Geometry belongs to the shared cache clones — dispose materials only;
+      // the cached models keep their geometry for the next open.
+      for (const m of finishMatsRef.current) m?.dispose()
+      finishMatsRef.current = []
       pmrem.dispose()
       renderer.dispose()
       renderer.domElement.remove()
     }
-    // rotateYDeg travels with url (both come from the same manifest entry).
-  }, [url, rotateYDeg])
+    // key covers url/rotate/position for every model in the list.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key])
 
-  // Finish swap: re-tint the material in place — instant, like the WebP swap.
+  // Finish swap: re-tint each model's material in place — instant, like the
+  // WebP swap, never a reload.
   useEffect(() => {
-    const mat = finishMatRef.current
-    if (!mat) return
-    mat.color.set(tintHex)
-    mat.roughness = finish.roughness
-    mat.metalness = finish.metalness
-    mat.clearcoat = finish.clearcoat
-    mat.clearcoatRoughness = finish.clearcoatRoughness
-    mat.envMapIntensity = finish.envMapIntensity
-    mat.needsUpdate = true
-  }, [finish, tintHex])
+    models.forEach((spec, i) => {
+      const mat = finishMatsRef.current[i]
+      if (!mat) return
+      mat.color.set(spec.tintHex)
+      mat.roughness = spec.finish.roughness
+      mat.metalness = spec.finish.metalness
+      mat.clearcoat = spec.finish.clearcoat
+      mat.clearcoatRoughness = spec.finish.clearcoatRoughness
+      mat.envMapIntensity = spec.finish.envMapIntensity
+      mat.needsUpdate = true
+    })
+  }, [models])
 
   return <div ref={hostRef} className="live3d-canvas-host" />
 }

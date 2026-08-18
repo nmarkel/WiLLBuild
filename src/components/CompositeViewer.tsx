@@ -12,7 +12,7 @@ import {
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
-import { compatibleParts, finishFor, partById } from '../lib/compat'
+import { attachSockets, compatibleParts, finishFor, partById } from '../lib/compat'
 import { LIVE_FOCUS_SLOTS, useWebModelManifest, webModelFor } from '../lib/webModels'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
@@ -263,24 +263,72 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // The live focus currently on screen, if any. While the canvas is loading
   // (or after any failure) the ordinary image focus framing below is what
   // shows — the swap is an overlay fading in over it, never a blank state.
+  //
+  // Workstream C: the canvas gets the focused part PLUS its mated partner —
+  // the fixture placed at the arm's catalog socket(s), the same offsets the
+  // image compositor projects — so the stem/bore junction occludes for real.
+  // Each partner only rides along if it has its own web GLB (structural
+  // fallback applies per part, so a placeholder mate is simply absent).
   const liveSlot = focus === 'fixture' || focus === 'arm' ? focus : null
-  const liveEntry = liveSlot ? webModelFor(webManifest, partById(catalog, config[liveSlot])) : null
-  const liveKey = liveEntry ? `${liveSlot}:${liveEntry.file}` : ''
+  const liveModels = useMemo(() => {
+    if (!liveSlot) return null
+    const spec = (
+      slot: 'fixture' | 'arm',
+      position: [number, number, number],
+      primary: boolean,
+    ) => {
+      const part = partById(catalog, config[slot])
+      const entry = webModelFor(webManifest, part)
+      const finishId = finishFor(config, slot)
+      const finish = catalog.finishes.find((f) => f.id === finishId)
+      if (!part || !entry || !finish) return null
+      // custom-ral renders the customer's actual hex — the one thing the baked
+      // WebPs cannot do (they are pre-rendered at the placeholder gray).
+      const tintHex =
+        (finish.id === 'custom-ral' ? config.finishRal?.[slot] : undefined) ?? finish.hex
+      return {
+        url: renderUrl(entry.file),
+        rotateYDeg: entry.rotateYDeg ?? 0,
+        position,
+        finish,
+        tintHex,
+        primary,
+      }
+    }
+    const target = spec(liveSlot, [0, 0, 0], true)
+    if (!target) return null
+    const models = [target]
+    const armPart = partById(catalog, config.arm)
+    const fixturePart = partById(catalog, config.fixture)
+    if (armPart && fixturePart) {
+      const sockets = attachSockets(fixturePart, armPart)
+      if (liveSlot === 'arm') {
+        // Every carry socket gets its fixture — FR2 shows both tenons mated.
+        for (const s of sockets) {
+          const m = spec('fixture', s.position as [number, number, number], false)
+          if (m) models.push(m)
+        }
+      } else if (sockets.length > 0) {
+        // Fixture focus: bring the arm along, offset so the fixture stays at
+        // the origin of its own frame (arm at −socket ⇔ fixture at +socket).
+        const [sx, sy, sz] = sockets[0].position as [number, number, number]
+        const m = spec('arm', [-sx, -sy, -sz], false)
+        if (m) models.push(m)
+      }
+    }
+    return models
+  }, [liveSlot, webManifest, catalog, config])
+
+  const liveKey = liveModels
+    ? liveModels.map((m) => `${m.url}@${m.position.join(',')}`).join('+')
+    : ''
   const [liveReady, setLiveReady] = useState(false)
   const [liveFailed, setLiveFailed] = useState(false)
   useEffect(() => {
     setLiveReady(false)
     setLiveFailed(false)
   }, [liveKey])
-  const liveFinishId = liveSlot ? finishFor(config, liveSlot) : ''
-  const liveFinish = catalog.finishes.find((f) => f.id === liveFinishId)
-  // custom-ral renders the customer's actual hex — the one thing the baked
-  // WebPs cannot do (they are pre-rendered at the placeholder gray).
-  const liveTintHex =
-    (liveFinish?.id === 'custom-ral' && liveSlot ? config.finishRal?.[liveSlot] : undefined) ??
-    liveFinish?.hex ??
-    '#888888'
-  const liveActive = Boolean(liveEntry && liveFinish && !liveFailed)
+  const liveActive = Boolean(liveModels && !liveFailed)
 
   /**
    * New assembly or scene swap → drop any accumulated zoom/pan so the next
@@ -756,7 +804,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       {/* Phase 0.15: live 3D focus overlay. Sits above the stage (z below the
           view switcher), fades in when the canvas has frames, and swallows
           pointer gestures so a drag spins nothing hidden underneath. */}
-      {liveActive && liveEntry && liveFinish && (
+      {liveActive && liveModels && (
         <div
           className={`live3d-overlay${liveReady ? ' ready' : ''}`}
           onPointerDown={(e) => e.stopPropagation()}
@@ -766,10 +814,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           <Live3DBoundary key={liveKey} onError={() => setLiveFailed(true)}>
             <Suspense fallback={null}>
               <Live3DCanvas
-                url={renderUrl(liveEntry.file)}
-                rotateYDeg={liveEntry.rotateYDeg ?? 0}
-                finish={liveFinish}
-                tintHex={liveTintHex}
+                models={liveModels}
                 onReady={() => setLiveReady(true)}
                 onError={() => setLiveFailed(true)}
               />

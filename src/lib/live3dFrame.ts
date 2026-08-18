@@ -46,12 +46,12 @@ export function viewBasis(
   const az = (azimuthDeg * Math.PI) / 180
   const el = (elevationDeg * Math.PI) / 180
   const dir: V3 = [Math.cos(el) * Math.sin(az), Math.sin(el), Math.cos(el) * Math.cos(az)]
-  // right = worldUp × dir, normalized; up = dir × right.
-  const rx = 1 * dir[2] - 0 * dir[1]
-  const ry = 0 * dir[0] - 0 * dir[2]
-  const rz = 0 * dir[1] - 1 * dir[0]
-  const rl = Math.hypot(rx, ry, rz) || 1
-  const right: V3 = [rx / rl, ry / rl, rz / rl]
+  // right = worldUp × dir (worldUp = (0,1,0), so only two terms survive),
+  // normalized; up = dir × right.
+  const rx = dir[2]
+  const rz = -dir[0]
+  const rl = Math.hypot(rx, rz) || 1
+  const right: V3 = [rx / rl, 0, rz / rl]
   const up: V3 = [
     dir[1] * right[2] - dir[2] * right[1],
     dir[2] * right[0] - dir[0] * right[2],
@@ -71,16 +71,24 @@ export interface TurntableExtents {
 
 /**
  * View-space extents of a bounding box spinning about the vertical axis
- * through its own center. Sampled every `stepDeg`; 5° lands exactly on the
- * diagonal poses, so the bound is tight for boxes.
+ * through its own center — or, when `pivot` is given, about that axis instead
+ * (Workstream C: a mated arm+fixture pair spins about the PAIR's center while
+ * the frustum frames only the focused part's swept box). Sampled every
+ * `stepDeg`; 5° lands exactly on the diagonal poses, so the bound is tight
+ * for boxes.
  */
 export function turntableExtents(
   min: V3,
   max: V3,
   basis: ViewBasis,
   stepDeg = 5,
+  pivot?: V3,
 ): TurntableExtents {
-  const center: V3 = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2]
+  const center: V3 = pivot ?? [
+    (min[0] + max[0]) / 2,
+    (min[1] + max[1]) / 2,
+    (min[2] + max[2]) / 2,
+  ]
   const corners: V3[] = []
   for (const x of [min[0], max[0]])
     for (const y of [min[1], max[1]])

@@ -64,6 +64,18 @@ describe('turntableExtents', () => {
     expect(offset.vy[1]).toBeCloseTo(centered.vy[1], 6)
   })
 
+  it('an explicit pivot widens the sweep of an off-axis box', () => {
+    // A unit cube 2 m from the pivot sweeps a ~2.7 m-radius annulus — the
+    // frustum must budget for the orbit, not just the box's own diagonal.
+    const b = viewBasis(0, 0)
+    const own = turntableExtents([-0.5, -0.5, -0.5], [0.5, 0.5, 0.5], b)
+    const orbiting = turntableExtents([1.5, -0.5, -0.5], [2.5, 0.5, 0.5], b, 5, [0, 0, 0])
+    expect(orbiting.center).toEqual([0, 0, 0])
+    const rMax = Math.hypot(2.5, 0.5) // farthest corner from the axis
+    expect(orbiting.vx[1]).toBeCloseTo(rMax, 2)
+    expect(orbiting.vx[1]).toBeGreaterThan(own.vx[1] * 3)
+  })
+
   it('a tilted view sees some swept width in its vertical extent', () => {
     // With elevation, the horizontal sweep leaks into view-space Y — the
     // frustum must account for it or the model clips top/bottom mid-spin.
