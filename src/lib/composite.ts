@@ -738,9 +738,25 @@ export const ASSEMBLY_VIEWS: readonly AssemblyView[] = [
  * The presets offered for a layout: a focus view whose component this config
  * doesn't have is dropped rather than shown as a dead carousel stop (NAFCO has
  * no base covers, so those builds have no Pole Bottom).
+ *
+ * Phase 0.15 (Workstream A): `liveSlots` appends a single-slot focus stop for
+ * each slot whose selected part has a live 3D web GLB (see lib/webModels.ts).
+ * The stop is only an ENTRY POINT — the viewer decides per render whether the
+ * canvas or the image crop shows, so a GLB that fails to load degrades to
+ * exactly the image focus this stop would have framed anyway. No web GLB → no
+ * stop → the carousel is byte-identical to 0.14.
  */
-export function availableViews(layout: CompositeLayout): AssemblyView[] {
-  return ASSEMBLY_VIEWS.filter((v) => focusBox(layout, v.focus) !== undefined)
+export function availableViews(
+  layout: CompositeLayout,
+  liveSlots: readonly Extract<FocusTarget, 'fixture' | 'arm'>[] = [],
+): AssemblyView[] {
+  const views = ASSEMBLY_VIEWS.filter((v) => focusBox(layout, v.focus) !== undefined)
+  for (const slot of liveSlots) {
+    if (focusBox(layout, slot) !== undefined) {
+      views.push({ id: `${slot}-live`, label: FOCUS_LABELS[slot], yaw: 0, focus: slot })
+    }
+  }
+  return views
 }
 
 /**

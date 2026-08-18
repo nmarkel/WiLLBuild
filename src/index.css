@@ -1748,6 +1748,63 @@ body {
   flex-shrink: 0;
   transform-origin: 0 0;
   z-index: 1;
+  /* Phase 0.15: the image fades under the live 3D canvas (and back). */
+  transition: opacity 0.25s ease;
+}
+
+/* Phase 0.15 — live 3D focus overlay. Above the stage, below the view
+   switcher/callout chrome (z 8). Inert until the canvas has rendered real
+   frames: pointer-events off + opacity 0, so the image focus underneath stays
+   fully interactive while the chunk/GLB load (and forever, on failure). */
+.live3d-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.live3d-overlay.ready {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.live3d-canvas-host {
+  position: absolute;
+  inset: 0;
+}
+
+.live3d-canvas-host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Night parity: the live model dims exactly like the image layers do. */
+.composite-viewer.night .live3d-canvas-host canvas {
+  filter: brightness(0.42) saturate(0.8);
+}
+
+/* Small status pill so a rotating model is announced as live geometry.
+   Bottom-RIGHT: bottom-left belongs to the night-mode disclaimer. */
+.live3d-badge {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--will-gray);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.composite-viewer.night .live3d-badge {
+  background: rgba(40, 40, 38, 0.88);
+  color: var(--will-silver);
 }
 
 .composite-layer {

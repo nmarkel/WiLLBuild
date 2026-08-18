@@ -11,6 +11,7 @@ import {
   armDepthProxy,
   offsetDepthProxy,
   availableFocusTargets,
+  availableViews,
   currentViewIndex,
   focusBox,
   projectOffset,
@@ -487,6 +488,40 @@ describe('view rotation + nearest-angle fallback (Phase 0.10.5)', () => {
  * fixed pxPerMeter, so a "tighter framing" of one part is the same image).
  * What has to be right is which pixels belong to which component.
  */
+describe('availableViews live stops (Phase 0.15 A)', () => {
+  const layout = resolveAssemblyLayout(catalog, manifest, config)
+
+  it('without live slots the carousel is exactly the 0.14 preset list', () => {
+    expect(availableViews(layout)).toEqual(
+      ASSEMBLY_VIEWS.filter((v) => focusBox(layout, v.focus) !== undefined),
+    )
+  })
+
+  it('appends a live stop per web-GLB slot, after the base presets', () => {
+    const views = availableViews(layout, ['arm'])
+    expect(views.slice(0, -1)).toEqual(availableViews(layout))
+    expect(views[views.length - 1]).toEqual({ id: 'arm-live', label: 'Arm', yaw: 0, focus: 'arm' })
+    const both = availableViews(layout, ['fixture', 'arm'])
+    expect(both.map((v) => v.id)).toContain('fixture-live')
+    expect(both.map((v) => v.id)).toContain('arm-live')
+  })
+
+  it('offers no live stop for a slot this config does not composite', () => {
+    const poleOnly = resolveAssemblyLayout(catalog, manifest, {
+      ...config,
+      arm: '',
+      fixture: '',
+      baseCover: '',
+    })
+    expect(availableViews(poleOnly, ['fixture', 'arm'])).toEqual(availableViews(poleOnly))
+  })
+
+  it('currentViewIndex finds a live stop by its focus', () => {
+    const views = availableViews(layout, ['arm'])
+    expect(currentViewIndex(views, 0, 'arm')).toBe(views.length - 1)
+  })
+})
+
 describe('focusBox (Phase 0.11 E)', () => {
   const layout = resolveAssemblyLayout(catalog, manifest, config)
 

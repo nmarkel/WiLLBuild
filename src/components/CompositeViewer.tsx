@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent } from 'react'
+import { Component, lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
 import type { SceneMode } from '../store'
 import { useConfigurator } from '../store'
@@ -12,7 +12,8 @@ import {
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
-import { compatibleParts, partById } from '../lib/compat'
+import { compatibleParts, finishFor, partById } from '../lib/compat'
+import { LIVE_FOCUS_SLOTS, useWebModelManifest, webModelFor } from '../lib/webModels'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
@@ -94,6 +95,33 @@ const HUMAN_OFFSET: [number, number, number] = [1.4, 0, 0.6]
 
 /** Ground shadow ellipse size in meters (width, height), converted via pxPerMeterY. */
 const GROUND_SHADOW_M: [number, number] = [2.6, 0.6]
+
+/**
+ * Phase 0.15 (Workstream A): the live 3D focus canvas, as a lazy chunk — the
+ * three.js payload is only ever fetched when a live focus actually opens.
+ * Nothing else in the app bundle imports three (the 0.5 rule, relaxed exactly
+ * here).
+ */
+const Live3DCanvas = lazy(() => import('./Live3DCanvas'))
+
+/**
+ * The structural half of the live-3D fallback: ANY render-time failure in the
+ * canvas subtree (chunk fetch, WebGL, GLB parse) reports up and the viewer
+ * keeps the image focus crop it was already showing. Falling back is never a
+ * special code path — it is the code path, minus the overlay.
+ */
+class Live3DBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch() {
+    this.props.onError()
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
 
 // Plain-English slot names for the partial-build hint pill.
 const SLOT_HINT_LABELS: Record<Slot, string> = {
@@ -214,8 +242,45 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
    * separate `viewIdx` desyncs the moment a callout or the option rail moves the
    * camera. `viewIdx` is -1 when the customer has zoomed/panned off-preset.
    */
-  const views = useMemo(() => (layout ? availableViews(layout) : []), [layout])
+  /**
+   * Phase 0.15 (Workstream A): which slots' focus views go live. A slot is
+   * live when its selected part has a web GLB in the registry (real-CAD parts
+   * only — webModelFor is structural about that). These slots gain a carousel
+   * stop, and their focus renders the 3D canvas instead of the image crop.
+   */
+  const webManifest = useWebModelManifest()
+  const liveSlots = useMemo(
+    () =>
+      LIVE_FOCUS_SLOTS.filter(
+        (s) => webModelFor(webManifest, partById(catalog, config[s])) !== null,
+      ),
+    [webManifest, catalog, config],
+  )
+
+  const views = useMemo(() => (layout ? availableViews(layout, liveSlots) : []), [layout, liveSlots])
   const viewIdx = currentViewIndex(views, viewYaw, focus)
+
+  // The live focus currently on screen, if any. While the canvas is loading
+  // (or after any failure) the ordinary image focus framing below is what
+  // shows — the swap is an overlay fading in over it, never a blank state.
+  const liveSlot = focus === 'fixture' || focus === 'arm' ? focus : null
+  const liveEntry = liveSlot ? webModelFor(webManifest, partById(catalog, config[liveSlot])) : null
+  const liveKey = liveEntry ? `${liveSlot}:${liveEntry.file}` : ''
+  const [liveReady, setLiveReady] = useState(false)
+  const [liveFailed, setLiveFailed] = useState(false)
+  useEffect(() => {
+    setLiveReady(false)
+    setLiveFailed(false)
+  }, [liveKey])
+  const liveFinishId = liveSlot ? finishFor(config, liveSlot) : ''
+  const liveFinish = catalog.finishes.find((f) => f.id === liveFinishId)
+  // custom-ral renders the customer's actual hex — the one thing the baked
+  // WebPs cannot do (they are pre-rendered at the placeholder gray).
+  const liveTintHex =
+    (liveFinish?.id === 'custom-ral' && liveSlot ? config.finishRal?.[liveSlot] : undefined) ??
+    liveFinish?.hex ??
+    '#888888'
+  const liveActive = Boolean(liveEntry && liveFinish && !liveFailed)
 
   /**
    * New assembly or scene swap → drop any accumulated zoom/pan so the next
@@ -581,7 +646,14 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         className="composite-stage"
         role="img"
         aria-label="Assembled pole preview"
-        style={{ width: layout.width, height: layout.height, transform: stageTransform }}
+        style={{
+          width: layout.width,
+          height: layout.height,
+          transform: stageTransform,
+          // Live focus: the composited image fades out only once the canvas
+          // has real frames — until then (and on any failure) it IS the view.
+          opacity: liveActive && liveReady ? 0 : 1,
+        }}
       >
         {grounded && (
           <div
@@ -680,6 +752,32 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           </svg>
         )}
       </div>
+
+      {/* Phase 0.15: live 3D focus overlay. Sits above the stage (z below the
+          view switcher), fades in when the canvas has frames, and swallows
+          pointer gestures so a drag spins nothing hidden underneath. */}
+      {liveActive && liveEntry && liveFinish && (
+        <div
+          className={`live3d-overlay${liveReady ? ' ready' : ''}`}
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerMove={(e) => e.stopPropagation()}
+          onPointerUp={(e) => e.stopPropagation()}
+        >
+          <Live3DBoundary key={liveKey} onError={() => setLiveFailed(true)}>
+            <Suspense fallback={null}>
+              <Live3DCanvas
+                url={renderUrl(liveEntry.file)}
+                rotateYDeg={liveEntry.rotateYDeg ?? 0}
+                finish={liveFinish}
+                tintHex={liveTintHex}
+                onReady={() => setLiveReady(true)}
+                onError={() => setLiveFailed(true)}
+              />
+            </Suspense>
+          </Live3DBoundary>
+          {liveReady && <div className="live3d-badge">Live 3D</div>}
+        </div>
+      )}
 
       {callouts.map((c) => (
         <div key={c.slot} className={`viewer-callout ${c.side}`} style={{ left: c.x, top: c.y }}>

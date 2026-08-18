@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "note": "Phase 0.15 Workstream A spike registry — hand-authored, pinned by src/lib/webModels.test.ts. Workstream B replaces this with a generated artifact whose gate proves exterior-shell-only content before any entry ships.",
+  "models": {
+    "sh1-shepherds-hook": {
+      "file": "renders/web-glb/sh1-shepherds-hook.glb",
+      "bytes": 184804,
+      "rotateYDeg": -90
+    }
+  }
+}
