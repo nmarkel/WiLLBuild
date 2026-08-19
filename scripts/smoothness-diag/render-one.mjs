@@ -21,7 +21,7 @@ const PAGE_DIR = resolve(REPO_ROOT, 'scripts/render-rig/page')
 const PUBLIC_DIR = resolve(REPO_ROOT, 'public')
 
 function parseArgs(argv) {
-  const args = { part: 'gvx-pendant', finish: 'light-gray', yaw: 0, rotateY: 0 }
+  const args = { part: 'gvx-pendant', finish: 'light-gray', yaw: 0, rotateY: 0, pxpm: 0 }
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--glb') args.glb = argv[++i]
     else if (argv[i] === '--out') args.out = argv[++i]
@@ -29,9 +29,10 @@ function parseArgs(argv) {
     else if (argv[i] === '--finish') args.finish = argv[++i]
     else if (argv[i] === '--yaw') args.yaw = Number(argv[++i])
     else if (argv[i] === '--rotate-y') args.rotateY = Number(argv[++i])
+    else if (argv[i] === '--pxpm') args.pxpm = Number(argv[++i])
   }
   if (!args.glb || !args.out) {
-    console.error('usage: render-one.mjs --glb <path> --out <path.webp> [--part id] [--finish id] [--yaw deg] [--rotate-y deg]')
+    console.error('usage: render-one.mjs --glb <path> --out <path.webp> [--part id] [--finish id] [--yaw deg] [--rotate-y deg] [--pxpm n]')
     process.exit(1)
   }
   return args
@@ -63,8 +64,8 @@ async function main() {
       args.part, b64, args.rotateY,
     )
     const result = await page.evaluate(
-      (pid, fid, yaw) => window.renderPart(pid, fid, yaw),
-      args.part, args.finish, args.yaw,
+      (pid, fid, yaw, pxpm) => window.renderPart(pid, fid, yaw, pxpm || undefined),
+      args.part, args.finish, args.yaw, args.pxpm,
     )
     if (result.empty || !result.dataUrl) throw new Error('empty render readback')
     await mkdir(dirname(resolve(args.out)), { recursive: true })

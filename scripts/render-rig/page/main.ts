@@ -276,7 +276,11 @@ interface RenderResult {
   anchorY: number
 }
 
-function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult {
+// pxPerMeter defaults to the rig constant; the override exists for the Phase
+// 0.16 smoothness diagnostic (scripts/smoothness-diag/render-one.mjs) to test
+// candidate (c), render resolution, without touching any fleet render —
+// generate.mjs never passes it.
+function renderPart(partId: string, finishId: string, yawDeg = 0, pxPerMeter = PX_PER_M): RenderResult {
   const part = catalog.parts.find((p) => p.id === partId)
   const finish = catalog.finishes.find((f) => f.id === finishId)
   if (!finish) throw new Error(`no finish ${finishId}`)
@@ -325,15 +329,15 @@ function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult 
   const halfW = (vMaxX - vMinX) / 2 + MARGIN_M
   const halfH = (vMaxY - vMinY) / 2 + MARGIN_M
 
-  let canvasW = Math.min(Math.ceil(2 * halfW * PX_PER_M), MAX_CANVAS)
-  let canvasH = Math.min(Math.ceil(2 * halfH * PX_PER_M), MAX_CANVAS)
+  let canvasW = Math.min(Math.ceil(2 * halfW * pxPerMeter), MAX_CANVAS)
+  let canvasH = Math.min(Math.ceil(2 * halfH * pxPerMeter), MAX_CANVAS)
   canvasW = Math.max(canvasW, 2)
   canvasH = Math.max(canvasH, 2)
 
   // Frustum derived from the (whole-pixel) canvas so 1 m maps to exactly
-  // PX_PER_M pixels in both axes, then offset to center the content.
-  const fHalfW = canvasW / (2 * PX_PER_M)
-  const fHalfH = canvasH / (2 * PX_PER_M)
+  // pxPerMeter pixels in both axes, then offset to center the content.
+  const fHalfW = canvasW / (2 * pxPerMeter)
+  const fHalfH = canvasH / (2 * pxPerMeter)
   camera.left = cx - fHalfW
   camera.right = cx + fHalfW
   camera.top = cy + fHalfH
