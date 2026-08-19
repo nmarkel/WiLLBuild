@@ -35,3 +35,27 @@ def test_pack_glb_two_primitives_two_materials():
     assert len(gltf["materials"]) == 2
     names = {m["name"] for m in gltf["materials"]}
     assert names == {"will-body", "will-fixed-808080"}
+
+def test_pack_glb_optional_normals_accessor():
+    # Phase 0.16: a primitive may carry per-vertex normals; when present they
+    # ship as a NORMAL accessor so three.js shades smooth instead of being
+    # FORCED to flatShading (three r185 WebGLPrograms: normal attribute absent
+    # on a Standard/Physical material => flatShading, whatever the material says).
+    import json as _json
+    tri = _triangle()
+    tri["normals"] = np.array([[0,0,1],[0,0,1],[0,0,1]], dtype=np.float32)
+    blob = pack_glb([tri, _triangle()])  # second prim has none
+    json_len = struct.unpack("<I", blob[12:16])[0]
+    gltf = _json.loads(blob[20:20+json_len].decode("utf-8"))
+    p0, p1 = gltf["meshes"][0]["primitives"]
+    assert "NORMAL" in p0["attributes"]
+    assert "NORMAL" not in p1["attributes"]
+    nacc = gltf["accessors"][p0["attributes"]["NORMAL"]]
+    assert nacc["type"] == "VEC3" and nacc["componentType"] == 5126
+    assert nacc["count"] == gltf["accessors"][p0["attributes"]["POSITION"]]["count"]
+    # normals bytes really are in the buffer
+    bv = gltf["bufferViews"][nacc["bufferView"]]
+    bin_start = 20 + json_len + 8
+    off = bin_start + bv.get("byteOffset", 0)
+    got = np.frombuffer(blob[off:off + bv["byteLength"]], dtype=np.float32).reshape(-1, 3)
+    assert np.allclose(got, [[0, 0, 1]] * 3)

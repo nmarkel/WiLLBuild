@@ -15,6 +15,8 @@ from OCP.BRep import BRep_Tool
 from OCP.TopLoc import TopLoc_Location
 from OCP.Bnd import Bnd_Box
 from OCP.BRepBndLib import BRepBndLib
+from OCP.BRepGProp import BRepGProp_Face
+from OCP.gp import gp_Pnt, gp_Vec
 
 from glb_writer import write_glb
 
@@ -50,11 +52,21 @@ def load_step_solids(step_path: str) -> list:
     shape = load_step_shape(step_path)
     return _finite_solids(shape)
 
-def tessellate_shape(shape, tol_mm: float):
-    """Mesh every face; return (positions_mm Nx3, indices M) as numpy."""
-    BRepMesh_IncrementalMesh(shape, tol_mm, False, 0.5, True)
+def tessellate_shape(shape, tol_mm: float, with_normals: bool = False,
+                     ang_rad: float = 0.5):
+    """Mesh every face; return (positions_mm Nx3, indices M) as numpy.
+
+    with_normals=True (Phase 0.16) additionally returns exact B-rep surface
+    normals evaluated at each node's UV — the analytic normal FreeCAD shades
+    with, not an average of facet normals. Coincident boundary vertices on
+    tangent-continuous faces get equal normals (seamless), while true feature
+    edges keep their split-vertex hard crease. Return becomes a 3-tuple
+    (positions, indices, normals).
+    """
+    BRepMesh_IncrementalMesh(shape, tol_mm, False, ang_rad, True)
     verts = []
     tris = []
+    norms = []
     exp = TopExp_Explorer(shape, TopAbs_FACE)
     while exp.More():
         face = TopoDS.Face_s(exp.Current()); exp.Next()
@@ -69,12 +81,87 @@ def tessellate_shape(shape, tol_mm: float):
             p = tri.Node(i).Transformed(trsf)
             verts.append((p.X(), p.Y(), p.Z()))
         reversed_ = face.Orientation() == 1  # TopAbs_REVERSED
+        face_nrm = None
+        if with_normals:
+            props = BRepGProp_Face(face)
+            has_uv = tri.HasUVNodes()
+            face_nrm = np.zeros((n, 3))
+            if has_uv:
+                for i in range(1, n + 1):
+                    uv = tri.UVNode(i)
+                    pnt = gp_Pnt(); vec = gp_Vec()
+                    props.Normal(uv.X(), uv.Y(), pnt, vec)
+                    v = vec.Transformed(trsf)
+                    face_nrm[i - 1] = (v.X(), v.Y(), v.Z())
+        face_tris = []
         for i in range(1, tri.NbTriangles() + 1):
             a, b, c = tri.Triangle(i).Get()
             if reversed_:
                 a, c = c, a
-            tris.append((base + a - 1, base + b - 1, base + c - 1))
-    return np.array(verts, dtype=np.float64), np.array(tris, dtype=np.uint32)
+            face_tris.append((a - 1, b - 1, c - 1))
+        if with_normals and len(face_tris):
+            # Sign the face's analytic normals against its OWN winding. Neither
+            # TopAbs orientation alone nor a global flip works — measured on the
+            # GVX export, winding agreement was 70.7% raw and 57.4% with a
+            # REVERSED-only flip (mirrored assembly instances flip handedness
+            # via the location transform). A face's normal field is continuous,
+            # so one aggregate dot product per face settles the sign exactly.
+            ft = np.asarray(face_tris)
+            fpos = np.asarray(verts[base:], dtype=np.float64)
+            cross = np.cross(fpos[ft[:, 1]] - fpos[ft[:, 0]], fpos[ft[:, 2]] - fpos[ft[:, 0]])
+            avg = face_nrm[ft[:, 0]] + face_nrm[ft[:, 1]] + face_nrm[ft[:, 2]]
+            if float(np.einsum("ij,ij->", cross, avg)) < 0:
+                face_nrm = -face_nrm
+        if with_normals:
+            norms.extend(map(tuple, face_nrm))
+        tris.extend((base + a, base + b, base + c) for a, b, c in face_tris)
+    pos = np.array(verts, dtype=np.float64)
+    idx = np.array(tris, dtype=np.uint32)
+    if not with_normals:
+        return pos, idx
+    nrm = np.array(norms, dtype=np.float64) if norms else np.zeros((0, 3))
+    nrm = _repair_normals(pos, idx, nrm)
+    return pos, idx, nrm
+
+
+def _repair_normals(pos: np.ndarray, idx: np.ndarray, nrm: np.ndarray) -> np.ndarray:
+    """Normalize surface normals; fill degenerate ones (surface singularities
+    like a cone apex, or faces meshed without UV nodes) from the winding of
+    their incident triangles."""
+    lens = np.linalg.norm(nrm, axis=1)
+    good = lens > 1e-10
+    nrm = nrm.copy()
+    nrm[good] /= lens[good][:, None]
+    if not np.all(good) and len(idx):
+        tri = idx.reshape(-1, 3).astype(np.int64)
+        fn = np.cross(pos[tri[:, 1]] - pos[tri[:, 0]], pos[tri[:, 2]] - pos[tri[:, 0]])
+        acc = np.zeros_like(nrm)
+        for k in range(3):
+            np.add.at(acc, tri[:, k], fn)
+        al = np.linalg.norm(acc, axis=1)
+        fix = (~good) & (al > 1e-12)
+        nrm[fix] = acc[fix] / al[fix][:, None]
+        good = good | fix
+        # A node can sit on a surface singularity AND own only zero-area
+        # triangles (e.g. a collapsed cone-apex fan): borrow the average of its
+        # co-vertices' good normals so no vertex ships a zero normal.
+        rest = np.flatnonzero(~good)
+        if len(rest):
+            rest_set = set(rest.tolist())
+            neigh = np.zeros_like(nrm)
+            for t in tri:
+                bad_here = [v for v in t if v in rest_set]
+                if not bad_here:
+                    continue
+                for v in bad_here:
+                    for w in t:
+                        if good[w]:
+                            neigh[v] += nrm[w]
+            nl = np.linalg.norm(neigh, axis=1)
+            fix2 = (~good) & (nl > 1e-12)
+            nrm[fix2] = neigh[fix2] / nl[fix2][:, None]
+            nrm[(~good) & (nl <= 1e-12)] = (0.0, 1.0, 0.0)
+    return nrm
 
 def tessellate_to_arrays(shape, tol_mm: float) -> tuple:
     """Tessellate `shape` and return (positions_m Y-up, indices) as numpy arrays."""
@@ -143,18 +230,34 @@ def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndar
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
                        tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
                        rotate_x: float = 0.0, rotate_z: float = 0.0,
-                       scale_y: float = 1.0) -> dict:
+                       scale_y: float = 1.0, with_normals: bool = False,
+                       ang_rad: float = 0.5) -> dict:
     shape = load_step_shape(step_path)
-    verts_mm, tris = tessellate_shape(shape, tol_mm)
+    nrm = None
+    if with_normals:
+        verts_mm, tris, nrm = tessellate_shape(shape, tol_mm, with_normals=True,
+                                               ang_rad=ang_rad)
+    else:
+        verts_mm, tris = tessellate_shape(shape, tol_mm, ang_rad=ang_rad)
     verts_mm = _stand_up(verts_mm, rotate_x, rotate_z)
     pos = _normalize(verts_mm, origin).astype(np.float32)
+    if nrm is not None:
+        nrm = _stand_up(nrm, rotate_x, rotate_z)
     # Phase 0.10.5 (D10): axial scale for derived pole heights. Applied after
     # re-basing so the pole's base stays on the floor and only its length grows.
     if scale_y != 1.0:
         pos[:, 1] *= scale_y
+        if nrm is not None:
+            # normals transform by the inverse-transpose: diag(1, 1/s, 1)
+            nrm = nrm.copy()
+            nrm[:, 1] /= scale_y
+            lens = np.linalg.norm(nrm, axis=1)
+            ok = lens > 1e-12
+            nrm[ok] /= lens[ok][:, None]
     write_glb(out_glb, [{
         "positions": pos, "indices": tris.reshape(-1),
         "material_name": "will-body", "base_color": base_color,
+        "normals": nrm.astype(np.float32) if nrm is not None else None,
     }])
     d = pos.max(axis=0) - pos.min(axis=0)
     return {"vertices": int(len(pos)), "triangles": int(len(tris)),
@@ -209,7 +312,8 @@ def _read_labeled_solids(step_path: str):
 
 def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
                         tol_mm: float = 1.0, rotate_x: float = 0.0,
-                        rotate_z: float = 0.0) -> dict:
+                        rotate_z: float = 0.0, with_normals: bool = False,
+                        ang_rad: float = 0.5) -> dict:
     labeled = _read_labeled_solids(step_path)
     # group solids by rounded color
     groups: dict[tuple, list] = {}
@@ -223,7 +327,7 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
     builder = BRep_Builder(); comp = TopoDS_Compound(); builder.MakeCompound(comp)
     for solid, _ in labeled:
         builder.Add(comp, solid)
-    all_mm, _ = tessellate_shape(comp, tol_mm)
+    all_mm, _ = tessellate_shape(comp, tol_mm, ang_rad=ang_rad)
     all_mm = _stand_up(all_mm, rotate_x, rotate_z)
     all_m = _normalize(all_mm, origin)
     offset_m = (all_mm * MM_TO_M) - all_m  # constant translation per vertex
@@ -236,11 +340,20 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
         b = BRep_Builder(); c = TopoDS_Compound(); b.MakeCompound(c)
         for s in solids:
             b.Add(c, s)
-        verts_mm, tris = tessellate_shape(c, tol_mm)
+        nrm = None
+        if with_normals:
+            verts_mm, tris, nrm = tessellate_shape(c, tol_mm, with_normals=True,
+                                                   ang_rad=ang_rad)
+        else:
+            verts_mm, tris = tessellate_shape(c, tol_mm, ang_rad=ang_rad)
         if len(tris) == 0:
             continue
         verts_mm = _stand_up(verts_mm, rotate_x, rotate_z)
         pos = (verts_mm * MM_TO_M - off).astype(np.float32)
+        if nrm is not None:
+            # _stand_up is a pure rotation, so it transforms normals directly;
+            # the translation in _normalize doesn't touch them.
+            nrm = _stand_up(nrm, rotate_x, rotate_z).astype(np.float32)
         alu = is_aluminum(key)
         if alu:
             body_count += 1
@@ -249,7 +362,8 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
             name = "will-fixed-%02x%02x%02x" % tuple(int(round(c*255)) for c in key)
             color = (key[0], key[1], key[2], 1.0)
         primitives.append({"positions": pos, "indices": tris.reshape(-1),
-                           "material_name": name, "base_color": color})
+                           "material_name": name, "base_color": color,
+                           "normals": nrm})
         total_tris += len(tris)
     write_glb(out_glb, primitives)
     return {"vertices": int(sum(len(p["positions"]) for p in primitives)),
