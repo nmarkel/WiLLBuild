@@ -76,7 +76,11 @@ async function loadRealModel(
 
 // ---- Rig constants (shared across every part → layer coherence) -------------
 const PX_PER_M = 360 // 2x supersample — assets downscale crisply in the viewer
-const MAX_CANVAS = 4096
+// 8192 (0.16.5, was 4096): SwiftShader handles it, and 4096 both blocked the
+// pole slot's 2x supersample (a 20 ft pole at 720 px/m needs 4820 px) and was
+// silently clamp-cropping the tallest NAFCO poles even at 1x (11.9 m x 360 =
+// 4284 px).
+const MAX_CANVAS = 8192
 const AZIMUTH_DEG = 35
 const ELEVATION_DEG = 6
 const MARGIN_M = 0.3 // world-space breathing room before the alpha crop

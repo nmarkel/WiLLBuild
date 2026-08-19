@@ -146,8 +146,18 @@ INGEST: list[dict] = [
     dict(file="BA24-4R.STEP", part="willstudio-ba1-banner-arm", design="BA24", fit="4R",
          origin="mount-center", mode="mono", tol=0.75),
     # --- fixtures: masters with full internal detail; minutes to parse ---
+    # Phase 0.16.5 (Tyler's 8/19 punch list, Nick's call): the export's internal
+    # light-engine stack hangs visibly under the shade, and the top stem is a
+    # sleeve the ARM slides over in reality — neither should render. Measured
+    # rules in the part's final frame: the under-junk is the skinny center
+    # stack (r<0.08 m topping out below y=-0.30 — the lens r=0.203, gray ring
+    # r=0.194 and bezel r=0.24 all stay); the stem stack is r<0.035 reaching
+    # above y=-0.09 (the dome/ball, r 0.058-0.074, stays). Dropping art never
+    # moves the frame: the normalization offset comes from the FULL solid set.
     dict(file="WD-GVX-PM", part="gvx-pendant", design="GVX", fit="PM",
-         origin="top", mode="color", tol=1.0, slow=True),
+         origin="top", mode="color", tol=1.0, slow=True,
+         drop=[dict(r_below=0.08, top_below=-0.30),
+               dict(r_below=0.035, top_above=-0.09)]),
     dict(file="DRX-Post-Top.STEP", part="drx-post-top", design="DRX", fit="3T",
          origin="base", mode="color", tol=1.5, slow=True),
     dict(file="TEX.STEP", part="tex-post-top", design="TEX", fit="3T",
@@ -384,7 +394,8 @@ def convert_one(entry: dict) -> dict:
     rot = dict(rotate_x=entry.get("rotateX", 0.0), rotate_z=entry.get("rotateZ", 0.0))
     if entry["mode"] == "color":
         stats = convert_color_aware(step_path, out_path, origin=entry["origin"],
-                                    tol_mm=entry["tol"], **rot)
+                                    tol_mm=entry["tol"],
+                                    drop_solids=entry.get("drop"), **rot)
     else:
         stats = convert_monolithic(step_path, out_path, origin=entry["origin"],
                                    tol_mm=entry["tol"], **rot)

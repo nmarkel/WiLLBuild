@@ -77,3 +77,49 @@ def test_gvx_color_aware_with_surface_normals(tmp_path):
         assert inverted_area < 0.005, f"sign-flipped normal area {inverted_area:.4f}"
         checked += 1
     assert checked >= 2
+
+@pytest.mark.skipif(not STEP.exists(), reason="real GVX STEP not extracted")
+def test_gvx_drop_rules_remove_underjunk_and_stem(tmp_path):
+    """Phase 0.16.5 (Tyler's punch list): the internal light-engine stack under
+    the shade and the protruding top stem must not render — the arm's sleeve
+    slides over the stem in reality, and the layered compositor draws fixture
+    over arm so the only way to hide it is to not ship it. The mounting frame
+    must NOT move: the normalization offset comes from the full solid set.
+    """
+    import numpy as np, struct as _s, json as _json
+    out = tmp_path / "gvx-trimmed.glb"
+    stats = convert_color_aware(
+        str(STEP), str(out), origin="top", tol_mm=2.0,
+        drop_solids=[dict(r_below=0.08, top_below=-0.30),
+                     dict(r_below=0.035, top_above=-0.09)])
+    assert stats["dropped_solids"] > 0
+    blob = out.read_bytes()
+    json_len = _s.unpack("<I", blob[12:16])[0]
+    gltf = _json.loads(blob[20:20+json_len])
+    bin_start = 20 + json_len + 8
+
+    def acc(ai):
+        a = gltf["accessors"][ai]; bv = gltf["bufferViews"][a["bufferView"]]
+        dt = {5126: np.float32, 5125: np.uint32}[a["componentType"]]
+        n = a["count"] * (3 if a["type"] == "VEC3" else 1)
+        return np.frombuffer(blob, dtype=dt, count=n,
+                             offset=bin_start + bv.get("byteOffset", 0)).reshape(a["count"], -1)
+
+    pos = np.concatenate([acc(p["attributes"]["POSITION"])
+                          for p in gltf["meshes"][0]["primitives"]]).astype(np.float64)
+    r = np.hypot(pos[:, 0], pos[:, 2])
+    # the visible under-shade junk region is empty
+    assert not np.any((r < 0.075) & (pos[:, 1] < -0.456)), "under-shade junk still present"
+    # the protruding stem region is empty
+    assert not np.any((r < 0.03) & (pos[:, 1] > -0.05)), "top stem still present"
+    # the shade itself is intact: brim radius, dome band, bezel bottom depth
+    assert r.max() > 0.23, "brim missing"
+    dome = (r > 0.05) & (r < 0.08) & (pos[:, 1] > -0.20) & (pos[:, 1] < -0.09)
+    assert dome.sum() > 100, "dome/ball missing"
+    # Frame unchanged, checked two ways. If normalization had been recomputed
+    # AFTER the drop, origin="top" would re-pin the trimmed mesh's top to y=0 —
+    # so with the stem gone, ymax must sit at the ball, far below 0.
+    assert pos[:, 1].max() < -0.05, "part shifted — normalization must use the full set"
+    # And the brim band still sits at its original height.
+    brim = r > 0.23
+    assert -0.47 < pos[brim, 1].min() < -0.42, "brim moved"
