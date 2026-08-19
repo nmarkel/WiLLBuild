@@ -274,9 +274,18 @@ interface RenderResult {
   height: number
   anchorX: number
   anchorY: number
+  /** The density this render ACTUALLY used (px per world meter). Differs from
+   *  the requested override when the cap-guard halved a supersample back down
+   *  to fit MAX_CANVAS — the caller divides pixel fields by
+   *  (pxPerMeter / rig.pxPerMeter) to store manifest entries at rig density. */
+  pxPerMeter: number
 }
 
-function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult {
+// pxPerMeter defaults to the rig constant; the override exists for the Phase
+// 0.16 smoothness diagnostic (scripts/smoothness-diag/render-one.mjs) to test
+// candidate (c), render resolution, without touching any fleet render —
+// generate.mjs never passes it.
+function renderPart(partId: string, finishId: string, yawDeg = 0, pxPerMeter = PX_PER_M): RenderResult {
   const part = catalog.parts.find((p) => p.id === partId)
   const finish = catalog.finishes.find((f) => f.id === finishId)
   if (!finish) throw new Error(`no finish ${finishId}`)
@@ -325,15 +334,25 @@ function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult 
   const halfW = (vMaxX - vMinX) / 2 + MARGIN_M
   const halfH = (vMaxY - vMinY) / 2 + MARGIN_M
 
-  let canvasW = Math.min(Math.ceil(2 * halfW * PX_PER_M), MAX_CANVAS)
-  let canvasH = Math.min(Math.ceil(2 * halfH * PX_PER_M), MAX_CANVAS)
+  // Cap guard for supersampled renders (Phase 0.16 candidate c): a factor that
+  // would clamp against MAX_CANVAS crops content (the frustum derives from the
+  // canvas), so halve the requested density back toward the rig base until the
+  // canvas fits. Factors are powers of two of PX_PER_M, so halving lands on
+  // clean densities; at PX_PER_M itself the pre-existing clamp behavior is
+  // unchanged.
+  while (pxPerMeter > PX_PER_M && (2 * halfW * pxPerMeter > MAX_CANVAS || 2 * halfH * pxPerMeter > MAX_CANVAS)) {
+    pxPerMeter /= 2
+  }
+
+  let canvasW = Math.min(Math.ceil(2 * halfW * pxPerMeter), MAX_CANVAS)
+  let canvasH = Math.min(Math.ceil(2 * halfH * pxPerMeter), MAX_CANVAS)
   canvasW = Math.max(canvasW, 2)
   canvasH = Math.max(canvasH, 2)
 
   // Frustum derived from the (whole-pixel) canvas so 1 m maps to exactly
-  // PX_PER_M pixels in both axes, then offset to center the content.
-  const fHalfW = canvasW / (2 * PX_PER_M)
-  const fHalfH = canvasH / (2 * PX_PER_M)
+  // pxPerMeter pixels in both axes, then offset to center the content.
+  const fHalfW = canvasW / (2 * pxPerMeter)
+  const fHalfH = canvasH / (2 * pxPerMeter)
   camera.left = cx - fHalfW
   camera.right = cx + fHalfW
   camera.top = cy + fHalfH
@@ -377,7 +396,7 @@ function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult 
   if (!useReal) material.dispose()
 
   if (maxX < 0) {
-    return { empty: true, dataUrl: '', width: 0, height: 0, anchorX: 0, anchorY: 0 }
+    return { empty: true, dataUrl: '', width: 0, height: 0, anchorX: 0, anchorY: 0, pxPerMeter }
   }
 
   const cropLeft = Math.max(0, minX - CROP_PAD_PX)
@@ -405,6 +424,7 @@ function renderPart(partId: string, finishId: string, yawDeg = 0): RenderResult 
     height: cropH,
     anchorX: originX - cropLeft,
     anchorY: originY - cropTop,
+    pxPerMeter,
   }
 }
 

@@ -142,3 +142,34 @@ describe('real-parts.json matches the ingest provenance record (spec D8 union)',
     expect({ missing, extra }).toEqual({ missing: [], extra: [] })
   })
 })
+
+describe('per-slot supersampling (Phase 0.16 candidate c)', () => {
+  it('supersamples the slots that focus views upscale, never the pole', async () => {
+    const { supersampleForSlot } = await import('./generate.mjs')
+    expect(supersampleForSlot('fixture')).toBe(4)
+    expect(supersampleForSlot('baseCover')).toBe(4)
+    expect(supersampleForSlot('arm')).toBe(2)
+    // a 20 ft pole at 4x exceeds MAX_CANVAS and nothing upscales pole layers
+    expect(supersampleForSlot('pole')).toBe(1)
+    expect(supersampleForSlot('banner')).toBe(1)
+    expect(supersampleForSlot('standalone')).toBe(1)
+    expect(supersampleForSlot(undefined)).toBe(1)
+  })
+
+  it('divides entries back to rig density using the density the page REPORTS', async () => {
+    const { entryAtRigDensity } = await import('./generate.mjs')
+    // the GVX case measured in the 0.16 diagnosis: 1440 px/m file, 360 rig
+    expect(
+      entryAtRigDensity({ width: 702, height: 716, anchorX: 351, anchorY: 10, pxPerMeter: 1440 }, 360),
+    ).toEqual({ width: 175.5, height: 179, anchor: [87.75, 2.5] })
+    // cap guard halved a 4x request to 2x: factor must follow the RESULT
+    expect(
+      entryAtRigDensity({ width: 400, height: 200, anchorX: 100, anchorY: 50, pxPerMeter: 720 }, 360),
+    ).toEqual({ width: 200, height: 100, anchor: [50, 25] })
+    // un-supersampled result passes through unchanged (and tolerates a page
+    // that predates the pxPerMeter field)
+    expect(
+      entryAtRigDensity({ width: 185, height: 188, anchorX: 92.5, anchorY: 7 }, 360),
+    ).toEqual({ width: 185, height: 188, anchor: [92.5, 7] })
+  })
+})

@@ -36,6 +36,19 @@ def pack_glb(primitives: list[dict]) -> bytes:
         accessors.append({"bufferView": idx_view, "componentType": 5125,  # UINT
                           "count": int(len(idx)), "type": "SCALAR"})
         idx_acc = len(accessors) - 1
+        # Phase 0.16: optional per-vertex normals. Without a NORMAL attribute,
+        # three.js (r185) FORCES flatShading on Standard/Physical materials, so
+        # every curved surface shades as facet bands regardless of the rig's
+        # material swap. Exact B-rep normals restore analytic smooth shading.
+        nrm_acc = None
+        if prim.get("normals") is not None:
+            nrm = np.ascontiguousarray(prim["normals"], dtype=np.float32)
+            if len(nrm) != len(pos):
+                raise ValueError(f"normals count {len(nrm)} != positions {len(pos)}")
+            nrm_view = add_view(nrm.tobytes(), 34962)  # ARRAY_BUFFER
+            accessors.append({"bufferView": nrm_view, "componentType": 5126,
+                              "count": int(len(nrm)), "type": "VEC3"})
+            nrm_acc = len(accessors) - 1
         mat_index = len(materials)
         r, g, b, a = prim["base_color"]
         materials.append({
@@ -46,7 +59,10 @@ def pack_glb(primitives: list[dict]) -> bytes:
             },
             "doubleSided": True,
         })
-        meshes_prims.append({"attributes": {"POSITION": pos_acc},
+        attributes = {"POSITION": pos_acc}
+        if nrm_acc is not None:
+            attributes["NORMAL"] = nrm_acc
+        meshes_prims.append({"attributes": attributes,
                              "indices": idx_acc, "material": mat_index})
 
     gltf = {

@@ -22,3 +22,27 @@ def test_pole_converts_to_valid_glb(tmp_path):
     gltf = json.loads(blob[20:20+json_len])
     ymin = gltf["accessors"][0]["min"][1]
     assert abs(ymin) < 0.01, f"base not at Y=0 (ymin={ymin})"
+
+@pytest.mark.skipif(not STEP.exists(), reason="real STEP not extracted (offline input)")
+def test_default_conversion_emits_normals(tmp_path):
+    """Phase 0.16 Workstream B: exact B-rep normals are the conversion DEFAULT.
+
+    Without a NORMAL accessor three.js forces flatShading and every curved
+    surface bands (the 0.16 diagnosis) — a regression that silently drops the
+    attribute would re-ship the defect fleet-wide on the next re-ingest.
+    """
+    import numpy as np
+    out = tmp_path / "pole-default.glb"
+    convert_monolithic(str(STEP), str(out), origin="base")
+    blob = out.read_bytes()
+    json_len = struct.unpack("<I", blob[12:16])[0]
+    gltf = json.loads(blob[20:20+json_len])
+    prim = gltf["meshes"][0]["primitives"][0]
+    assert "NORMAL" in prim["attributes"], "default conversion must ship normals"
+    nacc = gltf["accessors"][prim["attributes"]["NORMAL"]]
+    assert nacc["count"] == gltf["accessors"][prim["attributes"]["POSITION"]]["count"]
+    bv = gltf["bufferViews"][nacc["bufferView"]]
+    off = 20 + json_len + 8 + bv.get("byteOffset", 0)
+    nrm = np.frombuffer(blob[off:off + bv["byteLength"]], dtype=np.float32).reshape(-1, 3)
+    lens = np.linalg.norm(nrm.astype(np.float64), axis=1)
+    assert np.all(np.abs(lens - 1.0) < 1e-3)

@@ -81,8 +81,18 @@ Skipping a step has always cost more than doing it. Work on a phase branch off `
   crops are byte-identical; don't re-render for framing.
 - **Mapping + re-render ship together**: `realCad` drives Coming Soon, so mapping without new
   renders presents a part as configurable while showing placeholder art.
-- Tessellation is dense (GVX ≈1.12 M triangles) and the rig is competent PBR — neither is the
-  fidelity lever; don't "improve" them without a measured side-by-side.
+- **The fidelity levers are vertex NORMALS and fixture-layer RESOLUTION — not tessellation
+  density and not the rig's PBR** (Phase 0.16, measured): a GLB without a NORMAL attribute is
+  FORCE-flat-shaded by three.js (r185 `WebGLPrograms.getParameters`), and 2.4× more triangles
+  still banded while exact B-rep normals at the SAME count matched FreeCAD. Conversion now
+  defaults `with_normals=True` (exact surface normals via `BRepGProp_Face`, per-face sign vs
+  own winding) — pinned by `test_default_conversion_emits_normals`; never re-ingest with it off.
+- **Per-slot supersampling** (0.16 candidate c): fixture/baseCover render at 4×, arm at 2×
+  (`SUPERSAMPLE` in `generate.mjs`); the FILE carries N× pixels while the manifest entry is
+  divided back to rig density (`entryAtRigDensity`) — the compositor draws at entry size, so
+  focus views get real pixels. The rig page halves a factor that would hit the 4096 px canvas
+  cap (cropping) and reports the density it actually used. Poles stay 1× (a 20 ft pole at 4×
+  exceeds the cap; nothing upscales pole layers).
 
 ## 5 · Flags — two axes, never conflated
 
