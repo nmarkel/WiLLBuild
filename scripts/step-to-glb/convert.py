@@ -230,7 +230,7 @@ def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndar
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
                        tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
                        rotate_x: float = 0.0, rotate_z: float = 0.0,
-                       scale_y: float = 1.0, with_normals: bool = False,
+                       scale_y: float = 1.0, with_normals: bool = True,
                        ang_rad: float = 0.5) -> dict:
     shape = load_step_shape(step_path)
     nrm = None
@@ -312,7 +312,7 @@ def _read_labeled_solids(step_path: str):
 
 def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
                         tol_mm: float = 1.0, rotate_x: float = 0.0,
-                        rotate_z: float = 0.0, with_normals: bool = False,
+                        rotate_z: float = 0.0, with_normals: bool = True,
                         ang_rad: float = 0.5) -> dict:
     labeled = _read_labeled_solids(step_path)
     # group solids by rounded color

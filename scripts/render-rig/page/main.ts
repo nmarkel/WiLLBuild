@@ -274,6 +274,11 @@ interface RenderResult {
   height: number
   anchorX: number
   anchorY: number
+  /** The density this render ACTUALLY used (px per world meter). Differs from
+   *  the requested override when the cap-guard halved a supersample back down
+   *  to fit MAX_CANVAS — the caller divides pixel fields by
+   *  (pxPerMeter / rig.pxPerMeter) to store manifest entries at rig density. */
+  pxPerMeter: number
 }
 
 // pxPerMeter defaults to the rig constant; the override exists for the Phase
@@ -329,6 +334,16 @@ function renderPart(partId: string, finishId: string, yawDeg = 0, pxPerMeter = P
   const halfW = (vMaxX - vMinX) / 2 + MARGIN_M
   const halfH = (vMaxY - vMinY) / 2 + MARGIN_M
 
+  // Cap guard for supersampled renders (Phase 0.16 candidate c): a factor that
+  // would clamp against MAX_CANVAS crops content (the frustum derives from the
+  // canvas), so halve the requested density back toward the rig base until the
+  // canvas fits. Factors are powers of two of PX_PER_M, so halving lands on
+  // clean densities; at PX_PER_M itself the pre-existing clamp behavior is
+  // unchanged.
+  while (pxPerMeter > PX_PER_M && (2 * halfW * pxPerMeter > MAX_CANVAS || 2 * halfH * pxPerMeter > MAX_CANVAS)) {
+    pxPerMeter /= 2
+  }
+
   let canvasW = Math.min(Math.ceil(2 * halfW * pxPerMeter), MAX_CANVAS)
   let canvasH = Math.min(Math.ceil(2 * halfH * pxPerMeter), MAX_CANVAS)
   canvasW = Math.max(canvasW, 2)
@@ -381,7 +396,7 @@ function renderPart(partId: string, finishId: string, yawDeg = 0, pxPerMeter = P
   if (!useReal) material.dispose()
 
   if (maxX < 0) {
-    return { empty: true, dataUrl: '', width: 0, height: 0, anchorX: 0, anchorY: 0 }
+    return { empty: true, dataUrl: '', width: 0, height: 0, anchorX: 0, anchorY: 0, pxPerMeter }
   }
 
   const cropLeft = Math.max(0, minX - CROP_PAD_PX)
@@ -409,6 +424,7 @@ function renderPart(partId: string, finishId: string, yawDeg = 0, pxPerMeter = P
     height: cropH,
     anchorX: originX - cropLeft,
     anchorY: originY - cropTop,
+    pxPerMeter,
   }
 }
 

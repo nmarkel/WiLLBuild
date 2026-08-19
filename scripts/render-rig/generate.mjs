@@ -65,6 +65,39 @@ export function ANGLES_FOR_SLOT(_slot) {
   return COMPASS
 }
 
+// Phase 0.16 (candidate c): per-slot supersampling. The composited assembly
+// DOWNSCALES layers (a 20 ft pole fits an ~800 px viewer), but focus views
+// UPSCALE the small parts — a fixture layer is ~185 px at 360 px/m and the
+// fixture focus blows it up ~4×, which crushes detail whatever the shading
+// does. So fixture-class layers render at a multiple of the rig density and
+// their manifest entries are divided back to rig density: the compositor
+// keeps drawing at the entry's size (mechanism proven by the skip path's
+// ratio scaling below), the browser downscales the bigger file crisply in
+// assembly view, and focus views get real pixels. Poles stay at 1× — a 20 ft
+// pole at 4× exceeds MAX_CANVAS, and nothing upscales pole layers anyway.
+export const SUPERSAMPLE = { fixture: 4, baseCover: 4, arm: 2 }
+
+export function supersampleForSlot(slot) {
+  return SUPERSAMPLE[slot] ?? 1
+}
+
+/**
+ * Divide a render result's pixel fields back to rig density. The page reports
+ * the density it ACTUALLY used (its cap guard may have halved the request),
+ * so the factor comes from the result, never from what was asked for.
+ */
+export function entryAtRigDensity(result, rigPxPerMeter) {
+  const f = (result.pxPerMeter ?? rigPxPerMeter) / rigPxPerMeter
+  return {
+    width: Math.round((result.width / f) * 100) / 100,
+    height: Math.round((result.height / f) * 100) / 100,
+    anchor: [
+      Math.round((result.anchorX / f) * 100) / 100,
+      Math.round((result.anchorY / f) * 100) / 100,
+    ],
+  }
+}
+
 /**
  * Phase 0.10.5 (spec D8): real CAD outranks placeholder geometry. If a part is
  * mapped in real-parts.json and its GLB is on this machine, rendering the
@@ -296,6 +329,7 @@ async function main() {
         continue
       }
       const ANGLES = ANGLES_FOR_SLOT(part.slot)
+      const renderPxPerMeter = rig.pxPerMeter * supersampleForSlot(part.slot)
 
       const angles = {}
       let totalRenders = 0
@@ -306,10 +340,11 @@ async function main() {
           let result
           try {
             result = await page.evaluate(
-              (pid, fid, y) => window.renderPart(pid, fid, y),
+              (pid, fid, y, pxpm) => window.renderPart(pid, fid, y, pxpm),
               part.id,
               finishId,
               yaw,
+              renderPxPerMeter,
             )
           } catch (err) {
             // A dead page (frame detached / session or target closed) kills
@@ -333,11 +368,11 @@ async function main() {
           const fileName = `${part.id}--${key}--${finishId}.webp`
           const base64 = result.dataUrl.replace(/^data:image\/webp;base64,/, '')
           await writeFile(resolve(OUT_DIR, fileName), Buffer.from(base64, 'base64'))
+          // Entries live at rig density whatever density the FILE was rendered
+          // at — the compositor draws the file at the entry's size.
           finishes[finishId] = {
             file: `renders/${fileName}`,
-            width: result.width,
-            height: result.height,
-            anchor: [Math.round(result.anchorX * 100) / 100, Math.round(result.anchorY * 100) / 100],
+            ...entryAtRigDensity(result, rig.pxPerMeter),
           }
           totalRenders++
         }
