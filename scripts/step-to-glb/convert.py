@@ -227,11 +227,65 @@ def _stand_up(verts_mm: np.ndarray, rotate_x: float, rotate_z: float) -> np.ndar
     return out
 
 
+def _crop_below(pos: np.ndarray, tris: np.ndarray, nrm, plane_y: float):
+    """Clip the mesh at y = plane_y, discarding everything BELOW the plane.
+
+    Phase 0.17 (Tyler 8/19): the pole tube must not extend through its anchor
+    base — the shaft physically ends at the base's top, and the CLE-lifted
+    clamshell exposes whatever renders below it. Straddling triangles are cut
+    at the plane (vertices interpolated, normals re-normalized), so the crop
+    is exact rather than jagged. Returns (pos, tris, nrm).
+    """
+    keep_tris = []
+    new_pos = pos.tolist()
+    new_nrm = nrm.tolist() if nrm is not None else None
+
+    def lerp(i, j):
+        a, b = pos[i], pos[j]
+        t = (plane_y - a[1]) / (b[1] - a[1])
+        p = a + (b - a) * t
+        new_pos.append(p.tolist())
+        if new_nrm is not None:
+            n = nrm[i] + (nrm[j] - nrm[i]) * t
+            ln = np.linalg.norm(n)
+            new_nrm.append((n / ln).tolist() if ln > 1e-12 else nrm[i].tolist())
+        return len(new_pos) - 1
+
+    for tri in tris:
+        above = [pos[v][1] >= plane_y for v in tri]
+        n_above = sum(above)
+        if n_above == 3:
+            keep_tris.append(list(tri))
+            continue
+        if n_above == 0:
+            continue
+        # Rotate so the pattern starts at vertex 0 (keeps winding order).
+        idx = list(tri)
+        while not (above[0] and (n_above == 1 or not above[2])):
+            idx = idx[1:] + idx[:1]
+            above = above[1:] + above[:1]
+        a, b, c = idx
+        if n_above == 1:
+            # a above; b, c below → one clipped triangle.
+            keep_tris.append([a, lerp(a, b), lerp(c, a)])
+        else:
+            # a, b above; c below → quad a-b-bc-ca → two triangles.
+            bc = lerp(b, c)
+            ca = lerp(c, a)
+            keep_tris.append([a, b, bc])
+            keep_tris.append([a, bc, ca])
+
+    pos_out = np.asarray(new_pos, dtype=np.float32)
+    nrm_out = np.asarray(new_nrm, dtype=np.float32) if new_nrm is not None else None
+    tris_out = np.asarray(keep_tris, dtype=np.uint32)
+    return pos_out, tris_out, nrm_out
+
+
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
                        tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
                        rotate_x: float = 0.0, rotate_z: float = 0.0,
                        scale_y: float = 1.0, with_normals: bool = True,
-                       ang_rad: float = 0.5) -> dict:
+                       ang_rad: float = 0.5, crop_below_m: float | None = None) -> dict:
     shape = load_step_shape(step_path)
     nrm = None
     if with_normals:
@@ -254,6 +308,11 @@ def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
             lens = np.linalg.norm(nrm, axis=1)
             ok = lens > 1e-12
             nrm[ok] /= lens[ok][:, None]
+    # Phase 0.17: crop AFTER the axial scale — the crop plane is a fixed
+    # world height (the anchor base's top), never something that stretches
+    # with pole length (same rule as the hand-hole graft).
+    if crop_below_m is not None:
+        pos, tris, nrm = _crop_below(pos, tris, nrm, crop_below_m)
     write_glb(out_glb, [{
         "positions": pos, "indices": tris.reshape(-1),
         "material_name": "will-body", "base_color": base_color,

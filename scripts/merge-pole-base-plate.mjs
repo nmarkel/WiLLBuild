@@ -36,7 +36,9 @@ const catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
 
 // Tyler's 8/14 base drawings: square base width (in) per pole OD (in).
 const BASE_WIDTH_IN = { 4: 8.63, 5: 10.25, 6: 11.0 };
-const THICKNESS_M = 0.0254; // 1in — assumed; plan views carry no thickness.
+const THICKNESS_M = 0.0897; // matches the STANDARD base casting's height (3.53in
+// measured from 4-RND-STANDARD-BASE.STEP), so the CROPPED pole tube meets the
+// fallback plate exactly on machines without the base GLB.
 const IN_TO_M = 0.0254;
 
 let stamped = 0;

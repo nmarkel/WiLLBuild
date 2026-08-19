@@ -657,6 +657,12 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           </div>
         ))}
 
+        {/* zIndex is the SORTED array index, not layer.z: depth-proxied
+            layers carry fractional z (arms, crossarm fixtures, the CLE
+            extender), and CSS silently IGNORES a fractional z-index — the
+            layer fell back to auto and painted UNDER every integer-z sibling
+            (Tyler's "transparent extender", 8/19). layers[] is already
+            z-sorted, so the index is the correct integer stacking. */}
         {layout.layers.map((layer, i) =>
           layer.tint ? (
             <TintedLayer
@@ -668,7 +674,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
                 top: layer.top,
                 width: layer.asset.width,
                 height: layer.asset.height,
-                zIndex: layer.z,
+                zIndex: i,
               }}
             />
           ) : (
@@ -684,7 +690,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
                 top: layer.top,
                 width: layer.asset.width,
                 height: layer.asset.height,
-                zIndex: layer.z,
+                zIndex: i,
               }}
             />
           ),

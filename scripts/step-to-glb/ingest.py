@@ -55,7 +55,13 @@ with open(_CATALOG_PATH, encoding="utf-8") as fh:
 INGEST: list[dict] = [
     # --- pole ---
     dict(file="RSAA-4040-12.STEP", part="alum-pole-12", design="RSAA-4040-12", fit="40",
-         origin="base", mode="mono", tol=0.5),
+         origin="base", mode="mono", tol=0.5, cropBelowM=0.08,
+         note="Phase 0.17 (Tyler 8/19): the tube is CROPPED below y=0.08 m — "
+              "the shaft physically ends at its anchor base, and the "
+              "CLE-lifted clamshell exposes anything rendered below it. 0.08 "
+              "keeps the cut hidden inside the standard base's collar (top at "
+              "0.0897). Applied AFTER the derived poles' axial scale, so the "
+              "cut height never stretches with pole length."),
     # --- arms (single-arm files are the per-azimuth render source; the 2/3/4-arm
     #     files are whole clusters, used for the CAD downloads, not the layers) ---
     dict(file="FR2-40F.STEP", part="willstudio-fr2-decorative-crossarm", design="FR2",
@@ -414,7 +420,8 @@ def convert_one(entry: dict) -> dict:
                                     tol_mm=entry["tol"], **rot)
     else:
         stats = convert_monolithic(step_path, out_path, origin=entry["origin"],
-                                   tol_mm=entry["tol"], **rot)
+                                   tol_mm=entry["tol"],
+                                   crop_below_m=entry.get("cropBelowM"), **rot)
     stats["seconds"] = round(time.time() - t0, 1)
     stats["glb_bytes"] = os.path.getsize(out_path)
     stats["glb"] = os.path.relpath(out_path, os.path.join(os.path.dirname(__file__), "..", "render-rig"))
@@ -444,7 +451,8 @@ def convert_derived(entry: dict) -> dict:
     os.makedirs(GLB_DIR, exist_ok=True)
     t0 = time.time()
     stats = convert_monolithic(step_path, out_path, origin=src["origin"],
-                               tol_mm=src["tol"], scale_y=entry["scaleY"])
+                               tol_mm=src["tol"], scale_y=entry["scaleY"],
+                               crop_below_m=src.get("cropBelowM"))
     stats["seconds"] = round(time.time() - t0, 1)
     stats["glb_bytes"] = os.path.getsize(out_path)
     stats["glb"] = os.path.relpath(out_path, os.path.join(os.path.dirname(__file__), "..", "render-rig"))

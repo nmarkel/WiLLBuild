@@ -18,7 +18,7 @@ function ftLabel(ft: number): string {
   return i === 0 ? `${f} ft` : `${f}′ ${i}″`
 }
 import { useConfigurator } from '../store'
-import { displayPartName } from '../lib/display'
+import { displayArmName, displayPartName } from '../lib/display'
 import { nearestRal } from '../lib/ral'
 import { COMING_SOON_HINT, COMING_SOON_LABEL, isComingSoon } from '../lib/availability'
 import { BannerPicker } from './BannerPicker'
@@ -151,7 +151,7 @@ export function Panel({ catalog, config }: Props) {
                     style={{ background: config.finishRal?.[step.key] ?? finish.hex }}
                   />
                 )}
-                {part ? displayPartName(part.name) : '—'}
+                {part ? (part.slot === 'arm' ? displayArmName(part) : displayPartName(part.name)) : '—'}
               </span>
               <span className="step-chevron" aria-hidden="true">{open ? '▾' : '▸'}</span>
             </button>
@@ -699,7 +699,7 @@ function PartChoice({
                 p.family.slice(0, 2).toUpperCase()
               )}
             </span>
-            <span className="option-name">{displayPartName(p.name)}</span>
+            <span className="option-name">{p.slot === 'arm' ? displayArmName(p) : displayPartName(p.name)}</span>
             <span className="option-family">{partDesignCode(p)}</span>
             {soon && <span className="coming-soon-badge">{COMING_SOON_LABEL}</span>}
           </button>

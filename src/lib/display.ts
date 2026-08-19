@@ -9,3 +9,27 @@
 export function displayPartName(name: string): string {
   return name.replace(/^(WiLLstudio|WiLLsport|WiLLev|WiLLcloud|NAFCO)[®™]?\s+/i, '')
 }
+
+/**
+ * Phase 0.17 (Tyler 8/19): bracket card naming — "the PN should be on the
+ * right (just like it is); the name should use whatever is in the spec sheet
+ * minus the PN." Arm names from willbrands.com lead with their code ("SH1
+ * Shepherds Hook", "HSX Decorative Upsweep Arms"), which duplicated the
+ * card's code chip. Strips the leading token only when it IS one of the
+ * part's own model codes or their consolidated X-form (HS1/HS2 → HSX) —
+ * data-driven, so a name that legitimately starts with a word ("Side
+ * Shepherds Hook…") is never touched. Display-only, like displayPartName.
+ */
+export function displayArmName(part: {
+  name: string
+  modelCodes?: Record<string, string>
+}): string {
+  const name = displayPartName(part.name)
+  const codes = Object.values(part.modelCodes ?? {})
+  if (codes.length === 0) return name
+  const [first, ...rest] = name.split(/\s+/)
+  const isCode =
+    codes.includes(first) ||
+    (/^[A-Z]{2,3}X$/.test(first) && codes.some((c) => c.startsWith(first.slice(0, -1))))
+  return isCode && rest.length > 0 ? rest.join(' ') : name
+}
