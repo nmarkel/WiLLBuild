@@ -190,6 +190,39 @@
       "note": "Single Plant Holder Kit (measured 0.811 m reach along +X \u2014 no rotateY \u2014 basket hanging to y=-0.553 below the bracket at the native y=0; origin='native' for the same reason as FH-4R)."
     },
     {
+      "file": "4-RND-STANDARD-BASE.STEP",
+      "kind": "component",
+      "present": true,
+      "bytes": 255922,
+      "sha256": "9a342416494d6c6daab757addb9e64386aec2de02d4e0b9150a68ae7e9add318",
+      "partId": "willstudio-pole-base-standard",
+      "designCode": "SB",
+      "fitCode": "4R",
+      "origin": "base",
+      "converter": "mono",
+      "tolMm": 0.5,
+      "rotateXDeg": -90,
+      "glb": "render-rig/real-assets/glb/willstudio-pole-base-standard.glb",
+      "glbBytes": 78880,
+      "note": "Standard 4in round pole anchor base \u2014 Tyler 8/19: THE standard pole base detail, replacing the 0.14 placeholder plate. Modeled Z-UP (verified: the 8.61in square flange at -Z, the pole-collar ring at +Z), so rotateX -90 stands it up; origin='base' floors Y with the flange on the foundation. A render-only catalog part (slot 'accessory', never selectable) whose GLB poleGraftPlan (generate.mjs) grafts onto every pole at the origin. 3.53in tall cast base, matches Tyler's 8/14 plan drawing (8.63in)."
+    },
+    {
+      "file": "CLE.STEP",
+      "kind": "component",
+      "present": true,
+      "bytes": 2009212,
+      "sha256": "8d8978e32711edb4d49af2d383cea506c8d091e6402c78755e794bbf2bd009bd",
+      "partId": "willstudio-acc-clamshell-extender",
+      "designCode": "CLE",
+      "fitCode": null,
+      "origin": "mount",
+      "converter": "mono",
+      "tolMm": 0.5,
+      "glb": "render-rig/real-assets/glb/willstudio-acc-clamshell-extender.glb",
+      "glbBytes": 564356,
+      "note": "Clamshell Base Extender \u2014 Tyler 8/19: 'goes on the bottom of the base to extend the bottom of it.' Native Y-up: a 25.0in skirt tapering to 16.1in over 8.42in of height. The clamshells' 17.0in bottom rim meets the taper at y=0.195 m (measured), so that is the compositor's cover lift (stackHeightM on the catalog part). Draws when the CLE option is checked on CL1/2/3; renderPartId on the CLE value wires it."
+    },
+    {
       "file": "CPL-P-12.STEP",
       "kind": "component",
       "present": true,
@@ -203,7 +236,7 @@
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-acc-coupling.glb",
       "glbBytes": 143028,
-      "note": "Threaded Coupling, painted \u2014 like HH-4R a 6in pole SECTION on the pole axis with the coupling boss reaching +X natively (25 mm proud of the 4in OD), no rotateY. Origin at the vertical centre so the placement height reads to the boss centreline. Thread details (NPT vs NPSM, diameter) resolve at quote/order entry per Tyler 8/13; the render shows the exported boss."
+      "note": "Threaded Coupling, painted \u2014 like HH-4R a 6in pole SECTION on the pole axis with the coupling boss reaching +X natively (25 mm proud of the 4in OD), no rotateY. Origin at the vertical centre so the placement height reads to the boss centreline. Tyler confirmed 8/14 this file IS the coupling's visual representation in the tool; thread details (NPT vs NPSM, diameter) still resolve at quote/order entry per Tyler 8/13."
     },
     {
       "file": "CL1-4R.STEP",
@@ -523,6 +556,17 @@
     }
   ],
   "unmapped": [
+    {
+      "file": "4-RND-STANDARD-CUSTOM-BASE.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 98483,
+      "sha256": "31929024d1a0ab293623aa1e859b723be7acdec714c6c44a9394c22806124b89",
+      "partId": null,
+      "designCode": null,
+      "fitCode": "4R",
+      "note": "Custom-base variant (10.00in square x 3.50in, native Y-up \u2014 a simpler plate than the standard casting). Recorded, not used: Tyler named 4-RND-STANDARD-BASE.STEP as the pole base detail (8/19); this likely pairs with a custom-base order path that has no catalog code yet."
+    },
     {
       "file": "HSS-GVX.STEP",
       "kind": "unmapped",

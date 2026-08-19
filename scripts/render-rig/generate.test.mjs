@@ -90,7 +90,7 @@ describe('pole hand-hole graft (spec D8a)', () => {
   // opening) keeps the reference visible; the frame adds the true geometry.
   it('grafts the real HH-4R section AND keeps the cover plate when the GLB is present', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
-    const plan = poleGraftPlan(pole, { glbPresent: true })
+    const plan = poleGraftPlan(pole, { glbPresent: true, baseGlbPresent: false })
     expect(plan.boxes).toHaveLength(2) // cover + base plate (0.14)
     expect(plan.glbs).toHaveLength(1)
     expect(plan.glbs[0].glb).toMatch(/willstudio-acc-hand-hole\.glb$/)
@@ -100,9 +100,24 @@ describe('pole hand-hole graft (spec D8a)', () => {
     expect(plan.glbs[0].position).toEqual([0, cover.position[1] + cover.spec.sizeM[1] / 2, 0])
   })
 
-  it('falls back to the box grafts alone on a machine without the accessory GLB', () => {
+  // Phase 0.17 (Tyler 8/19): Cole's 4-RND-STANDARD-BASE is the standard base
+  // detail — its GLB REPLACES the placeholder plate box outright (the casting
+  // is fully visible, unlike the flush hand hole whose cover stays).
+  it('the real standard base replaces the plate box when its GLB is present', () => {
     const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
-    const plan = poleGraftPlan(pole, { glbPresent: false })
+    const plan = poleGraftPlan(pole, { glbPresent: true, baseGlbPresent: true })
+    expect(plan.boxes.some((b) => b.name === 'base-plate')).toBe(false)
+    expect(plan.boxes).toHaveLength(1) // the hand-hole cover stays
+    expect(plan.glbs.map((g) => g.glb)).toEqual([
+      'real-assets/glb/willstudio-pole-base-standard.glb',
+      'real-assets/glb/willstudio-acc-hand-hole.glb',
+    ])
+    expect(plan.glbs[0].position).toEqual([0, 0, 0])
+  })
+
+  it('falls back to the box grafts alone on a machine without the accessory GLBs', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    const plan = poleGraftPlan(pole, { glbPresent: false, baseGlbPresent: false })
     expect(plan.glbs).toEqual([])
     expect(plan.boxes).toHaveLength(2)
   })

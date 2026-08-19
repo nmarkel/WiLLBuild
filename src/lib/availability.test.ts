@@ -141,16 +141,18 @@ describe('the realCad flag tracks the render rig', () => {
     }
   })
 
-  it('matches the matrix scoreboard, plus what 0.12–0.14 have landed', () => {
+  it('matches the matrix scoreboard, plus what 0.12–0.17 have landed', () => {
     // The 8/11 audit measured 23 of 117; A1 added FR2, and 0.13 added PA1, PM1,
     // SD and HS1 — 28 of 117. That is FIVE of the six C1 arms; only CR2 is left,
     // parked on its tenon-shoulder question. Phase 0.14 added 5 render-only
-    // accessory parts (117 → 122), 4 of them from real CAD (HH-4R, FH-4R,
-    // PH-4R, CPL-P-12) — 32 — with the festoon on a placeholder awaiting CAD.
-    expect(catalog.parts.length).toBe(122)
-    expect(catalog.parts.filter((p) => p.slot === 'accessory').length).toBe(5)
-    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length + 4)
-    expect(catalog.parts.filter((p) => p.realCad).length).toBe(32)
+    // accessory parts (117 → 122), 4 from real CAD (HH-4R, FH-4R, PH-4R,
+    // CPL-P-12), festoon on a placeholder. Phase 0.17 added 2 more from
+    // Cole's 8/17 exports (122 → 124): the standard pole base graft source
+    // (4-RND-STANDARD-BASE) and the clamshell extender (CLE) — 34 real-CAD.
+    expect(catalog.parts.length).toBe(124)
+    expect(catalog.parts.filter((p) => p.slot === 'accessory').length).toBe(7)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(23 + LANDED_SINCE_AUDIT.length + 6)
+    expect(catalog.parts.filter((p) => p.realCad).length).toBe(34)
   })
 })
 

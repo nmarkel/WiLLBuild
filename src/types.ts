@@ -182,6 +182,14 @@ export interface CatalogPart {
    * the banner-top clearance below the fixture.
    */
   hangM?: number
+  /**
+   * Phase 0.17 (Tyler 8/19): stacking accessories only (CLE, the clamshell
+   * base extender) — how far this part LIFTS the layer stacked on top of it,
+   * in meters. Measured where the host's bottom rim meets this part's taper
+   * (CLE: the clamshells' 17.0in rim crosses the skirt at 0.195 m), never
+   * the part's full height.
+   */
+  stackHeightM?: number
   /** GLB path; null while parts are placeholder primitives. */
   model: string | null
   /** Parametric primitive spec for preview; optional for standalone (photo-card tier). */

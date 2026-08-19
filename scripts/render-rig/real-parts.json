@@ -49,6 +49,8 @@
     "rotateY": -90
   },
   "willstudio-acc-hand-hole": "real-assets/glb/willstudio-acc-hand-hole.glb",
+  "willstudio-pole-base-standard": "real-assets/glb/willstudio-pole-base-standard.glb",
+  "willstudio-acc-clamshell-extender": "real-assets/glb/willstudio-acc-clamshell-extender.glb",
   "willstudio-acc-flag-holder": {
     "glb": "real-assets/glb/willstudio-acc-flag-holder.glb",
     "rotateY": -90

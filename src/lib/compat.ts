@@ -320,6 +320,29 @@ export function placementInstances(
 }
 
 /** The selected pole accessory's full value object (placement window etc.). */
+/**
+ * Phase 0.17 (Tyler 8/19): the base cover's STACKING accessory — a checked
+ * options-accessories code on the chosen cover whose value names a render
+ * part carrying `stackHeightM` (today: CLE, the Clamshell Base Extender).
+ * The compositor draws it under the cover and lifts the cover by that
+ * height. Data-driven end to end: no code here knows "CLE".
+ */
+export function coverExtenderFor(catalog: Catalog, config: PoleConfig): CatalogPart | undefined {
+  const cover = partById(catalog, config.baseCover)
+  const chosen = config.specOptions?.baseCover
+  if (!cover || !chosen) return undefined
+  for (const opt of cover.options ?? []) {
+    if (opt.group !== 'options-accessories') continue
+    for (const code of specCodes(chosen[opt.key])) {
+      const value = opt.values.find((v) => v.code === code)
+      if (!value?.renderPartId) continue
+      const part = partById(catalog, value.renderPartId)
+      if (part?.stackHeightM !== undefined) return part
+    }
+  }
+  return undefined
+}
+
 export function poleAccessoryValue(catalog: Catalog, config: PoleConfig, code: string) {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue

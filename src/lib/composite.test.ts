@@ -370,6 +370,109 @@ describe('resolveAssemblyLayout — placed accessories (renderPartId)', () => {
   })
 })
 
+// ---- Phase 0.17 (Tyler 8/19): the Clamshell Base Extender stacks under the cover ----
+describe('resolveAssemblyLayout — cover extender (CLE)', () => {
+  const cleManifest: RenderManifest = {
+    rig,
+    parts: {
+      ...manifest.parts,
+      cle: {
+        angles: {
+          [HERO_ANGLE]: {
+            finishes: {
+              black: asset('renders/cle.webp', 90, 40, [45, 40]),
+              white: asset('renders/cle-white.webp', 90, 40, [45, 40]),
+            },
+          },
+        },
+      },
+    },
+  }
+  const cleCatalog: Catalog = {
+    ...catalog,
+    parts: [
+      ...catalog.parts.map((p) =>
+        p.id === 'base'
+          ? {
+              ...p,
+              options: [
+                {
+                  key: 'accessories',
+                  label: 'Accessories',
+                  group: 'options-accessories',
+                  values: [
+                    {
+                      code: 'CLE',
+                      label: 'Clamshell Base Extender',
+                      buildable: null,
+                      mapsTo: null,
+                      note: null,
+                      renderPartId: 'cle',
+                    },
+                  ],
+                },
+              ],
+            }
+          : p,
+      ),
+      {
+        id: 'cle', slot: 'accessory', name: 'Clamshell Base Extender', family: 'CLE',
+        line: 'WiLLstudio', category: 'Pole Accessories', productClass: 'assembly-part',
+        dropShip: false, tier: 2, mount: 'shaft', sockets: {}, finishes: [], keywords: [],
+        model: null, stackHeightM: 0.195,
+        placeholder: { kind: 'box', sizeM: [0.6, 0.2, 0.6], direction: 'up' },
+        thumbnail: null, productUrl: '',
+      },
+    ] as Catalog['parts'],
+  }
+
+  it('checked CLE draws under the cover and lifts the cover by stackHeightM', () => {
+    const l = resolveAssemblyLayout(cleCatalog, cleManifest, {
+      ...config,
+      specOptions: { baseCover: { accessories: ['CLE'] } },
+    })
+    const ext = l.layers.find((x) => x.partId === 'cle@CLE')!
+    const cover = l.layers.find((x) => x.partId === 'base')!
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    expect(ext).toBeDefined()
+    // Extender anchor sits at the base socket (pole anchor); the cover's
+    // anchor is LIFTED 0.195 m = 19.5 px above it in the test rig.
+    const poleAnchorY = pole.top + 600
+    expect(ext.top + 40).toBe(poleAnchorY)
+    expect(poleAnchorY - (cover.top + 50)).toBeCloseTo(19.5, 5)
+    // Draw order: pole < extender < cover.
+    expect(ext.z).toBeGreaterThan(pole.z)
+    expect(ext.z).toBeLessThan(cover.z)
+  })
+
+  it('unchecked CLE draws nothing and the cover sits at the socket', () => {
+    const l = resolveAssemblyLayout(cleCatalog, cleManifest, config)
+    expect(l.layers.some((x) => x.partId.startsWith('cle@'))).toBe(false)
+    const cover = l.layers.find((x) => x.partId === 'base')!
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    expect(cover.top + 50).toBe(pole.top + 600)
+  })
+
+  it('the extender paints in the COVER\'s finish, not the pole\'s', () => {
+    const l = resolveAssemblyLayout(cleCatalog, cleManifest, {
+      ...config,
+      specOptions: { baseCover: { accessories: ['CLE'] } },
+      finishes: { baseCover: 'white', pole: 'black' },
+    })
+    const ext = l.layers.find((x) => x.partId === 'cle@CLE')!
+    expect(ext.asset.file).toBe('renders/cle-white.webp')
+  })
+
+  it('no pole means no extender either (nothing to stand on)', () => {
+    const l = resolveAssemblyLayout(cleCatalog, cleManifest, {
+      ...config,
+      pole: '',
+      specOptions: { baseCover: { accessories: ['CLE'] } },
+    })
+    expect(l.layers.some((x) => x.partId.startsWith('cle@'))).toBe(false)
+  })
+})
+
 // ---- Phase 0.8 (A): radial multi-arm helpers + fan-out ----
 
 describe('angleKeyForAzimuth', () => {

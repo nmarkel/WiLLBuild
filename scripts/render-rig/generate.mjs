@@ -148,17 +148,34 @@ export function placeholderGraftChildren(part) {
  * the accessory GLB fall back to the box graft alone.
  */
 export const HH_GRAFT_GLB = 'real-assets/glb/willstudio-acc-hand-hole.glb'
-export function poleGraftPlan(part, { glbPresent } = { glbPresent: existsSync(resolve(__dirname, HH_GRAFT_GLB)) }) {
-  const boxes = placeholderGraftChildren(part)
+// Phase 0.17 (Tyler 8/19): Cole's 4-RND-STANDARD-BASE.STEP is THE standard
+// pole base detail. Unlike the hand hole (flush → its cover plate stays), the
+// base is a fully visible 3.53in casting, so its GLB REPLACES the placeholder
+// plate box outright; machines without the GLB keep the plate fallback.
+export const BASE_GRAFT_GLB = 'real-assets/glb/willstudio-pole-base-standard.glb'
+export function poleGraftPlan(
+  part,
+  {
+    glbPresent = existsSync(resolve(__dirname, HH_GRAFT_GLB)),
+    baseGlbPresent = existsSync(resolve(__dirname, BASE_GRAFT_GLB)),
+  } = {},
+) {
+  let boxes = placeholderGraftChildren(part)
   if (boxes.length === 0) return { boxes: [], glbs: [] }
-  if (!glbPresent) return { boxes, glbs: [] }
-  // Phase 0.14: a pole carries TWO box children now — the hand-hole cover
-  // (proud of the shaft, position x > 0) and the base plate (centred on the
-  // axis at y=0). Only the cover anchors the HH-4R frame's height.
+  const glbs = []
+  if (baseGlbPresent && boxes.some((b) => b.name === 'base-plate')) {
+    boxes = boxes.filter((b) => b.name !== 'base-plate')
+    glbs.push({ glb: BASE_GRAFT_GLB, position: [0, 0, 0] })
+  }
+  // Phase 0.14: the hand-hole cover is the box proud of the shaft (position
+  // x > 0); it STAYS over the real HH-4R frame (the opening is flush and
+  // vanishes alone at 360 px/m — the cover is also the 0° homing reference).
   const cover = boxes.find((b) => b.position[0] > 0)
-  if (!cover) return { boxes, glbs: [] }
-  const centerY = cover.position[1] + cover.spec.sizeM[1] / 2
-  return { boxes, glbs: [{ glb: HH_GRAFT_GLB, position: [0, centerY, 0] }] }
+  if (glbPresent && cover) {
+    const centerY = cover.position[1] + cover.spec.sizeM[1] / 2
+    glbs.push({ glb: HH_GRAFT_GLB, position: [0, centerY, 0] })
+  }
+  return { boxes, glbs }
 }
 
 /**

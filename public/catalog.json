@@ -9108,7 +9108,8 @@
               "code": "CLE",
               "label": "Clamshell Base Extender",
               "mapsTo": null,
-              "note": null
+              "note": "Extends the base cover downward — shown in the preview when checked",
+              "renderPartId": "willstudio-acc-clamshell-extender"
             }
           ]
         }
@@ -9303,7 +9304,8 @@
               "code": "CLE",
               "label": "Clamshell Base Extender",
               "mapsTo": null,
-              "note": null
+              "note": "Extends the base cover downward — shown in the preview when checked",
+              "renderPartId": "willstudio-acc-clamshell-extender"
             }
           ]
         }
@@ -9498,7 +9500,8 @@
               "code": "CLE",
               "label": "Clamshell Base Extender",
               "mapsTo": null,
-              "note": null
+              "note": "Extends the base cover downward — shown in the preview when checked",
+              "renderPartId": "willstudio-acc-clamshell-extender"
             }
           ]
         }
@@ -18237,6 +18240,103 @@
             "position": [
               0.4,
               -0.3,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-pole-base-standard",
+      "name": "Standard Pole Base",
+      "family": "SB",
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.0897,
+              "radiusTopM": 0.07,
+              "radiusBottomM": 0.1094
+            },
+            "position": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "realCad": true
+    },
+    {
+      "slot": "accessory",
+      "line": "WiLLstudio",
+      "category": "Pole Accessories",
+      "productClass": "assembly-part",
+      "dropShip": false,
+      "tier": 2,
+      "mount": "shaft",
+      "sockets": {},
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
+      "keywords": [],
+      "model": null,
+      "thumbnail": null,
+      "productUrl": "",
+      "id": "willstudio-acc-clamshell-extender",
+      "name": "Clamshell Base Extender",
+      "family": "CLE",
+      "stackHeightM": 0.195,
+      "placeholder": {
+        "kind": "group",
+        "children": [
+          {
+            "spec": {
+              "kind": "baseCover",
+              "heightM": 0.2139,
+              "radiusTopM": 0.204,
+              "radiusBottomM": 0.3175
+            },
+            "position": [
+              0,
+              0,
               0
             ]
           }

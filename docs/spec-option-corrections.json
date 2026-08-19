@@ -886,7 +886,8 @@
                   "code": "CLE",
                   "label": "Clamshell Base Extender",
                   "mapsTo": null,
-                  "note": null
+                  "note": "Extends the base cover downward — shown in the preview when checked",
+                  "renderPartId": "willstudio-acc-clamshell-extender"
                 }
               ]
             }

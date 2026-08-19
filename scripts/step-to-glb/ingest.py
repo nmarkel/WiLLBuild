@@ -119,6 +119,26 @@ INGEST: list[dict] = [
          note="Single Plant Holder Kit (measured 0.811 m reach along +X — no "
               "rotateY — basket hanging to y=-0.553 below the bracket at the "
               "native y=0; origin='native' for the same reason as FH-4R)."),
+    # --- Phase 0.17 (Tyler 8/19): Cole's 8/17 base + extender exports. ---
+    dict(file="4-RND-STANDARD-BASE.STEP", part="willstudio-pole-base-standard",
+         design="SB", fit="4R", origin="base", mode="mono", tol=0.5, rotateX=-90,
+         note="Standard 4in round pole anchor base — Tyler 8/19: THE standard "
+              "pole base detail, replacing the 0.14 placeholder plate. Modeled "
+              "Z-UP (verified: the 8.61in square flange at -Z, the pole-collar "
+              "ring at +Z), so rotateX -90 stands it up; origin='base' floors Y "
+              "with the flange on the foundation. A render-only catalog part "
+              "(slot 'accessory', never selectable) whose GLB poleGraftPlan "
+              "(generate.mjs) grafts onto every pole at the origin. 3.53in "
+              "tall cast base, matches Tyler's 8/14 plan drawing (8.63in)."),
+    dict(file="CLE.STEP", part="willstudio-acc-clamshell-extender", design="CLE",
+         fit=None, origin="mount", mode="mono", tol=0.5,
+         note="Clamshell Base Extender — Tyler 8/19: 'goes on the bottom of "
+              "the base to extend the bottom of it.' Native Y-up: a 25.0in "
+              "skirt tapering to 16.1in over 8.42in of height. The clamshells' "
+              "17.0in bottom rim meets the taper at y=0.195 m (measured), so "
+              "that is the compositor's cover lift (stackHeightM on the "
+              "catalog part). Draws when the CLE option is checked on CL1/2/3; "
+              "renderPartId on the CLE value wires it."),
     dict(file="CPL-P-12.STEP", part="willstudio-acc-coupling", design="CPL-P-12",
          fit=None, origin="mount-center", mode="mono", tol=0.5,
          note="Threaded Coupling, painted — like HH-4R a 6in pole SECTION on "
@@ -220,6 +240,13 @@ CLUSTERS: list[dict] = [
 # system made an accessory layer the truth of the configuration, so "adders
 # get no layer" no longer holds for placeable accessories with real CAD.)
 UNMAPPED: list[dict] = [
+    # --- Phase 0.17: Cole's 8/17 batch, second file. ---
+    dict(file="4-RND-STANDARD-CUSTOM-BASE.STEP", part=None, design=None, fit="4R",
+         note="Custom-base variant (10.00in square x 3.50in, native Y-up — a "
+              "simpler plate than the standard casting). Recorded, not used: "
+              "Tyler named 4-RND-STANDARD-BASE.STEP as the pole base detail "
+              "(8/19); this likely pairs with a custom-base order path that "
+              "has no catalog code yet."),
     # --- Phase 0.13: Cole's 8/12 accessory exports. ---
     dict(file="HSS-GVX.STEP", part=None, design="HSS-GVX", fit=None,
          note="House Side Shield for the GVX, as its own component (0.29 MB; the "

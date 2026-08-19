@@ -158,6 +158,45 @@ const ACCESSORY_PARTS = [
   },
   {
     ...base,
+    id: 'willstudio-pole-base-standard',
+    name: 'Standard Pole Base',
+    family: 'SB',
+    // Real CAD: 4-RND-STANDARD-BASE.STEP (Tyler 8/19 — THE standard pole
+    // base detail; replaced the 0.14 placeholder plate). Render-only graft
+    // source: poleGraftPlan bakes its GLB into every pole render at the
+    // origin. Placeholder fallback approximates the casting envelope.
+    placeholder: {
+      kind: 'group',
+      children: [
+        {
+          spec: { kind: 'baseCover', heightM: 0.0897, radiusTopM: 0.07, radiusBottomM: 0.1094 },
+          position: [0, 0, 0],
+        },
+      ],
+    },
+  },
+  {
+    ...base,
+    id: 'willstudio-acc-clamshell-extender',
+    name: 'Clamshell Base Extender',
+    family: 'CLE',
+    // Real CAD: CLE.STEP (Tyler 8/19 — "goes on the bottom of the base to
+    // extend the bottom of it"). The clamshells' 17.0in bottom rim meets the
+    // extender's taper at y=0.195 m (measured), so the compositor lifts the
+    // cover layer by stackHeightM when CLE is checked.
+    stackHeightM: 0.195,
+    placeholder: {
+      kind: 'group',
+      children: [
+        {
+          spec: { kind: 'baseCover', heightM: 0.2139, radiusTopM: 0.204, radiusBottomM: 0.3175 },
+          position: [0, 0, 0],
+        },
+      ],
+    },
+  },
+  {
+    ...base,
     id: 'willstudio-acc-plant-holder',
     name: 'Plant Holder Kit',
     family: 'PH',

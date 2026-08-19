@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, attachSockets, bannerMinFt, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
+import { armAzimuths, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -301,6 +301,13 @@ export function resolveAssemblyLayout(
     angle: string
     world: [number, number, number]
     z: number
+    /**
+     * Phase 0.17: which slot's finish this layer paints in, when the part's
+     * own slot doesn't decide it — the CLE extender is an 'accessory' part
+     * that extends the base COVER, so it paints as 'baseCover' rather than
+     * the accessory default ('pole').
+     */
+    finishSlot?: PartSlot
   }
   const placements: Placement[] = []
   const lightWorlds: [number, number, number][] = []
@@ -312,8 +319,34 @@ export function resolveAssemblyLayout(
     placements.push({ layerId: pole.id, part: pole, angle: poleAngle, world: [0, 0, 0], z: SLOT_Z.pole })
     if (baseCover) {
       const s = attachSocket(baseCover, pole)
-      if (s)
-        placements.push({ layerId: baseCover.id, part: baseCover, angle: HERO_ANGLE, world: s.position, z: SLOT_Z.baseCover })
+      if (s) {
+        // Phase 0.17 (Tyler 8/19): the Clamshell Base Extender stacks UNDER
+        // the cover — "it goes on the bottom of the base to extend the bottom
+        // of it." The extender draws at the socket (between pole and cover in
+        // z) and LIFTS the cover by its stackHeightM: the measured height
+        // where the cover's 17.0in bottom rim meets the extender's taper. It
+        // paints in the COVER's finish (it extends the cover, not the pole).
+        const extender = coverExtenderFor(catalog, config)
+        let coverY = s.position[1]
+        if (extender) {
+          placements.push({
+            layerId: `${extender.id}@CLE`,
+            part: extender,
+            angle: HERO_ANGLE,
+            world: s.position,
+            z: SLOT_Z.baseCover - 0.5,
+            finishSlot: 'baseCover',
+          })
+          coverY += extender.stackHeightM ?? 0
+        }
+        placements.push({
+          layerId: baseCover.id,
+          part: baseCover,
+          angle: HERO_ANGLE,
+          world: [s.position[0], coverY, s.position[2]],
+          z: SLOT_Z.baseCover,
+        })
+      }
     }
   }
 
@@ -535,17 +568,19 @@ export function resolveAssemblyLayout(
 
   const missingSet = new Set<string>()
   const raw: PlacedLayer[] = []
-  for (const { layerId, part, angle, world, z } of placements) {
+  for (const { layerId, part, angle, world, z, finishSlot } of placements) {
     // Phase 0.10.5: each part renders in its own step's finish (base finish when
     // the slot has no override — see finishFor), at the nearest available
     // angle (exact for rig-rendered parts; real-render parts may lack the
     // 45° compass until re-rendered from their design files).
     // Phase 0.14: shaft accessories are painted with the pole they weld/bolt
     // to, so their layers resolve in the POLE's finish, not the base finish.
+    // Phase 0.17: a placement may override that (finishSlot — the CLE
+    // extender paints with the base cover it extends).
     const asset = resolveRenderAsset(
       manifest,
       part.id,
-      finishFor(config, part.slot === 'accessory' ? 'pole' : part.slot),
+      finishFor(config, finishSlot ?? (part.slot === 'accessory' ? 'pole' : part.slot)),
       nearestAngleKey(manifest, part.id, angle),
     )
     if (!asset) {
