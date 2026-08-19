@@ -463,6 +463,43 @@ describe('resolveAssemblyLayout — cover extender (CLE)', () => {
     expect(ext.asset.file).toBe('renders/cle-white.webp')
   })
 
+  it('custom-RAL layers carry the customer hex as tint; others never do', () => {
+    // Phase 0.17: the manifest needs a custom-ral variant for the tint path.
+    const ralManifest: RenderManifest = {
+      rig,
+      parts: {
+        ...manifest.parts,
+        pole: {
+          angles: {
+            [HERO_ANGLE]: {
+              finishes: {
+                black: asset('renders/pole.webp', 20, 600, [10, 600]),
+                'custom-ral': asset('renders/pole-ral.webp', 20, 600, [10, 600]),
+              },
+            },
+          },
+        },
+      },
+    }
+    const ralCatalog: Catalog = {
+      ...catalog,
+      finishes: [
+        ...catalog.finishes,
+        { id: 'custom-ral', name: 'Custom RAL Match', code: 'RAL', typeCode: 'FP', hex: '#e8e8e8', roughness: 0.5, metalness: 0.1, clearcoat: 0.1, clearcoatRoughness: 0.4, envMapIntensity: 1, keywords: [] },
+      ],
+    }
+    const l = resolveAssemblyLayout(ralCatalog, ralManifest, {
+      ...config,
+      finishes: { pole: 'custom-ral' },
+      finishRal: { pole: '#cc0605' },
+    })
+    const pole = l.layers.find((x) => x.partId === 'pole')!
+    const arm = l.layers.find((x) => x.partId === 'arm')!
+    expect(pole.tint).toBe('#cc0605')
+    expect(pole.asset.file).toBe('renders/pole-ral.webp')
+    expect(arm.tint).toBeUndefined()
+  })
+
   it('no pole means no extender either (nothing to stand on)', () => {
     const l = resolveAssemblyLayout(cleCatalog, cleManifest, {
       ...config,

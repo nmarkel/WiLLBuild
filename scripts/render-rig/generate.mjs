@@ -32,10 +32,15 @@ const BRAND_SLUGS = {
 }
 
 function parseArgs(argv) {
-  const args = { line: null, parts: null }
+  const args = { line: null, parts: null, finishes: null }
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--line') args.line = argv[++i]
     else if (argv[i] === '--parts') args.parts = argv[++i].split(',').map((s) => s.trim())
+    // Phase 0.17: re-render ONE finish across parts (custom-ral base change).
+    // ⚠️ Same shard hazard as --parts, one level deeper: the written shard
+    // holds ONLY these finishes per angle — splice the baseline back at the
+    // FINISH level, not the part level, before render-manifest.
+    else if (argv[i] === '--finishes') args.finishes = argv[++i].split(',').map((s) => s.trim())
   }
   return args
 }
@@ -191,10 +196,12 @@ export function isPageDeadError(err) {
 }
 
 async function main() {
-  const { line, parts: partFilter } = parseArgs(process.argv.slice(2))
+  const { line, parts: partFilter, finishes: finishFilter } = parseArgs(process.argv.slice(2))
 
   const catalog = JSON.parse(await readFile(CATALOG_PATH, 'utf8'))
-  const finishIds = catalog.finishes.map((f) => f.id)
+  const finishIds = catalog.finishes
+    .map((f) => f.id)
+    .filter((id) => !finishFilter || finishFilter.includes(id))
 
   let realParts = {}
   try {

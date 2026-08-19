@@ -197,7 +197,7 @@ export function accessoryHeightRange(
   return { minFt, maxFt: Math.max(minFt, ceiling), fits: ceiling >= minFt }
 }
 
-function isSlot(s: PartSlot): s is Slot {
+export function isSlot(s: PartSlot): s is Slot {
   return (SLOTS as readonly string[]).includes(s)
 }
 

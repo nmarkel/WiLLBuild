@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
+import { armAzimuths, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, isSlot, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -156,6 +156,14 @@ export interface PlacedLayer {
    * id (which is decorated with `#i` / `@code` suffixes).
    */
   slot: PartSlot
+  /**
+   * Phase 0.17 (Tyler 8/19): live Custom-RAL tint. Set when this layer's
+   * resolved finish is `custom-ral` and the config carries a hex for its
+   * finish slot — the viewer and the PNG snapshot both multiply the layer's
+   * near-white neutral render by this hex (baked lighting survives; the
+   * on-screen color is the customer's pick, disclaimed as an estimate).
+   */
+  tint?: string
 }
 
 /** A pixel rectangle inside a `CompositeLayout`. */
@@ -577,16 +585,26 @@ export function resolveAssemblyLayout(
     // to, so their layers resolve in the POLE's finish, not the base finish.
     // Phase 0.17: a placement may override that (finishSlot — the CLE
     // extender paints with the base cover it extends).
+    const layerFinishSlot = finishSlot ?? (part.slot === 'accessory' ? 'pole' : part.slot)
+    const finishId = finishFor(config, layerFinishSlot)
     const asset = resolveRenderAsset(
       manifest,
       part.id,
-      finishFor(config, finishSlot ?? (part.slot === 'accessory' ? 'pole' : part.slot)),
+      finishId,
       nearestAngleKey(manifest, part.id, angle),
     )
     if (!asset) {
       missingSet.add(part.id)
       continue
     }
+    // Phase 0.17 (Tyler 8/19): custom-RAL layers carry the customer's hex so
+    // the viewer/snapshot tint the neutral render live. Keyed by the same
+    // finish slot the finish resolved from; repairConfig already guarantees a
+    // finishRal hex only exists where the finish IS custom-ral.
+    const tint =
+      finishId === 'custom-ral' && isSlot(layerFinishSlot)
+        ? config.finishRal?.[layerFinishSlot]
+        : undefined
     const p = projectOffset(manifest, world)
     raw.push({
       partId: layerId,
@@ -595,6 +613,7 @@ export function resolveAssemblyLayout(
       top: p[1] - asset.anchor[1],
       z,
       slot: part.slot,
+      ...(tint ? { tint } : {}),
     })
   }
   const missing = [...missingSet]

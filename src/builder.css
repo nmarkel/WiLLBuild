@@ -319,6 +319,57 @@
   border-color: rgba(230, 231, 232, 0.25);
 }
 
+/* ---- Custom RAL cross-reference (Phase 0.17): live closest-RAL readout under
+   the picker, with a one-click snap to the matched shade. ---- */
+
+.builder-app .ral-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.builder-app .ral-cross {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--will-gray);
+}
+
+.builder-app .ral-cross .swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.builder-app .ral-snap {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--will-gray);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.builder-app .ral-snap:hover {
+  background: var(--will-yellow);
+}
+
+.builder-app .ral-disclaimer {
+  margin: 0;
+  font-size: 12px;
+  color: var(--will-gray);
+  opacity: 0.75;
+  border-left: 3px solid var(--will-yellow);
+  padding-left: 8px;
+}
+
 /* ---- Ground-mounted fixture (Phase 0.14): Bracket / Pole / Base Cover gray
    out instead of vanishing — the customer sees they're deliberately not
    applicable to a complete product like the RXB/SXB bollard. ---- */

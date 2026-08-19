@@ -208,11 +208,30 @@ export async function compositeToBlob(
       layout.layers.map((l) => loadImage(renderUrl(l.asset.file))),
     )
 
+    /** Phase 0.17: multiply a layer's neutral render by a hex, alpha kept. */
+    function tintImage(img: HTMLImageElement, hex: string): HTMLCanvasElement {
+      const c = document.createElement('canvas')
+      c.width = img.naturalWidth
+      c.height = img.naturalHeight
+      const tctx = c.getContext('2d')!
+      tctx.drawImage(img, 0, 0)
+      tctx.globalCompositeOperation = 'multiply'
+      tctx.fillStyle = hex
+      tctx.fillRect(0, 0, c.width, c.height)
+      tctx.globalCompositeOperation = 'destination-in'
+      tctx.drawImage(img, 0, 0)
+      return c
+    }
+
     ctx.save()
     if (opts.night) ctx.filter = 'brightness(0.42) saturate(0.8)'
     layout.layers.forEach((layer, i) => {
       const [x, y] = toCanvas(layer.left, layer.top)
-      ctx.drawImage(images[i], x, y, layer.asset.width * scale, layer.asset.height * scale)
+      // Phase 0.17: custom-RAL layers tint their neutral render by the
+      // customer's hex — same multiply → destination-in sequence as the
+      // viewer's TintedLayer, so the PNG matches the screen.
+      const source = layer.tint ? tintImage(images[i], layer.tint) : images[i]
+      ctx.drawImage(source, x, y, layer.asset.width * scale, layer.asset.height * scale)
     })
     ctx.restore()
 

@@ -19,6 +19,7 @@ function ftLabel(ft: number): string {
 }
 import { useConfigurator } from '../store'
 import { displayPartName } from '../lib/display'
+import { nearestRal } from '../lib/ral'
 import { COMING_SOON_HINT, COMING_SOON_LABEL, isComingSoon } from '../lib/availability'
 import { BannerPicker } from './BannerPicker'
 
@@ -246,17 +247,44 @@ function StepFinish({
         })}
       </div>
       {current === 'custom-ral' && (
-        <label className="ral-picker">
-          <input
-            type="color"
-            value={ralHex ?? '#b0b0b3'}
-            onChange={(e) => setFinishRal(slot, e.target.value)}
-          />
-          <span>
-            Pick your RAL match color{ralHex ? ` — ${ralHex.toUpperCase()}` : ''}. We’ll match the
-            closest RAL shade with your quote.
-          </span>
-        </label>
+        <div className="ral-block">
+          <label className="ral-picker">
+            <input
+              type="color"
+              value={ralHex ?? '#b0b0b3'}
+              onChange={(e) => setFinishRal(slot, e.target.value)}
+            />
+            <span>Pick your color{ralHex ? ` — ${ralHex.toUpperCase()}` : ''}</span>
+          </label>
+          {/* Phase 0.17 (Tyler 8/19): live RAL cross-reference — name the
+              closest RAL Classic shade as they pick, with a one-click snap so
+              the preview shows the shade the paint match will actually chase. */}
+          {ralHex && (() => {
+            const match = nearestRal(ralHex)
+            const exact = ralHex.toUpperCase() === match.hex.toUpperCase()
+            return (
+              <div className="ral-cross">
+                <span className="swatch" style={{ background: match.hex }} />
+                <span>
+                  {exact ? 'Showing' : 'Closest match:'} <strong>RAL {match.ral} {match.name}</strong>
+                </span>
+                {!exact && (
+                  <button
+                    type="button"
+                    className="ral-snap"
+                    onClick={() => setFinishRal(slot, match.hex.toLowerCase())}
+                  >
+                    Use RAL {match.ral}
+                  </button>
+                )}
+              </div>
+            )
+          })()}
+          <p className="ral-disclaimer">
+            Estimated representation only — finish color is verified and signed off with you when
+            the order is placed.
+          </p>
+        </div>
       )}
       {accentColumn && (
         <StepAccentFinish

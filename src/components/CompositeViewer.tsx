@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent } from 'react'
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
 import type { SceneMode } from '../store'
 import { useConfigurator } from '../store'
@@ -94,6 +94,52 @@ const HUMAN_OFFSET: [number, number, number] = [1.4, 0, 0.6]
 
 /** Ground shadow ellipse size in meters (width, height), converted via pxPerMeterY. */
 const GROUND_SHADOW_M: [number, number] = [2.6, 0.6]
+
+/**
+ * Phase 0.17 (Tyler 8/19): a Custom-RAL layer, tinted live. The custom-ral
+ * finish renders every part in a bright NEUTRAL, so multiplying it by the
+ * customer's hex yields that color under the render's own baked lighting —
+ * any color, zero extra render assets. Op sequence: draw → multiply fill →
+ * destination-in redraw (restores the alpha the fill covered). Same math as
+ * the snapshot's tint (snapshot.ts), so PNG and screen agree.
+ */
+function TintedLayer({
+  file,
+  tint,
+  style,
+}: {
+  file: string
+  tint: string
+  style: CSSProperties
+}) {
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    let cancelled = false
+    const img = new Image()
+    img.onload = () => {
+      if (cancelled || !ref.current) return
+      const c = ref.current
+      c.width = img.naturalWidth
+      c.height = img.naturalHeight
+      const ctx = c.getContext('2d')
+      if (!ctx) return
+      ctx.drawImage(img, 0, 0)
+      ctx.globalCompositeOperation = 'multiply'
+      ctx.fillStyle = tint
+      ctx.fillRect(0, 0, c.width, c.height)
+      ctx.globalCompositeOperation = 'destination-in'
+      ctx.drawImage(img, 0, 0)
+      ctx.globalCompositeOperation = 'source-over'
+    }
+    img.src = renderUrl(file)
+    return () => {
+      cancelled = true
+    }
+  }, [file, tint])
+  return <canvas ref={ref} className="composite-layer" style={style} aria-hidden="true" />
+}
 
 // Plain-English slot names for the partial-build hint pill.
 const SLOT_HINT_LABELS: Record<Slot, string> = {
@@ -611,23 +657,38 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           </div>
         ))}
 
-        {layout.layers.map((layer, i) => (
-          <img
-            key={layer.partId}
-            className="composite-layer"
-            src={renderUrl(layer.asset.file)}
-            alt=""
-            draggable={false}
-            loading={i === 0 ? 'eager' : 'lazy'}
-            style={{
-              left: layer.left,
-              top: layer.top,
-              width: layer.asset.width,
-              height: layer.asset.height,
-              zIndex: layer.z,
-            }}
-          />
-        ))}
+        {layout.layers.map((layer, i) =>
+          layer.tint ? (
+            <TintedLayer
+              key={layer.partId}
+              file={layer.asset.file}
+              tint={layer.tint}
+              style={{
+                left: layer.left,
+                top: layer.top,
+                width: layer.asset.width,
+                height: layer.asset.height,
+                zIndex: layer.z,
+              }}
+            />
+          ) : (
+            <img
+              key={layer.partId}
+              className="composite-layer"
+              src={renderUrl(layer.asset.file)}
+              alt=""
+              draggable={false}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              style={{
+                left: layer.left,
+                top: layer.top,
+                width: layer.asset.width,
+                height: layer.asset.height,
+                zIndex: layer.z,
+              }}
+            />
+          ),
+        )}
 
         {/* Phase 0.10.5: ground compass — a projected ring at the pole base with
             the four orientation azimuths. 0° tracks the hand-hole homing
