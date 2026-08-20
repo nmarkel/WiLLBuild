@@ -12,7 +12,9 @@ import {
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
-import { compatibleParts, partById } from '../lib/compat'
+import { compatibleParts, finishFor, partById, specCodes } from '../lib/compat'
+import { armArrangementLabel, buildPartNumber } from '../lib/summary'
+import { displayArmName, displayPartName } from '../lib/display'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
@@ -141,6 +143,70 @@ function TintedLayer({
   return <canvas ref={ref} className="composite-layer" style={style} aria-hidden="true" />
 }
 
+/**
+ * Phase 0.17 (Tyler 8/19): the concise config facts a callout card shows for
+ * its part of the assembly — part number, finish, and the slot's own axes.
+ * Everything resolves from catalog data + config; nothing is hardcoded copy.
+ */
+function calloutFacts(
+  catalog: Catalog,
+  config: PoleConfig,
+  slot: Slot,
+): { label: string; value: string }[] {
+  const part = partById(catalog, config[slot])
+  if (!part) return []
+  const facts: { label: string; value: string }[] = []
+  const pn = buildPartNumber(catalog, config, slot)
+  if (pn) facts.push({ label: 'Part No.', value: pn })
+  const finishId = finishFor(config, slot)
+  const finish = catalog.finishes.find((f) => f.id === finishId)
+  if (finish) {
+    const ral = config.finishRal?.[slot]
+    facts.push({ label: 'Finish', value: ral ? `${finish.name} ${ral.toUpperCase()}` : finish.name })
+  }
+  if (slot === 'arm') {
+    const count = config.armCount ?? 1
+    if (count > 1) facts.push({ label: 'Arrangement', value: armArrangementLabel(count) })
+    if (config.armOrientation) facts.push({ label: 'Orientation', value: `${config.armOrientation}°` })
+  }
+  if (slot === 'pole') {
+    if (part.heightFt) facts.push({ label: 'Height', value: `${part.heightFt} ft` })
+    const chosen = config.specOptions?.pole ?? {}
+    const wall = specCodes(chosen['wall-thickness'])[0]
+    if (wall) {
+      const label = part.options
+        ?.find((o) => o.key === 'wall-thickness')
+        ?.values.find((v) => v.code === wall)?.label
+      if (label) facts.push({ label: 'Wall', value: label })
+    }
+    const accessories = (part.options ?? [])
+      .filter((o) => o.group === 'options-accessories')
+      .flatMap((o) => specCodes(chosen[o.key]))
+    if (accessories.length > 0) {
+      facts.push({ label: 'Accessories', value: String(accessories.length) })
+    }
+  }
+  if (slot === 'baseCover') {
+    const poleDiameter = partById(catalog, config.pole)?.diameterIn
+    if (poleDiameter) facts.push({ label: 'Pole fit', value: `${poleDiameter}R` })
+    const chosen = config.specOptions?.baseCover ?? {}
+    const codes = (part.options ?? [])
+      .filter((o) => o.group === 'options-accessories')
+      .flatMap((o) => specCodes(chosen[o.key]))
+    if (codes.includes('CLE')) facts.push({ label: 'Extender', value: 'CLE' })
+  }
+  if (slot === 'fixture') {
+    const chosen = config.specOptions?.fixture ?? {}
+    for (const opt of (part.options ?? []).filter((o) => o.group === 'ordering')) {
+      const code = specCodes(chosen[opt.key])[0]
+      if (!code) continue
+      const label = opt.values.find((v) => v.code === code)?.label
+      if (label && facts.length < 6) facts.push({ label: opt.label, value: label })
+    }
+  }
+  return facts.slice(0, 6)
+}
+
 // Plain-English slot names for the partial-build hint pill.
 const SLOT_HINT_LABELS: Record<Slot, string> = {
   fixture: 'a fixture',
@@ -165,6 +231,12 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   const focus = useConfigurator((s) => s.focus)
   const setFocus = useConfigurator((s) => s.setFocus)
   const customSceneUrl = useConfigurator((s) => s.customSceneUrl)
+  // Phase 0.17 (Tyler 8/19): a callout OPENS into a config card for that part
+  // of the assembly — not just a scroll shortcut. One open at a time.
+  const [openCallout, setOpenCallout] = useState<Slot | null>(null)
+  useEffect(() => {
+    setOpenCallout(null)
+  }, [config, viewYaw])
   const manifest = useRenderManifest()
   const night = mode === 'night'
 
@@ -579,6 +651,14 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // Tesla-style callouts, in viewport space (outside the scaled stage so the
   // text never zooms). Anchors project each slot's layer box through the same
   // translate+scale as the stage, so they track pan/rotate exactly.
+  // Phase 0.17 (Tyler 8/19): labels PARK OUTSIDE the model's screen box in
+  // two fixed columns — the leader line stretches from the anchored dot out
+  // past the assembly's edge, so no label ever sits on the art.
+  const modelLeftPx = translateX
+  const modelRightPx = translateX + s * layout.width
+  const CALLOUT_GUTTER = 22
+  const CALLOUT_MIN_LINE = 40
+  const CALLOUT_LABEL_ROOM = 130
   const callouts =
     onSlotClick && zoom <= CALLOUT_MAX_ZOOM
       ? CALLOUT_DEFS.flatMap((d) => {
@@ -594,7 +674,19 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
           if (!layer) return []
           const ax = layer.left + layer.asset.width / 2
           const ay = layer.top + layer.asset.height * d.anchorFrac
-          return [{ ...d, x: translateX + s * ax, y: translateY + s * ay }]
+          const x = translateX + s * ax
+          const y = translateY + s * ay
+          const line =
+            d.side === 'right'
+              ? Math.min(
+                  Math.max(modelRightPx + CALLOUT_GUTTER - x, CALLOUT_MIN_LINE),
+                  Math.max(viewport.w - CALLOUT_LABEL_ROOM - x, CALLOUT_MIN_LINE),
+                )
+              : Math.min(
+                  Math.max(x - (modelLeftPx - CALLOUT_GUTTER), CALLOUT_MIN_LINE),
+                  Math.max(x - CALLOUT_LABEL_ROOM, CALLOUT_MIN_LINE),
+                )
+          return [{ ...d, x, y, line }]
         })
       : []
 
@@ -748,20 +840,53 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         )}
       </div>
 
-      {callouts.map((c) => (
-        <div key={c.slot} className={`viewer-callout ${c.side}`} style={{ left: c.x, top: c.y }}>
-          <span className="viewer-callout-dot" aria-hidden="true" />
-          <span className="viewer-callout-line" aria-hidden="true" />
-          <button
-            type="button"
-            className="viewer-callout-label"
-            onClick={() => onSlotClick?.(c.slot)}
-            title={`Jump to the ${c.label} options`}
+      {callouts.map((c) => {
+        const part = partById(catalog, config[c.slot])
+        const open = openCallout === c.slot
+        return (
+          <div
+            key={c.slot}
+            className={`viewer-callout ${c.side}${open ? ' open' : ''}`}
+            style={{ left: c.x, top: c.y }}
+            onPointerDown={(e) => e.stopPropagation()}
           >
-            {c.label} <span className="viewer-callout-plus">+</span>
-          </button>
-        </div>
-      ))}
+            <span className="viewer-callout-dot" aria-hidden="true" />
+            <span className="viewer-callout-line" style={{ width: c.line }} aria-hidden="true" />
+            <button
+              type="button"
+              className="viewer-callout-label"
+              onClick={() => setOpenCallout(open ? null : c.slot)}
+              aria-expanded={open}
+              title={open ? `Close ${c.label} details` : `${c.label} configuration`}
+            >
+              {c.label} <span className="viewer-callout-plus">{open ? '–' : '+'}</span>
+            </button>
+            {open && part && (
+              <div className="viewer-callout-card" role="dialog" aria-label={`${c.label} configuration`}>
+                <p className="viewer-callout-card-name">
+                  {c.slot === 'arm' ? displayArmName(part) : displayPartName(part.name)}
+                </p>
+                {calloutFacts(catalog, config, c.slot).map((f) => (
+                  <p key={f.label} className="viewer-callout-card-row">
+                    <span>{f.label}</span>
+                    <strong>{f.value}</strong>
+                  </p>
+                ))}
+                <button
+                  type="button"
+                  className="viewer-callout-card-btn"
+                  onClick={() => {
+                    setOpenCallout(null)
+                    onSlotClick?.(c.slot)
+                  }}
+                >
+                  Adjust in panel →
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      })}
 
       {/* Phase 0.10.5_TO: the view carousel — bold headline names the current
           framing; ‹ › click through the presets. Replaces the rotate/zoom

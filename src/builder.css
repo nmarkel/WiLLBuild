@@ -456,8 +456,9 @@
   flex-shrink: 0;
 }
 
+/* Width set inline (Phase 0.17): the leader stretches from the anchored dot
+   past the assembly's edge, so the label parks CLEAR of the art. */
 .viewer-callout-line {
-  width: 46px;
   height: 1.5px;
   background: rgba(66, 65, 61, 0.55);
   flex-shrink: 0;
@@ -1095,4 +1096,82 @@
   font-size: 12.5px;
   line-height: 1.45;
   color: var(--will-gray);
+}
+
+/* ---- Callout config cards (Phase 0.17): a callout opens into the part's
+   configuration — part number, finish, slot facts — with the panel jump as
+   the follow-up action, not the only one. ---- */
+
+.viewer-callout.open {
+  z-index: 9;
+}
+
+.viewer-callout-card {
+  pointer-events: auto;
+  position: absolute;
+  top: calc(50% + 16px);
+  width: 232px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(66, 65, 61, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: default;
+}
+
+.viewer-callout .viewer-callout-card {
+  right: 0;
+}
+
+.viewer-callout.left .viewer-callout-card {
+  right: auto;
+  left: 0;
+}
+
+.viewer-callout-card-name {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--will-gray);
+}
+
+.viewer-callout-card-row {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--will-gray);
+}
+
+.viewer-callout-card-row span {
+  color: #8a8d92;
+  flex-shrink: 0;
+}
+
+.viewer-callout-card-row strong {
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.viewer-callout-card-btn {
+  margin-top: 6px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--will-gray);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.viewer-callout-card-btn:hover {
+  background: var(--will-yellow);
 }
