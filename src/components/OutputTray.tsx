@@ -51,11 +51,12 @@ interface DeliverableDef {
 /**
  * Phase 0.17 (Tyler 8/19, downloads distillation): ONE card per audience, and
  * nothing fake. The tray shed three cards deliberately:
- *  - STEP ("exact geometry") — it exported the PARAMETRIC PLACEHOLDER model
- *    (`REAL_GEOMETRY_IN_KIT` is off by design); a mislabeled download costs
- *    more trust than it earns. The concept STEP still ships INSIDE the
- *    Handoff ZIP, labeled as such. Engineering exchange belongs in the quote
- *    flow, not a download button.
+ *  - STEP ("exact geometry") — at cut time it exported the PARAMETRIC
+ *    PLACEHOLDER model; a mislabeled download costs more trust than it
+ *    earns. The STEP inside the Handoff ZIP has since become the SHELL
+ *    model (real exterior shells, AP242 tessellated) — restoring a
+ *    standalone STEP card is now defensible if Tyler wants it back.
+ *    Engineering exchange still belongs in the quote flow.
  *  - Revit Family (RFA) — the adapter is a MOCK that does not open in Revit.
  *    The service keeps the adapter; the card returns as one entry here the
  *    day the Autodesk APS decision lands (Nick's Casey-pilot call).
@@ -97,7 +98,10 @@ export const DELIVERABLE_DEFS: DeliverableDef[] = [
   {
     format: 'bundle',
     title: 'Handoff Package',
-    formatLabel: 'ZIP · concept STEP + render + spec + config',
+    // Phase 0.17: the STEP inside is the SHELL model now (real products'
+    // gated exterior shells, AP242 tessellated) — accurate to look at,
+    // still not manufacturing geometry (the disclaimer rides in its header).
+    formatLabel: 'ZIP · shell STEP + render + config card',
     audience: 'For your project record',
     includeRender: true,
   },
@@ -313,7 +317,13 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
         }
 
         // Enqueue the job, then poll for progress until it finishes.
-        const start = await startJob(config, [format], renderPng)
+        const start = await startJob(
+          config,
+          [format],
+          renderPng,
+          // Phase 0.17: the viewer publishes where each part sits in the PNG.
+          useConfigurator.getState().snapshotAnchors ?? undefined,
+        )
         const response = await pollJob(start.jobId, ({ progress, stage }) => {
           setCardState(format, { phase: 'working', progress, stage })
         })

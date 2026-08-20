@@ -25,6 +25,7 @@ from app.catalog import load_catalog
 from app.kit.assembly import build_assembly
 from app.models import PoleConfig
 from app.naming import DISCLAIMER, base_name
+from app.shellgeom import has_shell, shell_assembly
 
 from .conftest import first_base_cover_for
 
@@ -178,6 +179,17 @@ class TestIfcPset:
 # ---------------------------------------------------------------------------
 
 class TestIfcGeometry:
+    def test_fixture_has_an_object_placement(self, ifc_model):
+        """IfcProduct WR1: a product WITH a shape representation must carry an
+        ObjectPlacement (flagged by ifcopenshell.validate, Phase 0.17.5) —
+        without one, importers are free to refuse or misplace the geometry."""
+        fixture = ifc_model.by_type("IfcLightFixture")[0]
+        placement = fixture.ObjectPlacement
+        assert placement is not None
+        assert placement.is_a("IfcLocalPlacement")
+        origin = placement.RelativePlacement.Location.Coordinates
+        assert tuple(origin) == (0.0, 0.0, 0.0)
+
     def test_fixture_has_shape_representation(self, ifc_model):
         fixture = ifc_model.by_type("IfcLightFixture")[0]
         assert fixture.Representation is not None
@@ -190,6 +202,45 @@ class TestIfcGeometry:
         assert len(face_sets) >= 1
         assert len(face_sets[0].Faces) > 0
         assert len(face_sets[0].Coordinates.CoordList) > 0
+
+
+# ---------------------------------------------------------------------------
+# Analytic pole (Phase 0.17.5): the shaft ships as a real cylinder, not a mesh
+# ---------------------------------------------------------------------------
+
+class TestIfcAnalyticPole:
+    """The decimated pole shell (121-triangle prism) flat-shades into visible
+    facets in Autodesk viewers — IfcPolygonalFaceSet has no normals. The shaft
+    must ship as an IfcExtrudedAreaSolid circle instead, which viewers shade
+    smooth at any zoom, exactly like the analytic cylinder in a STEP import.
+    Requires the committed shells (the shell path is what embeds the mesh)."""
+
+    pytestmark = pytest.mark.skipif(
+        not has_shell("gvx-pendant"), reason="service shells not exported on this machine"
+    )
+
+    def test_pole_shaft_is_an_extruded_circle(self, ifc_model):
+        solids = ifc_model.by_type("IfcExtrudedAreaSolid")
+        assert len(solids) == 1
+        s = solids[0]
+        assert s.SweptArea.is_a("IfcCircleProfileDef")
+        assert s.SweptArea.Radius == pytest.approx(50.8)
+        # extruded up the pole axis from the 80 mm base-crop line to the top
+        assert tuple(s.ExtrudedDirection.DirectionRatios) == (0.0, 0.0, 1.0)
+        assert tuple(s.Position.Location.Coordinates) == pytest.approx((0.0, 0.0, 80.0))
+        assert s.Depth == pytest.approx(20 * 304.8 - 80.0)
+
+    def test_pole_mesh_is_not_also_shipped(self, ifc_model, cat, default_cfg):
+        # one geometry per piece: face sets cover every piece EXCEPT the pole
+        asm = shell_assembly(cat, default_cfg)
+        face_sets = ifc_model.by_type("IfcPolygonalFaceSet")
+        assert len(face_sets) == len(asm.pieces) - 1
+
+    def test_body_representation_type_covers_mixed_items(self, ifc_model):
+        fixture = ifc_model.by_type("IfcLightFixture")[0]
+        body = fixture.Representation.Representations[0]
+        # the IFC4 type whose WHERE rule admits tessellated items AND solids
+        assert body.RepresentationType == "SurfaceOrSolidModel"
 
 
 # ---------------------------------------------------------------------------

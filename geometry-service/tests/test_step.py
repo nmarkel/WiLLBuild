@@ -226,11 +226,32 @@ class TestStepDeterminism:
 # ---------------------------------------------------------------------------
 
 class TestStepReimport:
-    def test_reimported_volume_within_tolerance(self, tmp_path, cat, default_cfg, built_assembly):
-        """Re-import the STEP file; volume must be within 0.1% of source solid."""
-        from build123d import import_step
+    """Phase 0.17 (Tyler 8/19): what "fidelity" means changed with the format.
+
+    The STEP is now AP242 TESSELLATED, assembled from the real products'
+    gated exterior shells — a surface mesh, so it has no solid volume to
+    compare, and its geometry is deliberately NOT the parametric kit solid's.
+    The meaningful check became the envelope: a re-import must land on the
+    same bounding box the shell assembly measures (mm, +Z up). The old
+    volume-fidelity assertion still guards the concept-kit fallback path,
+    which does export a solid.
+    """
+
+    def test_reimported_envelope_matches_the_shell_assembly(
+        self, tmp_path, cat, default_cfg, built_assembly
+    ):
+        import numpy as np
+        from OCP.Bnd import Bnd_Box
+        from OCP.BRepBndLib import BRepBndLib
+        from OCP.Interface import Interface_Static
+        from OCP.STEPControl import STEPControl_Reader
 
         from app.adapters.base import GenContext
+        from app.shellgeom import shell_assembly
+
+        shells = shell_assembly(cat, default_cfg)
+        if shells is None:
+            pytest.skip("no gated shells on this machine — kit fallback path")
 
         ctx = GenContext(
             catalog=cat,
@@ -241,17 +262,92 @@ class TestStepReimport:
             render_png=None,
             summary={},
         )
-        adapter = StepAdapter()
-        paths = adapter.generate(ctx)
+        paths = StepAdapter().generate(ctx)
+
+        reader = STEPControl_Reader()
+        Interface_Static.SetCVal_s("read.step.tessellated", "On")
+        reader.ReadFile(str(paths[0]))
+        reader.TransferRoots()
+        box = Bnd_Box()
+        BRepBndLib.Add_s(reader.OneShape(), box)
+        xmin, ymin, zmin, xmax, ymax, zmax = box.Get()
+
+        # Expected envelope straight from the shell pieces (meters, +Y up →
+        # millimetres, +Z up: x, −z, y).
+        verts = np.vstack([p.verts for p in shells.pieces])
+        exp_z = (verts[:, 1].min() * 1000.0, verts[:, 1].max() * 1000.0)
+        exp_x = (verts[:, 0].min() * 1000.0, verts[:, 0].max() * 1000.0)
+        assert zmin == pytest.approx(exp_z[0], abs=1.0), "re-imported base height drifted"
+        assert zmax == pytest.approx(exp_z[1], abs=1.0), "re-imported overall height drifted"
+        assert xmin == pytest.approx(exp_x[0], abs=1.0)
+        assert xmax == pytest.approx(exp_x[1], abs=1.0)
+
+    def test_pole_ships_as_a_real_cylinder_not_a_tessellated_prism(
+        self, tmp_path, cat, default_cfg, built_assembly
+    ):
+        """Phase 0.17.5: the decimated pole shell is a 32-segment prism that
+        flat-shades into visible facets on import. The shaft must export as a
+        real B-rep cylinder (its ShellPiece carries the analytic spec), while
+        every other piece stays a tessellated face."""
+        from app.adapters.base import GenContext
+        from app.shellgeom import shell_assembly
+
+        shells = shell_assembly(cat, default_cfg)
+        if shells is None:
+            pytest.skip("no gated shells on this machine — kit fallback path")
+
+        ctx = GenContext(
+            catalog=cat,
+            cfg=default_cfg,
+            out_dir=tmp_path,
+            base_name=base_name(cat, default_cfg),
+            assembly=built_assembly,
+            render_png=None,
+            summary={},
+        )
+        paths = StepAdapter().generate(ctx)
+        text = paths[0].read_text(encoding="ascii")
+
+        radii = re.findall(
+            r"CYLINDRICAL_SURFACE\s*\(\s*'[^']*'\s*,\s*#\d+\s*,\s*([0-9.Ee+-]+)\s*\)", text
+        )
+        assert any(float(r) == pytest.approx(50.8) for r in radii), (
+            "no B-rep cylinder of the pole's 50.8 mm radius in the STEP"
+        )
+        # one tessellated entity per piece EXCEPT the pole shaft. OCC encodes
+        # mesh-only faces as TRIANGULATED_FACE in an all-mesh compound but as
+        # TRIANGULATED_SURFACE_SET once a B-rep solid shares the compound —
+        # both are AP242 tessellated items (the reimport-envelope test above
+        # proves the mixed file reads back whole).
+        tessellated = text.count("TRIANGULATED_FACE") + text.count("TRIANGULATED_SURFACE_SET")
+        assert tessellated == len(shells.pieces) - 1
+
+    def test_kit_fallback_still_exports_a_solid_with_matching_volume(
+        self, tmp_path, cat, default_cfg, built_assembly, monkeypatch
+    ):
+        """The concept-kit path (no shell for a configured part) must still
+        produce a real solid whose volume round-trips within 0.1%."""
+        from build123d import import_step
+
+        import app.adapters.step_adapter as step_mod
+        from app.adapters.base import GenContext
+
+        monkeypatch.setattr(step_mod, "shell_assembly", lambda *_a, **_k: None)
+
+        ctx = GenContext(
+            catalog=cat,
+            cfg=default_cfg,
+            out_dir=tmp_path,
+            base_name=base_name(cat, default_cfg),
+            assembly=built_assembly,
+            render_png=None,
+            summary={},
+        )
+        paths = StepAdapter().generate(ctx)
 
         reimported = import_step(paths[0])
         source_vol = built_assembly.solid.volume
-        reimported_vol = reimported.volume
-
-        tol = 0.001  # 0.1%
-        assert abs(reimported_vol - source_vol) / source_vol < tol, (
-            f"Volume mismatch: source={source_vol:.1f}, reimported={reimported_vol:.1f}"
-        )
+        assert abs(reimported.volume - source_vol) / source_vol < 0.001
 
 
 # ---------------------------------------------------------------------------

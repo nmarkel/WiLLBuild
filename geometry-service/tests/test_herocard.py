@@ -206,8 +206,13 @@ class TestHeroCardContent:
             f"configId {config_id!r} not found in hero card PDF text"
         )
 
-    def test_concept_card_title_in_text(self, cat, tmp_path) -> None:
-        """Hero card must use 'Concept Card' as its PDF title."""
+    def test_names_itself_a_concept_drawing_like_wills_own_cards(self, cat, tmp_path) -> None:
+        """Phase 0.17 (Tyler 8/19): the hero card is rebuilt to WiLL's own
+        design-library pattern, so the PAGE calls itself what those cards do —
+        "CONCEPT DRAWING / DETAILED APPROVAL DRAWING AT ORDER ENTRY" — and
+        carries the assembly title plus contact block. (The generic
+        "Concept Card" header band is gone: the hero paints its own field, and
+        the PDF metadata /Title still identifies the document.)"""
         from app.adapters.herocard_adapter import HeroCardAdapter
         from pypdf import PdfReader
 
@@ -221,7 +226,11 @@ class TestHeroCardContent:
         text = ""
         for page in reader.pages:
             text += page.extract_text() or ""
-        assert "Concept Card" in text, "Hero card must contain 'Concept Card' title"
+        assert "CONCEPT DRAWING" in text
+        assert "DETAILED APPROVAL DRAWING AT ORDER ENTRY" in text
+        assert "ARCHITECTURAL ASSEMBLY" in text
+        assert "WiLLBrands.com" in text
+        assert reader.metadata.title and "Concept Card" in reader.metadata.title
 
 
 # ---------------------------------------------------------------------------

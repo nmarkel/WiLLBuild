@@ -121,6 +121,14 @@ interface ConfiguratorState {
   /** High-res capture registered by the mounted viewer (CompositeViewer/ProductViewer); null until mounted. */
   snapshot: (() => Promise<Blob | null>) | null
   registerSnapshot: (fn: (() => Promise<Blob | null>) | null) => void
+  /**
+   * Phase 0.17 (Tyler 8/19): where each slot's part sits inside the snapshot
+   * PNG (0..1). The mounted viewer publishes them with the snapshot fn; the
+   * concept card draws its leader-line callouts there, so the document's
+   * labels point at the same geometry the compositor drew.
+   */
+  snapshotAnchors: Record<string, [number, number]> | null
+  setSnapshotAnchors: (a: Record<string, [number, number]> | null) => void
 }
 
 function syncUrl(brand: ProductLine, config: PoleConfig, scene: Scene) {
@@ -371,4 +379,6 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
 
   snapshot: null,
   registerSnapshot: (fn) => set({ snapshot: fn }),
+  snapshotAnchors: null,
+  setSnapshotAnchors: (a) => set({ snapshotAnchors: a }),
 }))

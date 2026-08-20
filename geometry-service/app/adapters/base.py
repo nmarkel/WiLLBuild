@@ -26,6 +26,10 @@ class GenContext:
     base_name: str
     assembly: BuiltAssembly | None  # None when no geometric format is requested
     render_png: bytes | None
+    render_anchors: dict[str, list[float]] | None = None
+    """Phase 0.17: normalized 0..1 positions of each slot's part inside
+    ``render_png`` (from the viewer's compositor) — the concept card's
+    leader-line callout anchors. None → label list without leaders."""
     summary: dict = field(default_factory=dict)
     produced: dict[str, list[Path]] = field(default_factory=dict)
     """Tracks files generated during THIS request, keyed by format string.

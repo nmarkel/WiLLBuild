@@ -13,8 +13,10 @@ DISCLAIMER = "Concept starter model - not final engineered or manufacturing-rele
 # (template redesigns, adapter fixes) — it joins config_hash, so every cached
 # artifact regenerates instead of being served stale. History: 2 = the 0.17
 # PDF formatting pass (aspect-true renders, reworked spec/hero layouts);
-# 3 = the shell-accurate IFC (gated exterior shells replace concept solids).
-_OUTPUT_VERSION = 3
+# 3 = the shell-accurate IFC (gated exterior shells replace concept solids);
+# 4 = the shell STEP (AP242 tessellated from the same shells) + Configuration
+#     Card retitle + imperial-only documents.
+_OUTPUT_VERSION = 4
 
 
 def config_hash(cfg: PoleConfig) -> str:

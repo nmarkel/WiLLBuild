@@ -382,12 +382,17 @@ class TestPdfModes:
         # each element's real spec instead.
         assert "Configuration Card" in text, "spec mode must use 'Configuration Card' title"
 
-    def test_concept_card_mode_title_in_text(self, cat, fixed_cfg, tmp_path) -> None:
+    def test_concept_card_mode_is_the_hero_drawing(self, cat, fixed_cfg, tmp_path) -> None:
+        """Phase 0.17: concept-card mode renders WiLL's design-library hero
+        drawing — assembly title + CONCEPT DRAWING footer, and deliberately
+        NO part numbers (those live on the Configuration Card)."""
         from app.spec_template import render_spec
         ctx = _make_ctx(cat, fixed_cfg, tmp_path)
         pdf = render_spec(ctx, mode="concept-card")
         text = _extract_text(pdf)
-        assert "Concept Card" in text, "concept-card mode must use 'Concept Card' title"
+        assert "CONCEPT DRAWING" in text
+        assert "ARCHITECTURAL ASSEMBLY" in text
+        assert "WD-GVX" not in text and "WP-RSAA" not in text
 
 
 # ---------------------------------------------------------------------------

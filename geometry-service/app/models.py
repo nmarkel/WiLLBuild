@@ -96,6 +96,12 @@ class GenerateRequest(BaseModel):
     config: PoleConfig
     formats: list[Literal["step", "dxf", "dwg", "ifc", "pdf", "bundle", "herocard", "rfa"]]
     renderPng: str | None = None  # base64-encoded PNG
+    # Phase 0.17 (Tyler 8/19): normalized (0..1) position of each slot's part
+    # inside renderPng, published by the viewer's compositor. The concept card
+    # draws leader-line callouts there. Absent → label list, no leaders.
+    # Deliberately NOT in config_hash: it is a property of the supplied render,
+    # not of the configuration.
+    renderAnchors: dict[str, list[float]] | None = None
 
 
 class FileEntry(BaseModel):

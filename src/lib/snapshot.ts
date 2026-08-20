@@ -83,6 +83,34 @@ export function nightLight(
  * Pure: scale factor + centered offset to fit a `width x height` layout box
  * into a `minW x minH` canvas with a 6% margin on every side.
  */
+/**
+ * Phase 0.17 (Tyler 8/19, hero-card rework): where each slot's part sits
+ * inside the snapshot PNG, normalized 0..1. The concept card draws leader-line
+ * callouts at these points — the same "compositor owns geometry, documents
+ * consume it" split the viewer's own callouts use, so a label can never point
+ * at the wrong place. Uses the SAME fitScale transform compositeToBlob draws
+ * with, so the fractions are exact for the file that ships.
+ */
+export function snapshotAnchors(
+  layout: CompositeLayout,
+  canvasW: number,
+  canvasH: number,
+): Record<string, [number, number]> {
+  const { scale, offsetX, offsetY } = fitScale(layout, canvasW, canvasH)
+  const out: Record<string, [number, number]> = {}
+  for (const layer of layout.layers) {
+    // First instance per slot (radial arrangements suffix their layer ids).
+    if (out[layer.slot]) continue
+    const cx = layer.left + layer.asset.width / 2
+    const cy = layer.top + layer.asset.height * 0.5
+    out[layer.slot] = [
+      (offsetX + cx * scale) / canvasW,
+      (offsetY + cy * scale) / canvasH,
+    ]
+  }
+  return out
+}
+
 export function fitScale(
   layout: { width: number; height: number },
   minW: number,

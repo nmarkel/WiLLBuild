@@ -18,7 +18,7 @@ import { displayArmName, displayPartName } from '../lib/display'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
-import { compositeToBlob, nightLight } from '../lib/snapshot'
+import { compositeToBlob, nightLight, snapshotAnchors, SNAPSHOT_HEIGHT, SNAPSHOT_WIDTH } from '../lib/snapshot'
 import { RenderFallback } from './RenderFallback'
 import { sceneBackdrop } from './ScenePicker'
 import type { Scene } from '../lib/url'
@@ -226,6 +226,7 @@ const SLOT_HINT_LABELS: Record<Slot, string> = {
  */
 export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene, onSlotClick }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
+  const setSnapshotAnchors = useConfigurator((s) => s.setSnapshotAnchors)
   const viewYaw = useConfigurator((s) => s.viewYaw)
   const setViewYaw = useConfigurator((s) => s.setViewYaw)
   const focus = useConfigurator((s) => s.focus)
@@ -493,6 +494,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
 
   useEffect(() => {
     if (!layout || !manifest) return
+    setSnapshotAnchors(snapshotAnchors(layout, SNAPSHOT_WIDTH, SNAPSHOT_HEIGHT))
     registerSnapshot(() =>
       compositeToBlob(layout, {
         night,
@@ -507,7 +509,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       }),
     )
     return () => registerSnapshot(null)
-  }, [layout, manifest, night, showScale, config.pole, config.fixture, catalog, registerSnapshot])
+  }, [layout, manifest, night, showScale, config.pole, config.fixture, catalog, registerSnapshot, setSnapshotAnchors])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     // Presses on the viewer's own controls (rotate/zoom/reset) must stay
