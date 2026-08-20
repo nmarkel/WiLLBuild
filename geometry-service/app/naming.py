@@ -9,6 +9,12 @@ from .models import PoleConfig
 
 DISCLAIMER = "Concept starter model - not final engineered or manufacturing-released design"
 
+# Phase 0.17: bump when generated OUTPUT changes without the config changing
+# (template redesigns, adapter fixes) — it joins config_hash, so every cached
+# artifact regenerates instead of being served stale. History: 2 = the 0.17
+# PDF formatting pass (aspect-true renders, reworked spec/hero layouts).
+_OUTPUT_VERSION = 2
+
 
 def config_hash(cfg: PoleConfig) -> str:
     """Return the first 8 hex chars of the SHA-256 over the canonical JSON of
@@ -54,6 +60,14 @@ def config_hash(cfg: PoleConfig) -> str:
     commit that makes an adapter read them.
     """
     canonical: dict = {
+        # Phase 0.17: the OUTPUT TEMPLATE VERSION joins the hash. The on-disk
+        # cache is filename-keyed (identical config → identical filename →
+        # cache hit), so without this a template change strands every prior
+        # config on its STALE artifact — exactly what happened when the 0.17
+        # formatting pass fixed the stretched renders and regenerating the
+        # same config kept serving the old PDFs. Bump on any change that
+        # alters generated output without altering the config.
+        "_outputVersion": _OUTPUT_VERSION,
         "arm": cfg.arm,
         "armCount": cfg.armCount,
         # exclude_none matters: Phase 0.11 added an optional `size` to

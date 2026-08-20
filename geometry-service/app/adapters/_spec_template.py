@@ -50,6 +50,9 @@ _YELLOW = (0xFF, 0xCF, 0x2E)        # #FFCF2E
 _SILVER = (0xE6, 0xE7, 0xE8)        # #E6E7E8
 _WHITE = (0xFF, 0xFF, 0xFF)          # #FFFFFF
 _LIGHT_GRAY = (0xF5, 0xF5, 0xF5)    # table row alternation
+_PANEL = (0xF7, 0xF7, 0xF8)         # render panel background (Phase 0.17)
+_HAIRLINE = (0xD2, 0xD4, 0xD6)      # rules/frames — lighter than gunmetal
+_MUTED = (0x8A, 0x8D, 0x92)         # secondary text
 
 # PDF page size (A4 landscape)
 _PAGE_W = 297.0   # mm
@@ -189,18 +192,56 @@ def _draw_render_column(
     width: float,
     height: float,
 ) -> None:
-    """Draw either the embedded render image or a placeholder box."""
+    """Draw the render inside a framed panel, ASPECT-PRESERVED (Phase 0.17).
+
+    Tyler 8/19: the old embed forced both w and h, stretching the 16:9
+    snapshot to whatever box the layout had. `keep_aspect_ratio=True` fits
+    the image inside the box and centres it; the light panel behind makes
+    the letterboxing read as a deliberate frame rather than dead space.
+    """
+    _set_fill(pdf, _PANEL)
+    _set_draw(pdf, _HAIRLINE)
+    pdf.rect(left, top, width, height, style="FD")
     if render_png is not None:
-        # Embed image from bytes
         try:
             buf = io.BytesIO(render_png)
-            pdf.image(buf, x=left, y=top, w=width, h=height)
+            inset = 2.0
+            pdf.image(
+                buf,
+                x=left + inset,
+                y=top + inset,
+                w=width - 2 * inset,
+                h=height - 2 * inset,
+                keep_aspect_ratio=True,
+            )
         except Exception:
             # On corrupt image, fall back to placeholder
             _draw_placeholder_box(pdf, left, top, width, height)
     else:
         # No image provided — draw placeholder
         _draw_placeholder_box(pdf, left, top, width, height)
+    _set_draw(pdf, _GUNMETAL)
+    _set_fill(pdf, _WHITE)
+
+
+def _draw_section_heading(pdf: FPDF, label: str, left: float, top: float, width: float) -> float:
+    """Uniform section heading: yellow accent tick + bold label + hairline rule.
+
+    Phase 0.17 formatting pass — every block (Components, Dimensions, Finish)
+    opens with this, so the sheet reads as one system instead of ad-hoc bold
+    lines at drifting sizes. Returns the Y where content should start.
+    """
+    _set_fill(pdf, _YELLOW)
+    pdf.rect(left, top + 1.1, 6.0, 2.6, style="F")
+    _set_text(pdf, _GUNMETAL)
+    pdf.set_font("Helvetica", "B", 9.5)
+    pdf.set_xy(left + 8.5, top)
+    pdf.cell(width - 8.5, 5.0, _latin1(label), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    _set_draw(pdf, _HAIRLINE)
+    pdf.line(left, top + 5.6, left + width, top + 5.6)
+    _set_draw(pdf, _GUNMETAL)
+    _set_fill(pdf, _WHITE)
+    return top + 7.4
 
 
 def _draw_components_table(
@@ -218,44 +259,45 @@ def _draw_components_table(
     copies into a project spec.  A component with no published ordering matrix
     prints '-' rather than a fabricated code (docs/part-numbers.md).
     """
-    # Header row.  Proportional, so the table survives a layout width change.
-    col_w = [width * 0.15, width * 0.29, width * 0.32, width * 0.24]
-    row_h = 6.5
+    # Phase 0.17 (Tyler 8/19, formatting pass): the URL column is gone — full
+    # product URLs crammed into 24% of the table were the single worst
+    # offender ("all over the place"); the spec layout lists product pages in
+    # their own wrapped block instead. Three columns, horizontal rules only.
+    top = _draw_section_heading(pdf, "Components", left, top, width)
+    col_w = [width * 0.16, width * 0.34, width * 0.50]
+    row_h = 6.2
 
-    _set_fill(pdf, _GUNMETAL)
-    _set_text(pdf, _WHITE)
-    pdf.set_font("Helvetica", "B", 8)
+    _set_text(pdf, _MUTED)
+    pdf.set_font("Helvetica", "B", 7)
     pdf.set_xy(left, top)
-    for i, label in enumerate(["Slot", "Part Number", "Product", "URL"]):
-        pdf.cell(col_w[i], row_h, label, border=1, fill=True, align="C", new_x=XPos.RIGHT, new_y=YPos.TOP)
+    for i, label in enumerate(["SLOT", "PART NUMBER", "PRODUCT"]):
+        pdf.cell(col_w[i], 4.6, label, new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.ln()
 
     # Data rows
     _set_text(pdf, _GUNMETAL)
+    _set_draw(pdf, _HAIRLINE)
     slot_labels = {
         "fixture": "Fixture",
         "arm": "Arm",
         "pole": "Pole",
         "baseCover": "Base Cover",
     }
-    for i, part in enumerate(parts):
-        fill = i % 2 == 0
-        _set_fill(pdf, _LIGHT_GRAY if fill else _WHITE)
+    for part in parts:
         slot_label = slot_labels.get(part["slot"], part["slot"].title())
-        url = part.get("productUrl", "")
         number = part.get("partNumber") or "-"
         pdf.set_xy(left, pdf.get_y())
-        pdf.set_font("Helvetica", "", 8)
-        pdf.cell(col_w[0], row_h, _latin1(slot_label), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.set_font("Helvetica", "B", 8)
-        pdf.cell(col_w[1], row_h, _latin1(number), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.set_font("Helvetica", "", 8)
-        pdf.cell(col_w[2], row_h, _latin1(part["name"]), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_w[3], row_h, _latin1(url), border=1, fill=fill, new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "", 8.5)
+        pdf.cell(col_w[0], row_h, _latin1(slot_label), border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "B", 8.5)
+        pdf.cell(col_w[1], row_h, _latin1(number), border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.set_font("Helvetica", "", 8.5)
+        pdf.cell(col_w[2], row_h, _latin1(part["name"]), border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
+    _set_draw(pdf, _GUNMETAL)
     _set_fill(pdf, _WHITE)
-    y = pdf.get_y()
+    y = pdf.get_y() + 1.0
 
     # Flag any number still carrying an unanswered ordering column, so an
     # incomplete spec is obvious rather than looking orderable.
@@ -274,6 +316,32 @@ def _draw_components_table(
         )
         y = pdf.get_y()
     return y
+
+
+def _draw_product_pages(
+    pdf: FPDF,
+    parts: list[dict],
+    left: float,
+    top: float,
+    width: float,
+) -> float:
+    """Product-page URLs as their own wrapped block (spec mode only).
+
+    Phase 0.17: URLs moved out of the components table — here they get a full
+    line each at a size that fits, wrapped by multi_cell when they don't.
+    """
+    rows = [p for p in parts if p.get("productUrl")]
+    if not rows:
+        return top
+    _set_text(pdf, _MUTED)
+    pdf.set_font("Helvetica", "", 6.8)
+    y = top
+    for part in rows:
+        pdf.set_xy(left, y)
+        pdf.multi_cell(width, 3.6, _latin1(f"{part['name']}  -  {part['productUrl']}"))
+        y = pdf.get_y()
+    _set_text(pdf, _GUNMETAL)
+    return y + 1.0
 
 
 def _draw_labeled_line(
@@ -325,11 +393,8 @@ def _draw_dims_block(
     width: float,
 ) -> float:
     """Draw dimensions block; return Y after block."""
-    pdf.set_xy(left, top)
-    pdf.set_font("Helvetica", "B", 9)
-    _set_text(pdf, _GUNMETAL)
-    pdf.cell(width, 6, "Dimensions", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.ln()
+    y = _draw_section_heading(pdf, "Dimensions", left, top, width)
+    pdf.set_xy(left, y)
 
     dim_rows = [
         ("Overall Height", "overall_height_mm"),
@@ -339,7 +404,8 @@ def _draw_dims_block(
         ("Base Diameter", "base_diameter_mm"),
     ]
 
-    pdf.set_font("Helvetica", "", 8)
+    pdf.set_font("Helvetica", "", 8.5)
+    _set_draw(pdf, _HAIRLINE)
     col_label = width * 0.45
     col_mm = width * 0.27
     col_ftin = width * 0.28
@@ -351,11 +417,12 @@ def _draw_dims_block(
         val_mm_rounded = int(round(val_mm))
         val_ftin = _mm_to_ft_in(val_mm)
         pdf.set_x(left)
-        pdf.cell(col_label, 5.5, label, border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_mm, 5.5, f"{val_mm_rounded} mm", border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_ftin, 5.5, val_ftin, border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_label, 5.8, label, border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_mm, 5.8, f"{val_mm_rounded} mm", border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
+        pdf.cell(col_ftin, 5.8, val_ftin, border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
+    _set_draw(pdf, _GUNMETAL)
     return pdf.get_y()
 
 
@@ -368,18 +435,15 @@ def _draw_finish_block(
     width: float,
 ) -> float:
     """Draw finish block; return Y after block."""
-    pdf.set_xy(left, top + 4)
-    pdf.set_font("Helvetica", "B", 9)
-    _set_text(pdf, _GUNMETAL)
-    pdf.cell(width, 6, "Finish", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.ln()
+    y = _draw_section_heading(pdf, "Finish", left, top, width)
+    pdf.set_xy(left, y)
 
     finish_name = _latin1(summary.get("finish", "-"))
     # RAL from summary (pre-populated by the adapter from catalog)
     finish_ral = summary.get("finish_ral", "")
     finishes_provisional = catalog.get("finishesProvisional", False)
 
-    pdf.set_font("Helvetica", "", 8)
+    pdf.set_font("Helvetica", "", 8.5)
     pdf.set_x(left)
     ral_text = f"  ({finish_ral})" if finish_ral else ""
     pdf.cell(width, 5.5, _latin1(f"{finish_name}{ral_text}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -419,17 +483,20 @@ def _draw_footer(pdf: FPDF, cfg, top: float) -> None:
     footer_h = _PAGE_H - top - 2
     _set_fill(pdf, _SILVER)
     pdf.rect(0, top, _PAGE_W, footer_h + 2, style="F")
+    # Yellow hairline caps the band — same accent language as the header rule.
+    _set_fill(pdf, _YELLOW)
+    pdf.rect(0, top, _PAGE_W, 0.8, style="F")
 
-    pdf.set_xy(_MARGIN, top + 2)
+    pdf.set_xy(_MARGIN, top + 2.6)
     _set_text(pdf, _GUNMETAL)
-    pdf.set_font("Helvetica", "I", 6)
-    pdf.multi_cell(_PAGE_W - 2 * _MARGIN, 3.5, DISCLAIMER)
+    pdf.set_font("Helvetica", "I", 6.5)
+    pdf.multi_cell(_PAGE_W - 2 * _MARGIN, 3.6, DISCLAIMER)
 
     pdf.set_x(_MARGIN)
-    pdf.set_font("Helvetica", "", 7)
+    pdf.set_font("Helvetica", "B", 7)
     pdf.cell(
         _PAGE_W - 2 * _MARGIN,
-        4,
+        4.2,
         f"Config: {cfg.configId}  |  Rev: {cfg.rev}  |  Request a quote: {_QUOTE_URL}",
     )
 
@@ -479,13 +546,13 @@ def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
     Bottom: component list, compact dims row, finish (with RAL), status chip.
     Footer: unchanged (disclaimer + config ID + quote CTA).
     """
-    content_top = _HEADER_H + _RULE_H + 3.0
+    content_top = _HEADER_H + _RULE_H + 4.0
     usable_w = _PAGE_W - 2 * _MARGIN
-    footer_y = _PAGE_H - 18.0
+    footer_y = _PAGE_H - 19.0
     content_h = footer_y - content_top
 
-    # Hero render band: ~55% of content height
-    render_band_h = content_h * 0.55
+    # Hero render band: ~58% of content height, aspect-preserved in its panel.
+    render_band_h = content_h * 0.58
     _draw_render_column(
         pdf,
         ctx.render_png,
@@ -495,17 +562,15 @@ def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
         height=render_band_h,
     )
 
-    # Below render: info area
-    info_top = content_top + render_band_h + 3.0
-    info_h = footer_y - info_top - 2.0
-
-    # Split info area: left = table + dims; right = finish + status chip
-    left_w = usable_w * 0.60
-    right_w = usable_w * 0.40 - 4.0
+    # Below render: info area — left components, right dims/finish/status.
+    info_top = content_top + render_band_h + 5.0
+    gutter = 8.0
+    left_w = usable_w * 0.56
+    right_w = usable_w * 0.44 - gutter
     left_x = _MARGIN
-    right_x = _MARGIN + left_w + 4.0
+    right_x = _MARGIN + left_w + gutter
 
-    # --- Left: component table (compact — smaller row height) ---
+    # --- Left: component table ---
     parts = ctx.summary.get("parts", [])
     y_after_table = _draw_components_table(
         pdf,
@@ -516,33 +581,27 @@ def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
     )
 
     # --- Left: arm arrangement (only when >1 arm; no-op → position unchanged) ---
-    y_after_arr = _draw_arm_arrangement(
-        pdf, ctx.summary, left=left_x, top=y_after_table, width=left_w
-    )
+    _draw_arm_arrangement(pdf, ctx.summary, left=left_x, top=y_after_table + 1.0, width=left_w)
 
-    # --- Left: compact dims row ---
+    # --- Right: dims, then finish, then status chip — one column, even gaps ---
     dims = ctx.summary.get("dims", {})
-    _draw_dims_block(
+    y_after_dims = _draw_dims_block(
         pdf,
         dims,
-        left=left_x,
-        top=y_after_arr + 2.0,
-        width=left_w,
+        left=right_x,
+        top=info_top,
+        width=right_w,
     )
-
-    # --- Right: finish block ---
     y_after_finish = _draw_finish_block(
         pdf,
         ctx.summary,
         ctx.catalog,
         left=right_x,
-        top=info_top - 4.0,
+        top=y_after_dims + 3.0,
         width=right_w,
     )
-
-    # --- Right: status chip ---
     status = ctx.summary.get("status", "Configurable")
-    _draw_status_chip(pdf, status, left=right_x, top=y_after_finish + 2.0)
+    _draw_status_chip(pdf, status, left=right_x, top=y_after_finish + 1.5)
 
     # --- Footer ---
     _draw_footer(pdf, ctx.cfg, top=footer_y)
@@ -601,25 +660,33 @@ def render_spec(
         _render_hero_layout(pdf, ctx)
         return bytes(pdf.output())
 
-    # --- Spec layout (unchanged) ---
-    content_top = _HEADER_H + _RULE_H + 5.0
+    # --- Spec layout (Phase 0.17 formatting pass) ---
+    content_top = _HEADER_H + _RULE_H + 4.0
     usable_w = _PAGE_W - 2 * _MARGIN
+    gutter = 8.0
     left_w = usable_w * _COL_SPLIT
-    right_w = usable_w * (1 - _COL_SPLIT)
+    right_w = usable_w * (1 - _COL_SPLIT) - gutter
     left_x = _MARGIN
-    right_x = _MARGIN + left_w + 4.0
-    content_bottom = _PAGE_H - 18.0  # leave room for footer
+    right_x = _MARGIN + left_w + gutter
+    content_bottom = _PAGE_H - 19.0  # leave room for footer
 
-    # --- Render column (right) ---
-    render_h = content_bottom - content_top
+    # --- Render column (right): aspect-preserved panel + status + config ---
+    render_h = (content_bottom - content_top) * 0.82
     _draw_render_column(
         pdf,
         ctx.render_png,
         left=right_x,
         top=content_top,
-        width=right_w - 4.0,
+        width=right_w,
         height=render_h,
     )
+    status = ctx.summary.get("status", "Configurable")
+    _draw_status_chip(pdf, status, left=right_x, top=content_top + render_h + 3.0)
+    _set_text(pdf, _MUTED)
+    pdf.set_font("Helvetica", "", 7)
+    pdf.set_xy(right_x + 40.0, content_top + render_h + 4.2)
+    pdf.cell(right_w - 40.0, 4.5, _latin1(f"Config {ctx.cfg.configId}"), align="R")
+    _set_text(pdf, _GUNMETAL)
 
     # --- Left column: component table ---
     parts = ctx.summary.get("parts", [])
@@ -633,7 +700,12 @@ def render_spec(
 
     # --- Left column: arm arrangement (only when >1 arm; no-op keeps layout) ---
     y_after_arr = _draw_arm_arrangement(
-        pdf, ctx.summary, left=left_x, top=y_after_table, width=left_w
+        pdf, ctx.summary, left=left_x, top=y_after_table + 1.0, width=left_w
+    )
+
+    # --- Left column: product pages (URLs, wrapped — moved out of the table) ---
+    y_after_urls = _draw_product_pages(
+        pdf, parts, left=left_x, top=y_after_arr + 1.0, width=left_w
     )
 
     # --- Left column: dimensions ---
@@ -642,7 +714,7 @@ def render_spec(
         pdf,
         dims,
         left=left_x,
-        top=y_after_arr + 4.0,
+        top=y_after_urls + 2.0,
         width=left_w,
     )
 
@@ -652,7 +724,7 @@ def render_spec(
         ctx.summary,
         ctx.catalog,
         left=left_x,
-        top=y_after_dims,
+        top=y_after_dims + 3.0,
         width=left_w,
     )
 
