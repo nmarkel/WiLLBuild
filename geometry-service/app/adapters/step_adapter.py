@@ -95,10 +95,19 @@ def _write_tessellated_step(shells, out_path: Path) -> None:
     entities for exactly these faces. Frame conversion matches the kit's
     STEP output: viewer meters +Y up → millimetres +Z up (x, −z, y)·1000.
 
+    A piece carrying an analytic ``cylinder`` (the pole shaft, Phase 0.17.5)
+    becomes a real B-rep cylinder solid instead — the decimated 121-triangle
+    shell prism flat-shades into visible facets on import, while an analytic
+    CYLINDRICAL_SURFACE imports smooth, matching Cole's CAD exports.
+    OnNoBRep leaves faces WITH surfaces as ordinary B-rep, so the mix is safe;
+    note OCC then encodes the mesh pieces as TRIANGULATED_SURFACE_SET rather
+    than the all-mesh compound's TRIANGULATED_FACE (measured, both AP242).
+
     OCP is imported here, inside the adapter (boundary rule).
     """
     from OCP.BRep import BRep_Builder
-    from OCP.gp import gp_Pnt
+    from OCP.BRepPrimAPI import BRepPrimAPI_MakeCylinder
+    from OCP.gp import gp_Ax2, gp_Dir, gp_Pnt
     from OCP.Interface import Interface_Static
     from OCP.Poly import Poly_Triangle, Poly_Triangulation
     from OCP.STEPControl import STEPControl_AsIs, STEPControl_Writer
@@ -108,6 +117,14 @@ def _write_tessellated_step(shells, out_path: Path) -> None:
     compound = TopoDS_Compound()
     builder.MakeCompound(compound)
     for piece in shells.pieces:
+        if piece.cylinder is not None:
+            c = piece.cylinder
+            axis = gp_Ax2(gp_Pnt(0.0, 0.0, c.y0_m * 1000.0), gp_Dir(0.0, 0.0, 1.0))
+            solid = BRepPrimAPI_MakeCylinder(
+                axis, c.radius_m * 1000.0, (c.y1_m - c.y0_m) * 1000.0
+            ).Shape()
+            builder.Add(compound, solid)
+            continue
         tri = Poly_Triangulation(len(piece.verts), len(piece.tris), False)
         for i, (x, y, z) in enumerate(piece.verts, start=1):
             tri.SetNode(i, gp_Pnt(float(x) * 1000.0, float(-z) * 1000.0, float(y) * 1000.0))

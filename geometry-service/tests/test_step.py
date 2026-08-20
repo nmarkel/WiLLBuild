@@ -282,6 +282,46 @@ class TestStepReimport:
         assert xmin == pytest.approx(exp_x[0], abs=1.0)
         assert xmax == pytest.approx(exp_x[1], abs=1.0)
 
+    def test_pole_ships_as_a_real_cylinder_not_a_tessellated_prism(
+        self, tmp_path, cat, default_cfg, built_assembly
+    ):
+        """Phase 0.17.5: the decimated pole shell is a 32-segment prism that
+        flat-shades into visible facets on import. The shaft must export as a
+        real B-rep cylinder (its ShellPiece carries the analytic spec), while
+        every other piece stays a tessellated face."""
+        from app.adapters.base import GenContext
+        from app.shellgeom import shell_assembly
+
+        shells = shell_assembly(cat, default_cfg)
+        if shells is None:
+            pytest.skip("no gated shells on this machine — kit fallback path")
+
+        ctx = GenContext(
+            catalog=cat,
+            cfg=default_cfg,
+            out_dir=tmp_path,
+            base_name=base_name(cat, default_cfg),
+            assembly=built_assembly,
+            render_png=None,
+            summary={},
+        )
+        paths = StepAdapter().generate(ctx)
+        text = paths[0].read_text(encoding="ascii")
+
+        radii = re.findall(
+            r"CYLINDRICAL_SURFACE\s*\(\s*'[^']*'\s*,\s*#\d+\s*,\s*([0-9.Ee+-]+)\s*\)", text
+        )
+        assert any(float(r) == pytest.approx(50.8) for r in radii), (
+            "no B-rep cylinder of the pole's 50.8 mm radius in the STEP"
+        )
+        # one tessellated entity per piece EXCEPT the pole shaft. OCC encodes
+        # mesh-only faces as TRIANGULATED_FACE in an all-mesh compound but as
+        # TRIANGULATED_SURFACE_SET once a B-rep solid shares the compound —
+        # both are AP242 tessellated items (the reimport-envelope test above
+        # proves the mixed file reads back whole).
+        tessellated = text.count("TRIANGULATED_FACE") + text.count("TRIANGULATED_SURFACE_SET")
+        assert tessellated == len(shells.pieces) - 1
+
     def test_kit_fallback_still_exports_a_solid_with_matching_volume(
         self, tmp_path, cat, default_cfg, built_assembly, monkeypatch
     ):
