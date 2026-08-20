@@ -38,19 +38,32 @@ interface CardState {
 // ---- Deliverable definitions ----
 
 interface DeliverableDef {
-  /** The format key sent to the geometry service (or null for always-disabled). */
-  format: OutputFormat | null
+  /** The format key sent to the geometry service. */
+  format: OutputFormat
   title: string
   /** Static format label — may be overridden at render time based on available formats. */
   formatLabel: string
   audience: string
   /** Pass renderPng to generateOutputs for these formats. */
   includeRender?: boolean
-  /** Always disabled, regardless of service availability. */
-  alwaysDisabled?: boolean
 }
 
-const DELIVERABLE_DEFS: DeliverableDef[] = [
+/**
+ * Phase 0.17 (Tyler 8/19, downloads distillation): ONE card per audience, and
+ * nothing fake. The tray shed three cards deliberately:
+ *  - STEP ("exact geometry") — it exported the PARAMETRIC PLACEHOLDER model
+ *    (`REAL_GEOMETRY_IN_KIT` is off by design); a mislabeled download costs
+ *    more trust than it earns. The concept STEP still ships INSIDE the
+ *    Handoff ZIP, labeled as such. Engineering exchange belongs in the quote
+ *    flow, not a download button.
+ *  - Revit Family (RFA) — the adapter is a MOCK that does not open in Revit.
+ *    The service keeps the adapter; the card returns as one entry here the
+ *    day the Autodesk APS decision lands (Nick's Casey-pilot call).
+ *  - Photometric (IES) — no adapter exists and photometrics are explicitly
+ *    out of scope; a permanently dead card is roadmap noise.
+ * Exported so outputTray.test.ts can pin the distilled set.
+ */
+export const DELIVERABLE_DEFS: DeliverableDef[] = [
   {
     format: 'herocard',
     title: 'Concept Card',
@@ -72,37 +85,17 @@ const DELIVERABLE_DEFS: DeliverableDef[] = [
     audience: 'For your drawings',
   },
   {
-    format: 'rfa',
-    title: 'Revit Family',
-    formatLabel: 'RFA · Revit family',
-    audience: 'For your Revit model',
-    includeRender: false,
-  },
-  {
-    format: 'step',
-    title: 'STEP',
-    formatLabel: 'STEP · exact geometry',
-    audience: 'For WiLL Engineering',
-  },
-  {
     format: 'ifc',
-    title: 'Revit Model',
-    formatLabel: 'IFC · BIM-ready',
-    audience: 'For open BIM / import',
+    title: 'BIM Model',
+    formatLabel: 'IFC · imports into Revit & open BIM',
+    audience: 'For your BIM model',
   },
   {
     format: 'bundle',
     title: 'Handoff Package',
-    formatLabel: 'ZIP · STEP + render + spec + config',
+    formatLabel: 'ZIP · concept STEP + render + spec + config',
     audience: 'For your project record',
     includeRender: true,
-  },
-  {
-    format: null,
-    title: 'Photometric',
-    formatLabel: 'IES · coming soon',
-    audience: 'For your lighting calcs',
-    alwaysDisabled: true,
   },
 ]
 
@@ -182,12 +175,12 @@ interface DeliverableCardProps {
   state: CardState
   availFormats: Set<string>
   /** Effective format to request — may differ from def.format (e.g. dwg replaces dxf). */
-  requestFormat: OutputFormat | null
+  requestFormat: OutputFormat
   onRequest: (format: OutputFormat) => void
 }
 
 function DeliverableCard({ def, available, state, availFormats, requestFormat, onRequest }: DeliverableCardProps) {
-  const disabled = def.alwaysDisabled || !available || state.phase === 'working'
+  const disabled = !available || state.phase === 'working'
 
   // Build the format label — 2D Drawing shows DWG when the service provides it, DXF otherwise.
   let formatLabel = def.formatLabel
@@ -213,7 +206,7 @@ function DeliverableCard({ def, available, state, availFormats, requestFormat, o
       className={classNames}
       disabled={disabled}
       onClick={() => {
-        if (requestFormat && available && !def.alwaysDisabled) {
+        if (available) {
           onRequest(requestFormat)
         }
       }}
@@ -223,8 +216,7 @@ function DeliverableCard({ def, available, state, availFormats, requestFormat, o
       </span>
       <span className="deliverable-format">
         {formatLabel}
-        {!available && !def.alwaysDisabled && <em> · coming soon</em>}
-        {def.alwaysDisabled && <em> coming soon</em>}
+        {!available && <em> · coming soon</em>}
       </span>
       <span className="deliverable-audience">{def.audience}</span>
       {isWorking && (
@@ -425,14 +417,13 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
 
         {/* ---- Geometry-service deliverables ---- */}
         {DELIVERABLE_DEFS.filter(
-          (def) => !allowedFormats || (def.format !== null && allowedFormats.includes(def.format)),
+          (def) => !allowedFormats || allowedFormats.includes(def.format),
         ).map((def) => {
           // For the 2D Drawing card: request dwg when available, dxf otherwise.
-          const requestFormat: OutputFormat | null =
+          const requestFormat: OutputFormat =
             def.format === 'dxf' && availFormats.has('dwg') ? 'dwg' : def.format
-          const cardKey = requestFormat ?? 'ies'
-          const available =
-            requestFormat !== null && !def.alwaysDisabled && availFormats.has(requestFormat)
+          const cardKey = requestFormat
+          const available = availFormats.has(requestFormat)
           return (
             <DeliverableCard
               key={cardKey}

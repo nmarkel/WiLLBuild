@@ -9,7 +9,10 @@
       "Bash(npm test *)",
       "Bash(npm run lint)",
       "mcp__claude_ai_Salesforce_Read_Only__soqlQuery",
-      "mcp__claude_ai_Salesforce_Read_Only__getObjectSchema"
+      "mcp__claude_ai_Salesforce_Read_Only__getObjectSchema",
+      "Bash(git fetch *)",
+      "Bash(npm run build)",
+      "Bash(geometry-service/.venv-light/bin/pytest *)"
     ]
   }
 }
