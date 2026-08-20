@@ -304,7 +304,10 @@ class TestGenerateIfcIntegration:
         )
         assert resp.status_code == 200
         body = resp.json()
-        assert body["warnings"] == []
+        # Phase 0.17 (Tyler 8/20): the pole is GENERATED, so a config that
+        # never picked a wall thickness gets that disclosed rather than
+        # silently modeled. Any OTHER warning is still a failure.
+        assert [w for w in body["warnings"] if "wall" not in w] == []
         assert len(body["files"]) == 1
         assert body["files"][0]["format"] == "ifc"
         assert body["files"][0]["filename"].endswith(".ifc")

@@ -36,13 +36,26 @@ interface Props {
   onSlotClick?: (slot: Slot) => void
 }
 
-/** Callout anchors: which side the label sits on and where along the layer's
-    height the leader attaches (fraction of the layer's own box). Sides
-    alternate so labels never stack; vertical spread comes from the parts
-    themselves (fixture top, arm upper, pole mid, base cover bottom). */
-const CALLOUT_DEFS: { slot: Slot; label: string; side: 'left' | 'right'; anchorFrac: number }[] = [
+/** Callout anchors: which side the label sits on and where the leader
+    attaches. Sides alternate so labels never stack; vertical spread comes from
+    the parts themselves (fixture top, arm upper, pole mid, base cover bottom).
+
+    `at: 'mount'` pins the leader on the part's own PLACEMENT point — the pixel
+    the manifest records as its origin — instead of its bounding-box centre.
+    Phase 0.17 (Tyler 8/20): "the arm pointer should pin on the hub of the
+    bracket, which will always be near the pole top". A shepherd's hook's box
+    centre sits out in the curve; its placement point IS the pole-top collar,
+    so this is exact for every arm shape (and stays right for a crossarm,
+    whose `mountOffset` already lands its collar on the socket). */
+const CALLOUT_DEFS: {
+  slot: Slot
+  label: string
+  side: 'left' | 'right'
+  anchorFrac: number
+  at?: 'mount'
+}[] = [
   { slot: 'fixture', label: 'Fixture', side: 'right', anchorFrac: 0.45 },
-  { slot: 'arm', label: 'Arm', side: 'left', anchorFrac: 0.5 },
+  { slot: 'arm', label: 'Arm', side: 'left', anchorFrac: 0.5, at: 'mount' },
   { slot: 'pole', label: 'Pole', side: 'right', anchorFrac: 0.55 },
   { slot: 'baseCover', label: 'Base Cover', side: 'left', anchorFrac: 0.5 },
 ]
@@ -227,6 +240,8 @@ const SLOT_HINT_LABELS: Record<Slot, string> = {
 export function CompositeViewer({ catalog, config, showScale, showCompass, mode, scene, onSlotClick }: Props) {
   const registerSnapshot = useConfigurator((s) => s.registerSnapshot)
   const setSnapshotAnchors = useConfigurator((s) => s.setSnapshotAnchors)
+  // Phase 0.17 (Tyler 8/20): labels are toggleable from the viewer toolbar.
+  const showLabels = useConfigurator((s) => s.showLabels)
   const viewYaw = useConfigurator((s) => s.viewYaw)
   const setViewYaw = useConfigurator((s) => s.setViewYaw)
   const focus = useConfigurator((s) => s.focus)
@@ -237,7 +252,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   const [openCallout, setOpenCallout] = useState<Slot | null>(null)
   useEffect(() => {
     setOpenCallout(null)
-  }, [config, viewYaw])
+  }, [config, viewYaw, showLabels])
   const manifest = useRenderManifest()
   const night = mode === 'night'
 
@@ -662,7 +677,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   const CALLOUT_MIN_LINE = 40
   const CALLOUT_LABEL_ROOM = 130
   const callouts =
-    onSlotClick && zoom <= CALLOUT_MAX_ZOOM
+    onSlotClick && showLabels && zoom <= CALLOUT_MAX_ZOOM
       ? CALLOUT_DEFS.flatMap((d) => {
           const partId = config[d.slot]
           if (!partId) return []
@@ -674,8 +689,16 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
             (l) => l.partId === partId || l.partId.startsWith(`${partId}#`),
           )
           if (!layer) return []
-          const ax = layer.left + layer.asset.width / 2
-          const ay = layer.top + layer.asset.height * d.anchorFrac
+          // 'mount' pins the hub (the layer's recorded origin pixel); the
+          // default is the box centre at the def's height fraction.
+          const ax =
+            d.at === 'mount'
+              ? layer.left + layer.asset.anchor[0]
+              : layer.left + layer.asset.width / 2
+          const ay =
+            d.at === 'mount'
+              ? layer.top + layer.asset.anchor[1]
+              : layer.top + layer.asset.height * d.anchorFrac
           const x = translateX + s * ax
           const y = translateY + s * ay
           const line =

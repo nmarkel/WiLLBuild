@@ -54,7 +54,46 @@ class TestCoreAssembly:
         names = [p.name for p in asm.pieces]
         for expected in ("Pole", "Pole Base", "Hand Hole", "Base Cover", "Arm", "Fixture"):
             assert expected in names
-        assert asm.warnings == []
+        # Phase 0.17 (Tyler 8/20): the pole is GENERATED from catalog
+        # dimensions, so an unspecified wall thickness is disclosed rather
+        # than silently modeled — the only warning a full config raises.
+        assert [w for w in asm.warnings if "wall" not in w] == []
+
+    def test_pole_is_generated_smooth_and_exact(self):
+        """The engineering export is a 256-tri tube the shell pipeline cut to
+        121 — a coarse prism. Generating it gives exact radii at any length,
+        with no per-length source file (Tyler 8/20)."""
+        asm = shell_assembly(_CATALOG, _cfg())
+        pole = _piece(asm, "Pole")
+        # Smooth: 96 segments × 4 bands × 2 triangles.
+        assert len(pole.tris) == 96 * 4 * 2
+        # Exact 4.00 in OD — measured, not approximated.
+        r = np.sqrt(pole.verts[:, 0] ** 2 + pole.verts[:, 2] ** 2).max()
+        assert r == pytest.approx(4.0 * 0.0254 / 2, abs=1e-9)
+        # Hollow: an inner bore exists at the C-wall (0.125 in) by default.
+        r_in = np.sqrt(pole.verts[:, 0] ** 2 + pole.verts[:, 2] ** 2).min()
+        assert r_in == pytest.approx(r - 0.125 * 0.0254, abs=1e-9)
+
+    def test_chosen_wall_thickness_drives_the_bore(self):
+        asm = shell_assembly(
+            _CATALOG, _cfg(specOptions={"pole": {"wall-thickness": "E"}})
+        )
+        pole = _piece(asm, "Pole")
+        rad = np.sqrt(pole.verts[:, 0] ** 2 + pole.verts[:, 2] ** 2)
+        assert rad.max() - rad.min() == pytest.approx(0.250 * 0.0254, abs=1e-9)
+        assert not any("wall" in w for w in asm.warnings)
+
+    def test_any_length_needs_no_new_source_file(self):
+        """Every catalog height — and the crop line never moves."""
+        for pole_id, ft in (
+            ("alum-pole-8", 8),
+            ("alum-pole-15", 15),
+            ("alum-pole-20", 20),
+        ):
+            asm = shell_assembly(_CATALOG, _cfg(pole=pole_id))
+            pole = _piece(asm, "Pole")
+            assert pole.verts[:, 1].max() == pytest.approx(ft * FT_TO_M, abs=1e-6)
+            assert pole.verts[:, 1].min() == pytest.approx(0.08, abs=1e-9)
 
     def test_pole_is_cropped_at_its_base_and_tops_at_its_height(self):
         asm = shell_assembly(_CATALOG, _cfg())

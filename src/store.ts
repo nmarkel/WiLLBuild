@@ -62,6 +62,15 @@ interface ConfiguratorState {
   /** Phase 0.10.5: ground compass at the pole base (0/90/180/270 reference). */
   showCompass: boolean
   toggleCompass: () => void
+  /**
+   * Phase 0.17 (Tyler 8/20): the viewer's component labels (the callouts).
+   * On by default — they are how a customer learns what they are looking at —
+   * but toggleable, because a clean product view is what you want when
+   * screenshotting or presenting. Viewer state only: never part of `config`,
+   * so it never touches the share URL or a part number.
+   */
+  showLabels: boolean
+  toggleLabels: () => void
   /** Phase 0.10.5: object URL of the user-uploaded custom backdrop (session-only). */
   customSceneUrl: string | null
   /** Store an uploaded backdrop photo and switch to it. */
@@ -330,6 +339,8 @@ export const useConfigurator = create<ConfiguratorState>((set, get) => ({
 
   showCompass: true,
   toggleCompass: () => set((s) => ({ showCompass: !s.showCompass })),
+  showLabels: true,
+  toggleLabels: () => set((s) => ({ showLabels: !s.showLabels })),
 
   customSceneUrl: null,
   setCustomScene: (url) => {

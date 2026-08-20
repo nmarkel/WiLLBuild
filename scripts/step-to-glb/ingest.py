@@ -105,7 +105,7 @@ INGEST: list[dict] = [
     #     the compositor from accessoryPlacements via the option value's
     #     renderPartId (docs/spec-option-corrections.json). ---
     dict(file="HH-4R.STEP", part="willstudio-acc-hand-hole", design="HHX", fit="4R",
-         origin="mount-center", mode="mono", tol=0.5,
+         origin="mount-center", mode="mono", tol=0.5, featureOnlyRadiusM=0.0508,
          note="Additional Hand Hole, 4in round — a 6in pole SECTION centred on "
               "the pole axis (measured x/z exactly +/-0.0508 = 4.00in OD), hole "
               "frame reaching +X natively, so no rotateY. Origin at the "
@@ -432,7 +432,9 @@ def convert_one(entry: dict) -> dict:
     else:
         stats = convert_monolithic(step_path, out_path, origin=entry["origin"],
                                    tol_mm=entry["tol"],
-                                   crop_below_m=entry.get("cropBelowM"), **rot)
+                                   crop_below_m=entry.get("cropBelowM"),
+                                   feature_only_radius_m=entry.get("featureOnlyRadiusM"),
+                                   **rot)
     stats["seconds"] = round(time.time() - t0, 1)
     stats["glb_bytes"] = os.path.getsize(out_path)
     stats["glb"] = os.path.relpath(out_path, os.path.join(os.path.dirname(__file__), "..", "render-rig"))

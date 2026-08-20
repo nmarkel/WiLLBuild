@@ -102,6 +102,11 @@ class GenerateRequest(BaseModel):
     # Deliberately NOT in config_hash: it is a property of the supplied render,
     # not of the configuration.
     renderAnchors: dict[str, list[float]] | None = None
+    # Phase 0.17 (Tyler 8/20): the live share link for this build; the concept
+    # card prints it with a QR so a client opens the exact configurator state.
+    # Supplied by the frontend (it owns its own URL) and NOT hashed — it does
+    # not change the configuration.
+    shareUrl: str | None = None
 
 
 class FileEntry(BaseModel):

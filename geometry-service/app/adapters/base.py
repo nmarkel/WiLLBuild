@@ -27,6 +27,9 @@ class GenContext:
     assembly: BuiltAssembly | None  # None when no geometric format is requested
     render_png: bytes | None
     render_anchors: dict[str, list[float]] | None = None
+    share_url: str | None = None
+    """Phase 0.17: the live share link for this build (concept card prints it
+    with a QR). None → the card falls back to the quote URL alone."""
     """Phase 0.17: normalized 0..1 positions of each slot's part inside
     ``render_png`` (from the viewer's compositor) — the concept card's
     leader-line callout anchors. None → label list without leaders."""
