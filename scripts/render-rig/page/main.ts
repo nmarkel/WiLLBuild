@@ -30,6 +30,15 @@ function b64ToArrayBuffer(b64: string): ArrayBuffer {
 interface GraftChild {
   spec: PlaceholderSpec
   position: Vec3
+  /** Phase 0.17.5: render this child DEPTH-ONLY (colorWrite off, drawn first).
+   *  It erases whatever the host shows behind it — the base cover's lit inner
+   *  bore — while leaving those pixels transparent, so the compositor's real
+   *  pole layer shows through the opening in the pole's own finish. */
+  holePunch?: boolean
+  /** Phase 0.17.5: render this child in a FIXED dark material (never the
+   *  finish swap) — the cover's shadowed interior, visible only through the
+   *  clearance gap between the punched pole window and the wider bore. */
+  shadow?: boolean
 }
 
 /** A REAL-geometry graft (Phase 0.14): a sibling GLB merged into the part at a
@@ -66,9 +75,35 @@ async function loadRealModel(
     // axial scale for derived pole heights is baked into the GLB offline,
     // never applied to gltf.scene at load time — so grafting a sibling at a
     // fixed local position can't inherit a stretch that never happens).
-    const graftMaterial = new THREE.MeshStandardMaterial()
-    const graft = specToObject({ kind: 'group', children: graftChildren }, graftMaterial)
-    gltf.scene.add(graft)
+    const visible = graftChildren.filter((c) => !c.holePunch && !c.shadow)
+    if (visible.length) {
+      const graftMaterial = new THREE.MeshStandardMaterial()
+      gltf.scene.add(specToObject({ kind: 'group', children: visible }, graftMaterial))
+    }
+    const shadows = graftChildren.filter((c) => c.shadow)
+    if (shadows.length) {
+      // Fixed near-black matte — the named material shields it from
+      // instantiateRealModel's finish swap, so the cover's interior reads as
+      // shadow in every finish rather than a lit plug in the cover's colour.
+      const shadowMaterial = new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.95 })
+      shadowMaterial.name = 'will-fixed-shadow'
+      gltf.scene.add(specToObject({ kind: 'group', children: shadows }, shadowMaterial))
+    }
+    const punches = graftChildren.filter((c) => c.holePunch)
+    if (punches.length) {
+      // Depth-only occluder: writes depth, never color. renderOrder −1 draws
+      // it before the host, so host fragments BEHIND it (the cover's lit
+      // inner bore) are depth-rejected and stay TRANSPARENT — a window the
+      // compositor fills with the real pole layer. The material name shields
+      // it from instantiateRealModel's finish swap.
+      const punchMaterial = new THREE.MeshBasicMaterial({ colorWrite: false })
+      punchMaterial.name = 'hole-punch'
+      const punch = specToObject({ kind: 'group', children: punches }, punchMaterial)
+      punch.traverse((o) => {
+        o.renderOrder = -1
+      })
+      gltf.scene.add(punch)
+    }
   }
   realModels.set(partId, gltf.scene)
   realRotations.set(partId, (rotateYDeg * Math.PI) / 180)
@@ -111,6 +146,7 @@ interface FinishDef {
 interface CatalogPart {
   id: string
   line: string
+  slot?: string
   placeholder?: PlaceholderSpec
 }
 interface Catalog {
@@ -243,10 +279,12 @@ function instantiateRealModel(partId: string, finish: FinishDef): THREE.Object3D
     const m = o as THREE.Mesh
     if (!m.isMesh) return
     const matName = (m.material as THREE.Material)?.name ?? ''
+    // 'hole-punch' is the depth-only occluder (colorWrite off) — swapping it
+    // for the finish would repaint the cover's bore as a solid plug again.
     if (matName === 'will-body' || matName === '') {
       m.material = finishMat
     }
-    // 'will-fixed-*' keep their GLTF-imported material (authored color)
+    // 'will-fixed-*' and 'hole-punch' keep their materials
   })
   // Yaw about the origin (Y axis) to align the reach with the +X convention.
   // Rotating through the origin keeps the part's origin — and its pole-gripping

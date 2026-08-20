@@ -167,13 +167,20 @@ export function placeholderGraftChildren(part) {
  * bc-cl2's own layer). In the real assembly the pole fills that opening.
  *
  * The image compositor cannot occlude one layer with another, so the fix has
- * to live in the ASSET: graft a stub of the pole's own diameter through the
- * cover, exactly as the pole's hand-hole cover is grafted. Same axis and same
- * OD as the pole layer behind it, so the two read as one continuous shaft.
+ * to live in the ASSET. Phase 0.17.5 upgraded HOW: a solid stub in the cover's
+ * own finish read as a recessed PLUG — the pole visually ENDED at the rim
+ * ("the poles look like they are behind the base covers", Nick 8/20), and on
+ * a mixed-finish build it would even be the wrong colour. The stub is now a
+ * HOLE-PUNCH occluder (`holePunch: true` → depth-only, colorWrite off, drawn
+ * first): it still erases the lit inner wall from the cover's layer, but
+ * leaves those pixels TRANSPARENT, so the REAL pole layer behind shows
+ * through the opening in the pole's own finish — a continuous shaft in every
+ * finish combination.
  *
  * Diameter comes from the cover's own Pole Fit column (4R -> 4 in), never a
- * hardcoded number; height is the cover's own placeholder height, so the stub
- * fills the opening without protruding above it.
+ * hardcoded number; height is the cover's own real height, so the occluder
+ * fills the bore without protruding above it (protruding would depth-kill the
+ * cover's own far rim and punch a hole in the dome itself).
  */
 export function baseCoverGraftChildren(part, heightM) {
   if (part?.slot !== 'baseCover') return []
@@ -189,10 +196,28 @@ export function baseCoverGraftChildren(part, heightM) {
   // 0.566 m real vs 0.35 m placeholder, so the first attempt changed nothing).
   const height = heightM ?? part.placeholder?.heightM
   if (!height) return []
+  // The bore is WIDER than the pole (SC1 measured ~5.5 in around the 4 in
+  // shaft), so the punched window would expose clearance slivers of raw scene.
+  // A dark SHADOW cylinder sits behind the punch: generously wider than any
+  // bore (hidden inside the skirt, it can't be too wide), topping just BELOW
+  // the rim (poking above would occlude the dome's own top surface). The
+  // punch depth-kills its center, so the pole still shows through; the
+  // slivers render as the cover's shadowed interior.
   return [
     {
       spec: { kind: 'pole', heightM: height, radiusTopM: radius, radiusBottomM: radius },
       position: [0, 0, 0],
+      holePunch: true,
+    },
+    {
+      spec: {
+        kind: 'pole',
+        heightM: height - 0.005,
+        radiusTopM: radius + 0.05,
+        radiusBottomM: radius + 0.05,
+      },
+      position: [0, 0, 0],
+      shadow: true,
     },
   ]
 }

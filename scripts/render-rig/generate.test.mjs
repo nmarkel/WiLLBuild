@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import {
   ANGLES_FOR_SLOT,
   assertNoPlaceholderForRealPart,
+  baseCoverGraftChildren,
   placeholderGraftChildren,
   poleGraftPlan,
 } from './generate.mjs'
@@ -134,6 +135,42 @@ describe('pole hand-hole graft (spec D8a)', () => {
       placeholderGraftChildren(catalog.parts.find((p) => p.id === id)),
     )
     expect(grafts[0]).toEqual(grafts[1])
+  })
+})
+
+describe('base-cover stub is a hole-punch occluder (Phase 0.17.5)', () => {
+  it('marks the stub holePunch so the opening becomes a window to the real pole', () => {
+    // Tyler's 8/20 stub made the opening read as a recessed PLUG in the
+    // cover's own finish — the pole visually ended at the rim ("the poles
+    // look like they are behind the base covers", Nick 8/20). A holePunch
+    // child renders depth-only (no color), so the bore interior is erased
+    // from the cover layer and the REAL pole layer shows through the
+    // opening in the pole's own finish.
+    const cover = catalog.parts.find((p) => p.id === 'bc-sc1-spun-collar')
+    const graft = baseCoverGraftChildren(cover, 0.207)
+    expect(graft).toHaveLength(2)
+    const punch = graft.find((c) => c.holePunch)
+    expect(punch).toBeDefined()
+    expect(punch.spec.kind).toBe('pole')
+    // The bore is WIDER than the pole (SC1: ~5.5 in around the 4 in shaft),
+    // so the punched window exposes clearance slivers of raw scene. A dark
+    // SHADOW cylinder sits behind the punch: wider than any bore, topping
+    // BELOW the rim (poking above would occlude the dome itself), rendered
+    // in a fixed dark material — the slivers read as the cover's shadowed
+    // interior while the punch still depth-kills its center for the pole.
+    const shadow = graft.find((c) => c.shadow)
+    expect(shadow).toBeDefined()
+    expect(shadow.holePunch).toBeUndefined()
+    expect(shadow.spec.kind).toBe('pole')
+    expect(shadow.spec.radiusTopM).toBeGreaterThan(punch.spec.radiusTopM)
+    expect(shadow.spec.heightM).toBeLessThan(punch.spec.heightM)
+  })
+
+  it('never marks the pole hand-hole cover or base plate as holePunch', () => {
+    const pole = catalog.parts.find((p) => p.id === 'alum-pole-12')
+    for (const child of placeholderGraftChildren(pole)) {
+      expect(child.holePunch).toBeUndefined()
+    }
   })
 })
 
