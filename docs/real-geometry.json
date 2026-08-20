@@ -18,7 +18,8 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/alum-pole-12.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516,
+      "note": "Phase 0.17 (Tyler 8/19): the tube is CROPPED below y=0.08 m \u2014 the shaft physically ends at its anchor base, and the CLE-lifted clamshell exposes anything rendered below it. 0.08 keeps the cut hidden inside the standard base's collar (top at 0.0897). Applied AFTER the derived poles' axial scale, so the cut height never stretches with pole length."
     },
     {
       "file": "FR2-40F.STEP",
@@ -33,7 +34,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
-      "glbBytes": 429880,
+      "glbBytes": 622364,
       "note": "MAPPED in Phase 0.12 (Workstream A1) \u2014 the first of the six C1 arms to clear alignment, and the only one that needed no socket change. Measured from the GLB's own vertices: after rotateY=-90 the mesh spans X[-0.611,+0.610], and its reaching tip sits at x=0.610, y=0.305..0.318 \u2014 against a catalog socket authored at [0.62, 0.30, 0]. That is within ~1 cm, so the placeholder-era socket was already right and only the axis was wrong. The other five DO need re-derived sockets (and PM1 a rotateY of +90, not -90 \u2014 its real reach reverses); they stay unmapped."
     },
     {
@@ -49,7 +50,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/sh1-shepherds-hook.glb",
-      "glbBytes": 184804
+      "glbBytes": 258352
     },
     {
       "file": "SS1-40F.STEP",
@@ -64,7 +65,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-side-shepherds-hook-pole-top-brackets.glb",
-      "glbBytes": 419636
+      "glbBytes": 608012
     },
     {
       "file": "AR1-40F.STEP",
@@ -79,7 +80,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-suspension-arm-pole-top-brackets.glb",
-      "glbBytes": 389912
+      "glbBytes": 572564
     },
     {
       "file": "PA1-40F.STEP",
@@ -94,7 +95,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/pa1-pendant-arm.glb",
-      "glbBytes": 188104
+      "glbBytes": 268336
     },
     {
       "file": "PM1-40F.STEP",
@@ -109,7 +110,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/pm1-pendant-arm.glb",
-      "glbBytes": 309020
+      "glbBytes": 455256
     },
     {
       "file": "HS1-40F.STEP",
@@ -124,7 +125,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-hsx-decorative-upsweep-arms.glb",
-      "glbBytes": 513356
+      "glbBytes": 736688
     },
     {
       "file": "SD1-40F.STEP",
@@ -139,7 +140,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-supported-decorative-arms.glb",
-      "glbBytes": 494948
+      "glbBytes": 715220
     },
     {
       "file": "HH-4R.STEP",
@@ -154,7 +155,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-acc-hand-hole.glb",
-      "glbBytes": 16396,
+      "glbBytes": 12336,
       "note": "Additional Hand Hole, 4in round \u2014 a 6in pole SECTION centred on the pole axis (measured x/z exactly +/-0.0508 = 4.00in OD), hole frame reaching +X natively, so no rotateY. Origin at the section's vertical centre: the placement height reads to the hole centreline. WiLLstudio poles are all diameterIn 4, so 4R is the one render source; HH-5R/6R stay unmapped below."
     },
     {
@@ -170,7 +171,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-acc-flag-holder.glb",
-      "glbBytes": 589116,
+      "glbBytes": 870684,
       "note": "Single Flag Holder Kit, staff included (measured 2.183 m tall, 1.448 m reach along +Z -> rotateY -90 in real-parts.json). origin='native': the CAD's y=0 is the shaft bracket itself \u2014 the reference the placement height drives \u2014 with the staff running -0.868..+1.315 around it, so bbox re-basing would move the origin off the bracket."
     },
     {
@@ -186,7 +187,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-acc-plant-holder.glb",
-      "glbBytes": 1239772,
+      "glbBytes": 1829944,
       "note": "Single Plant Holder Kit (measured 0.811 m reach along +X \u2014 no rotateY \u2014 basket hanging to y=-0.553 below the bracket at the native y=0; origin='native' for the same reason as FH-4R)."
     },
     {
@@ -235,7 +236,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/willstudio-acc-coupling.glb",
-      "glbBytes": 143028,
+      "glbBytes": 215076,
       "note": "Threaded Coupling, painted \u2014 like HH-4R a 6in pole SECTION on the pole axis with the coupling boss reaching +X natively (25 mm proud of the 4in OD), no rotateY. Origin at the vertical centre so the placement height reads to the boss centreline. Tyler confirmed 8/14 this file IS the coupling's visual representation in the tool; thread details (NPT vs NPSM, diameter) still resolve at quote/order entry per Tyler 8/13."
     },
     {
@@ -251,7 +252,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/bc-cl1-small-clamshell.glb",
-      "glbBytes": 935252
+      "glbBytes": 1351368
     },
     {
       "file": "CL2-4R.STEP",
@@ -266,7 +267,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/bc-cl2-medium-clamshell.glb",
-      "glbBytes": 1575932
+      "glbBytes": 2251800
     },
     {
       "file": "CL3-4R.STEP",
@@ -281,7 +282,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/bc-cl3-large-clamshell.glb",
-      "glbBytes": 1438848
+      "glbBytes": 2080752
     },
     {
       "file": "SC1-4R.STEP",
@@ -296,7 +297,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/bc-sc1-spun-collar.glb",
-      "glbBytes": 73120
+      "glbBytes": 101728
     },
     {
       "file": "SC2-4R.STEP",
@@ -311,7 +312,7 @@
       "converter": "mono",
       "tolMm": 0.5,
       "glb": "render-rig/real-assets/glb/bc-sc2-spun-collar-split.glb",
-      "glbBytes": 661772
+      "glbBytes": 990692
     },
     {
       "file": "BA24-4R.STEP",
@@ -326,7 +327,7 @@
       "converter": "mono",
       "tolMm": 0.75,
       "glb": "render-rig/real-assets/glb/willstudio-ba1-banner-arm.glb",
-      "glbBytes": 2019136
+      "glbBytes": 2949836
     },
     {
       "file": "WD-GVX-PM",
@@ -341,7 +342,7 @@
       "converter": "color",
       "tolMm": 1.0,
       "glb": "render-rig/real-assets/glb/gvx-pendant.glb",
-      "glbBytes": 26172448
+      "glbBytes": 21605844
     },
     {
       "file": "DRX-Post-Top.STEP",
@@ -356,7 +357,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/drx-post-top.glb",
-      "glbBytes": 23906776
+      "glbBytes": 35739460
     },
     {
       "file": "TEX.STEP",
@@ -371,7 +372,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/tex-post-top.glb",
-      "glbBytes": 22197392
+      "glbBytes": 33153700
     },
     {
       "file": "MXV.STEP",
@@ -386,7 +387,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/mvx-coach.glb",
-      "glbBytes": 22789232
+      "glbBytes": 34084056
     },
     {
       "file": "RXB.STEP",
@@ -402,7 +403,7 @@
       "tolMm": 1.5,
       "rotateXDeg": 90,
       "glb": "render-rig/real-assets/glb/willstudio-rxb-sxb-bollard.glb",
-      "glbBytes": 4168304
+      "glbBytes": 6269244
     },
     {
       "file": "DWX.STEP",
@@ -418,7 +419,7 @@
       "tolMm": 1.5,
       "rotateXDeg": -90,
       "glb": "render-rig/real-assets/glb/willstudio-dwx-flood-spot.glb",
-      "glbBytes": 18690528
+      "glbBytes": 27956536
     }
   ],
   "clusters": [
@@ -775,7 +776,7 @@
       "scaleY": 0.8333333333333334,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 10 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-10.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -785,7 +786,7 @@
       "scaleY": 1.1666666666666667,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 14 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-14.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -795,7 +796,7 @@
       "scaleY": 1.25,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 15 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-15.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -805,7 +806,7 @@
       "scaleY": 1.3333333333333333,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 16 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-16.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -815,7 +816,7 @@
       "scaleY": 1.5,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 18 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-18.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -825,7 +826,7 @@
       "scaleY": 1.6666666666666667,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 20 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-20.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     },
     {
       "kind": "derived",
@@ -835,7 +836,7 @@
       "scaleY": 0.6666666666666666,
       "note": "Axially scaled from RSAA-4040-12.STEP (12 ft -> 8 ft): carries the real profile and wall thickness. This STEP export has no hand hole (verified: 6 faces, a plain hollow tube) -- the hand-hole cover is grafted separately by the render rig at native size and fixed height, not scaled with pole height.",
       "glb": "render-rig/real-assets/glb/alum-pole-8.glb",
-      "glbBytes": 7064
+      "glbBytes": 16516
     }
   ]
 }
