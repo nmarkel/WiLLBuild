@@ -115,6 +115,14 @@ class IfcAdapter:
         ifcopenshell.api.run(
             "spatial.assign_container", f, relating_structure=storey, products=[fixture]
         )
+        # IfcProduct WR1: a product with a shape representation must carry an
+        # ObjectPlacement (ifcopenshell.validate flagged its absence, Phase
+        # 0.17.5). Identity placement at the origin — geometry is authored in
+        # world coordinates already.
+        fixture.ObjectPlacement = f.createIfcLocalPlacement(
+            None,
+            f.createIfcAxis2Placement3D(f.createIfcCartesianPoint([0.0, 0.0, 0.0]), None, None),
+        )
 
         # --- Geometry (Phase 0.17): the gated EXTERIOR SHELLS of the real CAD
         # when every core part has one — one named IfcPolygonalFaceSet per
@@ -154,10 +162,41 @@ class IfcAdapter:
 
     @staticmethod
     def _shell_shape(f, body_ctx, shells):
-        """One named IfcPolygonalFaceSet per shell piece (meters, +Y up →
-        millimetres, +Z up: x→x, y→z, z→−y — matching the kit's IFC frame)."""
+        """One item per shell piece (meters, +Y up → millimetres, +Z up:
+        x→x, y→z, z→−y — matching the kit's IFC frame).
+
+        A piece carrying an analytic ``cylinder`` (the pole shaft, Phase
+        0.17.5) becomes an IfcExtrudedAreaSolid over an IfcCircleProfileDef —
+        viewers shade it smooth at any zoom, like the cylinder in a STEP
+        import, where the decimated 121-triangle shell prism flat-shaded into
+        visible facets (IfcPolygonalFaceSet carries no normals). Everything
+        else stays a named IfcPolygonalFaceSet. Mixed items make the body's
+        RepresentationType 'SurfaceOrSolidModel' — the IFC4 type whose WHERE
+        rule admits tessellated items and solids together."""
         items = []
+        has_solid = False
         for piece in shells.pieces:
+            if piece.cylinder is not None:
+                c = piece.cylinder
+                profile = f.createIfcCircleProfileDef(
+                    "AREA",
+                    None,
+                    f.createIfcAxis2Placement2D(f.createIfcCartesianPoint([0.0, 0.0]), None),
+                    float(c.radius_m * 1000.0),
+                )
+                position = f.createIfcAxis2Placement3D(
+                    f.createIfcCartesianPoint([0.0, 0.0, float(c.y0_m * 1000.0)]), None, None
+                )
+                items.append(
+                    f.createIfcExtrudedAreaSolid(
+                        profile,
+                        position,
+                        f.createIfcDirection([0.0, 0.0, 1.0]),
+                        float((c.y1_m - c.y0_m) * 1000.0),
+                    )
+                )
+                has_solid = True
+                continue
             v = piece.verts
             coord_list = [
                 [float(x * 1000.0), float(-z * 1000.0), float(y * 1000.0)] for x, y, z in v
@@ -168,7 +207,8 @@ class IfcAdapter:
                 for a, b, c in piece.tris
             ]
             items.append(f.createIfcPolygonalFaceSet(point_list, None, faces))
-        shape_rep = f.createIfcShapeRepresentation(body_ctx, "Body", "Tessellation", items)
+        rep_type = "SurfaceOrSolidModel" if has_solid else "Tessellation"
+        shape_rep = f.createIfcShapeRepresentation(body_ctx, "Body", rep_type, items)
         return f.createIfcProductDefinitionShape(None, None, [shape_rep])
 
     @staticmethod

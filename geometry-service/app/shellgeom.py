@@ -42,19 +42,30 @@ _POLE_SOURCE_FT = 12.0
 
 
 @dataclass
+class CylinderSpec:
+    """Exact analytic description of a straight round shaft on the pole axis
+    (x = z = 0), +Y up, meters. Carried ALONGSIDE the mesh (Phase 0.17.5):
+    the decimated shell tube is a 32-segment prism whose radius wobbles
+    47.5–50.9 mm, and normal-less IFC/STEP meshes flat-shade every facet —
+    solid-capable consumers emit this instead and match the smooth analytic
+    cylinder a CAD STEP import shows."""
+
+    radius_m: float
+    y0_m: float
+    y1_m: float
+
+
+@dataclass
 class ShellPiece:
-    """One placed component: name for the IFC tree, mesh in meters, +Y up."""
+    """One placed component: name for the IFC tree, mesh in meters, +Y up.
+    ``cylinder`` is set only on a piece whose true shape IS a plain straight
+    cylinder (the pole shaft) — consumers that can express real solids should
+    prefer it over the decimated mesh."""
 
     name: str
     verts: np.ndarray  # (N, 3) float64
     tris: np.ndarray  # (M, 3) int64
-    #: Phase 0.17: parametric parts (the pole) can carry a TRUE B-rep solid
-    #: for consumers that support one — filled by the adapter layer, since
-    #: this module stays engine-free. Mesh fields remain populated so
-    #: mesh-only consumers (IFC) are unaffected.
-    solid: object | None = None
-    #: What kind of piece this is, so an adapter can upgrade it (see `solid`).
-    kind: str = "shell"
+    cylinder: CylinderSpec | None = None
 
 
 @dataclass
@@ -213,6 +224,25 @@ def _pole_shell(catalog: dict, cfg, pole: dict) -> tuple[np.ndarray, np.ndarray]
     return _pole_tube_mesh(radius, wall, y0, y1)
 
 
+def _pole_cylinder(pole: dict) -> CylinderSpec | None:
+    """The pole shaft's analytic description, from the same catalog placeholder
+    the parametric kit builds from. Straight shafts only — a tapered pole (no
+    WiLLstudio pole is) keeps mesh-only, never a wrong analytic stand-in."""
+    ph = pole.get("placeholder") or {}
+    specs = [ph] + [c.get("spec") or {} for c in ph.get("children") or []]
+    spec = next((s for s in specs if s.get("kind") == "pole"), None)
+    if not spec:
+        return None
+    r_top, r_bottom = spec.get("radiusTopM"), spec.get("radiusBottomM")
+    if r_top is None or r_top != r_bottom:
+        return None
+    # Same height/crop math as _pole_shell, so mesh and solid always agree.
+    top = float(pole.get("heightFt") or _POLE_SOURCE_FT) * FT_TO_M
+    if top <= _POLE_CROP_M:
+        return None
+    return CylinderSpec(radius_m=float(r_top), y0_m=_POLE_CROP_M, y1_m=top)
+
+
 def _pole_graft_pieces(catalog: dict, pole: dict) -> list[ShellPiece]:
     """The pole's own hardware: the standard base at the origin and the
     hand-hole frame at the cover's centre — the same plan the render rig
@@ -267,8 +297,15 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     pieces: list[ShellPiece] = []
 
     if pole:
+        # Two representations of the same shaft, and both earn their place
+        # (0.17.5 + 8/20): solid-capable consumers (IFC, STEP) take the
+        # ANALYTIC cylinder and shade smooth at any zoom, while mesh-only
+        # consumers get a GENERATED 96-segment tube with exact radii and a
+        # real bore — strictly better than the decimated 121-triangle prism
+        # the shell pipeline produced. Same catalog dimensions feed both, so
+        # they cannot disagree.
         v, t = _pole_shell(catalog, cfg, pole)
-        pieces.append(ShellPiece("Pole", v, t, kind="pole"))
+        pieces.append(ShellPiece("Pole", v, t, cylinder=_pole_cylinder(pole)))
         chosen_wall = (
             _spec_codes(((getattr(cfg, "specOptions", None) or {}).get("pole") or {}).get("wall-thickness"))
             or [None]

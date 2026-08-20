@@ -101,6 +101,14 @@ def _write_tessellated_step(shells, out_path: Path) -> None:
     real geometry precisely because it HAS a B-rep. Frame conversion matches the kit's
     STEP output: viewer meters +Y up → millimetres +Z up (x, −z, y)·1000.
 
+    A piece carrying an analytic ``cylinder`` (the pole shaft, Phase 0.17.5)
+    becomes a real B-rep cylinder solid instead — the decimated 121-triangle
+    shell prism flat-shades into visible facets on import, while an analytic
+    CYLINDRICAL_SURFACE imports smooth, matching Cole's CAD exports.
+    OnNoBRep leaves faces WITH surfaces as ordinary B-rep, so the mix is safe;
+    note OCC then encodes the mesh pieces as TRIANGULATED_SURFACE_SET rather
+    than the all-mesh compound's TRIANGULATED_FACE (measured, both AP242).
+
     OCP is imported here, inside the adapter (boundary rule).
     """
     from OCP.BRep import BRep_Builder
@@ -112,32 +120,29 @@ def _write_tessellated_step(shells, out_path: Path) -> None:
     from OCP.STEPControl import STEPControl_AsIs, STEPControl_Writer
     from OCP.TopoDS import TopoDS_Compound, TopoDS_Face
 
-    def _pole_solid(piece):
-        """A real hollow cylinder from the generated pole piece's envelope.
-
-        The mesh is a perfect tube by construction (shellgeom generates it), so
-        its measured radii/heights ARE the parametric values — reading them back
-        keeps this adapter free of catalog knowledge. mm, +Z up.
-        """
-        v = piece.verts
-        rad = (v[:, 0] ** 2 + v[:, 2] ** 2) ** 0.5
-        r_out = float(rad.max()) * 1000.0
-        r_in = float(rad.min()) * 1000.0
-        z0 = float(v[:, 1].min()) * 1000.0
-        z1 = float(v[:, 1].max()) * 1000.0
-        axis = gp_Ax2(gp_Pnt(0.0, 0.0, z0), gp_Dir(0.0, 0.0, 1.0))
-        outer = BRepPrimAPI_MakeCylinder(axis, r_out, z1 - z0).Shape()
-        if r_in <= 0.0 or r_in >= r_out:
-            return outer
-        bore = BRepPrimAPI_MakeCylinder(axis, r_in, z1 - z0).Shape()
-        return BRepAlgoAPI_Cut(outer, bore).Shape()
-
     builder = BRep_Builder()
     compound = TopoDS_Compound()
     builder.MakeCompound(compound)
     for piece in shells.pieces:
-        if getattr(piece, "kind", "shell") == "pole":
-            builder.Add(compound, _pole_solid(piece))
+        if piece.cylinder is not None:
+            c = piece.cylinder
+            axis = gp_Ax2(gp_Pnt(0.0, 0.0, c.y0_m * 1000.0), gp_Dir(0.0, 0.0, 1.0))
+            r_out = c.radius_m * 1000.0
+            height = (c.y1_m - c.y0_m) * 1000.0
+            solid = BRepPrimAPI_MakeCylinder(axis, r_out, height).Shape()
+            # A pole is a TUBE, not a rod: subtract the bore. Its radius comes
+            # from the piece's own generated mesh (whose inner wall is built
+            # from the config's wall-thickness code), so the solid and the mesh
+            # describe the same part. A mesh with no measurable bore — or a
+            # degenerate cut — ships the plain cylinder rather than nothing.
+            rad = (piece.verts[:, 0] ** 2 + piece.verts[:, 2] ** 2) ** 0.5
+            r_in = float(rad.min()) * 1000.0
+            if 0.0 < r_in < r_out - 1e-6:
+                bore = BRepPrimAPI_MakeCylinder(axis, r_in, height).Shape()
+                cut = BRepAlgoAPI_Cut(solid, bore)
+                if cut.IsDone():
+                    solid = cut.Shape()
+            builder.Add(compound, solid)
             continue
         tri = Poly_Triangulation(len(piece.verts), len(piece.tris), False)
         for i, (x, y, z) in enumerate(piece.verts, start=1):

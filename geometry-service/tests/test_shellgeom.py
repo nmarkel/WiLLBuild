@@ -133,6 +133,34 @@ class TestCoreAssembly:
         assert shell_assembly(_CATALOG, cfg) is None
 
 
+class TestAnalyticPole:
+    """The pole shaft is a plain cylinder in the real CAD — the shell mesh is a
+    decimated 32-segment prism (radius wobbling 47.5–50.9 mm) that flat-shades
+    badly in IFC viewers. The piece must carry its exact analytic description
+    (radius from the catalog placeholder, the same source the kit builds from)
+    so solid-capable consumers can emit real geometry instead of the mesh."""
+
+    def test_pole_piece_carries_its_analytic_cylinder(self):
+        asm = shell_assembly(_CATALOG, _cfg())
+        cyl = _piece(asm, "Pole").cylinder
+        assert cyl is not None
+        assert cyl.radius_m == pytest.approx(0.0508)
+        assert cyl.y0_m == pytest.approx(0.08)
+        assert cyl.y1_m == pytest.approx(12 * FT_TO_M)
+
+    def test_derived_pole_cylinder_tops_at_its_own_height(self):
+        asm = shell_assembly(_CATALOG, _cfg(pole="alum-pole-20"))
+        cyl = _piece(asm, "Pole").cylinder
+        assert cyl is not None
+        assert cyl.y0_m == pytest.approx(0.08)
+        assert cyl.y1_m == pytest.approx(20 * FT_TO_M)
+
+    def test_mesh_pieces_carry_no_cylinder(self):
+        asm = shell_assembly(_CATALOG, _cfg())
+        for name in ("Pole Base", "Hand Hole", "Base Cover", "Arm", "Fixture"):
+            assert _piece(asm, name).cylinder is None
+
+
 class TestStackingAndPlacements:
     def test_cle_lifts_the_cover_by_its_stack_height(self):
         base = shell_assembly(_CATALOG, _cfg())
