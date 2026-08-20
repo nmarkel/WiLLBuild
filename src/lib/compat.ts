@@ -343,6 +343,37 @@ export function coverExtenderFor(catalog: Catalog, config: PoleConfig): CatalogP
   return undefined
 }
 
+/**
+ * Phase 0.17 (Tyler 8/19): every attention line the current config has earned,
+ * collected for ONE "Please note" block under Your Configuration — inline
+ * disclaimers blended into the option rows and read as decoration. Sources:
+ * each checked options-accessories value's `disclaimer` (banner kits:
+ * engineering review), plus the Custom-RAL estimate line when any slot shows
+ * a customer color. Deduped, stable order (slot walk, RAL last).
+ */
+export const RAL_DISCLAIMER =
+  'Custom RAL Match is an estimated representation only — finish color is verified and signed off with you when the order is placed.'
+
+export function activeDisclaimers(catalog: Catalog, config: PoleConfig): string[] {
+  const notes: string[] = []
+  for (const slot of SLOTS) {
+    const part = partById(catalog, config[slot])
+    const chosen = config.specOptions?.[slot]
+    if (!part || !chosen) continue
+    for (const opt of part.options ?? []) {
+      if (opt.group !== 'options-accessories') continue
+      for (const code of specCodes(chosen[opt.key])) {
+        const value = opt.values.find((v) => v.code === code)
+        if (value?.disclaimer && !notes.includes(value.disclaimer)) notes.push(value.disclaimer)
+      }
+    }
+  }
+  if (SLOTS.some((slot) => partById(catalog, config[slot]) && finishFor(config, slot) === 'custom-ral')) {
+    notes.push(RAL_DISCLAIMER)
+  }
+  return notes
+}
+
 export function poleAccessoryValue(catalog: Catalog, config: PoleConfig, code: string) {
   for (const opt of partById(catalog, config.pole)?.options ?? []) {
     if (opt.group !== 'options-accessories') continue

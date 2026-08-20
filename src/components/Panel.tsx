@@ -10,6 +10,26 @@ const SIDE_LABELS: Record<number, string> = {
   4: 'Four Sides',
 }
 
+/**
+ * Phase 0.17 (Tyler 8/19, placement clarity pass): the short customer noun
+ * for an accessory label — drives "Hand hole 2" instance headers and
+ * "+ Add another hand hole" (the raw label made that read "add another
+ * additional hand hole").
+ */
+function accessoryNoun(label: string): string {
+  return label
+    .split(',')[0]
+    .replace(/^Additional\s+/i, '')
+    .replace(/\s+Power\s+Provision$/i, '')
+    .replace(/\s+Kit$/i, '')
+    .toLowerCase()
+}
+
+/** Heights under 4 ft read better in inches (37″), above in feet (8 ft). */
+function heightLabel(ft: number): string {
+  return ft < 4 ? `${Math.round(ft * 12)}″` : ftLabel(ft)
+}
+
 /** Feet as a friendly label — whole feet plain, otherwise feet′ inches″. */
 function ftLabel(ft: number): string {
   const totalIn = Math.round(ft * 12)
@@ -280,10 +300,6 @@ function StepFinish({
               </div>
             )
           })()}
-          <p className="ral-disclaimer">
-            Estimated representation only — finish color is verified and signed off with you when
-            the order is placed.
-          </p>
         </div>
       )}
       {accentColumn && (
@@ -587,9 +603,6 @@ function StepSpecOptions({
                           out to engineering if you need more.
                         </p>
                       )}
-                      {checked && v.disclaimer && (
-                        <p className="placement-disclaimer">{v.disclaimer}</p>
-                      )}
                       {checked && placeable && (
                         <AccessoryPlacementBox
                           catalog={catalog}
@@ -757,8 +770,39 @@ function AccessoryPlacementBox({
     next[idx] = p
     setAccessoryPlacement(code, next)
   }
+  const noun = accessoryNoun(label)
+  // Phase 0.17 (Tyler 8/19): state the limits ONCE, up front, generated from
+  // the same placement data repair enforces — never hand-written per value,
+  // so copy and behavior cannot disagree.
+  const rules: string[] = []
+  const pl = accessoryValueOuter?.placement
+  if (pl) {
+    if (groupCap !== undefined && groupName) {
+      const nouns = (partById(catalog, config.pole)?.options ?? [])
+        .filter((o) => o.group === 'options-accessories')
+        .flatMap((o) => o.values)
+        .filter((v) => v.placement?.spacingGroup === groupName)
+        .map((v) => `${accessoryNoun(v.label)}s`)
+      rules.push(`Up to ${groupCap} ${nouns.join(' + ')} combined`)
+    } else if (pl.maxInstances) {
+      rules.push(`Up to ${pl.maxInstances} per pole`)
+    }
+    if (pl.minFt !== undefined && pl.maxFt !== undefined) {
+      rules.push(`${heightLabel(pl.minFt)}–${heightLabel(pl.maxFt)} above grade`)
+    } else if (pl.minFt !== undefined) {
+      rules.push(`at least ${heightLabel(pl.minFt)} above grade`)
+    }
+    if (pl.minGapFt) {
+      rules.push(
+        groupName
+          ? `${heightLabel(pl.minGapFt)} apart`
+          : `${heightLabel(pl.minGapFt)} apart on the same side`,
+      )
+    }
+  }
   return (
     <>
+      {rules.length > 0 && <p className="placement-rules">{rules.join(' · ')}</p>}
       {shown.map((existingInstance, idx) => (
         <PlacementInstance
           key={idx}
@@ -775,6 +819,7 @@ function AccessoryPlacementBox({
               : undefined
           }
           ordinal={isMulti && shown.length > 1 ? idx + 1 : undefined}
+          noun={noun}
         />
       ))}
       {isMulti && capCount >= effectiveCap && (
@@ -795,7 +840,7 @@ function AccessoryPlacementBox({
             ])
           }}
         >
-          + Add another {label.split(',')[0].toLowerCase()}
+          + Add another {noun}
         </button>
       )}
     </>
@@ -812,6 +857,7 @@ function PlacementInstance({
   onChange,
   onRemove,
   ordinal,
+  noun,
 }: {
   catalog: Catalog
   code: string
@@ -822,6 +868,7 @@ function PlacementInstance({
   onChange: (p: import('../types').AccessoryPlacement) => void
   onRemove?: () => void
   ordinal?: number
+  noun?: string
 }) {
   const sideOptions = accessorySideOptions(label)
   const bannerKit = isBannerKitLabel(label)
@@ -859,10 +906,20 @@ function PlacementInstance({
     <div className="placement-box">
       {(ordinal !== undefined || onRemove) && (
         <div className="placement-instance-head">
-          {ordinal !== undefined && <span className="placement-ordinal">#{ordinal}</span>}
+          {ordinal !== undefined && (
+            <span className="placement-ordinal">
+              {(noun ?? 'placement').replace(/^./, (c) => c.toUpperCase())} {ordinal}
+            </span>
+          )}
           {onRemove && (
-            <button type="button" className="placement-remove" onClick={onRemove}>
-              Remove
+            <button
+              type="button"
+              className="placement-remove"
+              onClick={onRemove}
+              aria-label={`Remove ${noun ?? 'placement'} ${ordinal ?? ''}`.trim()}
+              title="Remove"
+            >
+              ×
             </button>
           )}
         </div>
@@ -891,9 +948,9 @@ function PlacementInstance({
       <label className="banner-height">
         {/* Phase 0.11 (D1): name the reference point. "Height up shaft"
             disclosed nothing; a banner's height is measured to its bottom. */}
-        <span>
-          {bannerKit ? 'Height to bottom of banner' : 'Height up shaft'}:{' '}
-          {ftLabel(placement.heightFt)} above grade
+        <span className="placement-height-row">
+          <span>{bannerKit ? 'Height to bottom of banner' : 'Height above grade'}</span>
+          <strong>{ftLabel(placement.heightFt)}</strong>
         </span>
         <input
           type="range"

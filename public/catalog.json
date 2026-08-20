@@ -3511,7 +3511,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -4243,7 +4243,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -4975,7 +4975,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -5707,7 +5707,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -6439,7 +6439,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -7171,7 +7171,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -7903,7 +7903,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,
@@ -8635,7 +8635,7 @@
               "code": "FSTR",
               "label": "Festoon Power Provision",
               "mapsTo": null,
-              "note": "Electrical Component Provision, Component & Wiring by others — Minimum 37” above the base",
+              "note": "Electrical Component Provision — component & wiring by others",
               "placeable": true,
               "placement": {
                 "minFt": 3.0833333333333335,

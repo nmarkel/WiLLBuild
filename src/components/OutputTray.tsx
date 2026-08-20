@@ -72,10 +72,14 @@ export const DELIVERABLE_DEFS: DeliverableDef[] = [
     includeRender: true,
   },
   {
+    // Phase 0.17 (Tyler 8/19): NOT a spec sheet — it doesn't carry what a
+    // submittal spec must. It is a CONFIGURATION CARD: the high-level stack,
+    // each part's number, and shortcuts to the real spec sheets on the
+    // product pages.
     format: 'pdf',
-    title: 'Spec Sheet',
-    formatLabel: 'PDF · full spec',
-    audience: 'For your submittals',
+    title: 'Configuration Card',
+    formatLabel: 'PDF · config summary + spec links',
+    audience: 'For sharing the build',
     includeRender: true,
   },
   {

@@ -1,5 +1,5 @@
 import type { Catalog, PoleConfig } from '../types'
-import { bannerPanelSize, configStatus, finishFor, partById } from '../lib/compat'
+import { activeDisclaimers, bannerPanelSize, configStatus, finishFor, partById } from '../lib/compat'
 import { bannerSummaryLine } from '../lib/banner'
 import { armArrangementLabel, buildPartNumber, SUMMARY_ROWS } from '../lib/summary'
 import { displayPartName } from '../lib/display'
@@ -108,6 +108,23 @@ export function Summary({ catalog, config }: Props) {
       <p className="config-id" title={config.configId}>
         Config ID: {config.configId.slice(0, 8)}
       </p>
+      {/* Phase 0.17 (Tyler 8/19): the attention lines live HERE, together,
+          below the configuration — inline they blended into the option rows.
+          Distinct but tactful: structure and placement, not shouting. */}
+      {(() => {
+        const notes = activeDisclaimers(catalog, config)
+        if (notes.length === 0) return null
+        return (
+          <div className="config-notes">
+            <p className="config-notes-title">Please note</p>
+            <ul>
+              {notes.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      })()}
     </div>
   )
 }

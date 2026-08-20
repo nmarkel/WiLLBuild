@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
-import { accessoryHeightRange, accessorySideOptions, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
+import { accessoryHeightRange, accessorySideOptions, activeDisclaimers, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
   autofillConfig,
   cordCodeFor,
   fixtureBottomFt,
@@ -37,7 +37,33 @@ describe('compatibleParts (fixture-first)', () => {
     expect(fixtures.some((p) => p.id === 'willstudio-rxb-sxb-bollard')).toBe(true)
   })
 
-  // ---- Phase 0.14 (Tyler 8/14): ground-mounted products in the builder ----
+  // ---- Phase 0.17 (Tyler 8/19): collected attention lines ----
+describe('activeDisclaimers', () => {
+  it('collects the banner engineering-review line when BAX is checked', () => {
+    const notes = activeDisclaimers(catalog, config({
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: ['BAX'] } },
+    }))
+    expect(notes.some((n) => n.includes('reviewed by engineering'))).toBe(true)
+  })
+
+  it('adds the RAL estimate line only when a slot shows a custom color', () => {
+    const plain = activeDisclaimers(catalog, config({}))
+    expect(plain.some((n) => n.includes('RAL'))).toBe(false)
+    const ral = activeDisclaimers(catalog, config({ finish: 'custom-ral' }))
+    expect(ral.some((n) => n.includes('estimated representation'))).toBe(true)
+  })
+
+  it('never duplicates a note', () => {
+    const notes = activeDisclaimers(catalog, config({
+      pole: 'alum-pole-20',
+      specOptions: { pole: { accessories: ['BAX'] } },
+    }))
+    expect(new Set(notes).size).toBe(notes.length)
+  })
+})
+
+// ---- Phase 0.14 (Tyler 8/14): ground-mounted products in the builder ----
   describe('ground-mounted fixture (RXB/SXB bollard)', () => {
     const withBollard = config({ fixture: 'willstudio-rxb-sxb-bollard' })
 

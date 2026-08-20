@@ -3,7 +3,8 @@
 ``render_spec(ctx, mode)`` is the single public entry point.  Mode only
 changes the title text:
 
-  mode='spec'          → "Specification Sheet"
+  mode='spec'          → "Configuration Card" (Phase 0.17: NOT a spec sheet —
+                          high-level stack + links to each element's real spec)
   mode='concept-card'  → "Concept Card"
 
 Brand colours
@@ -325,14 +326,14 @@ def _draw_product_pages(
     top: float,
     width: float,
 ) -> float:
-    """Product-page URLs as their own wrapped block (spec mode only).
-
-    Phase 0.17: URLs moved out of the components table — here they get a full
-    line each at a size that fits, wrapped by multi_cell when they don't.
+    """Each element's REAL spec lives on its product page — this block is the
+    configuration card's whole point (Tyler 8/19): a shortcut to the full
+    specifications, one wrapped line per component.
     """
     rows = [p for p in parts if p.get("productUrl")]
     if not rows:
         return top
+    top = _draw_section_heading(pdf, "Full Specifications", left, top, width)
     _set_text(pdf, _MUTED)
     pdf.set_font("Helvetica", "", 6.8)
     y = top
@@ -404,21 +405,20 @@ def _draw_dims_block(
         ("Base Diameter", "base_diameter_mm"),
     ]
 
+    # Phase 0.17 (Tyler 8/19): imperial only — metric is never used with
+    # these products and customers, so the mm column is gone.
     pdf.set_font("Helvetica", "", 8.5)
     _set_draw(pdf, _HAIRLINE)
-    col_label = width * 0.45
-    col_mm = width * 0.27
-    col_ftin = width * 0.28
+    col_label = width * 0.62
+    col_ftin = width * 0.38
 
     for label, key in dim_rows:
         val_mm = dims.get(key)
         if val_mm is None:
             continue
-        val_mm_rounded = int(round(val_mm))
         val_ftin = _mm_to_ft_in(val_mm)
         pdf.set_x(left)
         pdf.cell(col_label, 5.8, label, border="B", new_x=XPos.RIGHT, new_y=YPos.TOP)
-        pdf.cell(col_mm, 5.8, f"{val_mm_rounded} mm", border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.cell(col_ftin, 5.8, val_ftin, border="B", align="R", new_x=XPos.RIGHT, new_y=YPos.TOP)
         pdf.ln()
 
@@ -637,7 +637,10 @@ def render_spec(
     pin /Producer and /Creator so two runs always produce byte-identical
     output.
     """
-    title = "Specification Sheet" if mode == "spec" else "Concept Card"
+    # Phase 0.17 (Tyler 8/19): NOT a spec sheet — it doesn't carry what a
+    # submittal spec must. It is the CONFIGURATION CARD: the high-level stack,
+    # part numbers, and shortcuts to each element's real spec (product pages).
+    title = "Configuration Card" if mode == "spec" else "Concept Card"
 
     pdf = FPDF(orientation="L", unit="mm", format="A4")
 

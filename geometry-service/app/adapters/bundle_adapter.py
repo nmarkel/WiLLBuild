@@ -6,7 +6,7 @@ Produces ``<base_name>_bundle.zip`` containing:
   <base_name>.pdf    — PDF spec-sheet via REGISTRY["pdf"]
   render.png         — render image (only when ctx.render_png is present)
   config.json        — exact PoleConfig as sent, canonical JSON (sorted keys)
-  summary.txt        — human-readable: parts, finish + RAL, dims mm + ft-in
+  summary.txt        — human-readable: parts, finish + RAL, dims (ft-in)
   README.txt         — DISCLAIMER + configId + rev + quote URL
 
 Determinism
@@ -128,13 +128,14 @@ def _build_summary_txt(ctx: GenContext) -> str:
             ("Arm Reach", "arm_reach_mm"),
             ("Base Diameter", "base_diameter_mm"),
         ]
+        # Phase 0.17 (Tyler 8/19): imperial only — metric is never used with
+        # these products and customers.
         for label, key in dim_labels:
             val_mm = dims.get(key)
             if val_mm is None:
                 continue
-            val_mm_i = int(round(val_mm))
             val_ftin = _mm_to_ft_in(val_mm)
-            lines.append(f"  {label:<20}  {val_mm_i:>6} mm  {val_ftin:>8}")
+            lines.append(f"  {label:<20}  {val_ftin:>10}")
         lines.append("")
 
     lines.append(f"Config ID: {ctx.cfg.configId}  |  Rev: {ctx.cfg.rev}")

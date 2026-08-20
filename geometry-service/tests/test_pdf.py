@@ -250,16 +250,14 @@ class TestPdfTextContent:
         assert ral, "matte-black finish must have a RAL code in catalog"
         assert ral in text, f"RAL code {ral!r} not found in PDF text"
 
-    def test_contains_overall_height_mm(self, cat, fixed_cfg, tmp_path) -> None:
+    def test_dims_are_imperial_only(self, cat, fixed_cfg, tmp_path) -> None:
+        """Phase 0.17 (Tyler 8/19): metric is never used with these products
+        and customers — the mm column is gone from every generated document."""
         from app.spec_template import render_spec
         ctx = _make_ctx(cat, fixed_cfg, tmp_path)
         pdf = render_spec(ctx)
         text = _extract_text(pdf)
-        asm = build_assembly(cat, fixed_cfg)
-        mm_str = str(int(round(asm.dims.overall_height)))
-        assert mm_str in text, (
-            f"overall_height {mm_str}mm not found in PDF text"
-        )
+        assert " mm" not in text, "generated documents must not print metric"
 
     def test_contains_overall_height_ft_in(self, cat, fixed_cfg, tmp_path) -> None:
         """Overall height must appear in ft-in format (e.g. \"20'-0\")."""
@@ -379,7 +377,10 @@ class TestPdfModes:
         ctx = _make_ctx(cat, fixed_cfg, tmp_path)
         pdf = render_spec(ctx, mode="spec")
         text = _extract_text(pdf)
-        assert "Specification Sheet" in text, "spec mode must use 'Specification Sheet' title"
+        # Phase 0.17 (Tyler 8/19): it is a CONFIGURATION CARD, not a spec
+        # sheet — it doesn't carry what a submittal spec must; it links to
+        # each element's real spec instead.
+        assert "Configuration Card" in text, "spec mode must use 'Configuration Card' title"
 
     def test_concept_card_mode_title_in_text(self, cat, fixed_cfg, tmp_path) -> None:
         from app.spec_template import render_spec
