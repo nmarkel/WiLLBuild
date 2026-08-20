@@ -159,13 +159,15 @@ describe('real-parts.json matches the ingest provenance record (spec D8 union)',
 })
 
 describe('per-slot supersampling (Phase 0.16 candidate c)', () => {
-  it('supersamples the slots that focus views upscale, never the pole', async () => {
+  it('supersamples every assembly slot a zoomed view can smear', async () => {
     const { supersampleForSlot } = await import('./generate.mjs')
     expect(supersampleForSlot('fixture')).toBe(4)
     expect(supersampleForSlot('baseCover')).toBe(4)
     expect(supersampleForSlot('arm')).toBe(2)
-    // a 20 ft pole at 4x exceeds MAX_CANVAS and nothing upscales pole layers
-    expect(supersampleForSlot('pole')).toBe(1)
+    // 0.16.5: poles joined at 2x — a 4in pole is ~37px wide at 1x and smears
+    // "translucent" next to a 4x base cover; 2x fits the 20 ft pole under the
+    // raised 8192px canvas cap.
+    expect(supersampleForSlot('pole')).toBe(2)
     expect(supersampleForSlot('banner')).toBe(1)
     expect(supersampleForSlot('standalone')).toBe(1)
     expect(supersampleForSlot(undefined)).toBe(1)

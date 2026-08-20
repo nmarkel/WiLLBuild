@@ -369,10 +369,38 @@ def _read_labeled_solids(step_path: str):
             continue
     return results
 
+def _solid_final_frame_stats(solid, tol_mm, ang_rad, rotate_x, rotate_z, off):
+    """A solid's (r_max, y_min, y_max) in the part's FINAL normalized frame.
+
+    Reuses the triangulation the full-compound pass already cached on the
+    faces (same tol/ang), so this is a vertex walk, not a re-mesh."""
+    verts_mm, _ = tessellate_shape(solid, tol_mm, ang_rad=ang_rad)
+    if len(verts_mm) == 0:
+        return 0.0, 0.0, 0.0
+    v = _stand_up(verts_mm, rotate_x, rotate_z) * MM_TO_M - off
+    r = np.hypot(v[:, 0], v[:, 2])
+    return float(r.max()), float(v[:, 1].min()), float(v[:, 1].max())
+
+
+def _drop_matches(rule: dict, r_max: float, y_min: float, y_max: float) -> bool:
+    """One drop rule (Phase 0.16.5). Conditions AND together:
+    r_below  — solid's max radius from the part axis is under this
+    top_below — solid's highest point is under this (deep under-cavity junk)
+    top_above — solid's highest point is above this (the protruding stem stack)
+    """
+    if "r_below" in rule and not r_max < rule["r_below"]:
+        return False
+    if "top_below" in rule and not y_max < rule["top_below"]:
+        return False
+    if "top_above" in rule and not y_max > rule["top_above"]:
+        return False
+    return True
+
+
 def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
                         tol_mm: float = 1.0, rotate_x: float = 0.0,
                         rotate_z: float = 0.0, with_normals: bool = True,
-                        ang_rad: float = 0.5) -> dict:
+                        ang_rad: float = 0.5, drop_solids: list | None = None) -> dict:
     labeled = _read_labeled_solids(step_path)
     # group solids by rounded color
     groups: dict[tuple, list] = {}
@@ -391,6 +419,26 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
     all_m = _normalize(all_mm, origin)
     offset_m = (all_mm * MM_TO_M) - all_m  # constant translation per vertex
     off = offset_m[0] if len(offset_m) else np.zeros(3)
+
+    # Phase 0.16.5: per-part editorial solid drops (Tyler's punch list) — e.g.
+    # the GVX's internal light-engine stack hanging under the shade, and its
+    # protruding top stem that the arm's sleeve slides over in reality (the
+    # layered compositor draws fixture OVER arm, so the stem can only be hidden
+    # by not rendering it). Rules are geometric, measured per part, and applied
+    # AFTER the normalization offset is computed from the FULL solid set, so
+    # dropping art can never move the part's mounting frame.
+    dropped = 0
+    if drop_solids:
+        kept: dict[tuple, list] = {}
+        for key, solids in groups.items():
+            for s in solids:
+                r_max, y_min, y_max = _solid_final_frame_stats(
+                    s, tol_mm, ang_rad, rotate_x, rotate_z, off)
+                if any(_drop_matches(rule, r_max, y_min, y_max) for rule in drop_solids):
+                    dropped += 1
+                    continue
+                kept.setdefault(key, []).append(s)
+        groups = kept
 
     primitives = []
     body_count = 0
@@ -427,7 +475,7 @@ def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
     write_glb(out_glb, primitives)
     return {"vertices": int(sum(len(p["positions"]) for p in primitives)),
             "triangles": int(total_tris), "primitives": len(primitives),
-            "body_primitives": body_count}
+            "body_primitives": body_count, "dropped_solids": dropped}
 
 if __name__ == "__main__":
     import sys

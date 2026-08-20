@@ -78,9 +78,11 @@ export function ANGLES_FOR_SLOT(_slot) {
 // their manifest entries are divided back to rig density: the compositor
 // keeps drawing at the entry's size (mechanism proven by the skip path's
 // ratio scaling below), the browser downscales the bigger file crisply in
-// assembly view, and focus views get real pixels. Poles stay at 1× — a 20 ft
-// pole at 4× exceeds MAX_CANVAS, and nothing upscales pole layers anyway.
-export const SUPERSAMPLE = { fixture: 4, baseCover: 4, arm: 2 }
+// assembly view, and focus views get real pixels. Poles get 2× (0.16.5 —
+// Tyler: a 4 in pole is only ~37 px wide in a 1× file, so any zoomed view
+// smears it "translucent" next to a 4× base cover; 2× at the raised 8192 px
+// canvas cap fits even the 20 ft pole at 4820 px).
+export const SUPERSAMPLE = { fixture: 4, baseCover: 4, arm: 2, pole: 2 }
 
 export function supersampleForSlot(slot) {
   return SUPERSAMPLE[slot] ?? 1
