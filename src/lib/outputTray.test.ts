@@ -31,8 +31,9 @@ describe('downloads tray (distilled, Phase 0.17)', () => {
       expect(d.audience).toMatch(/^For /)
       expect(d.formatLabel.toLowerCase()).not.toContain('exact')
     }
-    // The ZIP is honest about what its STEP is.
+    // The ZIP is honest about what its STEP is: the shell model (real
+    // exterior shells) since the 0.17 accuracy pass — never "exact".
     const bundle = DELIVERABLE_DEFS.find((d) => d.format === 'bundle')!
-    expect(bundle.formatLabel).toContain('concept STEP')
+    expect(bundle.formatLabel).toContain('shell STEP')
   })
 })

@@ -29,13 +29,20 @@ comparing.
 from __future__ import annotations
 
 import re
+import threading
 from pathlib import Path
 
 from build123d import export_step
 
 from app.naming import DISCLAIMER
+from app.shellgeom import shell_assembly
 
 from .base import Adapter, GenContext
+
+# OCC's Interface_Static is PROCESS-GLOBAL state, and jobs run on a thread
+# pool — serialize shell-STEP writes and restore the params afterwards so a
+# concurrent (or later) build123d export never inherits AP242/tessellated.
+_WRITE_LOCK = threading.Lock()
 
 
 class StepAdapter:
@@ -48,19 +55,105 @@ class StepAdapter:
         return True
 
     def generate(self, ctx: GenContext) -> list[Path]:
-        """Export assembly solid to STEP, patch the header, return [path]."""
-        if ctx.assembly is None:
-            raise RuntimeError("StepAdapter requires a built assembly (ctx.assembly is None)")
+        """Export the config to STEP, patch the header, return [path].
 
+        Phase 0.17 (Tyler 8/19, "improve the STEP file export"): when every
+        core part has a gated exterior shell, the file is AP242 TESSELLATED
+        STEP assembled from the real products' shells — the same geometry the
+        shell-accurate IFC ships, compact because AP242 stores triangle
+        indices rather than faceted B-rep. Anything without full shell
+        coverage falls back to the parametric kit solid whole (never a
+        hybrid), exactly like the IFC.
+        """
         out_path = ctx.out_dir / f"{ctx.base_name}.step"
 
-        # --- Export ---
-        export_step(ctx.assembly.solid, out_path)
+        shells = shell_assembly(ctx.catalog, ctx.cfg)
+        if shells is not None:
+            _write_tessellated_step(shells, out_path)
+            ctx.warnings.extend(f"step: {w}" for w in shells.warnings)
+        else:
+            if ctx.assembly is None:
+                raise RuntimeError("StepAdapter requires a built assembly (ctx.assembly is None)")
+            export_step(ctx.assembly.solid, out_path)
+            ctx.warnings.append(
+                "step: concept solids used - a configured part has no gated shell yet"
+            )
 
         # --- Post-process header ---
         _label_step_header(out_path, ctx.cfg.configId, ctx.cfg.rev)
+        _pin_step_timestamp(out_path)
 
         return [out_path]
+
+
+def _write_tessellated_step(shells, out_path: Path) -> None:
+    """Write the shell assembly as AP242 tessellated STEP (OCP).
+
+    Each piece becomes ONE mesh-only TopoDS_Face (a face carrying only its
+    Poly_Triangulation, no surface): under schema AP242 with
+    write.step.tessellated = OnNoBRep (2), OCC emits TRIANGULATED_FACE
+    entities for exactly these faces. Frame conversion matches the kit's
+    STEP output: viewer meters +Y up → millimetres +Z up (x, −z, y)·1000.
+
+    OCP is imported here, inside the adapter (boundary rule).
+    """
+    from OCP.BRep import BRep_Builder
+    from OCP.gp import gp_Pnt
+    from OCP.Interface import Interface_Static
+    from OCP.Poly import Poly_Triangle, Poly_Triangulation
+    from OCP.STEPControl import STEPControl_AsIs, STEPControl_Writer
+    from OCP.TopoDS import TopoDS_Compound, TopoDS_Face
+
+    builder = BRep_Builder()
+    compound = TopoDS_Compound()
+    builder.MakeCompound(compound)
+    for piece in shells.pieces:
+        tri = Poly_Triangulation(len(piece.verts), len(piece.tris), False)
+        for i, (x, y, z) in enumerate(piece.verts, start=1):
+            tri.SetNode(i, gp_Pnt(float(x) * 1000.0, float(-z) * 1000.0, float(y) * 1000.0))
+        for i, (a, b, c) in enumerate(piece.tris, start=1):
+            tri.SetTriangle(i, Poly_Triangle(int(a) + 1, int(b) + 1, int(c) + 1))
+        face = TopoDS_Face()
+        builder.MakeFace(face)
+        builder.UpdateFace(face, tri, True)
+        builder.Add(compound, face)
+
+    with _WRITE_LOCK:
+        # Constructing a writer registers the STEP Interface_Static params
+        # (querying before that returns empty and Set* fails — measured).
+        STEPControl_Writer()
+        prev_schema = Interface_Static.CVal_s("write.step.schema")
+        prev_tess = Interface_Static.CVal_s("write.step.tessellated")
+        try:
+            Interface_Static.SetCVal_s("write.step.schema", "AP242DIS")
+            Interface_Static.SetCVal_s("write.step.tessellated", "OnNoBRep")
+            writer = STEPControl_Writer()
+            writer.Transfer(compound, STEPControl_AsIs)
+            writer.Write(str(out_path))
+        finally:
+            Interface_Static.SetCVal_s("write.step.schema", prev_schema or "AP214IS")
+            Interface_Static.SetCVal_s("write.step.tessellated", prev_tess or "OnNoBRep")
+
+
+# FILE_NAME's second field is the wall-clock timestamp OCC stamps at write
+# time; PRODUCT names carry OCC's PROCESS-GLOBAL model counter ("Open CASCADE
+# STEP translator 7.9 1" → "… 2" on the next write in the same process —
+# caught by the bundle's byte-determinism test). Pin both so two runs are
+# byte-identical regardless of how many writes preceded them.
+_FN_TIMESTAMP = re.compile(r"^(FILE_NAME\s*\('[^']*',\s*)'[^']*'", re.MULTILINE)
+_OCC_MODEL_NAME = re.compile(r"'Open CASCADE STEP translator [0-9. ]*'")
+# NEXT_ASSEMBLY_USAGE_OCCURRENCE ids come from the same process-global
+# counter — renumber them 1..N in file order.
+_OCC_NAUO_ID = re.compile(r"(NEXT_ASSEMBLY_USAGE_OCCURRENCE\(')[0-9]+(')")
+
+
+def _pin_step_timestamp(path: Path) -> None:
+    text = path.read_text(encoding="ascii")
+    text = _FN_TIMESTAMP.sub(r"\1'1970-01-01T00:00:00'", text, count=1)
+    text = _OCC_MODEL_NAME.sub("'WiLL shell model'", text)
+    counter = iter(range(1, 10_000))
+    text = _OCC_NAUO_ID.sub(lambda m: f"{m.group(1)}{next(counter)}{m.group(2)}", text)
+    path.write_text(text, encoding="ascii")
 
 
 # ---------------------------------------------------------------------------

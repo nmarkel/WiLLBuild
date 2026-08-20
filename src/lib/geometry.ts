@@ -112,10 +112,20 @@ export async function startJob(
   config: PoleConfig,
   formats: OutputFormat[],
   renderPng?: string,
+  /**
+   * Phase 0.17: where each slot's part sits inside `renderPng` (0..1) — the
+   * concept card's leader-line callouts point here, so the document labels
+   * the same geometry the compositor drew. Absent → the card falls back to a
+   * plain label list with no leaders.
+   */
+  renderAnchors?: Record<string, [number, number]>,
 ): Promise<JobStartResponse> {
   const body: Record<string, unknown> = { config, formats }
   if (renderPng !== undefined) {
     body.renderPng = stripRenderPngPrefix(renderPng)
+  }
+  if (renderAnchors && Object.keys(renderAnchors).length > 0) {
+    body.renderAnchors = renderAnchors
   }
 
   let response: Response

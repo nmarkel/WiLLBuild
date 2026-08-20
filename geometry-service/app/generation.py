@@ -365,6 +365,7 @@ def generate_files(
             base_name=base_name(catalog, req.config),
             assembly=assembly,
             render_png=render_png_bytes,
+            render_anchors=req.renderAnchors,
             summary=summary,
         )
 
