@@ -257,13 +257,19 @@ class TestConfigHashCoupling:
         b = self._cfg(specOptions={"fixture": {"b": "2", "a": "1"}})
         assert config_hash(a) == config_hash(b)
 
-    def test_view_only_axes_do_not_fragment_the_cache(self):
-        """armOrientation/accessoryPlacements reach no artifact yet."""
+    def test_geometry_axes_fragment_the_cache_since_the_shell_ifc(self):
+        """Phase 0.17 INVERTS the old rule: armOrientation and
+        accessoryPlacements are geometry in the shell-accurate IFC now, so
+        they MUST hash apart — the old test pinned their exclusion while they
+        reached no artifact. Defaults still hash like the fields being absent
+        (armOrientation=0, empty placements)."""
         base = config_hash(self._cfg())
-        assert config_hash(self._cfg(armOrientation=90)) == base
+        assert config_hash(self._cfg(armOrientation=90)) != base
         assert config_hash(
             self._cfg(accessoryPlacements={"BA24": {"heightFt": 12, "orientation": 90}})
-        ) == base
+        ) != base
+        assert config_hash(self._cfg(armOrientation=0)) == base
+        assert config_hash(self._cfg(accessoryPlacements={})) == base
 
 
 class TestPerSlotFinishReachesTheNumber:

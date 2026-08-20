@@ -1,0 +1,414 @@
+{
+  "version": 1,
+  "rtSize": 1024,
+  "parts": {
+    "alum-pole-12": {
+      "sourceGlb": "real-assets/glb/alum-pole-12.glb",
+      "sourceSha256": "ea6b4fb15974da973ed45b816a0506f511c59b7a19ea3ea25f7b92ed54719459",
+      "masterTris": 256,
+      "culledTris": 234,
+      "shippedTris": 121,
+      "visibleFrac": 1,
+      "visibleAreaFrac": 1,
+      "simplifyRatio": 0.5171,
+      "bytes": 2756,
+      "sha256": "0afb133544709775a51172d5d570920dab399443033f8cc2584ba20f3e8aeec1",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "bc-cl1-small-clamshell": {
+      "sourceGlb": "real-assets/glb/bc-cl1-small-clamshell.glb",
+      "sourceSha256": "aa611365786a255ab2717f774b58014df738c5c4a70a1ea1ee257f3c391e02e2",
+      "masterTris": 43204,
+      "culledTris": 28824,
+      "shippedTris": 20501,
+      "visibleFrac": 0.9963,
+      "visibleAreaFrac": 0.9998,
+      "simplifyRatio": 0.7119,
+      "bytes": 71152,
+      "sha256": "7a4a045cd884e38577f08c8af28fdda6ec5962e20a9ea135e44bb859d4895519",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "bc-cl2-medium-clamshell": {
+      "sourceGlb": "real-assets/glb/bc-cl2-medium-clamshell.glb",
+      "sourceSha256": "bf75f30eb7c76cef1d3654b9086c419ebf419f926f0b986a06ad34e25624e7b7",
+      "masterTris": 74948,
+      "culledTris": 55386,
+      "shippedTris": 35594,
+      "visibleFrac": 0.9946,
+      "visibleAreaFrac": 0.9995,
+      "simplifyRatio": 0.6428,
+      "bytes": 122296,
+      "sha256": "6853edbb457bd9b56afb40e26de2f697bcafa0b5cd773a45309a0f82e397eb4a",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "bc-cl3-large-clamshell": {
+      "sourceGlb": "real-assets/glb/bc-cl3-large-clamshell.glb",
+      "sourceSha256": "34523eaf81fdb342993045e0e5a2c8b23c8bf6c2d495857a0174975eeab55263",
+      "masterTris": 66354,
+      "culledTris": 47153,
+      "shippedTris": 31439,
+      "visibleFrac": 0.9938,
+      "visibleAreaFrac": 0.9995,
+      "simplifyRatio": 0.6684,
+      "bytes": 106304,
+      "sha256": "549cbd49cd9f6428c0f20b109db905dc023ebd65d9bab5529920d94f83b03b0e",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "bc-sc1-spun-collar": {
+      "sourceGlb": "real-assets/glb/bc-sc1-spun-collar.glb",
+      "sourceSha256": "19d36d987e7c0764aae9137ffa00b72abe6065231c3f16c44e26f9935b6e6d72",
+      "masterTris": 3652,
+      "culledTris": 3650,
+      "shippedTris": 1732,
+      "visibleFrac": 1,
+      "visibleAreaFrac": 1,
+      "simplifyRatio": 0.4751,
+      "bytes": 7132,
+      "sha256": "91a2e213eb9fc8d42eb27649b9b4466f40faf4ceeac55c099b70f7c969b77a3a",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "bc-sc2-spun-collar-split": {
+      "sourceGlb": "real-assets/glb/bc-sc2-spun-collar-split.glb",
+      "sourceSha256": "38bc9248e015c82e33956e0b42184b00e8357d47e6c262e4bd5b16a38ecc858f",
+      "masterTris": 27680,
+      "culledTris": 10409,
+      "shippedTris": 10409,
+      "visibleFrac": 0.9848,
+      "visibleAreaFrac": 0.9999,
+      "simplifyRatio": 1,
+      "bytes": 39628,
+      "sha256": "e49742b7afe5aa421f4200f8e39f9481d2e8df40b62cb8a8aa95a5febdf6c0f0",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "drx-post-top": {
+      "sourceGlb": "real-assets/glb/drx-post-top.glb",
+      "sourceSha256": "67d7d2bd32c8ec57c6e0b547ddc0a9f42cba6fd088330fd3fb92aa698f04ef62",
+      "masterTris": 1005840,
+      "culledTris": 87421,
+      "shippedTris": 87421,
+      "visibleFrac": 0.914,
+      "visibleAreaFrac": 0.9875,
+      "simplifyRatio": 1,
+      "bytes": 346928,
+      "sha256": "2e21cd26bcb987b5dc3a88e88cdf40d71c046bdf2019e37f08293daceeae5fac",
+      "materials": [
+        "will-body",
+        "will-fixed-363636",
+        "will-fixed-868686",
+        "will-fixed-b8ceff",
+        "will-fixed-c6c6c6",
+        "will-fixed-ffe2ce"
+      ]
+    },
+    "gvx-pendant": {
+      "sourceGlb": "real-assets/glb/gvx-pendant.glb",
+      "sourceSha256": "82bf1d81c1442fe64dc2df6ee9c0f8ad2a46fda956bc315197181474b59889b2",
+      "masterTris": 1123982,
+      "culledTris": 45552,
+      "shippedTris": 45552,
+      "visibleFrac": 0.9348,
+      "visibleAreaFrac": 0.9943,
+      "simplifyRatio": 1,
+      "bytes": 180936,
+      "sha256": "90ec624dc09f5dfe762e59ce79a016c81dbead17b1765b4a717a922d02822df1",
+      "materials": [
+        "will-body",
+        "will-fixed-121212",
+        "will-fixed-363636",
+        "will-fixed-868686",
+        "will-fixed-b8ceff",
+        "will-fixed-c6c6c6"
+      ]
+    },
+    "mvx-coach": {
+      "sourceGlb": "real-assets/glb/mvx-coach.glb",
+      "sourceSha256": "ddb39282d1c2c61312f25e1ebfec55ddd83834e18c3231e9c35a1d60d93602d3",
+      "masterTris": 957414,
+      "culledTris": 24265,
+      "shippedTris": 24265,
+      "visibleFrac": 0.9554,
+      "visibleAreaFrac": 0.9975,
+      "simplifyRatio": 1,
+      "bytes": 99356,
+      "sha256": "ef562759009086d36286864e521ea4eafbea600c5728b9b469785adc20e754a3",
+      "materials": [
+        "will-body",
+        "will-fixed-000000",
+        "will-fixed-030303",
+        "will-fixed-121212",
+        "will-fixed-363636",
+        "will-fixed-97a3da",
+        "will-fixed-b8ceff",
+        "will-fixed-c6c6c6",
+        "will-fixed-ffe2ce"
+      ]
+    },
+    "pa1-pendant-arm": {
+      "sourceGlb": "real-assets/glb/pa1-pendant-arm.glb",
+      "sourceSha256": "857e042427ad6e8183b80bd4aec969f801c62f1ac428c034d06e5365fc0d003b",
+      "masterTris": 8932,
+      "culledTris": 3993,
+      "shippedTris": 3993,
+      "visibleFrac": 0.9982,
+      "visibleAreaFrac": 0.9993,
+      "simplifyRatio": 1,
+      "bytes": 13792,
+      "sha256": "d83a97cd06e22d437d39d027d20c6434be2aa940a1fdb7fff62cbcb4ce0c115f",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "pm1-pendant-arm": {
+      "sourceGlb": "real-assets/glb/pm1-pendant-arm.glb",
+      "sourceSha256": "4f11ab83cabd337460d0b16216406dd14e378b2232e3b307ae26acff3bb999c5",
+      "masterTris": 13508,
+      "culledTris": 7388,
+      "shippedTris": 6412,
+      "visibleFrac": 0.9961,
+      "visibleAreaFrac": 0.9993,
+      "simplifyRatio": 0.8684,
+      "bytes": 22620,
+      "sha256": "094d8c04141e12bdf6b5bcc9a1c47c42b4378e74ccb8eb76b716e57e2f0fdabb",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "sh1-shepherds-hook": {
+      "sourceGlb": "real-assets/glb/sh1-shepherds-hook.glb",
+      "sourceSha256": "032883c7836618de7a190ac024d7ec2d2955f6f368dba161bfafa2341a0faa3a",
+      "masterTris": 9214,
+      "culledTris": 6528,
+      "shippedTris": 4374,
+      "visibleFrac": 0.9995,
+      "visibleAreaFrac": 0.9999,
+      "simplifyRatio": 0.6703,
+      "bytes": 15368,
+      "sha256": "07b6220f5fbba2740982bd67fd76d434ece09711e14b407f8d2cb0de51355660",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "tex-post-top": {
+      "sourceGlb": "real-assets/glb/tex-post-top.glb",
+      "sourceSha256": "2450ff99c274db8e7037ebbe58c458989e7cd3985e3fcf6dd9513251568c5cc6",
+      "masterTris": 936344,
+      "culledTris": 97906,
+      "shippedTris": 97906,
+      "visibleFrac": 0.9245,
+      "visibleAreaFrac": 0.9968,
+      "simplifyRatio": 1,
+      "bytes": 381292,
+      "sha256": "a1e489d4e7ebdcc8432055d4094fc7f7a2f1a817f31af5d149e93b08a25b9eeb",
+      "materials": [
+        "will-body",
+        "will-fixed-121212",
+        "will-fixed-363636",
+        "will-fixed-ada186",
+        "will-fixed-b8ceff",
+        "will-fixed-c6c6c6",
+        "will-fixed-ffffff"
+      ]
+    },
+    "willstudio-acc-clamshell-extender": {
+      "sourceGlb": "real-assets/glb/willstudio-acc-clamshell-extender.glb",
+      "sourceSha256": "877d77a144449d25bce44886b82be6a746eea62db24b866b5d7f96170235976c",
+      "masterTris": 19712,
+      "culledTris": 19117,
+      "shippedTris": 9362,
+      "visibleFrac": 0.9963,
+      "visibleAreaFrac": 0.9998,
+      "simplifyRatio": 0.4898,
+      "bytes": 44628,
+      "sha256": "eac913d2f412a48f1a85e891122c12b1e4fe4b3172075c89739afa9ef709ba0d",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-acc-coupling": {
+      "sourceGlb": "real-assets/glb/willstudio-acc-coupling.glb",
+      "sourceSha256": "ecb9be4f5f07019f553bf291f59efc78ca43bce95091d7fedcb08017ce886097",
+      "masterTris": 5856,
+      "culledTris": 4547,
+      "shippedTris": 2779,
+      "visibleFrac": 0.9806,
+      "visibleAreaFrac": 0.9993,
+      "simplifyRatio": 0.6116,
+      "bytes": 11920,
+      "sha256": "1c24852722bb39ba5b7329c11931ba7f34852b6a9879595fb49d97a4a4f62dcb",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-acc-flag-holder": {
+      "sourceGlb": "real-assets/glb/willstudio-acc-flag-holder.glb",
+      "sourceSha256": "c2f61ffadc60fc82cfcea8cede42a93fa5494193599caa1ef3f4f2abf33f4aa5",
+      "masterTris": 25570,
+      "culledTris": 8288,
+      "shippedTris": 8288,
+      "visibleFrac": 0.9408,
+      "visibleAreaFrac": 0.9998,
+      "simplifyRatio": 1,
+      "bytes": 30000,
+      "sha256": "b5b97c8f997a118f97ff51dd9699a7d9c33ba4c939df107ac16523ad27010301",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-acc-hand-hole": {
+      "sourceGlb": "real-assets/glb/willstudio-acc-hand-hole.glb",
+      "sourceSha256": "f84340629d9cf9229f28b953882bf2469d45a117a78291c404bc568b0c3fa2e4",
+      "masterTris": 644,
+      "culledTris": 644,
+      "shippedTris": 304,
+      "visibleFrac": 1,
+      "visibleAreaFrac": 1,
+      "simplifyRatio": 0.4736,
+      "bytes": 2476,
+      "sha256": "a76b0a09dff99d017e36bd34fcc1a0dc36753ade03a5dff659f32a4a526d3a8e",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-acc-plant-holder": {
+      "sourceGlb": "real-assets/glb/willstudio-acc-plant-holder.glb",
+      "sourceSha256": "c12c2e479cbc287578c2727c4c46bd8b1fba94055662e6fe50bccfe95fdc5475",
+      "masterTris": 54074,
+      "culledTris": 27905,
+      "shippedTris": 25681,
+      "visibleFrac": 0.9796,
+      "visibleAreaFrac": 0.9999,
+      "simplifyRatio": 0.9204,
+      "bytes": 91116,
+      "sha256": "bcdf9bdc32672f3dd39faf80ae51900f7a2f37e4f0b7ba9bd02d16076a913380",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-dwx-flood-spot": {
+      "sourceGlb": "real-assets/glb/willstudio-dwx-flood-spot.glb",
+      "sourceSha256": "9f148fdd27d47b97d6db772c2ed187ac3db01b66b912f97a7d3422517591c853",
+      "masterTris": 784846,
+      "culledTris": 51636,
+      "shippedTris": 51636,
+      "visibleFrac": 0.9768,
+      "visibleAreaFrac": 0.9974,
+      "simplifyRatio": 1,
+      "bytes": 197312,
+      "sha256": "6c8190cd7a6a85c9a44fc8f1c32719c902fd3d1881c252a9170ffc62e8f9598a",
+      "materials": [
+        "will-body",
+        "will-fixed-030303",
+        "will-fixed-0d0d0d",
+        "will-fixed-121212",
+        "will-fixed-868686",
+        "will-fixed-b5b5b5",
+        "will-fixed-b8ceff",
+        "will-fixed-ffe2ce",
+        "will-fixed-ffffff"
+      ]
+    },
+    "willstudio-fr2-decorative-crossarm": {
+      "sourceGlb": "real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
+      "sourceSha256": "0a56e2665af647b877e03c493e72d29496dbf48ddc633c0f07c1c45460acd094",
+      "masterTris": 19726,
+      "culledTris": 17040,
+      "shippedTris": 9350,
+      "visibleFrac": 0.9943,
+      "visibleAreaFrac": 0.9997,
+      "simplifyRatio": 0.5498,
+      "bytes": 31256,
+      "sha256": "9154289680329bc94f51db5e43ffa88f1ef28a09e52d6237cb0334b34de827d6",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-hsx-decorative-upsweep-arms": {
+      "sourceGlb": "real-assets/glb/willstudio-hsx-decorative-upsweep-arms.glb",
+      "sourceSha256": "4c294dc2bc8566f50bc2ab99817f55a5d4f1b9c1c2990e9096a1a80565f1546e",
+      "masterTris": 24111,
+      "culledTris": 14060,
+      "shippedTris": 11443,
+      "visibleFrac": 0.996,
+      "visibleAreaFrac": 0.9995,
+      "simplifyRatio": 0.8145,
+      "bytes": 36828,
+      "sha256": "727829f73e7dd62a0c91bbfceafa6ba72365717fc172cacdea509dae7681a041",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-pole-base-standard": {
+      "sourceGlb": "real-assets/glb/willstudio-pole-base-standard.glb",
+      "sourceSha256": "c7e1d04b5c1fd2020ea4215e4abfd4a516575908f129561b5457911fc1133db4",
+      "masterTris": 2204,
+      "culledTris": 2200,
+      "shippedTris": 1046,
+      "visibleFrac": 1,
+      "visibleAreaFrac": 1,
+      "simplifyRatio": 0.4755,
+      "bytes": 8032,
+      "sha256": "d236cfb05feab4db93e24c02bfa2ddfb19d97d23b6e99eea7eb5d89f136cd66e",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-side-shepherds-hook-pole-top-brackets": {
+      "sourceGlb": "real-assets/glb/willstudio-side-shepherds-hook-pole-top-brackets.glb",
+      "sourceSha256": "7f9fb31cef38e315bb06d11e0f3ea004eff3a5ba06b96b56becf31e9649754ec",
+      "masterTris": 19214,
+      "culledTris": 9460,
+      "shippedTris": 9125,
+      "visibleFrac": 0.9952,
+      "visibleAreaFrac": 0.9997,
+      "simplifyRatio": 0.9647,
+      "bytes": 29760,
+      "sha256": "ba9f39b12cbb37faba3b3adb5685750e118c4fcd443868e0a6dcde10b93eb655",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-supported-decorative-arms": {
+      "sourceGlb": "real-assets/glb/willstudio-supported-decorative-arms.glb",
+      "sourceSha256": "812c54b40928ca7dd13a97374e5f6373a74a22b53b2f41e9c1d8ac6f0787fbf2",
+      "masterTris": 22832,
+      "culledTris": 10280,
+      "shippedTris": 10280,
+      "visibleFrac": 0.997,
+      "visibleAreaFrac": 0.9995,
+      "simplifyRatio": 1,
+      "bytes": 33780,
+      "sha256": "17c2ce508a0b32ee65b8714f36a8b93389d1d998f8bebf4643868875633e8c97",
+      "materials": [
+        "will-body"
+      ]
+    },
+    "willstudio-suspension-arm-pole-top-brackets": {
+      "sourceGlb": "real-assets/glb/willstudio-suspension-arm-pole-top-brackets.glb",
+      "sourceSha256": "3fde1b1fe840cb2e6f4b8d43fdc9e2b70f664b032f46954c4020607002b45ee5",
+      "masterTris": 17214,
+      "culledTris": 7273,
+      "shippedTris": 7273,
+      "visibleFrac": 0.9956,
+      "visibleAreaFrac": 0.9958,
+      "simplifyRatio": 1,
+      "bytes": 24012,
+      "sha256": "917da50992790e3283cdc53e456b91c84f13340ff5d6c00238902dfcc93ffc17",
+      "materials": [
+        "will-body"
+      ]
+    }
+  },
+  "directions": 230
+}

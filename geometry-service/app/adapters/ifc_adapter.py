@@ -34,6 +34,7 @@ import ifcopenshell.api
 import ifcopenshell.guid
 
 from app.naming import DISCLAIMER, config_hash
+from app.shellgeom import shell_assembly
 
 from .base import Adapter, GenContext
 
@@ -115,8 +116,20 @@ class IfcAdapter:
             "spatial.assign_container", f, relating_structure=storey, products=[fixture]
         )
 
-        # --- Geometry: tessellate fused solid (mm, +Z up) → IfcPolygonalFaceSet ---
-        fixture.Representation = self._tessellated_shape(f, body_ctx, ctx)
+        # --- Geometry (Phase 0.17): the gated EXTERIOR SHELLS of the real CAD
+        # when every core part has one — one named IfcPolygonalFaceSet per
+        # component, so Revit shows the actual products instead of the
+        # parametric concept solids. Falls back to the fused kit solid whole
+        # (never a hybrid) when any core shell is missing.
+        shells = shell_assembly(ctx.catalog, ctx.cfg)
+        if shells is not None:
+            fixture.Representation = self._shell_shape(f, body_ctx, shells)
+            ctx.warnings.extend(f"ifc: {w}" for w in shells.warnings)
+        else:
+            fixture.Representation = self._tessellated_shape(f, body_ctx, ctx)
+            ctx.warnings.append(
+                "ifc: concept solids used - a configured part has no gated shell yet"
+            )
 
         # --- Pset_WiLLConcept ---
         pset = ifcopenshell.api.run("pset.add_pset", f, product=fixture, name="Pset_WiLLConcept")
@@ -138,6 +151,25 @@ class IfcAdapter:
 
         f.write(str(out_path))
         return [out_path]
+
+    @staticmethod
+    def _shell_shape(f, body_ctx, shells):
+        """One named IfcPolygonalFaceSet per shell piece (meters, +Y up →
+        millimetres, +Z up: x→x, y→z, z→−y — matching the kit's IFC frame)."""
+        items = []
+        for piece in shells.pieces:
+            v = piece.verts
+            coord_list = [
+                [float(x * 1000.0), float(-z * 1000.0), float(y * 1000.0)] for x, y, z in v
+            ]
+            point_list = f.createIfcCartesianPointList3D(coord_list)
+            faces = [
+                f.createIfcIndexedPolygonalFace([int(a) + 1, int(b) + 1, int(c) + 1])
+                for a, b, c in piece.tris
+            ]
+            items.append(f.createIfcPolygonalFaceSet(point_list, None, faces))
+        shape_rep = f.createIfcShapeRepresentation(body_ctx, "Body", "Tessellation", items)
+        return f.createIfcProductDefinitionShape(None, None, [shape_rep])
 
     @staticmethod
     def _tessellated_shape(f, body_ctx, ctx: GenContext):

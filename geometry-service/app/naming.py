@@ -12,8 +12,9 @@ DISCLAIMER = "Concept starter model - not final engineered or manufacturing-rele
 # Phase 0.17: bump when generated OUTPUT changes without the config changing
 # (template redesigns, adapter fixes) — it joins config_hash, so every cached
 # artifact regenerates instead of being served stale. History: 2 = the 0.17
-# PDF formatting pass (aspect-true renders, reworked spec/hero layouts).
-_OUTPUT_VERSION = 2
+# PDF formatting pass (aspect-true renders, reworked spec/hero layouts);
+# 3 = the shell-accurate IFC (gated exterior shells replace concept solids).
+_OUTPUT_VERSION = 3
 
 
 def config_hash(cfg: PoleConfig) -> str:
@@ -54,10 +55,10 @@ def config_hash(cfg: PoleConfig) -> str:
     All three are included ONLY when non-empty, so every config that predates
     them keeps its historical hash byte-for-byte and existing caches stay valid.
 
-    Deliberately still excluded: ``armOrientation`` and ``accessoryPlacements``.
-    They round-trip through the model but reach no generated artifact yet, so
-    hashing them would only fragment the cache.  Add them here in the same
-    commit that makes an adapter read them.
+    Phase 0.17 ends the last two exclusions: the shell-accurate IFC places
+    radial arms by ``armOrientation`` and draws each placed accessory from
+    ``accessoryPlacements``, so both now reach a generated artifact and join
+    the hash (only when meaningfully set, like the others).
     """
     canonical: dict = {
         # Phase 0.17: the OUTPUT TEMPLATE VERSION joins the hash. The on-disk
@@ -105,6 +106,25 @@ def config_hash(cfg: PoleConfig) -> str:
     # Multi-select code order is NOT normalised: the part number appends codes
     # in stored order, so two configs with the same codes in a different order
     # genuinely print different numbers and must hash apart.
+    # Phase 0.17: both reach the shell-accurate IFC now (arm placement and
+    # every placed accessory are geometry), so they hash — armOrientation only
+    # when non-zero, placements only when non-empty, so configs without them
+    # keep hashing like configs without the fields.
+    orientation = getattr(cfg, "armOrientation", None)
+    if orientation:
+        canonical["armOrientation"] = orientation
+    placements = getattr(cfg, "accessoryPlacements", None) or {}
+    placed = {
+        code: [
+            inst.model_dump(exclude_none=True) if hasattr(inst, "model_dump") else inst
+            for inst in (insts if isinstance(insts, list) else [insts])
+        ]
+        for code, insts in sorted(placements.items())
+        if insts
+    }
+    if placed:
+        canonical["accessoryPlacements"] = placed
+
     spec_options = {slot: cols for slot, cols in spec_options.items() if cols}
     if spec_options:
         canonical["specOptions"] = spec_options
