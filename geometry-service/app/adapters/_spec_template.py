@@ -772,6 +772,49 @@ def _draw_hero_callout(
     pdf.set_line_width(0.2)
 
 
+def _draw_share_qr(pdf: FPDF, url: str, x: float, y: float, size: float) -> bool:
+    """Draw a QR of the build's share link (Phase 0.17, Tyler 8/20).
+
+    A client scanning it opens the EXACT configurator state — the most useful
+    thing this page can carry. segno is a pure-python encoder (no native deps,
+    safe for the deployed container); a failure degrades to the printed URL
+    alone rather than breaking the document.
+    """
+    try:
+        import segno  # noqa: PLC0415 — adapter-local engine import
+
+        qr = segno.make(url, error="m")
+        matrix = [[bool(c) for c in row] for row in qr.matrix]
+    except Exception:
+        return False
+    n = len(matrix)
+    if n == 0:
+        return False
+    # Quiet zone: white card behind, then modules in gunmetal.
+    _set_fill(pdf, _WHITE)
+    pdf.rect(x, y, size, size, style="F")
+    quiet = 2
+    module = size / (n + quiet * 2)
+    _set_fill(pdf, _GUNMETAL)
+    for r, row in enumerate(matrix):
+        c0 = None
+        for c in range(n + 1):
+            on = c < n and row[c]
+            if on and c0 is None:
+                c0 = c
+            elif not on and c0 is not None:
+                # one rect per run of modules — far fewer PDF ops than per cell
+                pdf.rect(
+                    x + (quiet + c0) * module,
+                    y + (quiet + r) * module,
+                    (c - c0) * module,
+                    module,
+                    style="F",
+                )
+                c0 = None
+    return True
+
+
 def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
     """The WiLL CONCEPT DRAWING hero card (Phase 0.17, Tyler 8/19).
 
@@ -878,6 +921,26 @@ def _render_hero_layout(pdf: FPDF, ctx: GenContext) -> None:
         3.6,
         _latin1(f"Finish: {finish_txt}  |  Config: {ctx.cfg.configId}  |  Rev: {ctx.cfg.rev}"),
     )
+
+    # --- Share: QR + link, so the client can open this exact build ---
+    share = (ctx.share_url or "").strip()
+    if share:
+        qr_size = foot_h - 7.0
+        qr_x = _PAGE_W / 2 - qr_size / 2 - 34.0
+        qr_y = fy + 3.5
+        drawn = _draw_share_qr(pdf, share, qr_x, qr_y, qr_size)
+        _set_text(pdf, _WHITE)
+        pdf.set_font("Helvetica", "B", 7)
+        tx = qr_x + (qr_size + 3.0 if drawn else 0.0)
+        pdf.set_xy(tx, qr_y + 2.0)
+        pdf.cell(64, 4.0, "SCAN TO OPEN THIS BUILD" if drawn else "OPEN THIS BUILD")
+        _set_text(pdf, _SILVER)
+        pdf.set_font("Helvetica", "", 5.8)
+        pdf.set_xy(tx, qr_y + 6.2)
+        shown = share.replace("https://", "").replace("http://", "")
+        if len(shown) > 58:
+            shown = shown[:57] + "\u2026"
+        pdf.cell(64, 3.4, _latin1(shown))
 
 
 # ---------------------------------------------------------------------------

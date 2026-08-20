@@ -17,6 +17,8 @@ export function ViewerToolbar() {
   const mode = useConfigurator((s) => s.mode)
   const toggleMode = useConfigurator((s) => s.toggleMode)
   const showCompass = useConfigurator((s) => s.showCompass)
+  const showLabels = useConfigurator((s) => s.showLabels)
+  const toggleLabels = useConfigurator((s) => s.toggleLabels)
   const toggleCompass = useConfigurator((s) => s.toggleCompass)
 
   const [sceneOpen, setSceneOpen] = useState(false)
@@ -138,6 +140,15 @@ export function ViewerToolbar() {
         title="Ground compass at the pole base — 0° marks the hand-hole reference"
       >
         Compass
+      </button>
+      <button
+        type="button"
+        className={`viewer-tool${showLabels ? ' active' : ''}`}
+        aria-pressed={showLabels}
+        onClick={toggleLabels}
+        title="Component labels — click one to see that part's configuration"
+      >
+        Labels
       </button>
     </div>
   )

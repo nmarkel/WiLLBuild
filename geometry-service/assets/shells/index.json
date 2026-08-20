@@ -131,11 +131,11 @@
     },
     "willstudio-acc-hand-hole": {
       "file": "assets/shells/willstudio-acc-hand-hole.glb",
-      "bytes": 6092,
-      "sha256": "06145418871ea5b9c08ad119b09cb456591abee295a9ecbaf7b80a28c6c6ccaf",
-      "sourceSha256": "a76b0a09dff99d017e36bd34fcc1a0dc36753ade03a5dff659f32a4a526d3a8e",
+      "bytes": 4148,
+      "sha256": "ad6540402ade2a2e7d49890784b4eeb2b405b27cd352e96ed5cae8b745d69cd3",
+      "sourceSha256": "11d8df10aa9e6b4769b1d03bd1df7e6b25fe32fc8710f24f7cce213406fe010e",
       "rotateYDegBaked": 0,
-      "triangles": 304
+      "triangles": 146
     },
     "willstudio-acc-plant-holder": {
       "file": "assets/shells/willstudio-acc-plant-holder.glb",

@@ -323,6 +323,8 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
           renderPng,
           // Phase 0.17: the viewer publishes where each part sits in the PNG.
           useConfigurator.getState().snapshotAnchors ?? undefined,
+          // …and the live share link, which the concept card prints + QRs.
+          useConfigurator.getState().shareLink(),
         )
         const response = await pollJob(start.jobId, ({ progress, stage }) => {
           setCardState(format, { phase: 'working', progress, stage })

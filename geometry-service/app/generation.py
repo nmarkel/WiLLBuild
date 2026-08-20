@@ -31,6 +31,7 @@ from .catalog import is_standalone_config, load_catalog, validate_config
 from .kit.assembly import build_assembly
 from .models import GenerateRequest
 from .naming import base_name, config_hash
+from .shellgeom import shell_assembly, shell_dims
 from .partnumber import build_part_number, finish_for, is_complete, part_number_text
 
 # ---------------------------------------------------------------------------
@@ -110,6 +111,17 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             "arm_reach_mm": assembly.dims.arm_reach,
             "base_diameter_mm": assembly.dims.base_diameter,
         }
+    # Phase 0.17 (Tyler 8/20, "use the casting information"): when the config
+    # has full shell coverage, every printed dimension is MEASURED off the real
+    # castings instead of the parametric placeholders — the placeholder base
+    # read 1'-3" where the cast base is 8.63". Falls back per-key, so a value
+    # the shells cannot supply keeps the kit's number rather than vanishing.
+    shells = shell_assembly(catalog, req.config)
+    if shells is not None:
+        measured = shell_dims(shells)
+        if measured:
+            summary["dims"] = {**summary.get("dims", {}), **measured}
+            summary["dims_source"] = "castings"
     finish_map = {f["id"]: f for f in catalog.get("finishes", [])}
     finish_obj = finish_map.get(req.config.finish, {})
     summary["finish"] = (
@@ -366,6 +378,7 @@ def generate_files(
             assembly=assembly,
             render_png=render_png_bytes,
             render_anchors=req.renderAnchors,
+            share_url=req.shareUrl,
             summary=summary,
         )
 

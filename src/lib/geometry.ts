@@ -119,6 +119,13 @@ export async function startJob(
    * plain label list with no leaders.
    */
   renderAnchors?: Record<string, [number, number]>,
+  /**
+   * Phase 0.17 (Tyler 8/20): the live share link for THIS build. The concept
+   * card prints it and a QR beside it, so a client can open the exact
+   * configurator state. The frontend owns its own URL, so it is supplied
+   * rather than guessed at by the service.
+   */
+  shareUrl?: string,
 ): Promise<JobStartResponse> {
   const body: Record<string, unknown> = { config, formats }
   if (renderPng !== undefined) {
@@ -126,6 +133,9 @@ export async function startJob(
   }
   if (renderAnchors && Object.keys(renderAnchors).length > 0) {
     body.renderAnchors = renderAnchors
+  }
+  if (shareUrl) {
+    body.shareUrl = shareUrl
   }
 
   let response: Response

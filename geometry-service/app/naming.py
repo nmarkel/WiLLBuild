@@ -15,8 +15,10 @@ DISCLAIMER = "Concept starter model - not final engineered or manufacturing-rele
 # PDF formatting pass (aspect-true renders, reworked spec/hero layouts);
 # 3 = the shell-accurate IFC (gated exterior shells replace concept solids);
 # 4 = the shell STEP (AP242 tessellated from the same shells) + Configuration
-#     Card retitle + imperial-only documents.
-_OUTPUT_VERSION = 4
+#     Card retitle + imperial-only documents;
+# 5 = generated pole (exact tube at any length; a TRUE B-rep solid in the
+#     STEP) + the hero concept card rebuilt to the design-library pattern.
+_OUTPUT_VERSION = 5
 
 
 def config_hash(cfg: PoleConfig) -> str:

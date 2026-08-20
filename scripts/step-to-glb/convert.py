@@ -281,11 +281,63 @@ def _crop_below(pos: np.ndarray, tris: np.ndarray, nrm, plane_y: float):
     return pos_out, tris_out, nrm_out
 
 
+def _feature_only(pos: np.ndarray, tris: np.ndarray, nrm, nominal_r_m: float,
+                  arc_deg: float = 60.0):
+    """Keep only a shaft accessory's FEATURE, dropping what the pole already draws.
+
+    Phase 0.17 (Tyler 8/20): HH-4R is a 6in SECTION of pole — the opening plus
+    its frame — so overlaying it on the shaft left two visible circumferential
+    seams ("what is the ring/line around the pole just above the hand hole?").
+    Measured on the shell: 82 triangles are the annular END CAPS (the rings),
+    158 are cylinder WALL at the pole's own radius (redundant — the pole draws
+    that surface), and 64 are the recessed opening itself, spanning only +/-42
+    degrees. Dropping caps + nominal-radius wall leaves the hole as a recessed
+    dish in the pole's surface, which is what it physically is.
+
+    An ANGULAR window is required too, not just cap/wall removal: the section's
+    inner bore also wraps 360 degrees, and the image compositor draws layers in
+    z-order without per-pixel occlusion — so ANY geometry that encircles the
+    shaft paints a collar over it no matter its radius. Keeping only the arc
+    around the opening (the shell measured the feature at +/-42 degrees) makes
+    the layer a local patch that reads as a hole in the pole.
+
+    Deliberate deviation, recorded: the accessory GLB is no longer the whole
+    exported part. It exists to OVERLAY a pole, so the encircling wall is not
+    geometry we can ship truthfully anyway (it would z-fight the shaft).
+    """
+    tol = 3e-4
+    r = np.sqrt(pos[:, 0] ** 2 + pos[:, 2] ** 2)
+    y = pos[:, 1]
+    rt, yt = r[tris], y[tris]
+    caps = (np.abs(yt - y.max()) < 1e-4).all(axis=1) | (np.abs(yt - y.min()) < 1e-4).all(axis=1)
+    outer_wall = ((rt.max(axis=1) - rt.min(axis=1)) < tol) & (
+        np.abs(rt.mean(axis=1) - nominal_r_m) < tol
+    )
+    # Feature direction is +X (the hole faces the catalog 0-degree reference).
+    ang = np.degrees(np.arctan2(pos[:, 2], pos[:, 0]))
+    tri_ang = np.abs(np.arctan2(
+        np.sin(np.deg2rad(ang[tris])).mean(axis=1),
+        np.cos(np.deg2rad(ang[tris])).mean(axis=1),
+    ))
+    off_arc = np.degrees(tri_ang) > arc_deg
+    keep = ~(caps | outer_wall | off_arc)
+    if not keep.any():
+        raise ValueError("feature-only crop removed every triangle")
+    kept = tris[keep]
+    used = np.unique(kept)
+    remap = np.full(len(pos), -1, dtype=np.int64)
+    remap[used] = np.arange(len(used))
+    out_nrm = nrm[used] if nrm is not None else None
+    return pos[used], remap[kept].astype(np.uint32), out_nrm
+
+
 def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
                        tol_mm: float = 0.5, base_color=(0.75,0.75,0.75,1.0),
                        rotate_x: float = 0.0, rotate_z: float = 0.0,
                        scale_y: float = 1.0, with_normals: bool = True,
-                       ang_rad: float = 0.5, crop_below_m: float | None = None) -> dict:
+                       ang_rad: float = 0.5, crop_below_m: float | None = None,
+                       feature_only_radius_m: float | None = None,
+                       feature_arc_deg: float = 60.0) -> dict:
     shape = load_step_shape(step_path)
     nrm = None
     if with_normals:
@@ -313,6 +365,9 @@ def convert_monolithic(step_path: str, out_glb: str, origin: str = "base",
     # with pole length (same rule as the hand-hole graft).
     if crop_below_m is not None:
         pos, tris, nrm = _crop_below(pos, tris, nrm, crop_below_m)
+    if feature_only_radius_m is not None:
+        pos, tris, nrm = _feature_only(pos, tris, nrm, feature_only_radius_m,
+                                       arc_deg=feature_arc_deg)
     write_glb(out_glb, [{
         "positions": pos, "indices": tris.reshape(-1),
         "material_name": "will-body", "base_color": base_color,

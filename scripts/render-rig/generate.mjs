@@ -66,6 +66,23 @@ const COMPASS = [
   { key: 'az270', yaw: 270 },
 ]
 
+/**
+ * Max Y (metres) of a GLB, straight from its JSON chunk: glTF requires
+ * min/max on POSITION accessors, so this needs no buffer decode and works on
+ * meshopt-compressed files too.
+ */
+export function glbHeightM(buf) {
+  const jsonLen = buf.readUInt32LE(12)
+  const doc = JSON.parse(buf.subarray(20, 20 + jsonLen).toString())
+  let maxY = -Infinity
+  for (const acc of doc.accessors ?? []) {
+    if (acc.type === 'VEC3' && Array.isArray(acc.max) && acc.max.length >= 2) {
+      maxY = Math.max(maxY, acc.max[1])
+    }
+  }
+  return Number.isFinite(maxY) ? maxY : null
+}
+
 export function ANGLES_FOR_SLOT(_slot) {
   return COMPASS
 }
@@ -137,6 +154,45 @@ export function placeholderGraftChildren(part) {
   if (part?.slot !== 'pole') return []
   const children = part.placeholder?.children ?? []
   return children.filter((c) => c.spec?.kind === 'box')
+}
+
+/**
+ * Phase 0.17 (Tyler 8/20): a base cover renders with a POLE STUB through it.
+ *
+ * A cover is a hollow shell, so its own render showed its LIT INNER WALL
+ * through the top opening — which reads exactly as "the pole looks translucent
+ * through the top hole" (measured: a bright vertical band down the middle of
+ * bc-cl2's own layer). In the real assembly the pole fills that opening.
+ *
+ * The image compositor cannot occlude one layer with another, so the fix has
+ * to live in the ASSET: graft a stub of the pole's own diameter through the
+ * cover, exactly as the pole's hand-hole cover is grafted. Same axis and same
+ * OD as the pole layer behind it, so the two read as one continuous shaft.
+ *
+ * Diameter comes from the cover's own Pole Fit column (4R -> 4 in), never a
+ * hardcoded number; height is the cover's own placeholder height, so the stub
+ * fills the opening without protruding above it.
+ */
+export function baseCoverGraftChildren(part, heightM) {
+  if (part?.slot !== 'baseCover') return []
+  const fitCode = part.options
+    ?.find((o) => o.key === 'pole-fit')
+    ?.values?.[0]?.code
+  const inches = fitCode ? Number.parseFloat(fitCode) : 4
+  if (!Number.isFinite(inches) || inches <= 0) return []
+  const radius = (inches * 0.0254) / 2
+  // The REAL cover's height, measured from the GLB being rendered — the
+  // placeholder's heightM is a different (shorter) number, and a stub built
+  // from it stops BELOW the opening it is meant to fill (measured: bc-cl2 is
+  // 0.566 m real vs 0.35 m placeholder, so the first attempt changed nothing).
+  const height = heightM ?? part.placeholder?.heightM
+  if (!height) return []
+  return [
+    {
+      spec: { kind: 'pole', heightM: height, radiusTopM: radius, radiusBottomM: radius },
+      position: [0, 0, 0],
+    },
+  ]
 }
 
 /**
@@ -296,6 +352,13 @@ async function main() {
           // onto the real tube, at native size, after this GLB load: Cole's
           // real HH-4R section when its GLB is here (0.14), else the box.
           const graftPlan = poleGraftPlan(part)
+          // Phase 0.17: a base cover also gets a graft — a pole stub through
+          // its opening, so the hollow interior no longer reads as a
+          // translucent pole (see baseCoverGraftChildren).
+          graftPlan.boxes = [
+            ...graftPlan.boxes,
+            ...baseCoverGraftChildren(part, glbHeightM(await readFile(glbPath))),
+          ]
           const glbGrafts = []
           for (const g of graftPlan.glbs) {
             const gb64 = (await readFile(resolve(__dirname, g.glb))).toString('base64')

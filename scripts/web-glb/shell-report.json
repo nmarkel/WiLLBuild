@@ -268,15 +268,15 @@
     },
     "willstudio-acc-hand-hole": {
       "sourceGlb": "real-assets/glb/willstudio-acc-hand-hole.glb",
-      "sourceSha256": "f84340629d9cf9229f28b953882bf2469d45a117a78291c404bc568b0c3fa2e4",
-      "masterTris": 644,
-      "culledTris": 644,
-      "shippedTris": 304,
+      "sourceSha256": "c23ee98250b930fbc324af933052a20694e3989ae34c06703f6366615d87c2fc",
+      "masterTris": 310,
+      "culledTris": 310,
+      "shippedTris": 146,
       "visibleFrac": 1,
       "visibleAreaFrac": 1,
-      "simplifyRatio": 0.4736,
-      "bytes": 2476,
-      "sha256": "a76b0a09dff99d017e36bd34fcc1a0dc36753ade03a5dff659f32a4a526d3a8e",
+      "simplifyRatio": 0.4742,
+      "bytes": 2856,
+      "sha256": "11d8df10aa9e6b4769b1d03bd1df7e6b25fe32fc8710f24f7cce213406fe010e",
       "materials": [
         "will-body"
       ]

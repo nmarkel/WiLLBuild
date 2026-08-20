@@ -48,6 +48,13 @@ class ShellPiece:
     name: str
     verts: np.ndarray  # (N, 3) float64
     tris: np.ndarray  # (M, 3) int64
+    #: Phase 0.17: parametric parts (the pole) can carry a TRUE B-rep solid
+    #: for consumers that support one — filled by the adapter layer, since
+    #: this module stays engine-free. Mesh fields remain populated so
+    #: mesh-only consumers (IFC) are unaffected.
+    solid: object | None = None
+    #: What kind of piece this is, so an adapter can upgrade it (see `solid`).
+    kind: str = "shell"
 
 
 @dataclass
@@ -132,18 +139,78 @@ def _sockets_to(host: dict | None, part: dict | None) -> list[list[float]]:
     ]
 
 
-def _pole_shell(pole: dict) -> tuple[np.ndarray, np.ndarray]:
-    """The pole family derives from the one real 12 ft shell by scaling the
-    tube ABOVE the fixed crop line (the anchor-base joint must not move)."""
-    verts, tris = load_shell(_POLE_SOURCE_ID)
-    height_ft = float(pole.get("heightFt") or _POLE_SOURCE_FT)
-    if height_ft != _POLE_SOURCE_FT:
-        src_h = _POLE_SOURCE_FT * FT_TO_M
-        dst_h = height_ft * FT_TO_M
-        k = (dst_h - _POLE_CROP_M) / (src_h - _POLE_CROP_M)
-        verts = verts.copy()
-        verts[:, 1] = _POLE_CROP_M + (verts[:, 1] - _POLE_CROP_M) * k
-    return verts, tris
+# The pole is GENERATED, not shelled (Phase 0.17, Tyler 8/20).
+#
+# Why: RSAA = Round STRAIGHT Aluminum — a constant-profile extrusion. Its
+# engineering export is a plain 6-face tube that tessellates to 256 triangles,
+# and the web-shell pipeline then decimated it to 121, turning a smooth
+# cylinder into a coarse prism ("the pole isn't generating very well"). A
+# constant profile needs no mesh at all: every dimension is real catalog data
+# (4.00 in OD, wall code C/D/E, height in feet), so the tube is generated at
+# the exact requested length — no per-length source files, no stacked seams to
+# boolean away, and exact radii instead of facets. The STEP adapter upgrades
+# this piece further to a true B-rep cylinder (see step_adapter).
+_POLE_SEGMENTS = 96
+_IN_TO_M = 0.0254
+_WALL_BY_CODE = {"C": 0.125 * _IN_TO_M, "D": 0.188 * _IN_TO_M, "E": 0.250 * _IN_TO_M}
+_WALL_DEFAULT_CODE = "C"
+
+
+def pole_dimensions(catalog: dict, cfg, pole: dict) -> tuple[float, float, float, float]:
+    """(outer radius, wall, base y, top y) in metres for the chosen pole.
+
+    Wall comes from the config's own wall-thickness selection; unchosen falls
+    back to the sheet's thinnest wall and the caller warns, because the STEP
+    must not silently imply a wall the customer never specified.
+    """
+    radius = float(pole.get("diameterIn") or 4.0) * _IN_TO_M / 2.0
+    chosen = (getattr(cfg, "specOptions", None) or {}).get("pole") or {}
+    code = (_spec_codes(chosen.get("wall-thickness")) or [None])[0]
+    wall = _WALL_BY_CODE.get(code or "", _WALL_BY_CODE[_WALL_DEFAULT_CODE])
+    top = float(pole.get("heightFt") or _POLE_SOURCE_FT) * FT_TO_M
+    return radius, wall, _POLE_CROP_M, top
+
+
+def _pole_tube_mesh(radius: float, wall: float, y0: float, y1: float):
+    """A closed hollow tube: outer wall, inner wall, and both annular caps.
+
+    Engine-free (numpy only) so this stays in app/ rather than app/adapters/.
+    Winding is outward-consistent, which the IFC's polygonal face set needs.
+    """
+    n = _POLE_SEGMENTS
+    ang = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
+    r_in = max(radius - wall, radius * 0.5)
+    cos, sin = np.cos(ang), np.sin(ang)
+    rings = [
+        np.stack([radius * cos, np.full(n, y0), radius * sin], axis=1),  # 0 outer bottom
+        np.stack([radius * cos, np.full(n, y1), radius * sin], axis=1),  # 1 outer top
+        np.stack([r_in * cos, np.full(n, y0), r_in * sin], axis=1),      # 2 inner bottom
+        np.stack([r_in * cos, np.full(n, y1), r_in * sin], axis=1),      # 3 inner top
+    ]
+    verts = np.vstack(rings)
+    tris: list[tuple[int, int, int]] = []
+
+    def band(a: int, b: int, flip: bool) -> None:
+        """Quad band between ring a and ring b, split into two triangles."""
+        for i in range(n):
+            j = (i + 1) % n
+            a0, a1 = a * n + i, a * n + j
+            b0, b1 = b * n + i, b * n + j
+            if flip:
+                tris.extend([(a0, b0, b1), (a0, b1, a1)])
+            else:
+                tris.extend([(a0, a1, b1), (a0, b1, b0)])
+
+    band(0, 1, flip=False)  # outer surface
+    band(2, 3, flip=True)   # inner surface (bore, reversed)
+    band(1, 3, flip=False)  # top annulus
+    band(2, 0, flip=False)  # bottom annulus
+    return verts, np.asarray(tris, dtype=np.int64)
+
+
+def _pole_shell(catalog: dict, cfg, pole: dict) -> tuple[np.ndarray, np.ndarray]:
+    radius, wall, y0, y1 = pole_dimensions(catalog, cfg, pole)
+    return _pole_tube_mesh(radius, wall, y0, y1)
 
 
 def _pole_graft_pieces(catalog: dict, pole: dict) -> list[ShellPiece]:
@@ -190,11 +257,9 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     core = [p for p in (pole, base_cover, arm, fixture) if p]
     if not core:
         return None
-    missing = [
-        p["id"]
-        for p in core
-        if not (has_shell(p["id"]) or (p is pole and has_shell(_POLE_SOURCE_ID)))
-    ]
+    # The pole is generated from catalog dimensions, so it never needs a shell
+    # file; every other core part does.
+    missing = [p["id"] for p in core if p is not pole and not has_shell(p["id"])]
     if missing:
         return None
 
@@ -202,8 +267,17 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     pieces: list[ShellPiece] = []
 
     if pole:
-        v, t = _pole_shell(pole)
-        pieces.append(ShellPiece("Pole", v, t))
+        v, t = _pole_shell(catalog, cfg, pole)
+        pieces.append(ShellPiece("Pole", v, t, kind="pole"))
+        chosen_wall = (
+            _spec_codes(((getattr(cfg, "specOptions", None) or {}).get("pole") or {}).get("wall-thickness"))
+            or [None]
+        )[0]
+        if not chosen_wall:
+            warnings.append(
+                f"pole wall not specified - modeled at the sheet's thinnest wall "
+                f"({_WALL_DEFAULT_CODE}); wall resolves at order entry"
+            )
         pieces.extend(_pole_graft_pieces(catalog, pole))
 
         if base_cover:
@@ -296,6 +370,57 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     if not pieces:
         return None
     return ShellAssembly(pieces=pieces, warnings=warnings)
+
+
+def shell_dims(shells: ShellAssembly) -> dict:
+    """Dimensions measured from the REAL castings (Phase 0.17, Tyler 8/20:
+    "use the casting information").
+
+    The kit's numbers came from the parametric placeholders, so e.g. Base
+    Diameter read 1'-3" where the real cast base is 8.63" square. Every value
+    here is measured off the placed shell pieces — the same geometry the STEP
+    and IFC ship — in millimetres, matching AssemblyDims' keys so consumers
+    need no branching.
+
+    `mounting_height` is the fixture's ATTACHMENT point (the top of the
+    fixture piece, where its stem meets the bracket), which is what the pole
+    schedules quote; the luminaire itself hangs below it.
+    """
+    def radial(piece) -> float:
+        return float(np.max(np.sqrt(piece.verts[:, 0] ** 2 + piece.verts[:, 2] ** 2)))
+
+    def by(prefix: str):
+        return [p for p in shells.pieces if p.name.startswith(prefix)]
+
+    out: dict = {}
+    all_y = np.concatenate([p.verts[:, 1] for p in shells.pieces])
+    out["overall_height_mm"] = float(all_y.max()) * 1000.0
+    poles = by("Pole")
+    shaft = [p for p in poles if p.name == "Pole"]
+    if shaft:
+        out["pole_height_mm"] = float(shaft[0].verts[:, 1].max()) * 1000.0
+    fixtures = by("Fixture")
+    if fixtures:
+        out["mounting_height_mm"] = float(
+            max(p.verts[:, 1].max() for p in fixtures)
+        ) * 1000.0
+    arms = by("Arm")
+    if arms:
+        out["arm_reach_mm"] = float(max(radial(p) for p in arms)) * 1000.0
+    # Base size: the widest thing at the foundation — the base cover when one
+    # is chosen (with its extender when stacked), else the cast base itself.
+    # Measured as BOUNDING WIDTH, not 2x max radius: the standard base is a
+    # SQUARE casting with bolt tabs, so a radial measure reports its corner
+    # span (11.35 in) instead of the 8.63 in width the drawing calls out.
+    # A round cover is unaffected — its width IS its diameter.
+    base_candidates = by("Base Cover") + by("Clamshell") + by("Pole Base")
+    if base_candidates:
+        width = 0.0
+        for piece in base_candidates:
+            v = piece.verts
+            width = max(width, float(v[:, 0].max() - v[:, 0].min()), float(v[:, 2].max() - v[:, 2].min()))
+        out["base_diameter_mm"] = width * 1000.0
+    return out
 
 
 def _get(inst, key: str, default):
