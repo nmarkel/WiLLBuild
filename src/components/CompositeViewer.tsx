@@ -9,6 +9,7 @@ import {
   focusBox,
   resolveAssemblyLayout,
   pointInLayout,
+  projectOffset,
   rotateY,
   type FocusTarget,
 } from '../lib/composite'
@@ -18,7 +19,16 @@ import { displayArmName, displayPartName } from '../lib/display'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
 import { useWheelZoom } from '../lib/wheelZoom'
 import { useRenderManifest, renderUrl } from '../lib/renders'
-import { compositeToBlob, nightLight, snapshotAnchors, SNAPSHOT_HEIGHT, SNAPSHOT_WIDTH } from '../lib/snapshot'
+import {
+  compositeToBlob,
+  groundAspect,
+  groundToStage,
+  nightLight,
+  snapshotAnchors,
+  SNAPSHOT_HEIGHT,
+  SNAPSHOT_WIDTH,
+} from '../lib/snapshot'
+import { colorTempCode, distributionCode, lightRgba } from '../lib/distribution'
 import { RenderFallback } from './RenderFallback'
 import { sceneBackdrop } from './ScenePicker'
 import type { Scene } from '../lib/url'
@@ -514,6 +524,11 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       compositeToBlob(layout, {
         night,
         pxPerMeterY: manifest.rig.pxPerMeterY,
+        // The exported PNG shows the same beam shape and colour as the viewer,
+        // not the defaults.
+        distribution: distributionCode(config),
+        colorTemp: colorTempCode(config),
+        projectGround,
         // A pole-less partial preview floats — the silhouette has no ground
         // line to stand on, so the snapshot drops it too (matches the viewer).
         // A ground-mounted product (bollard) stands on the ground by itself.
@@ -524,7 +539,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       }),
     )
     return () => registerSnapshot(null)
-  }, [layout, manifest, night, showScale, config.pole, config.fixture, catalog, registerSnapshot, setSnapshotAnchors])
+  }, [layout, manifest, night, showScale, config, catalog, registerSnapshot, setSnapshotAnchors])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     // Presses on the viewer's own controls (rotate/zoom/reset) must stay
@@ -631,7 +646,29 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // simulation (see the disclaimer in App.tsx).
   // One glow per fixture — twin/triple/quad light from every arm, not just one.
   const lightPoints = layout.lightPxs ?? (layout.lightPx ? [layout.lightPx] : [])
-  const lights = night ? lightPoints.map((p) => nightLight(p, layout.origin[1], pxPerMeterY)) : []
+  // The beam takes the shape of the distribution the customer picked (Tyler
+  // 8/20) — 5M when nothing is chosen — and the footprint's pole-side edge sits
+  // on the ground line, so the pattern reads as thrown AWAY from the pole.
+  const distribution = distributionCode(config)
+  // Colour follows the Color Temp column (Tyler 8/20), 5000K by default.
+  const temp = colorTempCode(config)
+  // A plain function, NOT a useCallback: this sits after the early return for a
+  // missing render, and a hook below a conditional return breaks React's hook
+  // order — it crashed the viewer outright the moment the fallback path ran.
+  const projectGround = (offset: [number, number, number]) => projectOffset(manifest, offset)
+  const groundPlaneAspect = groundAspect(projectGround)
+  const lights = night
+    ? lightPoints.map((p) =>
+        nightLight(
+          p,
+          layout.origin[1],
+          pxPerMeterY,
+          distribution,
+          layout.origin[0],
+          groundPlaneAspect,
+        ),
+      )
+    : []
 
   // Pin the product's ground line (layout.origin) to the shared horizon so its
   // base + contact shadow land on every backdrop's ground plane. transform-
@@ -755,14 +792,44 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
 
         {lights.map((light, i) => (
           <div key={`pool-${i}`}>
+            {/* The spec sheet's own isolux contours, outermost first, each a
+                little stronger than the last — the stack is the falloff. They
+                are projected through the rig's ground map, the same one the
+                compass ring uses, so the light lies on the compass's plane. */}
+            {light.bands.length > 0 && (
+              <svg
+                className="composite-light-footprint"
+                width={layout.width}
+                height={layout.height}
+                viewBox={`0 0 ${layout.width} ${layout.height}`}
+                aria-hidden
+              >
+                {light.bands.map((band) => (
+                  <polygon
+                    key={band.fc}
+                    points={groundToStage(band, [light.pool.x, light.pool.y], projectGround)
+                      .map(([x, y]) => `${x},${y}`)
+                      .join(' ')}
+                    fill={lightRgba(temp, 'wash', band.weight)}
+                  />
+                ))}
+              </svg>
+            )}
             <div
               className="composite-light-pool"
-              style={{ left: light.pool.x, top: light.pool.y, width: light.pool.rx * 2, height: light.pool.ry * 2 }}
+              style={{
+                left: light.pool.x,
+                top: light.pool.y,
+                width: light.pool.rx * 2,
+                height: light.pool.ry * 2,
+                background: `radial-gradient(closest-side, ${lightRgba(temp, 'wash', 0.5)}, ${lightRgba(temp, 'wash', 0)})`,
+              }}
             />
             {light.beam.height > 0 && (
               <div
                 className="composite-light-beam"
                 style={{
+                  background: `linear-gradient(to bottom, ${lightRgba(temp, 'core', 0.22)}, ${lightRgba(temp, 'wash', 0.02)})`,
                   left: light.beam.left,
                   top: light.beam.top,
                   width: light.beam.width,
