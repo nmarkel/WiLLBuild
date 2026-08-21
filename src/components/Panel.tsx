@@ -286,7 +286,8 @@ function StepFinish({
               <div className="ral-cross">
                 <span className="swatch" style={{ background: match.hex }} />
                 <span>
-                  {exact ? 'Showing' : 'Closest match:'} <strong>RAL {match.ral} {match.name}</strong>
+                  {exact ? 'Showing' : 'Closest RAL we finish:'}{' '}
+                  <strong>RAL {match.ral} {match.name}</strong>
                 </span>
                 {!exact && (
                   <button

@@ -239,6 +239,47 @@ export const RAL_CLASSIC: RalColor[] = [
   { ral: '9023', name: 'Pearl dark grey', hex: '#828282' },
 ]
 
+/**
+ * The RAL colours WiLL can actually FINISH — its powder-coat availability
+ * list, supplied by Tyler 8/20 from the coater's catalogue (185 shades).
+ *
+ * `nearestRal` matches only inside this set: proposing a shade WiLL cannot
+ * spray is worse than proposing nothing, because the customer would specify
+ * it and the order would come back for re-selection. Every code here exists
+ * in RAL_CLASSIC above (verified when the list landed); 27 palette entries
+ * are deliberately NOT finishable and are excluded from matching while
+ * remaining in the table for reference.
+ *
+ * Update this set when the coater's list changes — the palette itself is the
+ * RAL standard and does not move.
+ */
+export const FINISHABLE_RAL: ReadonlySet<string> = new Set([
+  '1000', '1001', '1002', '1003', '1004', '1006', '1007', '1011', '1012', '1013',
+  '1014', '1015', '1016', '1017', '1018', '1019', '1020', '1021', '1023', '1024',
+  '1027', '1028', '1032', '1033', '1034', '1037', '2000', '2001', '2002', '2003',
+  '2004', '2008', '2009', '2010', '2011', '2012', '3000', '3001', '3002', '3003',
+  '3004', '3005', '3007', '3009', '3011', '3013', '3014', '3015', '3017', '3018',
+  '3020', '3022', '3027', '3028', '3031', '4001', '4002', '4004', '4005', '4006',
+  '4008', '4009', '4010', '5000', '5001', '5002', '5003', '5004', '5005', '5007',
+  '5008', '5009', '5010', '5011', '5012', '5013', '5014', '5015', '5017', '5018',
+  '5019', '5020', '5021', '5022', '5023', '5024', '6000', '6001', '6002', '6003',
+  '6004', '6005', '6006', '6007', '6008', '6009', '6010', '6011', '6012', '6013',
+  '6014', '6015', '6016', '6017', '6018', '6019', '6020', '6021', '6022', '6024',
+  '6025', '6026', '6027', '6028', '6029', '6032', '6034', '6037', '7000', '7001',
+  '7002', '7003', '7004', '7005', '7006', '7008', '7009', '7010', '7011', '7012',
+  '7013', '7015', '7016', '7021', '7022', '7023', '7024', '7026', '7030', '7031',
+  '7032', '7033', '7034', '7035', '7036', '7037', '7038', '7039', '7040', '7042',
+  '7043', '7044', '7045', '7046', '7047', '8000', '8001', '8002', '8003', '8004',
+  '8007', '8008', '8011', '8012', '8014', '8015', '8016', '8017', '8019', '8022',
+  '8023', '8024', '8025', '8028', '9001', '9002', '9003', '9004', '9005', '9010',
+  '9011', '9016', '9017', '9018', '9022',
+])
+
+/** The finishable subset, in palette order. */
+export function finishableRal(): RalColor[] {
+  return RAL_CLASSIC.filter((c) => FINISHABLE_RAL.has(c.ral))
+}
+
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace('#', '')
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]
@@ -262,11 +303,12 @@ function rgbToLab([r, g, b]: [number, number, number]): [number, number, number]
 
 /** The closest RAL Classic shade to a hex color (CIE76 ΔE in Lab). */
 export function nearestRal(hex: string): RalColor {
-  if (!/^#?[0-9a-fA-F]{6}$/.test(hex)) return RAL_CLASSIC[0]
+  if (!/^#?[0-9a-fA-F]{6}$/.test(hex)) return finishableRal()[0]
   const target = rgbToLab(hexToRgb(hex.startsWith('#') ? hex : `#${hex}`))
-  let best = RAL_CLASSIC[0]
+  const candidates = finishableRal()
+  let best = candidates[0]
   let bestD = Infinity
-  for (const c of RAL_CLASSIC) {
+  for (const c of candidates) {
     const lab = rgbToLab(hexToRgb(c.hex))
     const d =
       (lab[0] - target[0]) ** 2 + (lab[1] - target[1]) ** 2 + (lab[2] - target[2]) ** 2

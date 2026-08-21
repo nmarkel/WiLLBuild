@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { RAL_CLASSIC, nearestRal } from './ral'
+import { FINISHABLE_RAL, RAL_CLASSIC, finishableRal, nearestRal } from './ral'
 
 // Phase 0.17 (Tyler 8/19): the live RAL cross-reference under the custom
 // color picker. These pins hold the matcher to obviously-right answers so a
@@ -32,5 +32,31 @@ describe('nearestRal', () => {
     }
     // No duplicate RAL numbers.
     expect(new Set(RAL_CLASSIC.map((c) => c.ral)).size).toBe(RAL_CLASSIC.length)
+  })
+})
+
+// Phase 0.18 (Tyler 8/20): matching is restricted to what WiLL can SPRAY.
+describe('finishable-only matching', () => {
+  it('carries the coater list and every code exists in the palette', () => {
+    expect(FINISHABLE_RAL.size).toBe(185)
+    const palette = new Set(RAL_CLASSIC.map((c) => c.ral))
+    for (const code of FINISHABLE_RAL) expect(palette.has(code), `RAL ${code}`).toBe(true)
+    expect(finishableRal()).toHaveLength(FINISHABLE_RAL.size)
+  })
+
+  it('never proposes a shade WiLL cannot finish', () => {
+    // Sweep the cube: every match must be finishable, whatever the input.
+    for (let r = 0; r < 256; r += 51)
+      for (let g = 0; g < 256; g += 51)
+        for (let b = 0; b < 256; b += 51) {
+          const hex = `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`
+          expect(FINISHABLE_RAL.has(nearestRal(hex).ral), hex).toBe(true)
+        }
+  })
+
+  it('excludes a palette colour the coater does not carry', () => {
+    // RAL 9006 White aluminium is in the RAL standard but not on the list.
+    expect(FINISHABLE_RAL.has('9006')).toBe(false)
+    expect(nearestRal('#A5A5A5').ral).not.toBe('9006')
   })
 })
