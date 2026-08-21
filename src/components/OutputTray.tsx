@@ -86,7 +86,13 @@ export const DELIVERABLE_DEFS: DeliverableDef[] = [
   {
     format: 'dxf',
     title: '2D Drawing',
-    formatLabel: 'DXF', // may be augmented at render time
+    // Committed to DXF (Tyler 8/20). The card used to read 'DXF · DWG on
+    // request' whenever the service had no DWG adapter, which promised a
+    // channel that does not exist — nothing recorded the request, so no one at
+    // WiLL ever heard it. DWG is one un-baked binary on the server (ODA File
+    // Converter, docs/DEPLOY.md), not a bespoke service; the API still takes
+    // formats: ['dwg'] when that binary is present.
+    formatLabel: 'DXF',
     audience: 'For your drawings',
   },
   {
@@ -181,20 +187,12 @@ interface DeliverableCardProps {
   def: DeliverableDef
   available: boolean
   state: CardState
-  availFormats: Set<string>
-  /** Effective format to request — may differ from def.format (e.g. dwg replaces dxf). */
-  requestFormat: OutputFormat
   onRequest: (format: OutputFormat) => void
 }
 
-function DeliverableCard({ def, available, state, availFormats, requestFormat, onRequest }: DeliverableCardProps) {
+function DeliverableCard({ def, available, state, onRequest }: DeliverableCardProps) {
   const disabled = !available || state.phase === 'working'
-
-  // Build the format label — 2D Drawing shows DWG when the service provides it, DXF otherwise.
-  let formatLabel = def.formatLabel
-  if (def.format === 'dxf') {
-    formatLabel = availFormats.has('dwg') ? 'DWG' : 'DXF · DWG on request'
-  }
+  const formatLabel = def.formatLabel
 
   // Derive display state
   const isWorking = state.phase === 'working'
@@ -215,7 +213,7 @@ function DeliverableCard({ def, available, state, availFormats, requestFormat, o
       disabled={disabled}
       onClick={() => {
         if (available) {
-          onRequest(requestFormat)
+          onRequest(def.format)
         }
       }}
     >
@@ -435,26 +433,20 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
         {DELIVERABLE_DEFS.filter(
           (def) => !allowedFormats || allowedFormats.includes(def.format),
         ).map((def) => {
-          // For the 2D Drawing card: request dwg when available, dxf otherwise.
-          const requestFormat: OutputFormat =
-            def.format === 'dxf' && availFormats.has('dwg') ? 'dwg' : def.format
-          const cardKey = requestFormat
-          const available = availFormats.has(requestFormat)
+          const available = availFormats.has(def.format)
           return (
             <DeliverableCard
-              key={cardKey}
+              key={def.format}
               def={def}
               available={available}
-              state={getCardState(cardKey)}
-              availFormats={availFormats}
-              requestFormat={requestFormat}
+              state={getCardState(def.format)}
               onRequest={requestDelivery}
             />
           )
         })}
       </div>
 
-      {/* Warnings from the geometry service (e.g. DWG adapter missing) */}
+      {/* Warnings from the geometry service (e.g. a dimension modelled at a default) */}
       {warnings.length > 0 && (
         <p className="tray-warnings">{warnings.join(' · ')}</p>
       )}

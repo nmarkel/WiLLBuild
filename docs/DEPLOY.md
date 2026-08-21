@@ -139,9 +139,18 @@ the geometry service instead of falling back to degraded mode.
 
 ## Known Limitations / Out of Scope This Pass
 
-### DWG output (ODA File Converter) — Phase 0.7: now the DEFAULT 2D deliverable
+### DWG output (ODA File Converter) — the 2D deliverable is DXF (Tyler 8/20)
 
-DWG is the preferred 2D deliverable; DXF is the fallback. DWG export requires
+**The tray ships DXF and says DXF.** Phase 0.7 made DWG the preferred 2D
+deliverable and the card advertised `DXF · DWG on request` whenever the server
+had no ODA binary — which was every deployment, and the "request" reached
+nobody: no lead record, no line in the quote. The card now requests `dxf` and
+labels it `DXF`, full stop. Turning DWG back on is a deliberate edit to
+`DELIVERABLE_DEFS` in `src/components/OutputTray.tsx` AFTER the runbook below
+lands the binary — not something that flips itself based on `/health`.
+
+The service side is untouched: `POST /generate` with `formats: ["dwg"]` still
+produces a DWG wherever ODA is installed. DWG export requires
 the proprietary **ODA File Converter** binary. It is a **FREE download but
 requires an ODA account**, so it is NOT on apt/Homebrew and cannot be fetched
 anonymously at Docker build time. Server behaviour:
@@ -151,9 +160,8 @@ anonymously at Docker build time. Server behaviour:
   (DXF stays available as the fallback file).
 - **ODA absent** → `dwg` is not registered, `/health` omits it, and a request
   for `dwg` still returns 200 with the DXF plus the warning
-  `"DWG skipped: ODA File Converter not installed"`. The frontend download tray
-  already prefers `dwg` when `/health` advertises it and degrades gracefully
-  otherwise.
+  `"DWG skipped: ODA File Converter not installed"`. The frontend never asks
+  for `dwg`, so it never sees this warning.
 
 The Dockerfile bakes in everything ODA needs on debian-slim **except the binary
 itself** (xvfb for headless, Qt5 runtime, X11/xcb libs, fontconfig,

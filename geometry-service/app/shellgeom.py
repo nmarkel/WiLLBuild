@@ -243,14 +243,145 @@ def _pole_cylinder(pole: dict) -> CylinderSpec | None:
     return CylinderSpec(radius_m=float(r_top), y0_m=_POLE_CROP_M, y1_m=top)
 
 
-def _pole_graft_pieces(catalog: dict, pole: dict) -> list[ShellPiece]:
-    """The pole's own hardware: the standard base at the origin and the
-    hand-hole frame at the cover's centre — the same plan the render rig
-    bakes (poleGraftPlan in scripts/render-rig/generate.mjs)."""
+# ---------------------------------------------------------------------------
+# Anchor base (Tyler 8/20)
+# ---------------------------------------------------------------------------
+
+#: The standard anchor base, per pole base OD, from the pole spec sheet's own
+#: "Designation & Dimensional Information (Anchor Base)" table
+#: (`willstudio-rsax-deco-poles.pdf` page 5, Rev. V08182026):
+#:
+#:   OD   bolt circle on centre   plate square x thick   bolt dia x length x hook   projection
+#:   4"   9.25"                   8.625 x 0.75           0.63 (C) / 0.75 x 17 x 3   2.75"
+#:   5"   8.375 - 10.375          10.25 x 0.88           0.75 x 17.00 x 3.00        3.50"
+#:   6"   9.625 - 11.375          11 x 1                 1.00 x 36.00 x 4.00        3.50"
+#:
+#: The 5" and 6" bolt circles are RANGES — those bases have slotted ears so one
+#: casting fits several foundations — so the midpoint is modelled and the
+#: warning says so rather than implying a single drilled circle.
+_ANCHOR_BASE_BY_OD_IN = {
+    4.0: {"circle_in": (9.25, 9.25), "bolt_in": {"C": 0.63, "D": 0.75, "E": 0.75}, "projection_in": 2.75},
+    5.0: {"circle_in": (8.375, 10.375), "bolt_in": {"D": 0.75, "E": 0.75}, "projection_in": 3.50},
+    6.0: {"circle_in": (9.625, 11.375), "bolt_in": {"D": 1.00, "E": 1.00}, "projection_in": 3.50},
+}
+
+#: Design codes: RSAA is the anchor-base pole, RSAD the embedded (direct
+#: burial) one. An embedded pole has no anchor base at all — it is set in
+#: concrete — so it gets neither the base casting nor bolts.
+_ANCHOR_BASE_DESIGNS = ("RSAA",)
+_ANCHOR_BOLT_SEGMENTS = 16
+
+
+def _pole_codes(cfg, pole: dict) -> dict:
+    """The pole's ordering codes in effect, falling back to the part's own."""
+    chosen = (getattr(cfg, "specOptions", None) or {}).get("pole") or {}
+    design = (_spec_codes(chosen.get("design")) or [pole.get("designCode") or ""])[0]
+    return {
+        "design": design,
+        # Base Type: SB = Standard Base, CB = Custom Base. Standard is the
+        # default the sheet's own example SKU uses.
+        "base_type": (_spec_codes(chosen.get("base-type")) or ["SB"])[0],
+        # AB = includes anchor bolts, LAB = less anchor bolts.
+        "anchor_bolts": (_spec_codes(chosen.get("anchor-bolts")) or ["AB"])[0],
+        "wall": (_spec_codes(chosen.get("wall-thickness")) or [_WALL_DEFAULT_CODE])[0],
+    }
+
+
+def has_anchor_base(cfg, pole: dict) -> bool:
+    """Whether this pole is bolted to a foundation rather than embedded."""
+    codes = _pole_codes(cfg, pole)
+    return codes["design"] in _ANCHOR_BASE_DESIGNS and codes["base_type"] == "SB"
+
+
+def _cylinder_mesh(cx: float, cz: float, radius: float, y0: float, y1: float):
+    """A closed capped cylinder on the vertical axis. numpy only, like the tube."""
+    n = _ANCHOR_BOLT_SEGMENTS
+    ang = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
+    cos, sin = np.cos(ang), np.sin(ang)
+    bottom = np.stack([cx + radius * cos, np.full(n, y0), cz + radius * sin], axis=1)
+    top = np.stack([cx + radius * cos, np.full(n, y1), cz + radius * sin], axis=1)
+    verts = np.vstack([bottom, top, [[cx, y0, cz]], [[cx, y1, cz]]])
+    c_bottom, c_top = 2 * n, 2 * n + 1
+    tris = []
+    for i in range(n):
+        j = (i + 1) % n
+        tris.append((i, n + i, n + j))
+        tris.append((i, n + j, j))
+        tris.append((c_bottom, j, i))
+        tris.append((c_top, n + i, n + j))
+    return verts, np.asarray(tris, dtype=np.int64)
+
+
+def _anchor_bolt_pieces(cfg, pole: dict, warnings: list[str]) -> list[ShellPiece]:
+    """The four anchor bolts standing proud of the base, or nothing.
+
+    Tyler 8/20: the anchor base belongs in the model when it is SB. The base
+    CASTING already ships as a shell (its 8.61 in square footprint matches the
+    sheet's 8.625 in plate); what was missing is the bolt circle, which is the
+    feature a contractor sets the foundation to. The bolts sit on the
+    DIAGONALS — the sheet gives both a 9.25 in circle and a 6.54 in "bolt
+    square on centre", and 6.54 x sqrt(2) = 9.25, so the two describe the same
+    four positions.
+    """
+    codes = _pole_codes(cfg, pole)
+    if codes["design"] not in _ANCHOR_BASE_DESIGNS:
+        return []  # embedded pole: no anchor base at all
+    if codes["base_type"] != "SB":
+        warnings.append(
+            "custom base (CB): anchor base geometry is confirmed at order entry, "
+            "so the model shows the pole without one"
+        )
+        return []
+    if codes["anchor_bolts"] == "LAB":
+        return []  # less anchor bolts: the plate ships, the bolts do not
+
+    od_in = float(pole.get("diameterIn") or 4.0)
+    spec = _ANCHOR_BASE_BY_OD_IN.get(od_in)
+    if spec is None:
+        warnings.append(f"no anchor base table for a {od_in:g} in pole — bolts omitted")
+        return []
+
+    lo, hi = spec["circle_in"]
+    circle_in = (lo + hi) / 2.0
+    if hi > lo:
+        warnings.append(
+            f"{od_in:g} in base has an adjustable bolt circle ({lo:g}-{hi:g} in); "
+            f"modelled at {circle_in:g} in"
+        )
+    bolt_in = spec["bolt_in"].get(codes["wall"]) or next(iter(spec["bolt_in"].values()))
+
+    r = circle_in * _IN_TO_M / 2.0
+    radius = bolt_in * _IN_TO_M / 2.0
+    top = spec["projection_in"] * _IN_TO_M
+    verts, tris = [], []
+    for deg in (45.0, 135.0, 225.0, 315.0):
+        rad = np.deg2rad(deg)
+        v, t = _cylinder_mesh(r * np.cos(rad), r * np.sin(rad), radius, 0.0, top)
+        tris.append(t + sum(len(x) for x in verts))
+        verts.append(v)
+    return [
+        ShellPiece("Anchor Bolts", np.vstack(verts), np.vstack(tris))
+    ]
+
+
+def _pole_graft_pieces(
+    catalog: dict, pole: dict, cfg=None, warnings: list[str] | None = None
+) -> list[ShellPiece]:
+    """The pole's own hardware: the anchor base at the origin and the hand-hole
+    frame at the cover's centre — the same plan the render rig bakes
+    (poleGraftPlan in scripts/render-rig/generate.mjs), plus the bolt circle.
+
+    The base is gated on the DESIGN code (Tyler 8/20): an RSAD embedded pole is
+    set in concrete and has no anchor base, and shipping the casting on one
+    would draw hardware the customer is not buying.
+    """
     pieces: list[ShellPiece] = []
-    if has_shell("willstudio-pole-base-standard"):
+    anchored = cfg is None or has_anchor_base(cfg, pole)
+    if anchored and has_shell("willstudio-pole-base-standard"):
         v, t = load_shell("willstudio-pole-base-standard")
         pieces.append(ShellPiece("Pole Base", v, t))
+    if cfg is not None:
+        pieces.extend(_anchor_bolt_pieces(cfg, pole, warnings if warnings is not None else []))
     # Cover box child (proud of the shaft, position x > 0) anchors the frame.
     children = (pole.get("placeholder") or {}).get("children") or []
     cover = next(
@@ -315,7 +446,7 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
                 f"pole wall not specified - modeled at the sheet's thinnest wall "
                 f"({_WALL_DEFAULT_CODE}); wall resolves at order entry"
             )
-        pieces.extend(_pole_graft_pieces(catalog, pole))
+        pieces.extend(_pole_graft_pieces(catalog, pole, cfg, warnings))
 
         if base_cover:
             socket = _socket_to(pole, base_cover) or [0.0, 0.0, 0.0]

@@ -35,6 +35,7 @@ from ezdxf.colors import rgb2int
 from app.naming import base_name
 from app.adapters._titleblock import BLOCK_X, GUNMETAL, draw as draw_titleblock
 
+from ._drawing_sheet import pin_document, try_shell_sheet
 from .base import Adapter, GenContext
 
 if TYPE_CHECKING:
@@ -57,6 +58,18 @@ class DxfAdapter:
         return True
 
     def generate(self, ctx: GenContext) -> list[Path]:
+        # Phase 0.18 (Tyler 8/20): when every core part has a gated shell, the
+        # drawing is the FOUR-VIEW C-size sheet built from that shell assembly
+        # — the same geometry the IFC and STEP ship (0 deg / 90 deg / plan /
+        # isometric, inches, real layers, WiLL's own title block). Shared with
+        # the projection route (see try_shell_sheet). The legacy routes below
+        # stay for configs without full shell coverage; they draw the parametric
+        # placeholders, which is why the base cover measured 14.96 in there
+        # against the real casting's 17.02 in.
+        shell_sheet = try_shell_sheet(ctx)
+        if shell_sheet is not None:
+            return [shell_sheet]
+
         if ctx.assembly is None:
             raise RuntimeError("DxfAdapter requires ctx.assembly")
 
@@ -74,6 +87,7 @@ class DxfAdapter:
             return DxfProjectionAdapter().generate(ctx)
 
         doc = ezdxf.new(dxfversion="R2010")
+        pin_document(doc)  # no wall clock in generated artifacts
         msp = doc.modelspace()
 
         _draw_silhouette(msp, ctx)

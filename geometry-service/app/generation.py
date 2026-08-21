@@ -404,7 +404,10 @@ def generate_files(
                         }
                     )
             except Exception as exc:  # noqa: BLE001
-                warnings.append(f"{fmt}: {exc}")
+                # A bare assert or an argless raise str()s to "", which shipped
+                # `"dxf: "` as the only trace of a completely failed adapter
+                # (found 0.18) — always name the exception type.
+                warnings.append(f"{fmt}: {exc or type(exc).__name__}")
 
         warnings.extend(ctx.warnings)
 

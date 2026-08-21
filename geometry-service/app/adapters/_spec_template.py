@@ -474,10 +474,12 @@ def _draw_finish_block(
     pdf.cell(width, 5.5, _latin1(f"{finish_name}{ral_text}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln()
 
-    # Phase 0.11 (Workstream A): when the components are NOT all one colour, a
-    # single assembly-wide finish line is actively misleading — break it out per
-    # component.  An all-one-finish assembly is byte-identical to before.
-    if summary.get("per_slot_finish"):
+    # Phase 0.18 (Tyler 8/20): ALWAYS list the finish per component. It is
+    # elected independently for each one, so a single assembly-wide line
+    # under-reports the configuration even when the colours happen to match
+    # today — and a reader cannot tell which case they are looking at.
+    # (0.11 broke it out only when the colours differed.)
+    if True:
         slot_labels = {
             "fixture": "Fixture",
             "arm": "Arm",

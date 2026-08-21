@@ -100,9 +100,9 @@ def _build_summary_txt(ctx: GenContext) -> str:
         # No published ordering sheet -> no line at all, never a guessed code.
         if number:
             lines.append(f"              Part No: {number}")
-        # Phase 0.11 (A): per-component finish, listed only when the assembly
-        # is not all one colour (an all-one-finish bundle is unchanged).
-        if ctx.summary.get("per_slot_finish") and part.get("finish"):
+        # Phase 0.18 (Tyler 8/20): ALWAYS per component — finish is elected
+        # independently per slot, so it is called out per slot everywhere.
+        if part.get("finish"):
             lines.append(f"              Finish:  {part['finish']}")
     lines.append("")
 
@@ -112,7 +112,7 @@ def _build_summary_txt(ctx: GenContext) -> str:
     finish_str = finish_name
     if finish_ral:
         finish_str += f"  ({finish_ral})"
-    finish_label = "Base finish" if ctx.summary.get("per_slot_finish") else "Finish"
+    finish_label = "Base finish"  # per-component finishes are listed above
     lines.append(f"{finish_label}: {finish_str}")
     lines.append("")
 
