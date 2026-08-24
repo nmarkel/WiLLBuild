@@ -1,900 +1,921 @@
 {
-  "note": "Phase 0.12 — declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
-  "rules": "Each entry replaces ONE raw column (matched by `rawKey`) with an ordered list of corrected columns. Fractional orderPosition values keep a split column adjacent to its neighbours without renumbering the sheet. No value here is invented: pole columns were lifted verbatim from the reviewed catalog, TEX columns re-partitioned from the raw parse.",
-  "products": {
-    "willstudio-decorative-aluminum-light-poles": {
-      "reason": "The decorative-pole sheet's two-line 'Length (Above Grade)' header makes nearest-centroid cell assignment bleed Length and Wall Thickness cells into neighbouring columns. Splits below match the sheet as printed.",
-      "replace": [
+ "note": "Phase 0.12 — declarative corrections applied to the machine-parsed spec-sheet columns by scripts/merge-spec-options.mjs, AFTER it injects the raw docs/spec-options.json output. Exists because parse_specs.py assigns ordering-table cells by PDF x-coordinate, which merges adjacent columns on sheets with two-line headers (see docs/part-numbers.md, \"Known spec-parse artifacts\"). Before this file those fixes were edited straight into public/catalog.json, so re-running the merge script silently reverted them and quietly corrupted pole part numbers. Corrections live here so the merge stays idempotent against the CORRECTED state, not just against its own raw source.",
+ "rules": "Each entry replaces ONE raw column (matched by `rawKey`) with an ordered list of corrected columns. Fractional orderPosition values keep a split column adjacent to its neighbours without renumbering the sheet. No value here is invented: pole columns were lifted verbatim from the reviewed catalog, TEX columns re-partitioned from the raw parse.",
+ "products": {
+  "willstudio-decorative-aluminum-light-poles": {
+   "reason": "The decorative-pole sheet's two-line 'Length (Above Grade)' header makes nearest-centroid cell assignment bleed Length and Wall Thickness cells into neighbouring columns. Splits below match the sheet as printed.",
+   "replace": [
+    {
+     "rawKey": "design",
+     "why": "Raw `design` carried 12 values: the 3 real design codes plus leaked Length cells and a stray Wall Thickness 'Custom'. Split into the trimmed design column and the real Length column that buildPartNumber resolves from part.heightFt.",
+     "columns": [
+      {
+       "key": "design",
+       "label": "Design",
+       "group": "ordering",
+       "orderPosition": 1,
+       "values": [
         {
-          "rawKey": "design",
-          "why": "Raw `design` carried 12 values: the 3 real design codes plus leaked Length cells and a stray Wall Thickness 'Custom'. Split into the trimmed design column and the real Length column that buildPartNumber resolves from part.heightFt.",
-          "columns": [
-            {
-              "key": "design",
-              "label": "Design",
-              "group": "ordering",
-              "orderPosition": 1,
-              "values": [
-                {
-                  "code": "RSAA",
-                  "label": "Round Straight Aluminum Anchor Base Light Pole",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "RSAD",
-                  "label": "Round Straight Aluminum Embedded Light Pole",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "C",
-                  "label": "Custom",
-                  "buildable": null,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "length",
-              "label": "Length",
-              "group": "ordering",
-              "orderPosition": 1.5,
-              "values": [
-                {
-                  "code": "8",
-                  "label": "8'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "10",
-                  "label": "10'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "12",
-                  "label": "12'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "14",
-                  "label": "14'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "15",
-                  "label": "15'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "16",
-                  "label": "16'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "18",
-                  "label": "18'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "20",
-                  "label": "20'",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
+         "code": "RSAA",
+         "label": "Round Straight Aluminum Anchor Base Light Pole",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         },
         {
-          "rawKey": "length-pole-base-pole-top-wall-od-od-thickness",
-          "why": "Three sheet columns merged into one by the header clustering; split back into pole diameter and wall thickness.",
-          "columns": [
-            {
-              "key": "pole-diameter",
-              "label": "Pole Diameter",
-              "group": "ordering",
-              "orderPosition": 2,
-              "values": [
-                {
-                  "code": "4040",
-                  "label": "4\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "5050",
-                  "label": "5\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "6060",
-                  "label": "6\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "wall-thickness",
-              "label": "Wall Thickness",
-              "group": "ordering",
-              "orderPosition": 2.5,
-              "values": [
-                {
-                  "code": "C",
-                  "label": "0.125\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "D",
-                  "label": "0.188\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "E",
-                  "label": "0.250\"",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
+         "code": "RSAD",
+         "label": "Round Straight Aluminum Embedded Light Pole",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         },
         {
-          "rawKey": "anchor-bolts-base-type-finish-type",
-          "why": "Three sheet columns merged into one; split back so finish-type (FP/AN) resolves from the picked finish.",
-          "columns": [
-            {
-              "key": "anchor-bolts",
-              "label": "Anchor Bolts",
-              "group": "ordering",
-              "orderPosition": 2.6,
-              "values": [
-                {
-                  "code": "AB",
-                  "label": "Anchor Bolts Included",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "base-type",
-              "label": "Base Type",
-              "group": "ordering",
-              "orderPosition": 2.7,
-              "values": [
-                {
-                  "code": "SB",
-                  "label": "Standard Base",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "finish-type",
-              "label": "Finish Type",
-              "group": "ordering",
-              "orderPosition": 2.8,
-              "values": [
-                {
-                  "code": "FP",
-                  "label": "Finish Painted",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "code": "AN",
-                  "label": "Anodized",
-                  "buildable": true,
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "rawKey": "options",
-          "why": "Tyler 8/12: consolidate the two hand-hole variants (HHUR/HHRR-4/5/6) into one generic line (reinforcement + size resolve at quote) and give every accessory plain-English title+caption copy. The '(Specify Pole Height & Orientation)' boilerplate becomes the explicit `placeable` flag.",
-          "columns": [
-            {
-              "key": "options",
-              "label": "Options",
-              "group": "options-accessories",
-              "orderPosition": 6,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "HHUR",
-                  "label": "Additional Hand Hole",
-                  "mapsTo": null,
-                  "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
-                  "placeable": true,
-                  "resolvesByDiameter": {
-                    "4": "HHUR-4",
-                    "5": "HHUR-5",
-                    "6": "HHUR-6"
-                  },
-                  "placement": {
-                    "minFt": 3.0833333333333335,
-                    "stepIn": 6,
-                    "multi": true,
-                    "minGapFt": 1.5,
-                    "spacingGroup": "shaft-access",
-                    "groupMaxInstances": 2
-                  },
-                  "renderPartId": "willstudio-acc-hand-hole"
-                },
-                {
-                  "buildable": null,
-                  "code": "FSTR",
-                  "label": "Festoon Power Provision",
-                  "mapsTo": null,
-                  "note": "Electrical Component Provision — component & wiring by others",
-                  "placeable": true,
-                  "placement": {
-                    "minFt": 3.0833333333333335,
-                    "stepIn": 6,
-                    "multi": true,
-                    "minGapFt": 1.5,
-                    "spacingGroup": "shaft-access",
-                    "groupMaxInstances": 2
-                  },
-                  "renderPartId": "willstudio-acc-festoon"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "rawKey": "options-2",
-          "why": "Tyler 8/12: consolidate all five coupling variants (pipe/straight thread × sizes) into one generic line; thread type and size resolve at quote.",
-          "columns": [
-            {
-              "key": "options-2",
-              "label": "Options",
-              "group": "options-accessories",
-              "orderPosition": 7,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "CPLX",
-                  "label": "Threaded Coupling",
-                  "mapsTo": null,
-                  "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
-                  "placeable": true,
-                  "placement": {
-                    "minFt": 3,
-                    "stepIn": 6,
-                    "multi": true,
-                    "maxInstances": 3,
-                    "minGapFt": 0.5
-                  },
-                  "renderPartId": "willstudio-acc-coupling"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "rawKey": "accessories",
-          "why": "Tyler 8/12: consolidate the two banner arm kits (24\"/30\" arms resolve at quote from the chosen banner size) and simplify the flag/plant holder copy.",
-          "columns": [
-            {
-              "key": "accessories",
-              "label": "Accessories",
-              "group": "options-accessories",
-              "orderPosition": 8,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "BAX",
-                  "label": "Banner Arm Kit",
-                  "mapsTo": null,
-                  "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
-                  "placeable": true,
-                  "resolvesBySize": {
-                    "18x36": "BA18",
-                    "24x48": "BA24",
-                    "30x60": "BA30"
-                  },
-                  "placement": {
-                    "minFt": 8,
-                    "maxFt": 10,
-                    "defaultFt": 8,
-                    "stepIn": 6
-                  },
-                  "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
-                },
-                {
-                  "buildable": null,
-                  "code": "FH",
-                  "label": "Flag Holder Kit",
-                  "mapsTo": null,
-                  "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
-                  "placeable": true,
-                  "placement": {
-                    "minFt": 8,
-                    "maxFt": 12,
-                    "defaultFt": 10,
-                    "stepIn": 6
-                  },
-                  "renderPartId": "willstudio-acc-flag-holder"
-                },
-                {
-                  "buildable": null,
-                  "code": "PH",
-                  "label": "Plant Holder Kit",
-                  "mapsTo": null,
-                  "note": "A single planter bracket with stainless hardware — field installed",
-                  "placeable": true,
-                  "placement": {
-                    "minFt": 8,
-                    "maxFt": 12,
-                    "defaultFt": 9,
-                    "stepIn": 6
-                  },
-                  "renderPartId": "willstudio-acc-plant-holder"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "rawKey": "fixture-mounting",
-          "why": "CR-OPT-14 (Tyler 8/14): PF Flush Arm Fit requires a D (.188) or E (.250) wall — the flush fit machines into the wall, so the thin C (.125) wall is out. Encoded as a value-level `requires` dependency.",
-          "columns": [
-            {
-              "group": "ordering",
-              "key": "fixture-mounting",
-              "label": "Fixture Mounting",
-              "orderPosition": 5,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "PC",
-                  "label": "Cap Only, No Side",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "PL",
-                  "label": "Open Top, No Cap",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "PF",
-                  "label": "Flush Arm Fit",
-                  "mapsTo": null,
-                  "note": "Needs a D (.188”) or E (.250”) wall",
-                  "requires": {
-                    "wall-thickness": [
-                      "D",
-                      "E"
-                    ]
-                  }
-                },
-                {
-                  "buildable": null,
-                  "code": "D1",
-                  "label": "Drill Single",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "D2",
-                  "label": "Drill 2@180",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "D3",
-                  "label": "Drill 3@120",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "D4",
-                  "label": "Drill 4@90",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "D5",
-                  "label": "Drill 2@90",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "D6",
-                  "label": "Drill 3@90",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P1",
-                  "label": "4” OD x 5” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P2",
-                  "label": "2.38” OD x 4” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P3",
-                  "label": "3.50” OD x 6” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P4",
-                  "label": "4” OD x 6” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P5",
-                  "label": "2.88” OD x 4” Long",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P6",
-                  "label": "2.88” OD x 5” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P7",
-                  "label": "2.38” OD x 5” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "PQ",
-                  "label": "2.38” OD x 12” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "PD",
-                  "label": "3” OD x 3” Long Tenon",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "P9",
-                  "label": "Custom Size Tenon",
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
+         "code": "C",
+         "label": "Custom",
+         "buildable": null,
+         "mapsTo": null,
+         "note": null
         }
-      ]
+       ]
+      },
+      {
+       "key": "length",
+       "label": "Length",
+       "group": "ordering",
+       "orderPosition": 1.5,
+       "values": [
+        {
+         "code": "8",
+         "label": "8'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "10",
+         "label": "10'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "12",
+         "label": "12'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "14",
+         "label": "14'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "15",
+         "label": "15'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "16",
+         "label": "16'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "18",
+         "label": "18'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "20",
+         "label": "20'",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
     },
-    "willstudio-tex-post-top-area": {
-      "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number — see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
-      "replace": [
+    {
+     "rawKey": "length-pole-base-pole-top-wall-od-od-thickness",
+     "why": "Three sheet columns merged into one by the header clustering; split back into pole diameter and wall thickness.",
+     "columns": [
+      {
+       "key": "pole-diameter",
+       "label": "Pole Diameter",
+       "group": "ordering",
+       "orderPosition": 2,
+       "values": [
         {
-          "rawKey": "lumen-output",
-          "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-… (no design), with none it resolved WD-TEX-… (no lumen). Split restores both.",
-          "columns": [
-            {
-              "key": "design",
-              "label": "Design",
-              "group": "ordering",
-              "orderPosition": 1,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "TEX",
-                  "label": "Medium",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "CH",
-                  "label": "Custom",
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "lumen-output",
-              "label": "Lumen Output (Model Nominal Lumens)",
-              "group": "ordering",
-              "orderPosition": 1.5,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "40",
-                  "label": "5,000",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "70",
-                  "label": "9,000",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "80",
-                  "label": "10,000",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "115",
-                  "label": "15,000",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "155",
-                  "label": "19,000",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "CW",
-                  "label": "Custom & Amber",
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
+         "code": "4040",
+         "label": "4\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         },
         {
-          "rawKey": "finish-color-finish-color-spider-mount",
-          "why": "The sheet prints TWO finish columns side by side; the parser zipped them into one 20-value column (each colour twice). Split into Housing and Spider Mount & Accent Line. The sheet requires the accent designation even on side mounts, where the mounting arm matches the housing colour.",
-          "columns": [
-            {
-              "key": "finish-color",
-              "label": "Finish Color (Housing)",
-              "group": "ordering",
-              "orderPosition": 6,
-              "values": [
-                {
-                  "buildable": true,
-                  "code": "NA",
-                  "label": "Nat Alum Silver",
-                  "mapsTo": "silver",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "BK",
-                  "label": "Black",
-                  "mapsTo": "matte-black",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "DB",
-                  "label": "Dark Bronze",
-                  "mapsTo": "statuary-bronze",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "WH",
-                  "label": "White",
-                  "mapsTo": "gloss-white",
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "LG",
-                  "label": "Light Gray",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "SG",
-                  "label": "Slate Gray",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "DG",
-                  "label": "Dark Green",
-                  "mapsTo": "forest-green",
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "DP",
-                  "label": "Dark Platinum",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "GM",
-                  "label": "Graphite Metallic",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "RAL",
-                  "label": "Custom RAL Match",
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            },
-            {
-              "key": "finish-color-accent",
-              "label": "Finish Color (Spider Mount & Accent Line)",
-              "group": "ordering",
-              "orderPosition": 6.5,
-              "values": [
-                {
-                  "buildable": true,
-                  "code": "NA",
-                  "label": "Nat Alum Silver",
-                  "mapsTo": "silver",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "BK",
-                  "label": "Black",
-                  "mapsTo": "matte-black",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "DB",
-                  "label": "Dark Bronze",
-                  "mapsTo": "statuary-bronze",
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "WH",
-                  "label": "White",
-                  "mapsTo": "gloss-white",
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "LG",
-                  "label": "Light Gray",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "SG",
-                  "label": "Slate Gray",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": true,
-                  "code": "DG",
-                  "label": "Dark Green",
-                  "mapsTo": "forest-green",
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "DP",
-                  "label": "Dark Platinum",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "GM",
-                  "label": "Graphite Metallic",
-                  "mapsTo": null,
-                  "note": null
-                },
-                {
-                  "buildable": null,
-                  "code": "RAL",
-                  "label": "Custom RAL Match",
-                  "mapsTo": null,
-                  "note": null
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    "willstudio-gvx-pendant": {
-      "reason": "Tyler's 8/12 config-pass directive (docs/spec-defaults-request.md Request 1): collapse voltage/length variants into generic X-codes that go into the part number as-is (the concrete variant resolves at quote time), simplify labels, and drop 90D from the customer list. Unlike the parse-artifact rules above, these values ARE deliberate simplifications, not sheet transcriptions — provenance is the Tyler directive, pending Puddy's confirmation that the X-code convention is orderable.",
-      "replace": [
-        {
-          "rawKey": "options",
-          "why": "Raw column carried 11 values: 4 cord lengths (WHP3NP/7NP/11NP/15NP), 2 voltage-specific surge suppressors (SRG27710/SRG48010), 3 voltage-specific photocontrols (BPC1/3/4), MPS, and 90D. Collapsed to one line per family with generic X-codes; 90D removed per Tyler.",
-          "columns": [
-            {
-              "key": "options",
-              "label": "Options",
-              "group": "options-accessories",
-              "orderPosition": 8,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "WHPXNP",
-                  "label": "Cord w/o Plug, Stripped Pigtail",
-                  "mapsTo": null,
-                  "note": "Included with your WiLLstudio bracket — 6’ cord w/o plug, stripped pigtail (2’ with the PM1 arm), per the ordering sheet",
-                  "derived": true
-                },
-                {
-                  "buildable": null,
-                  "code": "SRGXXX10",
-                  "label": "10kA Surge Suppressor",
-                  "mapsTo": null,
-                  "note": "We'll match it to your project's voltage",
-                  "resolvesBy": {
-                    "MV": "SRG27710",
-                    "HV": "SRG48010"
-                  }
-                },
-                {
-                  "buildable": null,
-                  "code": "BPCX",
-                  "label": "Button Photocontrol",
-                  "mapsTo": null,
-                  "note": "We'll match it to your project's voltage",
-                  "resolvesBy": {
-                    "MV": "BPC1"
-                  }
-                },
-                {
-                  "buildable": null,
-                  "code": "MPS",
-                  "label": "Motion Sensor",
-                  "mapsTo": null,
-                  "note": "Programmable on/off, dimming & photocontrol — tune it over Bluetooth"
-                }
-              ]
-            }
-          ]
+         "code": "5050",
+         "label": "5\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         },
         {
-          "rawKey": "accessories",
-          "why": "Label simplification only — same three accessories, shorter customer-facing names.",
-          "columns": [
-            {
-              "key": "accessories",
-              "label": "Accessories",
-              "group": "options-accessories",
-              "orderPosition": 9,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "HSS-GVX",
-                  "label": "House Side Shield",
-                  "mapsTo": null,
-                  "note": "Helps control light spill and glare"
-                },
-                {
-                  "buildable": null,
-                  "code": "GFX",
-                  "label": "Wireless DMX Control",
-                  "mapsTo": null,
-                  "note": "Consult factory — we’ll coordinate the details with your quote"
-                },
-                {
-                  "buildable": null,
-                  "code": "GFM",
-                  "label": "Wireless Mesh Control",
-                  "mapsTo": null,
-                  "note": "Consult factory — we’ll coordinate the details with your quote"
-                }
-              ]
-            }
-          ]
+         "code": "6060",
+         "label": "6\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         }
-      ]
-    },
-    "willstudio-decorative-base-covers": {
-      "reason": "Tyler 8/14 (Puddy check D): CLE (Clamshell Base Extender) is an OFFICIAL accessory line on the CL1/CL2/CL3 ordering sheets — and only there, never on the SC1/SC2 spun collars. This rule makes the previously hand-added column regen-proof: apply-spec-option-corrections restores it if it drifts. NOTE the base covers have NO machine-parsed sheet (docs/spec-options.json has no entry for this handle), so their whole options block is curated catalog data — running merge-spec-options.mjs alone still wipes it (documented hazard); this rule protects CLE within the preferred apply-corrections flow.",
-      "replace": [
+       ]
+      },
+      {
+       "key": "wall-thickness",
+       "label": "Wall Thickness",
+       "group": "ordering",
+       "orderPosition": 2.5,
+       "values": [
         {
-          "rawKey": "accessories",
-          "parts": [
-            "bc-cl1-small-clamshell",
-            "bc-cl2-medium-clamshell",
-            "bc-cl3-large-clamshell"
-          ],
-          "why": "CLE appends to the end of the base-cover part number after finish (WP-CL1-4R-BK-CLE). Column captured verbatim from the reviewed catalog.",
-          "columns": [
-            {
-              "key": "accessories",
-              "label": "Accessories",
-              "group": "options-accessories",
-              "orderPosition": 9,
-              "values": [
-                {
-                  "buildable": null,
-                  "code": "CLE",
-                  "label": "Clamshell Base Extender",
-                  "mapsTo": null,
-                  "note": "Extends the base cover downward — shown in the preview when checked",
-                  "renderPartId": "willstudio-acc-clamshell-extender"
-                }
-              ]
-            }
-          ],
-          "append": true
+         "code": "C",
+         "label": "0.125\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "D",
+         "label": "0.188\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "E",
+         "label": "0.250\"",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
         }
-      ]
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "anchor-bolts-base-type-finish-type",
+     "why": "Three sheet columns merged into one; split back so finish-type (FP/AN) resolves from the picked finish.",
+     "columns": [
+      {
+       "key": "anchor-bolts",
+       "label": "Anchor Bolts",
+       "group": "ordering",
+       "orderPosition": 2.6,
+       "values": [
+        {
+         "code": "AB",
+         "label": "Anchor Bolts Included",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      },
+      {
+       "key": "base-type",
+       "label": "Base Type",
+       "group": "ordering",
+       "orderPosition": 2.7,
+       "values": [
+        {
+         "code": "SB",
+         "label": "Standard Base",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      },
+      {
+       "key": "finish-type",
+       "label": "Finish Type",
+       "group": "ordering",
+       "orderPosition": 2.8,
+       "values": [
+        {
+         "code": "FP",
+         "label": "Finish Painted",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "code": "AN",
+         "label": "Anodized",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "options",
+     "why": "Tyler 8/12: consolidate the two hand-hole variants (HHUR/HHRR-4/5/6) into one generic line (reinforcement + size resolve at quote) and give every accessory plain-English title+caption copy. The '(Specify Pole Height & Orientation)' boilerplate becomes the explicit `placeable` flag.",
+     "columns": [
+      {
+       "key": "options",
+       "label": "Options",
+       "group": "options-accessories",
+       "orderPosition": 6,
+       "values": [
+        {
+         "buildable": null,
+         "code": "HHUR",
+         "label": "Additional Hand Hole",
+         "mapsTo": null,
+         "note": "An extra access opening with its own cover — placed wherever you need it. Reinforced version available on request",
+         "placeable": true,
+         "resolvesByDiameter": {
+          "4": "HHUR-4",
+          "5": "HHUR-5",
+          "6": "HHUR-6"
+         },
+         "placement": {
+          "minFt": 3.0833333333333335,
+          "stepIn": 6,
+          "multi": true,
+          "minGapFt": 1.5,
+          "spacingGroup": "shaft-access",
+          "groupMaxInstances": 2
+         },
+         "renderPartId": "willstudio-acc-hand-hole"
+        },
+        {
+         "buildable": null,
+         "code": "FSTR",
+         "label": "Festoon Power Provision",
+         "mapsTo": null,
+         "note": "Electrical Component Provision — component & wiring by others",
+         "placeable": true,
+         "placement": {
+          "minFt": 3.0833333333333335,
+          "stepIn": 6,
+          "multi": true,
+          "minGapFt": 1.5,
+          "spacingGroup": "shaft-access",
+          "groupMaxInstances": 2
+         },
+         "renderPartId": "willstudio-acc-festoon"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "options-2",
+     "why": "Tyler 8/12: consolidate all five coupling variants (pipe/straight thread × sizes) into one generic line; thread type and size resolve at quote.",
+     "columns": [
+      {
+       "key": "options-2",
+       "label": "Options",
+       "group": "options-accessories",
+       "orderPosition": 7,
+       "values": [
+        {
+         "buildable": null,
+         "code": "CPLX",
+         "label": "Threaded Coupling",
+         "mapsTo": null,
+         "note": "A welded-on mounting point for cameras, signs, or receptacles — thread type and size confirmed with your quote. Custom orientation available upon request",
+         "placeable": true,
+         "placement": {
+          "minFt": 3,
+          "stepIn": 6,
+          "multi": true,
+          "maxInstances": 3,
+          "minGapFt": 0.5
+         },
+         "renderPartId": "willstudio-acc-coupling"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "accessories",
+     "why": "Tyler 8/12: consolidate the two banner arm kits (24\"/30\" arms resolve at quote from the chosen banner size) and simplify the flag/plant holder copy.",
+     "columns": [
+      {
+       "key": "accessories",
+       "label": "Accessories",
+       "group": "options-accessories",
+       "orderPosition": 8,
+       "values": [
+        {
+         "buildable": null,
+         "code": "BAX",
+         "label": "Banner Arm Kit",
+         "mapsTo": null,
+         "note": "Available with 18”, 24” and 30” arms — the arm follows your banner size (24” shown in the preview). Wind-shedding fiberglass, for banners up to 17.5 sq ft. Pick your banner size and placement below",
+         "placeable": true,
+         "resolvesBySize": {
+          "18x36": "BA18",
+          "24x48": "BA24",
+          "30x60": "BA30"
+         },
+         "placement": {
+          "minFt": 8,
+          "maxFt": 10,
+          "defaultFt": 8,
+          "stepIn": 6
+         },
+         "disclaimer": "Banner Arm Kit applications need to be reviewed by engineering during the quoting process"
+        },
+        {
+         "buildable": null,
+         "code": "FH",
+         "label": "Flag Holder Kit",
+         "mapsTo": null,
+         "note": "A single flag bracket with stainless hardware — field installed. A 3×5 ft flag is shown in the preview",
+         "placeable": true,
+         "placement": {
+          "minFt": 8,
+          "maxFt": 12,
+          "defaultFt": 10,
+          "stepIn": 6
+         },
+         "renderPartId": "willstudio-acc-flag-holder"
+        },
+        {
+         "buildable": null,
+         "code": "PH",
+         "label": "Plant Holder Kit",
+         "mapsTo": null,
+         "note": "A single planter bracket with stainless hardware — field installed",
+         "placeable": true,
+         "placement": {
+          "minFt": 8,
+          "maxFt": 12,
+          "defaultFt": 9,
+          "stepIn": 6
+         },
+         "renderPartId": "willstudio-acc-plant-holder"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "fixture-mounting",
+     "why": "CR-OPT-14 (Tyler 8/14): PF Flush Arm Fit requires a D (.188) or E (.250) wall — the flush fit machines into the wall, so the thin C (.125) wall is out. Encoded as a value-level `requires` dependency.",
+     "columns": [
+      {
+       "group": "ordering",
+       "key": "fixture-mounting",
+       "label": "Fixture Mounting",
+       "orderPosition": 5,
+       "values": [
+        {
+         "buildable": null,
+         "code": "PC",
+         "label": "Cap Only, No Side",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "PL",
+         "label": "Open Top, No Cap",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "PF",
+         "label": "Flush Arm Fit",
+         "mapsTo": null,
+         "note": "Needs a D (.188”) or E (.250”) wall",
+         "requires": {
+          "wall-thickness": [
+           "D",
+           "E"
+          ]
+         }
+        },
+        {
+         "buildable": null,
+         "code": "D1",
+         "label": "Drill Single",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "D2",
+         "label": "Drill 2@180",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "D3",
+         "label": "Drill 3@120",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "D4",
+         "label": "Drill 4@90",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "D5",
+         "label": "Drill 2@90",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "D6",
+         "label": "Drill 3@90",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P1",
+         "label": "4” OD x 5” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P2",
+         "label": "2.38” OD x 4” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P3",
+         "label": "3.50” OD x 6” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P4",
+         "label": "4” OD x 6” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P5",
+         "label": "2.88” OD x 4” Long",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P6",
+         "label": "2.88” OD x 5” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P7",
+         "label": "2.38” OD x 5” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "PQ",
+         "label": "2.38” OD x 12” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "PD",
+         "label": "3” OD x 3” Long Tenon",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "P9",
+         "label": "Custom Size Tenon",
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
     }
+   ]
+  },
+  "willstudio-tex-post-top-area": {
+   "reason": "TEX ships two defects the GVX sheet does not: the Design column ('TEX' Medium / 'CH' Custom) is merged into Lumen Output, and the sheet's TWO finish columns (Housing, and Spider Mount & Accent Line) are merged into one with every colour duplicated. Both are fatal to the part number — see the sheet's own example WD-TEX-80-30-MV-5W-3T-NA-BK.",
+   "replace": [
+    {
+     "rawKey": "lumen-output",
+     "why": "Merged Design + Lumen Output. One column can only ever emit ONE segment, so the number lost whichever the customer did not pick: with a lumen chosen it resolved WD-80-… (no design), with none it resolved WD-TEX-… (no lumen). Split restores both.",
+     "columns": [
+      {
+       "key": "design",
+       "label": "Design",
+       "group": "ordering",
+       "orderPosition": 1,
+       "values": [
+        {
+         "buildable": null,
+         "code": "TEX",
+         "label": "Medium",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "CH",
+         "label": "Custom",
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      },
+      {
+       "key": "lumen-output",
+       "label": "Lumen Output (Model Nominal Lumens)",
+       "group": "ordering",
+       "orderPosition": 1.5,
+       "values": [
+        {
+         "buildable": null,
+         "code": "40",
+         "label": "5,000",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "70",
+         "label": "9,000",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "80",
+         "label": "10,000",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "115",
+         "label": "15,000",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "155",
+         "label": "19,000",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "CW",
+         "label": "Custom & Amber",
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "finish-color-finish-color-spider-mount",
+     "why": "The sheet prints TWO finish columns side by side; the parser zipped them into one 20-value column (each colour twice). Split into Housing and Spider Mount & Accent Line. The sheet requires the accent designation even on side mounts, where the mounting arm matches the housing colour.",
+     "columns": [
+      {
+       "key": "finish-color",
+       "label": "Finish Color (Housing)",
+       "group": "ordering",
+       "orderPosition": 6,
+       "values": [
+        {
+         "buildable": true,
+         "code": "NA",
+         "label": "Nat Alum Silver",
+         "mapsTo": "silver",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "BK",
+         "label": "Black",
+         "mapsTo": "matte-black",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "DB",
+         "label": "Dark Bronze",
+         "mapsTo": "statuary-bronze",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "WH",
+         "label": "White",
+         "mapsTo": "gloss-white",
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "LG",
+         "label": "Light Gray",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "SG",
+         "label": "Slate Gray",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "DG",
+         "label": "Dark Green",
+         "mapsTo": "forest-green",
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "DP",
+         "label": "Dark Platinum",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "GM",
+         "label": "Graphite Metallic",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "RAL",
+         "label": "Custom RAL Match",
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      },
+      {
+       "key": "finish-color-accent",
+       "label": "Finish Color (Spider Mount & Accent Line)",
+       "group": "ordering",
+       "orderPosition": 6.5,
+       "values": [
+        {
+         "buildable": true,
+         "code": "NA",
+         "label": "Nat Alum Silver",
+         "mapsTo": "silver",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "BK",
+         "label": "Black",
+         "mapsTo": "matte-black",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "DB",
+         "label": "Dark Bronze",
+         "mapsTo": "statuary-bronze",
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "WH",
+         "label": "White",
+         "mapsTo": "gloss-white",
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "LG",
+         "label": "Light Gray",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "SG",
+         "label": "Slate Gray",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": true,
+         "code": "DG",
+         "label": "Dark Green",
+         "mapsTo": "forest-green",
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "DP",
+         "label": "Dark Platinum",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "GM",
+         "label": "Graphite Metallic",
+         "mapsTo": null,
+         "note": null
+        },
+        {
+         "buildable": null,
+         "code": "RAL",
+         "label": "Custom RAL Match",
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "mounting",
+     "why": "Phase 0.19 launch containment (Nick 8/24: fixture cut returns to GVX + TEX). The sheet's Mounting column offers 3T / SMS / SMR / CM, but the viewer has no mounting/accessory asset axis (the 0.13 design gap): an SMS/SMR config resolves a correct side-mount part number while RENDERING post-top imagery — a known dishonesty. Constrained to 3T so we sell exactly what we can show; SMS / SMR (and CM) return to this list when the mounting axis exists. The side-mount CAD is already wired for downloads (realgeom.CUSTOMER_STEP_FILES_BY_FIT serves Cole's simplified TEX-AREA.STEP to any legacy SMS/SMR config), so restoring the codes is a values-list edit here plus the render work — nothing else moves.",
+     "columns": [
+      {
+       "key": "mounting",
+       "label": "Mounting",
+       "group": "ordering",
+       "orderPosition": 5,
+       "values": [
+        {
+         "code": "3T",
+         "label": "3.0\" OD Tenon/Pole Fit",
+         "buildable": true,
+         "mapsTo": null,
+         "note": null
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "willstudio-gvx-pendant": {
+   "reason": "Tyler's 8/12 config-pass directive (docs/spec-defaults-request.md Request 1): collapse voltage/length variants into generic X-codes that go into the part number as-is (the concrete variant resolves at quote time), simplify labels, and drop 90D from the customer list. Unlike the parse-artifact rules above, these values ARE deliberate simplifications, not sheet transcriptions — provenance is the Tyler directive, pending Puddy's confirmation that the X-code convention is orderable.",
+   "replace": [
+    {
+     "rawKey": "options",
+     "why": "Raw column carried 11 values: 4 cord lengths (WHP3NP/7NP/11NP/15NP), 2 voltage-specific surge suppressors (SRG27710/SRG48010), 3 voltage-specific photocontrols (BPC1/3/4), MPS, and 90D. Collapsed to one line per family with generic X-codes; 90D removed per Tyler.",
+     "columns": [
+      {
+       "key": "options",
+       "label": "Options",
+       "group": "options-accessories",
+       "orderPosition": 8,
+       "values": [
+        {
+         "buildable": null,
+         "code": "WHPXNP",
+         "label": "Cord w/o Plug, Stripped Pigtail",
+         "mapsTo": null,
+         "note": "Included with your WiLLstudio bracket — 6’ cord w/o plug, stripped pigtail (2’ with the PM1 arm), per the ordering sheet",
+         "derived": true
+        },
+        {
+         "buildable": null,
+         "code": "SRGXXX10",
+         "label": "10kA Surge Suppressor",
+         "mapsTo": null,
+         "note": "We'll match it to your project's voltage",
+         "resolvesBy": {
+          "MV": "SRG27710",
+          "HV": "SRG48010"
+         }
+        },
+        {
+         "buildable": null,
+         "code": "BPCX",
+         "label": "Button Photocontrol",
+         "mapsTo": null,
+         "note": "We'll match it to your project's voltage",
+         "resolvesBy": {
+          "MV": "BPC1"
+         }
+        },
+        {
+         "buildable": null,
+         "code": "MPS",
+         "label": "Motion Sensor",
+         "mapsTo": null,
+         "note": "Programmable on/off, dimming & photocontrol — tune it over Bluetooth"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "rawKey": "accessories",
+     "why": "Label simplification only — same three accessories, shorter customer-facing names.",
+     "columns": [
+      {
+       "key": "accessories",
+       "label": "Accessories",
+       "group": "options-accessories",
+       "orderPosition": 9,
+       "values": [
+        {
+         "buildable": null,
+         "code": "HSS-GVX",
+         "label": "House Side Shield",
+         "mapsTo": null,
+         "note": "Helps control light spill and glare"
+        },
+        {
+         "buildable": null,
+         "code": "GFX",
+         "label": "Wireless DMX Control",
+         "mapsTo": null,
+         "note": "Consult factory — we’ll coordinate the details with your quote"
+        },
+        {
+         "buildable": null,
+         "code": "GFM",
+         "label": "Wireless Mesh Control",
+         "mapsTo": null,
+         "note": "Consult factory — we’ll coordinate the details with your quote"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "willstudio-decorative-base-covers": {
+   "reason": "Tyler 8/14 (Puddy check D): CLE (Clamshell Base Extender) is an OFFICIAL accessory line on the CL1/CL2/CL3 ordering sheets — and only there, never on the SC1/SC2 spun collars. This rule makes the previously hand-added column regen-proof: apply-spec-option-corrections restores it if it drifts. NOTE the base covers have NO machine-parsed sheet (docs/spec-options.json has no entry for this handle), so their whole options block is curated catalog data — running merge-spec-options.mjs alone still wipes it (documented hazard); this rule protects CLE within the preferred apply-corrections flow.",
+   "replace": [
+    {
+     "rawKey": "accessories",
+     "parts": [
+      "bc-cl1-small-clamshell",
+      "bc-cl2-medium-clamshell",
+      "bc-cl3-large-clamshell"
+     ],
+     "why": "CLE appends to the end of the base-cover part number after finish (WP-CL1-4R-BK-CLE). Column captured verbatim from the reviewed catalog.",
+     "columns": [
+      {
+       "key": "accessories",
+       "label": "Accessories",
+       "group": "options-accessories",
+       "orderPosition": 9,
+       "values": [
+        {
+         "buildable": null,
+         "code": "CLE",
+         "label": "Clamshell Base Extender",
+         "mapsTo": null,
+         "note": "Extends the base cover downward — shown in the preview when checked",
+         "renderPartId": "willstudio-acc-clamshell-extender"
+        }
+       ]
+      }
+     ],
+     "append": true
+    }
+   ]
   }
+ }
 }

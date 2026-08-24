@@ -114,8 +114,12 @@ describe('TEX part number', () => {
   })
 
   it('leaves unanswered ordering columns as `_`, never a guess', () => {
+    // Mounting prints 3T without a selection: since the 8/24 launch containment
+    // (Phase 0.19) it is the column's ONLY value (SMS/SMR return with the
+    // mounting render axis), and single-value columns auto-resolve — that is
+    // the sheet's answer, not a guess. Every truly open column stays `_`.
     const config = texConfig({ finishes: { fixture: 'silver' } })
-    expect(buildPartNumber(catalog, config, 'fixture')).toBe('WD-TEX-_-_-_-_-_-NA-NA')
+    expect(buildPartNumber(catalog, config, 'fixture')).toBe('WD-TEX-_-_-_-_-3T-NA-NA')
   })
 
   it('does not offer 5VN — in the lumen tables but absent from the ordering matrix', () => {

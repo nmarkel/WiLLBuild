@@ -117,12 +117,12 @@
       "sourceSha256": "155a4340605a19a66ae809cced46115d7ddf01169431936074c0a08c08c41e3d",
       "masterTris": 410672,
       "culledTris": 90626,
-      "shippedTris": 54699,
-      "visibleFrac": 0.9786,
+      "shippedTris": 47714,
+      "visibleFrac": 0.9782,
       "visibleAreaFrac": 0.9999,
-      "simplifyRatio": 0.6069,
-      "bytes": 321864,
-      "sha256": "0d2a4a4683689cd0a8c31a88118c067cf9185f4228d2b61fc89edc73c50ebfbb",
+      "simplifyRatio": 0.5296,
+      "bytes": 286324,
+      "sha256": "90044cfd2e18d8089c57bc2e0819e548dae14f88d2f1d440aa8f5f0ef631b713",
       "materials": [
         "will-body"
       ]
@@ -196,24 +196,18 @@
       ]
     },
     "tex-post-top": {
-      "sourceGlb": "real-assets/glb/tex-post-top.glb",
-      "sourceSha256": "2450ff99c274db8e7037ebbe58c458989e7cd3985e3fcf6dd9513251568c5cc6",
-      "masterTris": 936344,
-      "culledTris": 97906,
-      "shippedTris": 97906,
-      "visibleFrac": 0.9245,
-      "visibleAreaFrac": 0.9968,
-      "simplifyRatio": 1,
-      "bytes": 381292,
-      "sha256": "a1e489d4e7ebdcc8432055d4094fc7f7a2f1a817f31af5d149e93b08a25b9eeb",
+      "sourceGlb": "real-assets/glb/tex-post-top.shell.glb",
+      "sourceSha256": "78904fe52a7106cfbabbd7d9d7243a83d08e817757d06e0b968076e0776e8c61",
+      "masterTris": 377234,
+      "culledTris": 85073,
+      "shippedTris": 47964,
+      "visibleFrac": 0.9779,
+      "visibleAreaFrac": 0.9998,
+      "simplifyRatio": 0.5642,
+      "bytes": 290840,
+      "sha256": "1aed820bb626b4e580e618f24f6ccfd4dd53c75fa6fde4dcaca368e1fe275516",
       "materials": [
-        "will-body",
-        "will-fixed-121212",
-        "will-fixed-363636",
-        "will-fixed-ada186",
-        "will-fixed-b8ceff",
-        "will-fixed-c6c6c6",
-        "will-fixed-ffffff"
+        "will-body"
       ]
     },
     "willstudio-acc-clamshell-extender": {

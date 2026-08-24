@@ -32,12 +32,26 @@ placeholder convention (``viewer_to_cad``).
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
 
 # Default location = where scripts/step-to-glb/ingest.py copies the drive files.
 _DEFAULT_STEP_DIR = Path(__file__).parent.parent.parent / "scripts" / "render-rig" / "real-assets" / "step"
+
+# Customer-download home (Phase 0.19, Workstream A).  The gitignored dev cache
+# above is empty on every deploy, so the files CLEARED for customers get their
+# own directory that the Docker image bakes in.  Contents are staged by
+# scripts/stage-customer-step.py from the dev cache and are gitignored too —
+# only manifest.json (the SHA-256 pin per cleared file) is committed.
+# ``CUSTOMER_STEP_DIR`` swaps the source wholesale: point it at an S3-synced
+# mount (or any directory a startup fetch fills) when Cole's batch makes
+# bake-into-image rebuilds annoying.  The manifest travels with the code, so a
+# swapped source still serves only bytes that hash to the pinned values.
+_DEFAULT_CUSTOMER_STEP_DIR = Path(__file__).parent.parent / "assets" / "customer-step"
+_CUSTOMER_STEP_MANIFEST = _DEFAULT_CUSTOMER_STEP_DIR / "manifest.json"
 
 # part id -> STEP filename for the part's BASE geometry (single arm, one cover…).
 # Mirrors INGEST in scripts/step-to-glb/ingest.py; provenance lives in
@@ -155,6 +169,26 @@ CUSTOMER_STEP_FILES: dict[str, str] = {
     # the VIEWER source — it has more detail and only images ship from it — while
     # this shell is what a customer actually receives.
     "gvx-pendant": "GVX-Simple.STEP",
+    # Phase 0.19 (Workstream B): Cole's simplified TEX, Synology 8/24.  New
+    # filename (the full master is TEX.STEP); measured 22 solids / 20,759 faces
+    # against the master's 219 / 31,836 with a byte-identical bounding box on
+    # every axis — the same de-featured-envelope pattern as GVX-Simple.
+    "tex-post-top": "TEX-Post-Top.STEP",
+}
+
+# (part id, mounting code) -> the cleared file for that MOUNTING of the part,
+# consulted before the base table.  TEX is one catalog part with two physical
+# products behind its mounting column: 3T is the post top, SMS/SMR the
+# side-mount Area — so a side-mount config's honest download is the Area file.
+#
+# ⚠ TEX-AREA.STEP is Cole's SIMPLIFIED export as of 8/24 (sha b4dc0888…,
+# 21 solids / 20,666 faces): he REPLACED the 8/11 full-engineering file of the
+# same name on the drive (sha 3602e91b…, 208 solids — retired locally as
+# TEX-AREA.full-engineering-8-11.STEP.retired).  The manifest pin below is what
+# keeps the retired bytes unshippable: same name, wrong hash, not served.
+CUSTOMER_STEP_FILES_BY_FIT: dict[tuple[str, str], str] = {
+    ("tex-post-top", "SMS"): "TEX-AREA.STEP",
+    ("tex-post-top", "SMR"): "TEX-AREA.STEP",
 }
 
 
@@ -163,19 +197,82 @@ def step_dir() -> Path:
     return Path(os.environ.get("REAL_STEP_DIR", _DEFAULT_STEP_DIR))
 
 
-def customer_step_path(part_id: str) -> Path | None:
+def customer_step_dir() -> Path:
+    """Where the customer-cleared STEPs live (``CUSTOMER_STEP_DIR`` overrides)."""
+    return Path(os.environ.get("CUSTOMER_STEP_DIR", _DEFAULT_CUSTOMER_STEP_DIR))
+
+
+@lru_cache(maxsize=1)
+def _customer_manifest() -> dict[str, dict]:
+    """filename -> {sha256, bytes} for every file cleared to ship.
+
+    The manifest is COMMITTED (the files are not), so it is the fail-closed
+    authority: a file that is present but hashes differently — a full
+    engineering master under a reused name, a corrupted stage — is treated as
+    missing, never served.
+    """
+    try:
+        data = json.loads(_CUSTOMER_STEP_MANIFEST.read_text())
+    except (OSError, ValueError):
+        return {}
+    files = data.get("files")
+    return files if isinstance(files, dict) else {}
+
+
+@lru_cache(maxsize=64)
+def _verified(path_str: str, name: str, size: int, mtime_ns: int) -> bool:
+    """Whether the bytes at ``path`` hash to the manifest's pin for ``name``.
+
+    size/mtime_ns are cache keys so a swapped file re-verifies; the hash of a
+    ~30 MB STEP costs ~0.1 s exactly once per file version per process.
+    """
+    pin = _customer_manifest().get(name)
+    if not pin:
+        return False
+    if pin.get("bytes") not in (None, size):
+        return False
+    digest = hashlib.sha256(Path(path_str).read_bytes()).hexdigest()
+    return digest == pin.get("sha256")
+
+
+def customer_step_path(part_id: str, mounting_code: str | None = None) -> Path | None:
     """The de-featured STEP cleared for customer download, or None.
 
     None means "not cleared" — never "fall back to the master".  Callers must
     not substitute ``real_step_path`` here.
+
+    Resolution: the (part, mounting) override first, then the part's base
+    entry; the customer-step home first, then the dev cache.  Whichever file
+    is found must hash to its manifest pin or it is treated as missing.
     """
     if os.environ.get("DISABLE_REAL_GEOMETRY"):
         return None
-    name = CUSTOMER_STEP_FILES.get(part_id)
+    name = None
+    if mounting_code:
+        name = CUSTOMER_STEP_FILES_BY_FIT.get((part_id, mounting_code))
+    if not name:
+        name = CUSTOMER_STEP_FILES.get(part_id)
     if not name:
         return None
-    candidate = step_dir() / name
-    return candidate if candidate.is_file() else None
+    for root in (customer_step_dir(), step_dir()):
+        candidate = root / name
+        if not candidate.is_file():
+            continue
+        stat = candidate.stat()
+        if _verified(str(candidate), name, stat.st_size, stat.st_mtime_ns):
+            return candidate
+    return None
+
+
+def is_customer_cleared(part_id: str, mounting_code: str | None = None) -> bool:
+    """Whether a cleared file is DECLARED for this part (tables only, no disk).
+
+    True with ``customer_step_path`` returning None is the degraded state the
+    bundle documents: cleared, but the file is not in this deployment.
+    """
+    if mounting_code and (part_id, mounting_code) in CUSTOMER_STEP_FILES_BY_FIT:
+        return True
+    return part_id in CUSTOMER_STEP_FILES
 
 
 def real_step_path(part_id: str, design_code: str | None = None) -> Path | None:

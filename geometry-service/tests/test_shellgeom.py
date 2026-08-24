@@ -211,3 +211,68 @@ class TestStackingAndPlacements:
         assert asm is not None  # core still shell-accurate
         assert any("willstudio-acc-festoon" in w for w in asm.warnings)
         assert not any("Festoon" in p.name for p in asm.pieces)
+
+
+class TestPseudoArmShell:
+    """Phase 0.19: direct-mount generates its schematic tenon adapter.
+
+    A pseudo-part needs no CAD ever (0.12), so 'no shell file' is its
+    permanent, correct state — but the no-hybrid rule used to read it as a
+    missing core, dropping every tenon-fixture config to the parametric kit
+    the moment TEX became configurable.  Like the pole, its truth is its
+    catalog placeholder, generated on the fly.
+    """
+
+    def test_tex_on_direct_mount_is_shell_covered(self):
+        asm = shell_assembly(
+            _CATALOG,
+            _cfg(fixture="tex-post-top", arm="direct-mount", baseCover="bc-cl3-large-clamshell"),
+        )
+        assert asm is not None
+        names = [p.name for p in asm.pieces]
+        assert "Arm" in names and "Fixture" in names
+        # The adapter is the catalog's schematic frustum: 0.08 m tall, on axis.
+        arm = _piece(asm, "Arm")
+        assert arm.verts[:, 1].min() == pytest.approx(0.0, abs=1e-6) or arm.verts[:, 1].min() > 0
+        assert (arm.verts[:, 1].max() - arm.verts[:, 1].min()) == pytest.approx(0.08, abs=1e-6)
+        assert float(np.abs(arm.verts[:, [0, 2]]).max()) <= 0.04 + 1e-6
+        # The fixture sits ON the adapter's tenon socket, above the pole top.
+        pole_top = _piece(asm, "Pole").verts[:, 1].max()
+        assert _piece(asm, "Fixture").verts[:, 1].min() >= pole_top - 1e-6
+
+    def test_generated_frustum_is_a_closed_solid_wound_like_the_pole(self):
+        from app.shellgeom import _frustum_mesh, _pole_tube_mesh
+
+        v, t = _frustum_mesh(0.04, 0.03, 0.0, 0.08)
+        # The frustum must be watertight, its magnitude the analytic volume,
+        # and its winding THE SAME as the shipped pole tube's — the convention
+        # the IFC/STEP consumers were verified against in 0.17.5.  (By the
+        # right-hand signed-volume convention both come out negative; the
+        # consumers' orientation handling is the authority, not that sign.)
+        signed = float(np.einsum("ij,ij->i", v[t[:, 0]], np.cross(v[t[:, 1]], v[t[:, 2]])).sum()) / 6.0
+        expected = np.pi * 0.08 * (0.04**2 + 0.04 * 0.03 + 0.03**2) / 3.0
+        assert abs(signed) == pytest.approx(expected, rel=1e-3)
+        pv, pt = _pole_tube_mesh(0.0508, 0.003175, 0.0, 1.0)
+        pole_signed = float(
+            np.einsum("ij,ij->i", pv[pt[:, 0]], np.cross(pv[pt[:, 1]], pv[pt[:, 2]])).sum()
+        )
+        assert np.sign(signed) == np.sign(pole_signed)
+        # …and every edge is shared by exactly two triangles = watertight.
+        edges: dict[tuple[int, int], int] = {}
+        for a, b, c in t:
+            for e in ((a, b), (b, c), (c, a)):
+                edges[tuple(sorted(e))] = edges.get(tuple(sorted(e)), 0) + 1
+        assert set(edges.values()) == {2}
+
+    def test_only_pseudo_parts_take_the_generated_path(self):
+        # Negative control: a REAL arm with no shell must still drop the
+        # assembly to the parametric kit — the generated path is gated on
+        # pseudoPart, never a loophole around the no-hybrid rule.
+        from app.shellgeom import _pseudo_arm_shell
+
+        real_arm = next(p for p in _CATALOG["parts"] if p["id"] == "sh1-shepherds-hook")
+        assert _pseudo_arm_shell(real_arm) is None
+        fake = dict(real_arm)
+        fake.pop("pseudoPart", None)
+        fake["placeholder"] = {"kind": "pole", "heightM": 0.08, "radiusBottomM": 0.04, "radiusTopM": 0.03}
+        assert _pseudo_arm_shell(fake) is None

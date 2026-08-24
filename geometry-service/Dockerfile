@@ -94,6 +94,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ── Application code ──────────────────────────────────────────────────────────
 COPY geometry-service/app ./app
 
+# ── Service assets ────────────────────────────────────────────────────────────
+# assets/shells: the gated exterior-shell GLBs (committed) that back the
+# shell-accurate STEP/IFC and the 2D drawing sheet — app/shellgeom.py resolves
+# them relative to the app package, so omitting this COPY silently degrades
+# every geometry deliverable to the parametric kit (found in Phase 0.19; the
+# pre-0.19 image shipped without them).
+# assets/customer-step: the customer-cleared simplified STEPs, staged by
+# scripts/stage-customer-step.py (run it before building — the files are
+# gitignored, only manifest.json is committed). An unstaged build still works:
+# factory-cad/ degrades to the documented README-MISSING note. The runtime can
+# also point CUSTOMER_STEP_DIR at an external source (e.g. an S3-synced dir)
+# instead of the baked copies; bytes must hash to manifest.json either way.
+COPY geometry-service/assets ./assets
+
 # ── Catalog — must be present at runtime ─────────────────────────────────────
 # catalog.py default path resolves to <repo-root>/public/catalog.json which does
 # NOT exist inside the container. We copy the file here and point CATALOG_PATH

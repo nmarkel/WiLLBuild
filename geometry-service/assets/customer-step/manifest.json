@@ -1,0 +1,20 @@
+{
+  "note": "SHA-256 pins for every STEP file CLEARED for customer download (Phase 0.19, Workstream A). The files themselves are gitignored — staged into this directory by scripts/stage-customer-step.py from the dev cache, and baked into the Docker image from here. app/realgeom.py refuses to serve any file whose bytes do not hash to its pin, so a full engineering master under a reused name can never ship. Grow this file only alongside CUSTOMER_STEP_FILES/CUSTOMER_STEP_FILES_BY_FIT in app/realgeom.py, after human verification (the GVX standard: Nick's Autodesk eyeball).",
+  "files": {
+    "GVX-Simple.STEP": {
+      "sha256": "4708049da00e1ab60d1a82109a495d9819949a6ca5cc47f743629ea2b6fa0010",
+      "bytes": 27057296,
+      "cleared": "Nick, 2026-08-10 (opened in Autodesk, released Cole's run 8/24)"
+    },
+    "TEX-Post-Top.STEP": {
+      "sha256": "35416f4d37b2f9540dbb6ea6d7f05d9d32df94f1e5b27d0184411560b6c8b4cb",
+      "bytes": 29823529,
+      "cleared": "PENDING Nick's Autodesk eyeball (Phase 0.19 exec response, NICK-READY section). Machine-verified 8/24: 22 solids / 20,759 faces vs the TEX.STEP master's 219 / 31,836, bounding box identical on every axis."
+    },
+    "TEX-AREA.STEP": {
+      "sha256": "b4dc08885264fa291cb4b6790aca342070e0c9242d4d34738aa7b026224c39fd",
+      "bytes": 28228689,
+      "cleared": "PENDING Nick's Autodesk eyeball (Phase 0.19 exec response, NICK-READY section). Cole REPLACED the 8/11 full-engineering file of this name on Synology 8/24 (old sha 3602e91b…, 208 solids; new 21 solids / 20,666 faces, envelope within 8.5 mm at the de-featured bracket end). The old bytes fail this pin by design."
+    }
+  }
+}

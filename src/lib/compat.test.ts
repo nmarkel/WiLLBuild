@@ -748,8 +748,12 @@ describe('PF flush arm fit requires a D/E wall (CR-OPT-14, Tyler 8/14)', () => {
   })
 
   it('a bracket-derived PF clears a C wall with no mounting chosen at all (CR-OPT-15)', () => {
+    // The fixture is pinned to GVX explicitly: since the 8/24 cut (Phase 0.19)
+    // autofill's first configurable fixture is TEX — a tenon post top whose
+    // arm is direct-mount, which derives nothing and would test the wrong rule.
+    // This test is about a BRACKET-derived PF, so it needs the pendant build.
     const cfg = repairConfig(catalog, {
-      ...autofillConfig(catalog, defaultConfig(catalog)),
+      ...autofillConfig(catalog, { ...defaultConfig(catalog), fixture: 'gvx-pendant' }),
       pole: 'alum-pole-20',
       specOptions: { pole: { 'wall-thickness': 'C' } },
     })

@@ -319,13 +319,19 @@ class TestCustomerDownloadGate:
 
     def test_the_allowlist_never_points_at_a_full_master(self):
         """A cleared shell must be a DIFFERENT file from the viewer's master."""
-        from app.realgeom import BASE_FILES, CUSTOMER_STEP_FILES
+        from app.realgeom import BASE_FILES, CUSTOMER_STEP_FILES, CUSTOMER_STEP_FILES_BY_FIT
 
         for part_id, shell in CUSTOMER_STEP_FILES.items():
             assert shell != BASE_FILES[part_id], (
                 f"{part_id}: the customer download points at the same file as the "
                 "viewer master — that is the full engineering model, not a shell."
             )
+        # Phase 0.19: the by-fit overrides are under the same rule, and their
+        # parts must already be in the base allowlist — a mounting override for
+        # an uncleared part would open the gate sideways.
+        for (part_id, _code), shell in CUSTOMER_STEP_FILES_BY_FIT.items():
+            assert part_id in CUSTOMER_STEP_FILES
+            assert shell != BASE_FILES[part_id]
 
     def test_a_part_with_real_cad_but_no_shell_is_not_downloadable(self, tmp_path):
         """The gate stays shut for everything Cole has not de-featured yet."""
@@ -373,8 +379,10 @@ class TestCustomerDownloadGate:
                          assembly=None, render_png=None, summary={})
         entries = _factory_cad_entries(ctx)
         if customer_step_path("gvx-pendant") is None:
-            # No real CAD on this machine (every deploy) — must add nothing.
-            assert entries == []
+            # Cleared but absent on this machine — Phase 0.19: degrade to the
+            # DOCUMENTED note, never silence and never the engineering master.
+            assert [name for name, _ in entries] == ["factory-cad/README-MISSING.txt"]
+            assert f"{number}.step" in entries[0][1].decode("utf-8")
         else:
             assert [name for name, _ in entries] == [f"factory-cad/{number}.step"]
             # ...and nothing from a non-allowlisted component sneaks in.

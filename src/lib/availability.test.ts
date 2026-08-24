@@ -95,14 +95,15 @@ const LANDED_SINCE_AUDIT = [
  * decide they are back in the cut.
  */
 // tex-post-top joined the holds 8/12 (Tyler): fixture cut narrows to GVX
-// only for the Casey pilot. Held ≠ deleted — TEX re-enables by clearing the flag.
+// only for the Casey pilot. UN-HELD 8/24 (Nick, Phase 0.19): the cut returns
+// to GVX + TEX, after Cole's simplified TEX landed and its side-mount gap was
+// contained (mounting constrained to 3T — see spec-option-corrections.json).
 // willstudio-rxb-sxb-bollard: held by Tyler 8/14 the same hour it joined the
 // builder (CR-GM-01) — visible in the Fixture step, badged, not selectable
 // until its ordering matrix is encoded and the render is blessed.
 const EDITORIAL_HOLDS = [
   'drx-post-top',
   'mvx-coach',
-  'tex-post-top',
   'willstudio-dwx-flood-spot',
   'willstudio-rxb-sxb-bollard',
 ]
@@ -238,10 +239,13 @@ describe('Coming Soon covers exactly the coverage matrix section-D list', () => 
     }
   })
 
-  it('leaves exactly GVX configurable in the fixture slot (8/12 cut)', () => {
+  it('leaves exactly GVX + TEX configurable in the fixture slot (8/24 cut)', () => {
+    // Nick 8/24 (Phase 0.19): the fixture cut returns to GVX + TEX — reversing
+    // the 8/12 GVX-only hold — after Cole's simplified TEX shipped as the
+    // customer download and the service shell.
     const fixtures = catalog.parts.filter((p) => p.slot === 'fixture' && p.line === 'WiLLstudio')
     const usable = fixtures.filter((p) => isConfigurable(p)).map((p) => p.id).sort()
-    expect(usable).toEqual(['gvx-pendant'])
+    expect(usable).toEqual(['gvx-pendant', 'tex-post-top'])
   })
 
   it('excludes direct-mount — a pseudo-part, not a future product', () => {

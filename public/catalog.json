@@ -1206,36 +1206,15 @@
           ]
         },
         {
-          "group": "ordering",
           "key": "mounting",
           "label": "Mounting",
+          "group": "ordering",
           "orderPosition": 5,
           "values": [
             {
-              "buildable": null,
               "code": "3T",
               "label": "3.0\" OD Tenon/Pole Fit",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SMS",
-              "label": "Side Mount (Square Pole or Wall)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "SMR",
-              "label": "Side Mount (Round Pole)",
-              "mapsTo": null,
-              "note": null
-            },
-            {
-              "buildable": null,
-              "code": "CM",
-              "label": "Custom",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             }
@@ -1492,8 +1471,7 @@
           "Column 'finish-color-finish-color-spider-mount' header repeats token(s) ['color', 'finish']; adjacent columns were likely merged (20 values). Needs human review."
         ]
       },
-      "realCad": true,
-      "comingSoon": true
+      "realCad": true
     },
     {
       "id": "mvx-coach",

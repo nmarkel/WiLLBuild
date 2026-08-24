@@ -11,3 +11,11 @@ node_modules
 dist
 .git
 .superpowers
+# The gitignored engineering CAD cache (hundreds of MB, IP-sensitive) must
+# never enter the build context — the image needs only geometry-service/assets
+# (shells + staged customer-step files) and public/catalog.json.
+scripts/render-rig/real-assets/
+public/renders/
+src
+docs
+*.md

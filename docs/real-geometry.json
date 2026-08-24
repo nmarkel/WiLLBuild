@@ -537,12 +537,12 @@
       "file": "TEX-AREA.STEP",
       "kind": "cluster",
       "present": true,
-      "bytes": 35584330,
-      "sha256": "3602e91b186ff1461f3400fd17192e39a707cf655b60a8d1402a0c0929e4e324",
+      "bytes": 28228689,
+      "sha256": "b4dc08885264fa291cb4b6790aca342070e0c9242d4d34738aa7b026224c39fd",
       "partId": "tex-post-top",
       "designCode": "TEX",
       "fitCode": "SMR",
-      "note": "Area/side-mount variant of the TEX \u2014 the exact counterpart of DRX-Area-4R-Side-Mount.STEP above, and classified the same way. The catalog part is named 'TEX Post Top & Area' and its mounting column already offers 3T/SMS/SMR, so this file serves the SMS and SMR codes of a part that renders from TEX.STEP. It is NOT a render source: the compositor keys layers by part id, so a second mounting of one part has nowhere to render to. Measured 2026-08-13: 208 solids, 431.80 x 203.20 x 591.22 mm, with z running -375.32..+215.90 \u2014 the extra 375 mm in -Z is the side-mount arm, so the file is fixture PLUS bracket, not a bare head. That is also why it could not be dropped in as a tex-post-top layer even if the asset model allowed it."
+      "note": "Area/side-mount variant of the TEX \u2014 the exact counterpart of DRX-Area-4R-Side-Mount.STEP above, and classified the same way. The catalog part is named 'TEX Post Top & Area' and its mounting column already offers 3T/SMS/SMR, so this file serves the SMS and SMR codes of a part that renders from TEX.STEP. It is NOT a render source: the compositor keys layers by part id, so a second mounting of one part has nowhere to render to. \u26a0 REPLACED IN PLACE by Cole 2026-08-24 (Phase 0.19): the bytes under this name are now his SIMPLIFIED customer export (sha b4dc0888\u2026, 21 solids / 20,666 faces, envelope within 8.5 mm of the old file at the de-featured bracket end), superseding the 8/11 full-engineering export (sha 3602e91b\u2026, 208 solids, 431.80 x 203.20 x 591.22 mm \u2014 retired locally as TEX-AREA.full-engineering-8-11.STEP.retired). The same file is now ALSO the customer download for SMS/SMR configs (realgeom.CUSTOMER_STEP_FILES_BY_FIT, hash-pinned in geometry-service/assets/customer-step/manifest.json)."
     },
     {
       "file": "GVX-HSS.STEP",
@@ -772,6 +772,22 @@
       "glb": "render-rig/real-assets/glb/gvx-pendant.shell.glb",
       "glbBytes": 13738448,
       "note": "Cole's de-featured GVX (27 MB vs the 88 MB WD-GVX-PM master). Same normalization frame as the master (origin=top; measured 8/20: identical 0.2397 m bezel radius, stem tip at y=0), so the shell drops into the same socket walk. 410,672 tris at tol 1.0 before the web pipeline's cull/decimate."
+    },
+    {
+      "file": "TEX-Post-Top.STEP",
+      "kind": "shell-source",
+      "present": true,
+      "bytes": 29823529,
+      "sha256": "35416f4d37b2f9540dbb6ea6d7f05d9d32df94f1e5b27d0184411560b6c8b4cb",
+      "partId": "tex-post-top",
+      "designCode": "TEX",
+      "fitCode": "3T",
+      "origin": "base",
+      "converter": "mono",
+      "tolMm": 1.5,
+      "glb": "render-rig/real-assets/glb/tex-post-top.shell.glb",
+      "glbBytes": 12903032,
+      "note": "Cole's de-featured TEX post top (29.8 MB vs the 36 MB TEX.STEP master). Same normalization frame as the master (origin=base; bounding box identical on every axis, measured 8/24)."
     }
   ],
   "derived": [

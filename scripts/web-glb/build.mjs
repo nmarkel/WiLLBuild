@@ -50,13 +50,20 @@ const TARGET_TRIS = 250_000
 // guarantee (geometry-service/tests/test_weight.py). STEP is the binding
 // format, and its bytes-per-tri is NOT constant across meshes — measured on
 // the GVX config 8/24: 90,626 fixture tris → 14.14 MB, 59,816 → 10.15 MB
-// (a bare 3% under the gate), old 45,552 → 7.24 MB. 55k puts the tested
-// config near 9.5 MB. NOTE the guarantee is only TESTED on GVX+SH1+CL1:
-// tex-post-top (97.9k) and drx-post-top (87.4k) pre-date this ceiling and
-// already blow the gate, and a fat config (CL3 cover + accessories) adds
-// ~40k tris the sampled config doesn't carry — closing that fleet-wide is
-// an open decision, not this constant.
-const SERVICE_TRIS = 55_000
+// (a bare 3% under the gate), old 45,552 → 7.24 MB.
+//
+// 55k → 48k on 8/24 (Phase 0.19): the first ceiling was budgeted against the
+// friendliest config (CL1 cover, 20.5k tris) — measured on the WORST core
+// config (CL3, 31.4k tris): GVX+SH1+CL3 STEP hit 10.50 MB and TEX+CL3
+// 10.38 MB, both customer-reachable gate violations (TEX became selectable
+// this phase; GVX+CL3 was already live). 48k fits the worst
+// fixture+cover+bracket combination with margin and still beats the
+// pre-8/24 master-culled 45,552. test_weight.py samples the CL3 configs for
+// BOTH fixtures now. STILL OPEN: shaft-accessory stacks (plant holder 25.7k
+// + flag holder 8.3k + CLE 9.4k ≈ +43k tris on one config) can outrun any
+// fixture ceiling — closing that needs per-config awareness or smaller
+// accessory shells, not this constant.
+const SERVICE_TRIS = 48_000
 // Shell-only re-check floor on the OUTPUT (fraction of triangles visible).
 const VIS_MIN = 0.95
 // Lossiness floor: the shipped mesh must be a strict, non-manufacturable

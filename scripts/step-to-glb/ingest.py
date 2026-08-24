@@ -235,11 +235,16 @@ CLUSTERS: list[dict] = [
               "already offers 3T/SMS/SMR, so this file serves the SMS and SMR codes "
               "of a part that renders from TEX.STEP. It is NOT a render source: the "
               "compositor keys layers by part id, so a second mounting of one part "
-              "has nowhere to render to. Measured 2026-08-13: 208 solids, 431.80 x "
-              "203.20 x 591.22 mm, with z running -375.32..+215.90 — the extra 375 mm "
-              "in -Z is the side-mount arm, so the file is fixture PLUS bracket, not "
-              "a bare head. That is also why it could not be dropped in as a "
-              "tex-post-top layer even if the asset model allowed it."),
+              "has nowhere to render to. "
+              "⚠ REPLACED IN PLACE by Cole 2026-08-24 (Phase 0.19): the bytes under "
+              "this name are now his SIMPLIFIED customer export (sha b4dc0888…, "
+              "21 solids / 20,666 faces, envelope within 8.5 mm of the old file at "
+              "the de-featured bracket end), superseding the 8/11 full-engineering "
+              "export (sha 3602e91b…, 208 solids, 431.80 x 203.20 x 591.22 mm — "
+              "retired locally as TEX-AREA.full-engineering-8-11.STEP.retired). "
+              "The same file is now ALSO the customer download for SMS/SMR configs "
+              "(realgeom.CUSTOMER_STEP_FILES_BY_FIT, hash-pinned in "
+              "geometry-service/assets/customer-step/manifest.json)."),
     dict(file="GVX-HSS.STEP", part="gvx-pendant", design="HSS-GVX", fit="PM",
          note="The GVX assembled WITH its House Side Shield fitted (88 MB, the same "
               "order as the WD-GVX-PM master it is built from). HSS-GVX is an "
@@ -384,6 +389,20 @@ SHELL_SOURCES: list[dict] = [
               "8/20: identical 0.2397 m bezel radius, stem tip at y=0), so "
               "the shell drops into the same socket walk. 410,672 tris at "
               "tol 1.0 before the web pipeline's cull/decimate."),
+    # Phase 0.19 (Workstream B): Cole's simplified TEX, Synology 8/24. Same
+    # pattern as the GVX above — the render layers keep the TEX.STEP master;
+    # this feeds web-glb -> service shells -> concept STEP/IFC. Measured 8/24:
+    # 22 solids / 20,759 faces vs the master's 219 / 31,836 with a
+    # byte-identical bounding box on every axis (x/z ±233.69 mm,
+    # y -393.70..177.80), so it drops into the master's frame unchanged.
+    # This also retires the 97.9k-tri master-culled service shell that
+    # pre-dated the SERVICE_TRIS ceiling and blew the 10 MB deliverable gate
+    # on TEX configs (the open decision recorded in web-glb/build.mjs).
+    dict(file="TEX-Post-Top.STEP", part="tex-post-top", out="tex-post-top.shell",
+         design="TEX", fit="3T", origin="base", mode="mono", tol=1.5,
+         note="Cole's de-featured TEX post top (29.8 MB vs the 36 MB TEX.STEP "
+              "master). Same normalization frame as the master (origin=base; "
+              "bounding box identical on every axis, measured 8/24)."),
 ]
 
 # Poles derived by axial scaling from the one real pole export (Phase 0.10.5,

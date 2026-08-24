@@ -57,3 +57,8 @@ skills-lock.json
 
 # Large raw engineering CAD source zips (not app build inputs) — keep out of git
 geometry-service/*.zip
+
+# Customer-cleared STEP files are staged (scripts/stage-customer-step.py), not
+# committed — only the SHA-256 manifest travels in git (Phase 0.19).
+geometry-service/assets/customer-step/*.STEP
+geometry-service/assets/customer-step/*.step

@@ -77,7 +77,11 @@ describe('no configuration can rest on a Coming Soon part', () => {
     expect(base.fixture).toBe('')
     const filled = autofillConfig(catalog, base)
     expect(isComingSoon(partById(catalog, filled.fixture))).toBe(false)
-    expect(filled.fixture).toBe('gvx-pendant')
+    // TEX since 8/24 (Phase 0.19 un-hold): autofill takes the FIRST
+    // configurable fixture in catalog order (drx, tex, mvx, gvx …), and TEX
+    // now precedes GVX in that walk. The builder itself still opens blank —
+    // this only moves where "build one for me" starts.
+    expect(filled.fixture).toBe('tex-post-top')
   })
 
   it('produces no part number for a Coming Soon part', () => {

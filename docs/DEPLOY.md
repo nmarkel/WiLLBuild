@@ -1,10 +1,203 @@
 # WiLLBuild Geometry Service — Deployment Runbook
 
-This document covers deploying the `geometry-service` FastAPI backend to
-[fly.io](https://fly.io) and wiring the Cloudflare Pages/Workers frontend to
-point at the deployed URL.
+**The chosen venue is AWS App Runner from an ECR image** (Tyler 8/19, prepped
+turnkey in Phase 0.19). The fly.io sections further down were the Nick-era prep
+and are **NOT TAKEN** — kept for reference, `fly.toml` stays as dormant config.
+
+Division of labor: everything in this doc that needs no cloud credentials is
+already done and verified (image builds, `/health` serves, assets baked, tests
+green). The steps marked **[AUTH]** are the only ones left — they need an AWS
+login and are run by Nick/Tyler.
 
 ---
+
+## Docker Build Context
+
+The Dockerfile lives at `geometry-service/Dockerfile` but **must be built from
+the repo root** because it COPYs three subtrees:
+
+| COPY source                 | Destination in image    | Why                          |
+|-----------------------------|-------------------------|------------------------------|
+| `geometry-service/app/`     | `/app/app/`             | FastAPI application code     |
+| `geometry-service/assets/`  | `/app/assets/`          | Shell GLBs (committed) + staged customer STEPs — see the two sections below |
+| `public/catalog.json`       | `/app/catalog.json`     | Catalog data (not in gs dir) |
+
+> Phase 0.19 fix: the pre-0.19 image copied only `app/` + the catalog, so
+> `assets/shells/` was missing and every shell-accurate STEP/IFC/drawing
+> silently degraded to the parametric kit on deploy. The `.dockerignore` also
+> excludes the gitignored engineering CAD cache
+> (`scripts/render-rig/real-assets/`) so full masters can never enter the
+> build context.
+
+For a local test build (no deploy):
+
+```bash
+# From repo root:
+python3 scripts/stage-customer-step.py          # stage customer STEPs (see below)
+docker build -f geometry-service/Dockerfile -t willbuild-geometry .
+docker run --rm -p 8080:8080 willbuild-geometry
+# Then: curl http://localhost:8080/health
+```
+
+---
+
+## Customer-download STEP files — the simplified-files home (Phase 0.19)
+
+The customer-cleared simplified STEPs (`GVX-Simple.STEP`, `TEX-Post-Top.STEP`,
+`TEX-AREA.STEP`) are ~27–30 MB each and gitignored, so a bare checkout ships an
+empty `factory-cad/`. The home that fixes this:
+
+1. **`geometry-service/assets/customer-step/manifest.json`** (committed) pins
+   the SHA-256 + byte size of every file cleared to ship. `app/realgeom.py`
+   refuses to serve bytes that do not hash to their pin — fail-closed, so a
+   full engineering master under a reused filename can never leave the
+   building. A cleared-but-missing file degrades to a documented
+   `factory-cad/README-MISSING.txt` note in the bundle, never to a fallback.
+2. **`scripts/stage-customer-step.py`** (stdlib python3) copies the manifest's
+   files from the dev cache (`scripts/render-rig/real-assets/step/`, or
+   `$REAL_STEP_DIR`) into `assets/customer-step/`, verifying each hash. Run it
+   **before `docker build`** — the image bakes the staged files in. Skipped
+   files are warnings (degraded deploy); hash mismatches are errors.
+3. **Swappable source:** at runtime the service reads `$CUSTOMER_STEP_DIR`
+   before the baked-in directory. When Cole's batch makes rebuild-per-file
+   annoying, point it at a directory an S3 sync (or startup fetch) fills —
+   e.g. mount/download `s3://<bucket>/customer-step/` to `/data/customer-step`
+   and set `CUSTOMER_STEP_DIR=/data/customer-step`. The committed manifest
+   still gates every byte served, so the bucket needs no trust.
+
+Growing the set = add the verified file's pin to `manifest.json` + its entry in
+`CUSTOMER_STEP_FILES` (or `CUSTOMER_STEP_FILES_BY_FIT`), re-stage, rebuild.
+
+---
+
+## AWS — App Runner from ECR (the taken path)
+
+Prerequisites: AWS CLI v2 (`brew install awscli`), Docker Desktop running, and
+an AWS login (`aws configure` / SSO). An ECR repository for this image already
+exists: `563744787247.dkr.ecr.us-east-1.amazonaws.com/willbuild-geometry`
+(us-east-1). All commands from the repo root.
+
+### Step 1 — Build for linux/amd64 and push to ECR
+
+App Runner runs **x86_64 only**, and dev machines are Apple Silicon — the plain
+`docker build` produces an arm64 image App Runner cannot run. Always build the
+deploy image with `--platform linux/amd64` (buildx + QEMU; the first amd64
+build is slow, later ones cache):
+
+```bash
+# Unauthenticated prep (already verified locally):
+python3 scripts/stage-customer-step.py
+
+# [AUTH] one-time, only if the repository does not already exist:
+aws ecr create-repository --repository-name willbuild-geometry --region us-east-1
+
+# [AUTH] login, build, push:
+aws ecr get-login-password --region us-east-1 \
+  | docker login --username AWS --password-stdin 563744787247.dkr.ecr.us-east-1.amazonaws.com
+docker buildx build --platform linux/amd64 -f geometry-service/Dockerfile \
+  -t 563744787247.dkr.ecr.us-east-1.amazonaws.com/willbuild-geometry:latest --push .
+```
+
+(Optional DWG: add `--build-arg ODA_URL="…"` — see the ODA section below.)
+
+### Step 2 — Create the App Runner service
+
+**One-time IAM role** so App Runner can pull from ECR:
+
+```bash
+# [AUTH]
+aws iam create-role --role-name AppRunnerECRAccessRole \
+  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"build.apprunner.amazonaws.com"},"Action":"sts:AssumeRole"}]}'
+aws iam attach-role-policy --role-name AppRunnerECRAccessRole \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess
+```
+
+**Console variant:** AWS Console → App Runner → Create service → Source:
+*Container registry / Amazon ECR* → pick `willbuild-geometry:latest` →
+Deployment trigger: *Manual* → ECR access role: `AppRunnerECRAccessRole` →
+Service name `willbuild-geometry` → **Port 8080** → CPU **1 vCPU**, Memory
+**2 GB** (OCCT wants headroom; 0.5 GB will OOM on fixture configs) → add the
+environment variables from the table below → Health check: protocol HTTP,
+path `/health` → Create.
+
+**CLI variant:**
+
+```bash
+# [AUTH]
+aws apprunner create-service --region us-east-1 \
+  --service-name willbuild-geometry \
+  --source-configuration '{
+    "ImageRepository": {
+      "ImageIdentifier": "563744787247.dkr.ecr.us-east-1.amazonaws.com/willbuild-geometry:latest",
+      "ImageRepositoryType": "ECR",
+      "ImageConfiguration": {
+        "Port": "8080",
+        "RuntimeEnvironmentVariables": {
+          "ALLOWED_ORIGINS": "https://willbuild.nmarkel.workers.dev"
+        }
+      }
+    },
+    "AuthenticationConfiguration": {
+      "AccessRoleArn": "arn:aws:iam::563744787247:role/AppRunnerECRAccessRole"
+    },
+    "AutoDeploymentsEnabled": false
+  }' \
+  --instance-configuration '{"Cpu": "1 vCPU", "Memory": "2 GB"}' \
+  --health-check-configuration '{"Protocol": "HTTP", "Path": "/health"}'
+```
+
+The response carries `ServiceUrl` — the service lives at
+`https://<id>.us-east-1.awsapprunner.com`. Re-deploying after a new push:
+`aws apprunner start-deployment --service-arn <arn>` (or the console's Deploy
+button).
+
+### Environment variables
+
+| Variable            | Value                                                        | Notes |
+|---------------------|--------------------------------------------------------------|-------|
+| `ALLOWED_ORIGINS`   | comma-separated frontend origins, e.g. `https://willbuild.nmarkel.workers.dev,https://<tunnel>.trycloudflare.com` | CORS. Localhost dev origins are always merged in by the service. Tunnel hostnames are ephemeral — a tunnel-served frontend should instead proxy `/geometry/*` same-origin (see `docs` on the 0.18 share setup), which needs no CORS entry at all. |
+| `CUSTOMER_STEP_DIR` | *(unset)* — or a mounted/synced dir when the S3 swap happens | See the simplified-files home section. |
+| `ODA_PATH`          | *(unset)* — path to ODAFileConverter if DWG is enabled       | See ODA section. |
+
+### Cost note
+
+App Runner has **no scale-to-zero**: the minimum provisioned instance is
+billed continuously (memory-hours) even when idle — expect **~$5–10/mo** at
+1 vCPU / 2 GB with light traffic (provisioned ≈ $0.007/GB-hr ⇒ ~$10/mo for
+2 GB, plus active vCPU-seconds while generating). That is the price of no
+cold starts. If that line item ever matters, the same image runs anywhere
+(ECS, EC2, fly) — nothing in it is App Runner-specific.
+
+### Step 3 — Wire the frontend and verify
+
+```bash
+# 1. point the frontend at the service (build-time var):
+echo 'VITE_GEOMETRY_URL=https://<id>.us-east-1.awsapprunner.com' > .env.production
+npm run build
+
+# 2. verify health from anywhere:
+curl https://<id>.us-east-1.awsapprunner.com/health
+# Expected: {"status":"ok","adapters":{"step":true,...}} — no "dwg" unless ODA was baked in.
+
+# 3. verify one real download end-to-end (async job flow):
+APP=https://<id>.us-east-1.awsapprunner.com
+CFG='{"config":{"configId":"deploy-check","pole":"alum-pole-20","baseCover":"bc-cl1-small-clamshell","arm":"sh1-shepherds-hook","fixture":"gvx-pendant","finish":"matte-black","rev":1},"formats":["step","bundle"]}'
+JOB=$(curl -s -X POST $APP/jobs -H 'content-type: application/json' -d "$CFG" | python3 -c 'import sys,json;print(json.load(sys.stdin)["jobId"])')
+sleep 20 && curl -s $APP/jobs/$JOB | python3 -m json.tool     # status done + files[]
+# download the bundle URL it lists and check factory-cad/ contains the GVX .step
+```
+
+On Cloudflare Pages/Workers, set `VITE_GEOMETRY_URL` as a build env var
+instead of `.env.production` and trigger a redeploy. **Trap (bit twice):** a
+`npm run build` without the var bakes in `http://localhost:8000` and every
+remote user's downloads silently point at their own machine.
+
+---
+
+# fly.io — NOT TAKEN (kept for reference)
+
+Everything below was the Nick-era fly.io prep. Tyler's 8/19 call chose AWS;
+`fly.toml` stays untouched as dormant config.
 
 ## Prerequisites
 
@@ -14,18 +207,6 @@ point at the deployed URL.
   a local Docker daemon is not strictly required, but useful for local testing)
 - Access to the WiLLBuild Cloudflare Pages/Workers project to set env vars
 
----
-
-## Docker Build Context
-
-The Dockerfile lives at `geometry-service/Dockerfile` but **must be built from
-the repo root** because it COPYs two subtrees:
-
-| COPY source               | Destination in image    | Why                          |
-|---------------------------|-------------------------|------------------------------|
-| `geometry-service/app/`   | `/app/app/`             | FastAPI application code     |
-| `public/catalog.json`     | `/app/catalog.json`     | Catalog data (not in gs dir) |
-
 The `fly.toml` `[build]` section already sets `dockerfile = "geometry-service/Dockerfile"`,
 so fly.io uses the repo root as the build context automatically when you run:
 
@@ -33,17 +214,6 @@ so fly.io uses the repo root as the build context automatically when you run:
 # From the repo root:
 fly deploy --config geometry-service/fly.toml
 ```
-
-For a local test build (no deploy):
-
-```bash
-# From repo root:
-docker build -f geometry-service/Dockerfile -t willbuild-geometry .
-docker run --rm -p 8080:8080 willbuild-geometry
-# Then: curl http://localhost:8080/health
-```
-
----
 
 ## Step 1 — Create the fly.io app (first deploy only)
 

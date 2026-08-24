@@ -39,8 +39,8 @@
     },
     "gvx-pendant": {
       "file": "renders/web-glb/gvx-pendant.glb",
-      "bytes": 321864,
-      "sha256": "0d2a4a4683689cd0a8c31a88118c067cf9185f4228d2b61fc89edc73c50ebfbb"
+      "bytes": 286324,
+      "sha256": "90044cfd2e18d8089c57bc2e0819e548dae14f88d2f1d440aa8f5f0ef631b713"
     },
     "mvx-coach": {
       "file": "renders/web-glb/mvx-coach.glb",
@@ -67,8 +67,8 @@
     },
     "tex-post-top": {
       "file": "renders/web-glb/tex-post-top.glb",
-      "bytes": 381292,
-      "sha256": "a1e489d4e7ebdcc8432055d4094fc7f7a2f1a817f31af5d149e93b08a25b9eeb"
+      "bytes": 290840,
+      "sha256": "1aed820bb626b4e580e618f24f6ccfd4dd53c75fa6fde4dcaca368e1fe275516"
     },
     "willstudio-acc-clamshell-extender": {
       "file": "renders/web-glb/willstudio-acc-clamshell-extender.glb",

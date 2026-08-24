@@ -104,9 +104,20 @@ what is left to choose. An incomplete number never looks spec-able.
 ### The customer download, and the allowlist that gates it
 
 `factory-cad/<part number>.step` is back in the bundle (Phase 0.11, Workstream I) — but only for
-components whose **de-featured shell** has been confirmed. Today that is exactly one:
-`gvx-pendant` → `GVX-Simple.STEP` (Cole's simplified export, confirmed by Nick 2026-08-10). A
-fully-specified GVX therefore ships as `factory-cad/WD-GVX-80-30-MV-5W-BK.step`.
+components whose **de-featured shell** has been confirmed. Phase 0.19 grew the set to three
+files across two parts: `gvx-pendant` → `GVX-Simple.STEP` (confirmed by Nick 2026-08-10) and
+`tex-post-top` → `TEX-Post-Top.STEP`, with SMS/SMR-mounted TEX configs resolving
+`TEX-AREA.STEP` instead through the mounting-aware `CUSTOMER_STEP_FILES_BY_FIT` (both TEX
+files are Cole's 8/24 simplified exports, pending Nick's Autodesk check — see the Phase 0.19
+exec response). A fully-specified GVX therefore ships as
+`factory-cad/WD-GVX-80-30-MV-5W-BK.step`.
+
+Since 0.19 every cleared file is also **hash-pinned** in
+`geometry-service/assets/customer-step/manifest.json`: `customer_step_path()` refuses bytes
+that do not hash to their pin, so a full engineering master under a reused filename can never
+ship (TEX-AREA.STEP was literally replaced in place on the drive — the retired full-engineering
+bytes fail the pin). The staged copies in `assets/customer-step/` are what the Docker image
+bakes in; `scripts/stage-customer-step.py` fills them from the dev cache.
 
 The gate is `CUSTOMER_STEP_FILES` in `app/realgeom.py`, resolved through `customer_step_path()`,
 and it is deliberately a **separate table from `BASE_FILES`** rather than a flag on it:

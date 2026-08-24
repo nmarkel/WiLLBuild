@@ -112,7 +112,14 @@ def test_gvx_hss_variant_cannot_shadow_the_gvx_master():
     assert ("gvx-pendant", "GVX") not in realgeom.CLUSTER_FILES
     # Registering a cluster file must never open the customer download gate.
     assert "GVX-HSS.STEP" not in realgeom.CUSTOMER_STEP_FILES.values()
-    assert "TEX-AREA.STEP" not in realgeom.CUSTOMER_STEP_FILES.values()
+    assert "GVX-HSS.STEP" not in realgeom.CUSTOMER_STEP_FILES_BY_FIT.values()
+    # Phase 0.19: the NAME TEX-AREA.STEP is now legitimately in the by-fit
+    # allowlist — Cole REPLACED the 8/11 full-engineering file with his
+    # simplified export (same name, new bytes, sha b4dc0888…).  The guard this
+    # line used to provide by NAME now lives in the hash manifest: the retired
+    # full-engineering bytes fail their pin and are never served (see
+    # test_customer_manifest_pins_out_the_retired_full_engineering_file).
+    assert realgeom.CUSTOMER_STEP_FILES_BY_FIT[("tex-post-top", "SMS")] == "TEX-AREA.STEP"
 
 
 def test_design_codes_cover_every_arm_count_of_the_mapped_families():
@@ -196,3 +203,69 @@ def test_real_arm_reaches_along_plus_x(catalog, monkeypatch):
     assert abs(bb.min.X) < 100          # collar stays on the pole axis
     assert bb.min.Z == pytest.approx(0.0, abs=0.5)
     realgeom.load_real_solid.cache_clear()
+
+
+# ---------------------------------------------------------------------------
+# Customer-step home + hash manifest (Phase 0.19, Workstream A/B)
+# ---------------------------------------------------------------------------
+
+def _manifest_files() -> dict:
+    return realgeom._customer_manifest()
+
+
+def test_every_allowlisted_name_is_pinned_in_the_manifest():
+    """A table entry without a SHA pin can never serve — catch it at review time.
+
+    customer_step_path refuses any file that does not hash to its manifest pin,
+    so an allowlist entry missing from manifest.json is dead wiring: cleared on
+    paper, unshippable in practice.  The two must grow together.
+    """
+    pins = _manifest_files()
+    for name in {*realgeom.CUSTOMER_STEP_FILES.values(), *realgeom.CUSTOMER_STEP_FILES_BY_FIT.values()}:
+        assert name in pins, f"{name} is allowlisted but has no manifest pin"
+        assert pins[name].get("sha256"), f"{name}: manifest entry carries no sha256"
+
+
+def test_customer_manifest_pins_out_the_retired_full_engineering_file():
+    """Cole replaced TEX-AREA.STEP in place (8/24): same name, simplified bytes.
+
+    The retired 8/11 full-engineering export (sha 3602e91b…, 208 solids) must
+    never ship under its reused name — the pin is the simplified file's hash.
+    """
+    pin = _manifest_files()["TEX-AREA.STEP"]
+    assert pin["sha256"] == "b4dc08885264fa291cb4b6790aca342070e0c9242d4d34738aa7b026224c39fd"
+    assert pin["sha256"] != "3602e91b186ff1461f3400fd17192e39a707cf655b60a8d1402a0c0929e4e324"
+
+
+def test_a_hash_mismatched_file_is_treated_as_missing(tmp_path, monkeypatch):
+    """The fail-closed core: presence is not clearance — bytes must match the pin."""
+    (tmp_path / "GVX-Simple.STEP").write_bytes(b"NOT THE CLEARED FILE")
+    monkeypatch.setenv("CUSTOMER_STEP_DIR", str(tmp_path))
+    monkeypatch.setenv("REAL_STEP_DIR", str(tmp_path / "nowhere"))
+    assert realgeom.customer_step_path("gvx-pendant") is None
+
+
+def test_mounting_code_selects_the_side_mount_file():
+    """TEX: 3T (and no code) resolve the post top; SMS/SMR resolve the Area file.
+
+    Table-level assertions run everywhere; path resolution is exercised only
+    when the CAD is on this machine.
+    """
+    assert realgeom.CUSTOMER_STEP_FILES["tex-post-top"] == "TEX-Post-Top.STEP"
+    for code in ("SMS", "SMR"):
+        assert realgeom.CUSTOMER_STEP_FILES_BY_FIT[("tex-post-top", code)] == "TEX-AREA.STEP"
+    base = realgeom.customer_step_path("tex-post-top")
+    if base is not None:
+        assert base.name == "TEX-Post-Top.STEP"
+        assert realgeom.customer_step_path("tex-post-top", "3T").name == "TEX-Post-Top.STEP"
+        assert realgeom.customer_step_path("tex-post-top", "SMS").name == "TEX-AREA.STEP"
+        assert realgeom.customer_step_path("tex-post-top", "SMR").name == "TEX-AREA.STEP"
+
+
+def test_is_customer_cleared_reads_tables_not_disk(monkeypatch):
+    monkeypatch.setenv("CUSTOMER_STEP_DIR", "/nonexistent")
+    monkeypatch.setenv("REAL_STEP_DIR", "/nonexistent")
+    assert realgeom.is_customer_cleared("gvx-pendant")
+    assert realgeom.is_customer_cleared("tex-post-top", "SMS")
+    assert not realgeom.is_customer_cleared("drx-post-top")
+    assert not realgeom.is_customer_cleared("drx-post-top", "SMS")

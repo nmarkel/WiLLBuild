@@ -224,6 +224,48 @@ def _pole_shell(catalog: dict, cfg, pole: dict) -> tuple[np.ndarray, np.ndarray]
     return _pole_tube_mesh(radius, wall, y0, y1)
 
 
+def _frustum_mesh(r_bottom: float, r_top: float, y0: float, y1: float):
+    """A closed solid frustum (side band + both cap fans), outward-wound."""
+    n = _POLE_SEGMENTS
+    ang = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
+    cos, sin = np.cos(ang), np.sin(ang)
+    bottom = np.stack([r_bottom * cos, np.full(n, y0), r_bottom * sin], axis=1)
+    top = np.stack([r_top * cos, np.full(n, y1), r_top * sin], axis=1)
+    verts = np.vstack([bottom, top, [[0.0, y0, 0.0]], [[0.0, y1, 0.0]]])
+    cb, ct = 2 * n, 2 * n + 1
+    tris: list[tuple[int, int, int]] = []
+    for i in range(n):
+        j = (i + 1) % n
+        tris.extend([(i, j, n + j), (i, n + j, n + i)])  # side, outward
+        tris.append((cb, j, i))                           # bottom cap (-y)
+        tris.append((ct, n + i, n + j))                   # top cap (+y)
+    return verts, np.asarray(tris, dtype=np.int64)
+
+
+def _pseudo_arm_shell(arm: dict):
+    """A pseudo-part's schematic solid, generated from its own catalog dims.
+
+    Phase 0.19: `direct-mount` is a configuration concept that needs no CAD
+    ever (0.12), so "no shell file" is its permanent, CORRECT state — but the
+    no-hybrid rule read it as a missing core and dropped every tenon-fixture
+    config to the parametric kit the moment TEX became configurable.  Like the
+    generated pole, its truth IS its catalog placeholder (a 0.08 m tenon
+    adapter frustum), so both the viewer and this mesh describe one object.
+    Real arms never take this path: it requires ``pseudoPart``.
+    """
+    if not arm.get("pseudoPart"):
+        return None
+    ph = arm.get("placeholder") or {}
+    if ph.get("kind") != "pole":
+        return None
+    h = float(ph.get("heightM") or 0.0)
+    r_bottom = float(ph.get("radiusBottomM") or 0.0)
+    r_top = float(ph.get("radiusTopM") or r_bottom)
+    if h <= 0.0 or r_bottom <= 0.0:
+        return None
+    return _frustum_mesh(r_bottom, r_top, 0.0, h)
+
+
 def _pole_cylinder(pole: dict) -> CylinderSpec | None:
     """The pole shaft's analytic description, from the same catalog placeholder
     the parametric kit builds from. Straight shafts only — a tapered pole (no
@@ -419,8 +461,13 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     if not core:
         return None
     # The pole is generated from catalog dimensions, so it never needs a shell
-    # file; every other core part does.
-    missing = [p["id"] for p in core if p is not pole and not has_shell(p["id"])]
+    # file; a pseudo-part arm (direct-mount) is generated the same way.  Every
+    # other core part does.
+    missing = [
+        p["id"]
+        for p in core
+        if p is not pole and not has_shell(p["id"]) and _pseudo_arm_shell(p) is None
+    ]
     if missing:
         return None
 
@@ -480,7 +527,9 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
                 count = int(getattr(cfg, "armCount", None) or 1)
                 orientation = float(getattr(cfg, "armOrientation", None) or 0)
                 fix_sockets = _sockets_to(arm, fixture)
-                av, at = load_shell(arm["id"])
+                av, at = (
+                    load_shell(arm["id"]) if has_shell(arm["id"]) else _pseudo_arm_shell(arm)
+                )
                 fx = load_shell(fixture["id"]) if fixture and fix_sockets else None
                 for i, az in enumerate(_arm_azimuths(count)):
                     deg = az + orientation

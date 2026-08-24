@@ -199,27 +199,55 @@ def _factory_cad_entries(ctx: GenContext) -> list[tuple[str, bytes]]:
     added and the bundle is unchanged.
     """
     try:
-        from app.partnumber import NUMBERED_SLOTS, build_part_number, is_complete
-        from app.realgeom import customer_step_path
+        from app.partnumber import NUMBERED_SLOTS, build_part_number, is_complete, spec_codes
+        from app.realgeom import customer_step_path, is_customer_cleared
     except Exception:  # noqa: BLE001
         return []
 
     entries: dict[str, bytes] = {}
+    unavailable: list[str] = []
     for slot in NUMBERED_SLOTS:
         part_id = getattr(ctx.cfg, slot, "")
         if not part_id:
             continue
-        path = customer_step_path(part_id)
-        if path is None:
-            continue
+        # A part whose mounting column names two physical products (TEX: 3T
+        # post top vs SMS/SMR side-mount Area) resolves its cleared file per
+        # the CONFIGURED mounting, so the download matches what was specified.
+        mounting = None
+        if slot == "fixture":
+            chosen = (ctx.cfg.specOptions or {}).get(slot) or {}
+            codes = spec_codes(chosen.get("mounting"))
+            mounting = codes[0] if codes else None
         number = build_part_number(ctx.catalog, ctx.cfg, slot)
         if not is_complete(number):
             continue
         safe = number.replace("/", "-")
+        path = customer_step_path(part_id, mounting)
+        if path is None:
+            # Cleared in the allowlist but absent (or hash-mismatched) in this
+            # deployment: degrade to a documented note — NEVER a fallback to
+            # the full engineering master.
+            if is_customer_cleared(part_id, mounting):
+                unavailable.append(safe)
+            continue
         try:
             entries[f"factory-cad/{safe}.step"] = _normalize_step_bytes(path.read_bytes())
         except OSError:
+            unavailable.append(safe)
             continue
+    if unavailable:
+        note = "\n".join(
+            [
+                "Simplified factory CAD is released for the following configured",
+                "components but was not available in this build of the service:",
+                "",
+                *(f"  {n}.step" for n in sorted(set(unavailable))),
+                "",
+                "Request the files with your quote at " + _QUOTE_URL,
+                "",
+            ]
+        )
+        entries["factory-cad/README-MISSING.txt"] = note.encode("utf-8")
     return sorted(entries.items())
 
 
