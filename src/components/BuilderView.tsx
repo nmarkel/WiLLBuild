@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import type { Catalog, PoleConfig, Slot } from '../types'
 import { useConfigurator } from '../store'
+import { distributionCode, distributionShape } from '../lib/distribution'
 import { CompositeViewer } from './CompositeViewer'
 import { Panel } from './Panel'
 import { Summary } from './Summary'
@@ -65,6 +66,7 @@ export function BuilderView({ catalog, config }: Props) {
           {mode === 'night' && (
             <div className="night-disclaimer">
               Conceptual night preview — not a photometric simulation
+              {` · beam shape: ${distributionShape(distributionCode(config)).label} (2 fc contour, not to scale)`}
             </div>
           )}
           <ViewerToolbar />

@@ -29,6 +29,7 @@ from build123d import Plane, Part, project, ShapeList
 from ezdxf.colors import rgb2int
 
 from app.adapters.dxf_adapter import _draw_dimensions
+from app.adapters._drawing_sheet import pin_document, try_shell_sheet
 from app.naming import base_name
 from app.adapters._titleblock import GUNMETAL, draw as draw_titleblock
 
@@ -45,10 +46,20 @@ class DxfProjectionAdapter:
         return True
 
     def generate(self, ctx: GenContext) -> list[Path]:
+        # Phase 0.18: the shell sheet is shared with Route 1. This route's
+        # difference is how a part SILHOUETTE is produced, and the shell sheet
+        # takes its line work from the shells instead — so returning it only on
+        # Route 1 would ship a different drawing down each route and void the
+        # boundary proof in docs/adapter-swap-note.md.
+        shell_sheet = try_shell_sheet(ctx)
+        if shell_sheet is not None:
+            return [shell_sheet]
+
         if ctx.assembly is None:
             raise RuntimeError("DxfProjectionAdapter requires ctx.assembly")
 
         doc = ezdxf.new(dxfversion="R2010")
+        pin_document(doc)  # no wall clock in generated artifacts
         msp = doc.modelspace()
 
         _project_assembly(msp, ctx)

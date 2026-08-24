@@ -2014,3 +2014,21 @@ body {
   color: var(--text-dim);
   line-height: 1.3;
 }
+
+/* Night: the selected light distribution's ground footprint (Tyler 8/20). The
+   pool marks where the light lands hardest; this shows the SHAPE the customer
+   picked — Type III Medium throws differently from a 70 deg Type V Narrow, and
+   the beam used to ignore that entirely. Blurred because a hard-edged polygon
+   would read as a photometric boundary, which this deliberately is not. */
+.composite-light-footprint {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  filter: blur(10px);
+  z-index: 0;
+  /* The stage is the ASSEMBLY's box (~310px wide for a pole), and a ground
+     pattern is wider than the product it comes from, so the contour has to be
+     allowed outside the viewport. Clipped, it showed nothing but blur bleed. */
+  overflow: visible;
+}

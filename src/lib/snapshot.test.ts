@@ -71,12 +71,29 @@ describe('nightLight geometry', () => {
     // Beam spans from the lens height down to the ground line.
     expect(light.beam.top).toBe(100)
     expect(light.beam.height).toBe(700)
-    // Box width equals the pool diameter (base of the cone).
-    expect(light.beam.width).toBeCloseTo(light.pool.rx * 2, 5)
-    expect(light.beam.left).toBeCloseTo(300 - light.pool.rx, 5)
+    // Phase 0.18 (Tyler 8/20): the cone keeps the pool's proportions and only
+    // NARROWS when the chosen distribution lights less ground than that. It
+    // never widens to a Type IV's true swath, which would read as a floor.
+    expect(light.beam.width).toBeLessThanOrEqual(light.pool.rx * 2 + 1e-9)
+    expect(light.beam.width).toBeGreaterThan(light.lens.d)
+    expect(light.beam.left).toBeCloseTo(300 - light.beam.width / 2, 5)
     // Apex is a small fraction of the base → the cone tapers upward.
     expect(light.beam.apexHalfPct).toBeGreaterThan(0)
     expect(light.beam.apexHalfPct).toBeLessThan(10)
+  })
+
+  it('carries the distribution contours as ground metres, outermost first', () => {
+    // Metres, not pixels: the ground plane is the rig's own (the compass ring's
+    // plane), so the caller projects them. Outermost first so a renderer can
+    // stack them into a falloff without sorting.
+    expect(light.bands.length).toBeGreaterThan(1)
+    const spread = (band: (typeof light.bands)[number]) =>
+      Math.max(...band.ground.map(([a, l]) => Math.hypot(a, l)))
+    for (let i = 1; i < light.bands.length; i += 1) {
+      expect(spread(light.bands[i])).toBeLessThan(spread(light.bands[i - 1]))
+      expect(light.bands[i].weight).toBeGreaterThan(light.bands[i - 1].weight)
+      expect(light.bands[i].fc).toBeGreaterThan(light.bands[i - 1].fc)
+    }
   })
 
   it('clamps a fixture at/below the ground line to a zero-height beam', () => {

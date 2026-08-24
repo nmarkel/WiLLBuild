@@ -87,3 +87,68 @@ HTTP 200 with the DXF file and the warning:
 
 DWG generation is available on machines with ODA File Converter at
 `/Applications/ODAFileConverter.app/Contents/MacOS/ODAFileConverter` or on PATH.
+
+## Phase 0.18 Update — The Shell Sheet Is Shared
+
+Both routes now call `app/adapters/_drawing_sheet.try_shell_sheet(ctx)` FIRST.
+When every core part has a gated shell, it returns the four-view C-size sheet
+built from the shell assembly — the same geometry the STEP and IFC ship — and
+the route flag has nothing left to select, because that sheet takes its line
+work from the shells rather than from either route's silhouette.
+
+Returning the new sheet on `direct` only would have shipped a *different
+drawing* down each route, which is exactly what this note exists to rule out.
+The flag still chooses between Route 1 and Route 2 for configs the shells do
+not cover, where the legacy parametric elevations remain.
+
+Dimensions on the shell sheet are real `DIMENSION` entities (they were plain
+TEXT plus witness lines when the sheet first landed, which reads correctly and
+measures nothing). The views are drawn reduced 1:N in inches, so `DIMLFAC`
+carries the sheet scale on dimension style `WILL-DIM`: measured paper distance
+x DIMLFAC = true size, the ordinary convention for a scaled model-space
+drawing. Code 42 (`actual_measurement`) therefore holds the PAPER distance.
+
+Dimension measurements for `alum-pole-20 + CL2 + sh1-shepherds-hook +
+gvx-pendant + matte-black`, both routes, in mm:
+
+```
+Route "direct":     [479.3, 479.4, 938.8, 938.8, 6946.0]
+Route "projection": [479.3, 479.4, 938.8, 938.8, 6946.0]
+Identical: True
+```
+
+Note the overall height reads **6946.0 mm** where the parametric
+`dims.overall_height` is **6906.4 mm** — a 40 mm (0.6%) gap. That is the
+shell-vs-placeholder difference, not a drawing error, and the shell is the more
+accurate of the two. `tests/test_dxf.py` asserts the dimension against the
+drawing's own geometry exactly and against the placeholder within 1%.
+
+The shell sheet is also byte-reproducible, which the pre-0.18 DXF never was
+($TDCREATE/$TDUPDATE, random GUIDs, a save-time ezdxf marker — see
+`pin_document`). With that pinned, the two routes agree to the BYTE on a
+shell-covered config, not merely on their dimension values:
+
+```
+sha256 direct     == sha256 projection      True
+sha256 run 1      == sha256 run 2           True
+```
+
+## Phase 0.18 Update — Component Outlines Only
+
+The sheet draws ONE outline per component (fixture, arm, pole, base cover) and
+nothing inside it, with the components opaque: `project_outlines` unions each
+component's projected triangles and subtracts the components in front of it
+(`app/drawing.py`). Before that it drew silhouette + crease line work per mesh,
+which put every internal feature of a casting on the sheet and, having no
+hidden-line removal, drew parts through each other.
+
+Measured on the config above: **30,180 LINE entities / 5.08 MB down to 2,655 /
+517 KB**, with the envelope unmoved (`tests/test_drawing.py` asserts the
+extents, that every segment sits on a component boundary, and that nothing is
+drawn under a nearer component). The pole's base casting and hand hole are part
+of the POLE outline rather than separate items.
+
+Known limitation, asserted as such rather than papered over: components are
+ordered as wholes by their nearest point, so two interpenetrating parts — an
+arm whose tip sits inside the fixture's socket — sort as units. Per-face hidden
+line removal needs B-rep solids (OCC HLRBRep).
