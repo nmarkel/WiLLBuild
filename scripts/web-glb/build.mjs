@@ -45,6 +45,18 @@ const BUDGET_BYTES = 3 * 1024 * 1024
 const TARGET_BYTES = 2 * 1024 * 1024
 // Decimation entry point: cap shipped triangles before byte-driven refinement.
 const TARGET_TRIS = 250_000
+// The shipped shell also feeds the geometry-service (export-service-shells →
+// concept STEP/IFC meshes), whose deliverables carry a 10 MB per-file
+// guarantee (geometry-service/tests/test_weight.py). STEP is the binding
+// format, and its bytes-per-tri is NOT constant across meshes — measured on
+// the GVX config 8/24: 90,626 fixture tris → 14.14 MB, 59,816 → 10.15 MB
+// (a bare 3% under the gate), old 45,552 → 7.24 MB. 55k puts the tested
+// config near 9.5 MB. NOTE the guarantee is only TESTED on GVX+SH1+CL1:
+// tex-post-top (97.9k) and drx-post-top (87.4k) pre-date this ceiling and
+// already blow the gate, and a fat config (CL3 cover + accessories) adds
+// ~40k tris the sampled config doesn't carry — closing that fleet-wide is
+// an open decision, not this constant.
+const SERVICE_TRIS = 55_000
 // Shell-only re-check floor on the OUTPUT (fraction of triangles visible).
 const VIS_MIN = 0.95
 // Lossiness floor: the shipped mesh must be a strict, non-manufacturable
@@ -157,12 +169,20 @@ async function main() {
 
   for (const part of wanted) {
     const rigEntry = rigRegistry[part.id]
-    const glbRel = typeof rigEntry === 'string' ? rigEntry : rigEntry?.glb
+    // Phase 0.17.5 (Nick 8/20): a part may carry a dedicated SHELL source —
+    // Cole's de-featured export (GVX-Simple) — so the geometry downloads
+    // never derive from the engineering master. The render master stays
+    // `glb`; only this pipeline prefers `shellGlb`.
+    const glbRel =
+      typeof rigEntry === 'string' ? rigEntry : (rigEntry?.shellGlb ?? rigEntry?.glb)
     const rotateYDeg = typeof rigEntry === 'object' ? (rigEntry.rotateY ?? 0) : 0
     const masterPath = glbRel ? resolve(RIG_DIR, glbRel) : null
     if (!masterPath || !existsSync(masterPath)) {
       failures.push(`${part.id}: no local master GLB (${glbRel ?? 'unmapped'})`)
       continue
+    }
+    if (typeof rigEntry === 'object' && rigEntry.shellGlb) {
+      console.log(`  shell source: ${rigEntry.shellGlb} (render master untouched)`)
     }
 
     console.log(`\n=== ${part.id} ===`)
@@ -188,7 +208,7 @@ async function main() {
     // target AND the lossiness ceiling (shipped ≤ 0.5 × master tessellation —
     // decimation is a feature: the shipped mesh must be non-manufacturable).
     const outPath = join(tmp, `${part.id}.web.glb`)
-    const triCeiling = Math.floor(cull.stats.totalTris * MAX_SHIP_RATIO * 0.95)
+    const triCeiling = Math.min(Math.floor(cull.stats.totalTris * MAX_SHIP_RATIO * 0.95), SERVICE_TRIS)
     let si = Math.min(1, TARGET_TRIS / cull.stats.keptTris, triCeiling / cull.stats.keptTris)
     let bytes = Infinity
     let shippedTris = Infinity
@@ -198,7 +218,7 @@ async function main() {
       bytes = outStat.length
       shippedTris = glbTriCount(outStat)
       console.log(`  gltfpack -si ${si.toFixed(4)} → ${(bytes / 1048576).toFixed(2)} MB, ${shippedTris} tris`)
-      if (bytes <= TARGET_BYTES && shippedTris <= cull.stats.totalTris * MAX_SHIP_RATIO) break
+      if (bytes <= TARGET_BYTES && shippedTris <= triCeiling) break
       si *= Math.min(bytes > TARGET_BYTES ? TARGET_BYTES / bytes : 1, shippedTris > triCeiling ? triCeiling / shippedTris : 0.8)
     }
     if (bytes > BUDGET_BYTES) {
@@ -224,6 +244,8 @@ async function main() {
       problems.push(`area-weighted visible fraction ${check.areaFrac.toFixed(3)} < ${VIS_MIN}`)
     if (check.totalTris > cull.stats.totalTris * MAX_SHIP_RATIO)
       problems.push(`shipped ${check.totalTris} tris > ${MAX_SHIP_RATIO} × master ${cull.stats.totalTris}`)
+    if (check.totalTris > SERVICE_TRIS)
+      problems.push(`shipped ${check.totalTris} tris > ${SERVICE_TRIS} service ceiling (10 MB STEP/IFC gate)`)
     if (materialsIn.join('|') !== check.materials.join('|'))
       problems.push(`material identity changed: [${materialsIn}] → [${check.materials}]`)
     if (!check.materials.some((m) => m === 'will-body' || m === ''))

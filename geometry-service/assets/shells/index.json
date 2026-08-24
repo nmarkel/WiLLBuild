@@ -59,11 +59,11 @@
     },
     "gvx-pendant": {
       "file": "assets/shells/gvx-pendant.glb",
-      "bytes": 954020,
-      "sha256": "ae07aa70352975a74010255895c09c2a255bcd4acc64f143298947e7cd1218e7",
-      "sourceSha256": "90ec624dc09f5dfe762e59ce79a016c81dbead17b1765b4a717a922d02822df1",
+      "bytes": 1283724,
+      "sha256": "d243d103c831c84fa3f00a04917705d25d916bc681b5a3fe19a5cdca2fde3c8f",
+      "sourceSha256": "0d2a4a4683689cd0a8c31a88118c067cf9185f4228d2b61fc89edc73c50ebfbb",
       "rotateYDegBaked": 0,
-      "triangles": 45552
+      "triangles": 54699
     },
     "mvx-coach": {
       "file": "assets/shells/mvx-coach.glb",

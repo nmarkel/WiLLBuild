@@ -22,7 +22,10 @@
   "bc-cl3-large-clamshell": "real-assets/glb/bc-cl3-large-clamshell.glb",
   "bc-sc1-spun-collar": "real-assets/glb/bc-sc1-spun-collar.glb",
   "bc-sc2-spun-collar-split": "real-assets/glb/bc-sc2-spun-collar-split.glb",
-  "gvx-pendant": "real-assets/glb/gvx-pendant.glb",
+  "gvx-pendant": {
+    "glb": "real-assets/glb/gvx-pendant.glb",
+    "shellGlb": "real-assets/glb/gvx-pendant.shell.glb"
+  },
   "drx-post-top": "real-assets/glb/drx-post-top.glb",
   "tex-post-top": "real-assets/glb/tex-post-top.glb",
   "mvx-coach": "real-assets/glb/mvx-coach.glb",

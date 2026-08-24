@@ -122,3 +122,25 @@ def test_hand_hole_files_are_adders_not_the_poles_render_source():
     assert pole_sources == {"RSAA-4040-12.STEP"}
     for f in ("HH-4R.STEP", "HH-5R.STEP", "HH-6R.STEP"):
         assert f not in pole_sources
+
+
+def test_gvx_simple_is_the_shell_source_not_unmapped():
+    """Nick 8/20: the IFC / concept-STEP shell must show Cole's de-featured
+    GVX, not a shell culled from the engineering master (he could tell the
+    download wasn't the simple fixture).  GVX-Simple.STEP was already
+    Nick-confirmed (2026-08-10, realgeom.customer_step_path) as the customer
+    factory-cad STEP — SHELL_SOURCES wires the same file as the web/service
+    SHELL source.  It must never enter INGEST: the render layers keep the
+    full master (the compositor hides the stem behind the arm; a download
+    cannot)."""
+    unmapped = {e["file"] for e in ingest.UNMAPPED}
+    assert "GVX-Simple.STEP" not in unmapped
+    ingest_files = {e["file"] for e in ingest.INGEST}
+    assert "GVX-Simple.STEP" not in ingest_files
+    by_file = {e["file"]: e for e in ingest.SHELL_SOURCES}
+    entry = by_file["GVX-Simple.STEP"]
+    assert entry["part"] == "gvx-pendant"
+    assert entry["out"] == "gvx-pendant.shell"
+    # Same normalization frame as the master (origin=top), so the socket walk
+    # places it identically (measured: same 0.2397 m bezel radius, top at 0).
+    assert entry["origin"] == "top"

@@ -754,17 +754,24 @@
       "designCode": "WM2",
       "fitCode": null,
       "note": "See WM1."
-    },
+    }
+  ],
+  "shellSources": [
     {
       "file": "GVX-Simple.STEP",
-      "kind": "unmapped",
+      "kind": "shell-source",
       "present": true,
       "bytes": 27057296,
       "sha256": "4708049da00e1ab60d1a82109a495d9819949a6ca5cc47f743629ea2b6fa0010",
-      "partId": null,
+      "partId": "gvx-pendant",
       "designCode": "GVX",
       "fitCode": "PM",
-      "note": "\u26a0\ufe0f NEEDS A HUMAN CALL. A 27 MB GVX against the 88 MB WD-GVX-PM master already ingested \u2014 the name and the size are consistent with Cole's de-featured shell, which is the thing the customer STEP download is GATED on. Deliberately NOT wired into anything: gvx-pendant already renders from the full master, and treating this as the approved stripped shell without confirmation is exactly the assumption the gate exists to prevent. If Cole confirms it, it un-gates factory-cad for GVX."
+      "origin": "top",
+      "converter": "mono",
+      "tolMm": 1.0,
+      "glb": "render-rig/real-assets/glb/gvx-pendant.shell.glb",
+      "glbBytes": 13738448,
+      "note": "Cole's de-featured GVX (27 MB vs the 88 MB WD-GVX-PM master). Same normalization frame as the master (origin=top; measured 8/20: identical 0.2397 m bezel radius, stem tip at y=0), so the shell drops into the same socket walk. 410,672 tris at tol 1.0 before the web pipeline's cull/decimate."
     }
   ],
   "derived": [

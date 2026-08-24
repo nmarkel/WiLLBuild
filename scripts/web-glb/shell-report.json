@@ -113,23 +113,18 @@
       ]
     },
     "gvx-pendant": {
-      "sourceGlb": "real-assets/glb/gvx-pendant.glb",
-      "sourceSha256": "82bf1d81c1442fe64dc2df6ee9c0f8ad2a46fda956bc315197181474b59889b2",
-      "masterTris": 1123982,
-      "culledTris": 45552,
-      "shippedTris": 45552,
-      "visibleFrac": 0.9348,
-      "visibleAreaFrac": 0.9943,
-      "simplifyRatio": 1,
-      "bytes": 180936,
-      "sha256": "90ec624dc09f5dfe762e59ce79a016c81dbead17b1765b4a717a922d02822df1",
+      "sourceGlb": "real-assets/glb/gvx-pendant.shell.glb",
+      "sourceSha256": "155a4340605a19a66ae809cced46115d7ddf01169431936074c0a08c08c41e3d",
+      "masterTris": 410672,
+      "culledTris": 90626,
+      "shippedTris": 54699,
+      "visibleFrac": 0.9786,
+      "visibleAreaFrac": 0.9999,
+      "simplifyRatio": 0.6069,
+      "bytes": 321864,
+      "sha256": "0d2a4a4683689cd0a8c31a88118c067cf9185f4228d2b61fc89edc73c50ebfbb",
       "materials": [
-        "will-body",
-        "will-fixed-121212",
-        "will-fixed-363636",
-        "will-fixed-868686",
-        "will-fixed-b8ceff",
-        "will-fixed-c6c6c6"
+        "will-body"
       ]
     },
     "mvx-coach": {

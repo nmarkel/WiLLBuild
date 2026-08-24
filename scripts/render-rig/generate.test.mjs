@@ -174,6 +174,20 @@ describe('base-cover stub is a hole-punch occluder (Phase 0.17.5)', () => {
   })
 })
 
+describe('gvx shell source is the de-featured simple export (Phase 0.17.5)', () => {
+  it('gvx-pendant carries shellGlb pointing at the simple-shell GLB', () => {
+    // Nick 8/20: geometry DOWNLOADS (web shell → service shell → IFC/STEP)
+    // derive from GVX-Simple.STEP, while the RENDER master stays the full
+    // WD-GVX-PM (the compositor hides its stem behind the arm; a download
+    // cannot). realgeom.customer_step_path already ships this same file as
+    // the factory-cad STEP (Nick-confirmed 2026-08-10).
+    const entry = realParts['gvx-pendant']
+    expect(typeof entry).toBe('object')
+    expect(entry.glb).toBe('real-assets/glb/gvx-pendant.glb')
+    expect(entry.shellGlb).toBe('real-assets/glb/gvx-pendant.shell.glb')
+  })
+})
+
 describe('real-parts.json matches the ingest provenance record (spec D8 union)', () => {
   // docs/real-geometry.json is mechanically regenerated (write_manifest() in
   // ingest.py) from the exact same INGEST/DERIVED literals real-parts.json is

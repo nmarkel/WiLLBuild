@@ -39,8 +39,8 @@
     },
     "gvx-pendant": {
       "file": "renders/web-glb/gvx-pendant.glb",
-      "bytes": 180936,
-      "sha256": "90ec624dc09f5dfe762e59ce79a016c81dbead17b1765b4a717a922d02822df1"
+      "bytes": 321864,
+      "sha256": "0d2a4a4683689cd0a8c31a88118c067cf9185f4228d2b61fc89edc73c50ebfbb"
     },
     "mvx-coach": {
       "file": "renders/web-glb/mvx-coach.glb",

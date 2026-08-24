@@ -362,14 +362,28 @@ UNMAPPED: list[dict] = [
          note="Wall Mount. On the ordering sheet but has NO catalog part yet "
               "(docs/part-numbers.md, 'Open confirmations')."),
     dict(file="WM2.STEP", part=None, design="WM2", fit=None, note="See WM1."),
-    dict(file="GVX-Simple.STEP", part=None, design="GVX", fit="PM",
-         note="⚠️ NEEDS A HUMAN CALL. A 27 MB GVX against the 88 MB WD-GVX-PM master "
-              "already ingested — the name and the size are consistent with Cole's "
-              "de-featured shell, which is the thing the customer STEP download is "
-              "GATED on. Deliberately NOT wired into anything: gvx-pendant already "
-              "renders from the full master, and treating this as the approved "
-              "stripped shell without confirmation is exactly the assumption the gate "
-              "exists to prevent. If Cole confirms it, it un-gates factory-cad for GVX."),
+]
+
+# ---------------------------------------------------------------------------
+# SHELL SOURCES (Phase 0.17.5, Nick 8/20): a de-featured export that feeds the
+# GEOMETRY-DOWNLOAD shell pipeline (web-glb -> service shells -> IFC/STEP)
+# INSTEAD of the render master. Never enters INGEST — the render layers keep
+# the full master (the compositor hides its stem behind the arm; a download
+# cannot hide anything). realgeom.customer_step_path already ships the same
+# file as the factory-cad STEP (Nick-confirmed 2026-08-10), so this closes the
+# gap where the IFC still showed a shell culled from the engineering master.
+# Converted by ``ingest.py --shells`` to GLB_DIR/<out>.glb; real-parts.json's
+# entry carries ``shellGlb`` pointing at it, and scripts/web-glb/build.mjs
+# prefers shellGlb over glb.
+# ---------------------------------------------------------------------------
+SHELL_SOURCES: list[dict] = [
+    dict(file="GVX-Simple.STEP", part="gvx-pendant", out="gvx-pendant.shell",
+         design="GVX", fit="PM", origin="top", mode="mono", tol=1.0,
+         note="Cole's de-featured GVX (27 MB vs the 88 MB WD-GVX-PM master). "
+              "Same normalization frame as the master (origin=top; measured "
+              "8/20: identical 0.2397 m bezel radius, stem tip at y=0), so "
+              "the shell drops into the same socket walk. 410,672 tris at "
+              "tol 1.0 before the web pipeline's cull/decimate."),
 ]
 
 # Poles derived by axial scaling from the one real pole export (Phase 0.10.5,
@@ -421,7 +435,9 @@ DERIVED: list[dict] = derive_scaled_poles(_CATALOG)
 
 def convert_one(entry: dict) -> dict:
     step_path = os.path.join(STEP_DIR, entry["file"])
-    out_path = os.path.join(GLB_DIR, f"{entry['part']}.glb")
+    # SHELL_SOURCES write under their own `out` name — <part>.glb is the
+    # render master and a shell source must never overwrite it.
+    out_path = os.path.join(GLB_DIR, f"{entry.get('out') or entry['part']}.glb")
     os.makedirs(GLB_DIR, exist_ok=True)
     t0 = time.time()
     rot = dict(rotate_x=entry.get("rotateX", 0.0), rotate_z=entry.get("rotateZ", 0.0))
@@ -497,7 +513,7 @@ def write_manifest() -> str:
     def describe(entry: dict, kind: str) -> dict:
         step_path = os.path.join(STEP_DIR, entry["file"])
         present = os.path.isfile(step_path)
-        glb_path = os.path.join(GLB_DIR, f"{entry.get('part', '')}.glb")
+        glb_path = os.path.join(GLB_DIR, f"{entry.get('out') or entry.get('part', '')}.glb")
         out = {
             "file": entry["file"],
             "kind": kind,
@@ -510,7 +526,7 @@ def write_manifest() -> str:
         }
         if "armCount" in entry:
             out["armCount"] = entry["armCount"]
-        if kind == "component":
+        if kind in ("component", "shell-source"):
             out["origin"] = entry.get("origin")
             out["converter"] = entry.get("mode")
             out["tolMm"] = entry.get("tol")
@@ -569,6 +585,7 @@ def write_manifest() -> str:
         "components": [describe(e, "component") for e in INGEST],
         "clusters": [describe(e, "cluster") for e in CLUSTERS],
         "unmapped": [describe(e, "unmapped") for e in UNMAPPED],
+        "shellSources": [describe(e, "shell-source") for e in SHELL_SOURCES],
         "derived": [describe_derived(e) for e in DERIVED],
     }
     path = os.path.abspath(MANIFEST_PATH)
@@ -585,6 +602,29 @@ def main(argv: list[str]) -> int:
 
     if "--manifest" in argv:
         print(f"wrote {write_manifest()}")
+        return 0
+
+    if "--shells" in argv:
+        # SHELL_SOURCES write to GLB_DIR/<out>.glb — never <part>.glb, which
+        # is the render master and must not be overwritten by a shell source.
+        results = {}
+        for entry in SHELL_SOURCES:
+            if only and entry["file"] not in only:
+                continue
+            print(f"converting shell source {entry['file']} -> {entry['out']}.glb ...", flush=True)
+            try:
+                stats = convert_one(entry)
+            except Exception as exc:  # noqa: BLE001 — one bad file must not stop the batch
+                print(f"  FAILED: {exc}", flush=True)
+                results[entry["out"]] = {"error": str(exc)}
+                continue
+            print(
+                f"  {stats['glb_bytes'] / 1e6:.1f} MB, {stats.get('triangles', 0)} tris, "
+                f"{stats['seconds']}s",
+                flush=True,
+            )
+            results[entry["out"]] = stats
+        print(json.dumps(results, indent=2))
         return 0
 
     if "--derived" in argv:
