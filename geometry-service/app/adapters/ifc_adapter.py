@@ -81,6 +81,12 @@ class IfcAdapter:
         ifcopenshell.api.run(
             "unit.assign_unit", f, length={"is_metric": True, "raw": "MILLIMETERS"}
         )
+        # assign_unit builds the assignment through a Python set of entity
+        # objects (identity-hash ordering), so IFCUNITASSIGNMENT's member order
+        # varies run to run — re-sort by entity id to keep the file
+        # byte-deterministic.
+        units_in_context = project.UnitsInContext
+        units_in_context.Units = sorted(units_in_context.Units, key=lambda u: u.id())
         model_ctx = ifcopenshell.api.run("context.add_context", f, context_type="Model")
         body_ctx = ifcopenshell.api.run(
             "context.add_context",
