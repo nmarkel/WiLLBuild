@@ -342,7 +342,7 @@
       "converter": "color",
       "tolMm": 1.0,
       "glb": "render-rig/real-assets/glb/gvx-pendant.glb",
-      "glbBytes": 21605844
+      "glbBytes": 19002600
     },
     {
       "file": "DRX-Post-Top.STEP",
@@ -357,7 +357,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/drx-post-top.glb",
-      "glbBytes": 35739460
+      "glbBytes": 20781080
     },
     {
       "file": "TEX.STEP",
@@ -372,7 +372,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/tex-post-top.glb",
-      "glbBytes": 33153700
+      "glbBytes": 19476992
     },
     {
       "file": "MXV.STEP",
@@ -387,7 +387,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/mvx-coach.glb",
-      "glbBytes": 34084056
+      "glbBytes": 21260724
     },
     {
       "file": "RXB.STEP",
@@ -403,7 +403,7 @@
       "tolMm": 1.5,
       "rotateXDeg": 90,
       "glb": "render-rig/real-assets/glb/willstudio-rxb-sxb-bollard.glb",
-      "glbBytes": 6269244
+      "glbBytes": 3221332
     },
     {
       "file": "DWX.STEP",
@@ -419,7 +419,7 @@
       "tolMm": 1.5,
       "rotateXDeg": -90,
       "glb": "render-rig/real-assets/glb/willstudio-dwx-flood-spot.glb",
-      "glbBytes": 27956536
+      "glbBytes": 21786488
     }
   ],
   "clusters": [

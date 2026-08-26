@@ -51,11 +51,11 @@
     },
     "drx-post-top": {
       "file": "assets/shells/drx-post-top.glb",
-      "bytes": 2012772,
-      "sha256": "44f5c81987c0787a18f6fa696bd9489122542340a8b4e8c18a6d9635b203a172",
-      "sourceSha256": "2e21cd26bcb987b5dc3a88e88cdf40d71c046bdf2019e37f08293daceeae5fac",
+      "bytes": 1203072,
+      "sha256": "21e32864add157c104d9eaac81d898b0bf5af7300f8488361baf5b299ef2f68d",
+      "sourceSha256": "616ebc52138d2006a7f3352302c6c10a52cfc23227525678989f898713677b11",
       "rotateYDegBaked": 0,
-      "triangles": 87421
+      "triangles": 47838
     },
     "gvx-pendant": {
       "file": "assets/shells/gvx-pendant.glb",
@@ -67,11 +67,11 @@
     },
     "mvx-coach": {
       "file": "assets/shells/mvx-coach.glb",
-      "bytes": 518228,
-      "sha256": "ab480bd8fff78a1a25dab1ac40b5be33d5acf32301b7f2fb58b867cf173f9b84",
-      "sourceSha256": "ef562759009086d36286864e521ea4eafbea600c5728b9b469785adc20e754a3",
+      "bytes": 267768,
+      "sha256": "6a99ff51bf8370cffddd667ae66ea0240c36b7853778cd93d661fb52f460affa",
+      "sourceSha256": "2ff6c7f85d5ff52b22b31a0535647a61a08671082e7724629eb1a02de0ca9991",
       "rotateYDegBaked": 0,
-      "triangles": 24265
+      "triangles": 11355
     },
     "pa1-pendant-arm": {
       "file": "assets/shells/pa1-pendant-arm.glb",
@@ -147,11 +147,11 @@
     },
     "willstudio-dwx-flood-spot": {
       "file": "assets/shells/willstudio-dwx-flood-spot.glb",
-      "bytes": 1070580,
-      "sha256": "eca74791850c91f60615b51928d06b324ea0b6887d7ebcd0b2b2fcdb1d94eba5",
-      "sourceSha256": "6c8190cd7a6a85c9a44fc8f1c32719c902fd3d1881c252a9170ffc62e8f9598a",
+      "bytes": 647960,
+      "sha256": "33e90907b7becd1e48bae1c080bafdae9d86b1777c70150beb2ba607f342a413",
+      "sourceSha256": "fae19cb0fbf5918f3c6223b43d98c22dd6a1fd02d6aeb539cf7c0bce264dec0b",
       "rotateYDegBaked": 0,
-      "triangles": 51636
+      "triangles": 26171
     },
     "willstudio-fr2-decorative-crossarm": {
       "file": "assets/shells/willstudio-fr2-decorative-crossarm.glb",

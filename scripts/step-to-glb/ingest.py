@@ -180,23 +180,33 @@ INGEST: list[dict] = [
     # r=0.194 and bezel r=0.24 all stay); the stem stack is r<0.035 reaching
     # above y=-0.09 (the dome/ball, r 0.058-0.074, stays). Dropping art never
     # moves the frame: the normalization offset comes from the FULL solid set.
+    # paintAll (Phase 0.19): these six render masters convert with every solid
+    # as the paintable will-body material. Before the GetFreeShapes fix the
+    # GetShapes bug put all LOCATED geometry under the root label's default
+    # aluminium — the approved whole-fixture finish tinting was an accident of
+    # that bug. Cole's true colours (now correctly located for the first time)
+    # put ffffff on the TEX drum and 121212 on the GVX shade, which the rig
+    # would freeze OUT of the finish system (page/main.ts tints will-body
+    # only). paintAll preserves the approved look explicitly; moving to true
+    # authored colours is Tyler/Nick's design call, recorded in the 0.19 exec
+    # response.
     dict(file="WD-GVX-PM", part="gvx-pendant", design="GVX", fit="PM",
-         origin="top", mode="color", tol=1.0, slow=True,
+         origin="top", mode="color", tol=1.0, slow=True, paintAll=True,
          drop=[dict(r_below=0.08, top_below=-0.30),
                dict(r_below=0.035, top_above=-0.09)]),
     dict(file="DRX-Post-Top.STEP", part="drx-post-top", design="DRX", fit="3T",
-         origin="base", mode="color", tol=1.5, slow=True),
+         origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
     dict(file="TEX.STEP", part="tex-post-top", design="TEX", fit="3T",
-         origin="base", mode="color", tol=1.5, slow=True),
+         origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
     dict(file="MXV.STEP", part="mvx-coach", design="MVX", fit="3T",
-         origin="base", mode="color", tol=1.5, slow=True),
+         origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
     # --- standalone products (single hero render, no assembly) ---
     # The bollard + flood masters are modelled Z-UP (verified from their raw bboxes),
     # unlike every other file here, so they are stood up before re-basing.
     dict(file="RXB.STEP", part="willstudio-rxb-sxb-bollard", design="RXB", fit="C",
-         origin="base", mode="color", tol=1.5, slow=True, rotateX=90),
+         origin="base", mode="color", tol=1.5, slow=True, rotateX=90, paintAll=True),
     dict(file="DWX.STEP", part="willstudio-dwx-flood-spot", design="DWX", fit="C",
-         origin="base", mode="color", tol=1.5, slow=True, rotateX=-90),
+         origin="base", mode="color", tol=1.5, slow=True, rotateX=-90, paintAll=True),
 ]
 
 # Cluster/variant files that carry real CAD for a *configured design code* but are
@@ -463,7 +473,8 @@ def convert_one(entry: dict) -> dict:
     if entry["mode"] == "color":
         stats = convert_color_aware(step_path, out_path, origin=entry["origin"],
                                     tol_mm=entry["tol"],
-                                    drop_solids=entry.get("drop"), **rot)
+                                    drop_solids=entry.get("drop"),
+                                    paint_all=entry.get("paintAll", False), **rot)
     else:
         stats = convert_monolithic(step_path, out_path, origin=entry["origin"],
                                    tol_mm=entry["tol"],

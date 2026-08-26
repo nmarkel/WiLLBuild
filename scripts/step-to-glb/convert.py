@@ -392,7 +392,17 @@ def is_aluminum(rgb, tol: float = 0.06) -> bool:
     return all(abs(rgb[i] - ALU_GRAY[i]) <= tol for i in range(3))
 
 def _read_labeled_solids(step_path: str):
-    """Return list of (TopoDS_Shape solid, (r,g,b)) using the XDE color tool."""
+    """Return list of (TopoDS_Shape solid, (r,g,b)) using the XDE color tool.
+
+    Walks GetFreeShapes and composes component locations — the canonical XDE
+    traversal — so each solid is emitted exactly once, where the assembly
+    places it.  The first version iterated GetShapes, which ALSO lists every
+    subassembly/component PROTOTYPE label: each prototype's solids were
+    emitted a second time in their LOCAL frame on top of the located set
+    (Phase 0.19: TEX.STEP's 219 solids came back as 353, its drum-skin
+    prototype 101.6 mm high — the rod and drum lines Nick saw on the live
+    renders).  Pinned by tests/test_convert_assembly_locations.py.
+    """
     doc = TDocStd_Document(TCollection_ExtendedString("XmlXCAF"))
     reader = STEPCAFControl_Reader()
     reader.SetColorMode(True)
@@ -401,27 +411,45 @@ def _read_labeled_solids(step_path: str):
     reader.Transfer(doc)
     shape_tool = XCAFDoc_DocumentTool.ShapeTool_s(doc.Main())
     color_tool = XCAFDoc_DocumentTool.ColorTool_s(doc.Main())
-    labels = TDF_LabelSequence()
-    shape_tool.GetShapes(labels)
     results = []
-    default = ALU_GRAY
-    for i in range(1, labels.Length() + 1):
-        lbl = labels.Value(i)
-        shp = shape_tool.GetShape_s(lbl)
-        if shp is None or shp.IsNull():
-            continue
-        col = Quantity_Color()
-        rgb = default
+    col = Quantity_Color()
+
+    def label_color(lbl):
         for ct in (XCAFDoc_ColorType.XCAFDoc_ColorSurf, XCAFDoc_ColorType.XCAFDoc_ColorGen):
             if color_tool.GetColor_s(lbl, ct, col):
-                rgb = (col.Red(), col.Green(), col.Blue()); break
-        # explode to solids so each solid inherits its label color
-        exp = TopExp_Explorer(shp, TopAbs_SOLID)
-        any_solid = False
+                return (col.Red(), col.Green(), col.Blue())
+        return None
+
+    def visit(lbl, loc, inherited_rgb):
+        from OCP.TDF import TDF_Label
+
+        ref = TDF_Label()
+        if shape_tool.IsReference_s(lbl) and shape_tool.GetReferredShape_s(lbl, ref):
+            # A component: its label may carry an instance colour override;
+            # compose its placement and descend into the prototype.
+            rgb = label_color(lbl) or inherited_rgb
+            visit(ref, loc.Multiplied(shape_tool.GetLocation_s(lbl)), rgb)
+            return
+        rgb = label_color(lbl) or inherited_rgb
+        if shape_tool.IsAssembly_s(lbl):
+            comps = TDF_LabelSequence()
+            shape_tool.GetComponents_s(lbl, comps)
+            for i in range(1, comps.Length() + 1):
+                visit(comps.Value(i), loc, rgb)
+            return
+        shp = shape_tool.GetShape_s(lbl)
+        if shp is None or shp.IsNull():
+            return
+        moved = shp.Moved(loc)
+        exp = TopExp_Explorer(moved, TopAbs_SOLID)
         while exp.More():
-            results.append((TopoDS.Solid_s(exp.Current()), rgb)); any_solid = True; exp.Next()
-        if not any_solid:
-            continue
+            results.append((TopoDS.Solid_s(exp.Current()), rgb or ALU_GRAY))
+            exp.Next()
+
+    free = TDF_LabelSequence()
+    shape_tool.GetFreeShapes(free)
+    for i in range(1, free.Length() + 1):
+        visit(free.Value(i), TopLoc_Location(), None)
     return results
 
 def _solid_final_frame_stats(solid, tol_mm, ang_rad, rotate_x, rotate_z, off):
@@ -455,8 +483,24 @@ def _drop_matches(rule: dict, r_max: float, y_min: float, y_max: float) -> bool:
 def convert_color_aware(step_path: str, out_glb: str, origin: str = "top",
                         tol_mm: float = 1.0, rotate_x: float = 0.0,
                         rotate_z: float = 0.0, with_normals: bool = True,
-                        ang_rad: float = 0.5, drop_solids: list | None = None) -> dict:
+                        ang_rad: float = 0.5, drop_solids: list | None = None,
+                        paint_all: bool = False) -> dict:
+    """paint_all (Phase 0.19): emit every solid as the paintable 'will-body'
+    material regardless of its authored STEP colour.  The render rig tints
+    ONLY will-body per finish (page/main.ts), and the approved fixture renders
+    tint the WHOLE fixture — a look that, before 0.19, arose from the
+    GetShapes enumeration bug placing all located geometry under the root
+    label's default aluminium.  With locations fixed, Cole's true appearance
+    colours land on the visible surfaces (TEX drum ffffff, GVX shade 121212 —
+    neither near ALU_GRAY), which would freeze the housings out of the finish
+    system.  paint_all preserves the approved behaviour explicitly; switching
+    the renders to true authored colours (now available for the first time)
+    plus a paintable-colour convention with Cole is a recorded design
+    decision for Tyler/Nick, not a converter default.
+    """
     labeled = _read_labeled_solids(step_path)
+    if paint_all:
+        labeled = [(solid, ALU_GRAY) for solid, _rgb in labeled]
     # group solids by rounded color
     groups: dict[tuple, list] = {}
     for solid, rgb in labeled:

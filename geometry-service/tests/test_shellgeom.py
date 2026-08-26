@@ -236,9 +236,14 @@ class TestPseudoArmShell:
         assert arm.verts[:, 1].min() == pytest.approx(0.0, abs=1e-6) or arm.verts[:, 1].min() > 0
         assert (arm.verts[:, 1].max() - arm.verts[:, 1].min()) == pytest.approx(0.08, abs=1e-6)
         assert float(np.abs(arm.verts[:, [0, 2]]).max()) <= 0.04 + 1e-6
-        # The fixture sits ON the adapter's tenon socket, above the pole top.
+        # The fixture SEATS AT THE TENON'S BASE (the pole top): its fitter bore
+        # is 139.7 mm deep (measured, TEX-Post-Top.STEP) and swallows the 80 mm
+        # tenon whole — the FR2 sleeve-over-tenon rule (0.12, Nick 8/11),
+        # applied to direct-mount in 0.19 once TEX's real CAD provided the
+        # ground truth 0.12 lacked.  Its sleeve bottom rests exactly on the
+        # pole top, never floating above it on an exposed stub.
         pole_top = _piece(asm, "Pole").verts[:, 1].max()
-        assert _piece(asm, "Fixture").verts[:, 1].min() >= pole_top - 1e-6
+        assert _piece(asm, "Fixture").verts[:, 1].min() == pytest.approx(pole_top, abs=1e-6)
 
     def test_generated_frustum_is_a_closed_solid_wound_like_the_pole(self):
         from app.shellgeom import _frustum_mesh, _pole_tube_mesh
