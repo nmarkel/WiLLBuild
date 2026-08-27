@@ -237,6 +237,38 @@ class TestConfigHashCoupling:
         assert config_hash(self._cfg(accentFinishes={})) == base
         assert config_hash(self._cfg(accentFinishes={"fixture": ""})) == base
 
+    def test_custom_ral_hex_changes_the_hash(self):
+        """The fourth field of this class — and it was missed for four phases.
+
+        `finishRal` carries the customer's own #rrggbb for a slot whose finish
+        is `custom-ral`, and generation.py prints it into the sheet's finish
+        name ("Custom RAL (#112233)").  Same reasoning as specOptions, finishes
+        and accentFinishes above: it changes what the artifact SAYS without
+        changing geometry, so omitting it serves the first config's cached PDF
+        for the second and prints a colour the customer did not pick.
+
+        Note the third case: a config with NO custom RAL must also hash apart
+        from one with a RAL, or a stock-finish artifact is served for a custom
+        order.
+        """
+        stock = self._cfg(finishes={"pole": "custom-ral"})
+        a = self._cfg(finishes={"pole": "custom-ral"}, finishRal={"pole": "#112233"})
+        b = self._cfg(finishes={"pole": "custom-ral"}, finishRal={"pole": "#aabbcc"})
+        assert config_hash(a) != config_hash(b)
+        assert config_hash(stock) != config_hash(a)
+
+    def test_finish_ral_is_per_slot(self):
+        """Two slots can carry different custom colours; both reach the sheet."""
+        a = self._cfg(finishRal={"pole": "#112233"})
+        b = self._cfg(finishRal={"fixture": "#112233"})
+        assert config_hash(a) != config_hash(b)
+
+    def test_empty_finish_ral_does_not_change_the_hash(self):
+        """Every config predating this fix keeps its historical hash."""
+        base = config_hash(self._cfg())
+        assert config_hash(self._cfg(finishRal={})) == base
+        assert config_hash(self._cfg(finishRal={"pole": ""})) == base
+
     def test_multi_select_order_changes_the_hash(self):
         """Codes append to the part number in stored order, so order matters."""
         a = self._cfg(specOptions={"pole": {"accessories": ["BA24", "FH"]}})

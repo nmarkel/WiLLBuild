@@ -56,6 +56,11 @@ def config_hash(cfg: PoleConfig) -> str:
     finishes, so two configs differing only in the Spider Mount & Accent Line
     colour print different part numbers and must hash apart.
 
+    ``finishRal`` is the fourth of this class and was missed for four phases:
+    the customer's picked #rrggbb is printed into the generated sheet's finish
+    name, so two custom-RAL configs differing only in colour — and a stock
+    config versus a custom-RAL one — collided on a single cached artifact.
+
     All three are included ONLY when non-empty, so every config that predates
     them keeps its historical hash byte-for-byte and existing caches stay valid.
 
@@ -101,6 +106,22 @@ def config_hash(cfg: PoleConfig) -> str:
     }
     if accent_finishes:
         canonical["accentFinishes"] = accent_finishes
+
+    # The customer's own #rrggbb for a slot whose finish is `custom-ral`.
+    # Same class as the three above and missed until now: generation.py prints
+    # it into the slot's finish name ("Custom RAL (#112233)"), so two configs
+    # differing only in the picked colour must hash apart — and a config with
+    # NO custom colour must hash apart from one that has it, or a stock-finish
+    # artifact gets served for a custom order.  Hex is lowercased so the same
+    # colour typed in either case is the same cache entry (the sheet upper-cases
+    # it at print time regardless).
+    finish_ral = {
+        slot: hex_.lower()
+        for slot, hex_ in sorted((cfg.finishRal or {}).items())
+        if hex_
+    }
+    if finish_ral:
+        canonical["finishRal"] = finish_ral
 
     spec_options = {
         slot: {key: value for key, value in sorted(columns.items()) if value}
