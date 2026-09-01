@@ -58,15 +58,25 @@ empty `factory-cad/`. The home that fixes this:
    `$REAL_STEP_DIR`) into `assets/customer-step/`, verifying each hash. Run it
    **before `docker build`** — the image bakes the staged files in. Skipped
    files are warnings (degraded deploy); hash mismatches are errors.
-3. **Swappable source:** at runtime the service reads `$CUSTOMER_STEP_DIR`
-   before the baked-in directory. When Cole's batch makes rebuild-per-file
+3. **Swappable source:** at runtime the service searches `$CUSTOMER_STEP_DIR`
+   first, then the baked-in directory, then the dev cache — an ordered
+   fallback, not a swap, so an override holding only part of the set cannot
+   hide the files baked into the image. When Cole's batch makes rebuild-per-file
    annoying, point it at a directory an S3 sync (or startup fetch) fills —
    e.g. mount/download `s3://<bucket>/customer-step/` to `/data/customer-step`
    and set `CUSTOMER_STEP_DIR=/data/customer-step`. The committed manifest
    still gates every byte served, so the bucket needs no trust.
 
-Growing the set = add the verified file's pin to `manifest.json` + its entry in
+Growing the set = add the file's pin to `manifest.json` + its entry in
 `CUSTOMER_STEP_FILES` (or `CUSTOMER_STEP_FILES_BY_FIT`), re-stage, rebuild.
+That makes it *shippable*. It does not make it *shipped*: `manifest.json`
+carries a machine-checked `"cleared"` boolean per file, and `app/realgeom.py`
+serves nothing whose pin is not `cleared: true`. Flipping it (and filling in
+`clearedBy`) is the release action, taken after a human has opened the file —
+the GVX standard, Nick's Autodesk eyeball. A pinned-but-uncleared file is
+invisible to the bundle: no STEP, and no "missing" note either.
+
+As of Phase 0.19 the two TEX pins are `cleared: false`.
 
 ---
 

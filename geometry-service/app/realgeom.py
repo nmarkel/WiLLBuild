@@ -46,10 +46,12 @@ _DEFAULT_STEP_DIR = Path(__file__).parent.parent.parent / "scripts" / "render-ri
 # own directory that the Docker image bakes in.  Contents are staged by
 # scripts/stage-customer-step.py from the dev cache and are gitignored too —
 # only manifest.json (the SHA-256 pin per cleared file) is committed.
-# ``CUSTOMER_STEP_DIR`` swaps the source wholesale: point it at an S3-synced
-# mount (or any directory a startup fetch fills) when Cole's batch makes
-# bake-into-image rebuilds annoying.  The manifest travels with the code, so a
-# swapped source still serves only bytes that hash to the pinned values.
+# ``CUSTOMER_STEP_DIR`` PREPENDS a source: point it at an S3-synced mount (or
+# any directory a startup fetch fills) when Cole's batch makes bake-into-image
+# rebuilds annoying.  It is searched first and the baked-in home is still
+# searched after it, so a sync that has landed only some of the set does not
+# hide the rest.  The manifest travels with the code, so an override source
+# still serves only bytes that hash to the pinned values.
 _DEFAULT_CUSTOMER_STEP_DIR = Path(__file__).parent.parent / "assets" / "customer-step"
 _CUSTOMER_STEP_MANIFEST = _DEFAULT_CUSTOMER_STEP_DIR / "manifest.json"
 
@@ -160,8 +162,10 @@ CLUSTER_FILES: dict[tuple[str, str], str] = {
 # 0.10.5 rather than fixed in place.
 #
 # This table is FAIL-CLOSED: a new real STEP does not become downloadable just
-# by existing.  A part joins only once Cole has supplied a de-featured shell
-# AND it has been confirmed by a human.
+# by existing.  A part joins only once Cole has supplied a de-featured shell,
+# and membership here is only HALF the gate — the file's manifest pin must
+# also carry ``"cleared": true``, which is the human confirmation (0.19).  So
+# an entry may sit here, staged and hash-verified, and still ship nothing.
 # ---------------------------------------------------------------------------
 CUSTOMER_STEP_FILES: dict[str, str] = {
     # Confirmed by Nick, 2026-08-10: GVX-Simple.STEP is Cole's simplified export
@@ -173,6 +177,8 @@ CUSTOMER_STEP_FILES: dict[str, str] = {
     # filename (the full master is TEX.STEP); measured 22 solids / 20,759 faces
     # against the master's 219 / 31,836 with a byte-identical bounding box on
     # every axis — the same de-featured-envelope pattern as GVX-Simple.
+    # NOT RELEASED YET: its manifest pin says cleared=false pending Nick's
+    # Autodesk eyeball, so TEX bundles ship no factory CAD until that flips.
     "tex-post-top": "TEX-Post-Top.STEP",
 }
 
@@ -204,12 +210,13 @@ def customer_step_dir() -> Path:
 
 @lru_cache(maxsize=1)
 def _customer_manifest() -> dict[str, dict]:
-    """filename -> {sha256, bytes} for every file cleared to ship.
+    """filename -> {sha256, bytes, cleared, clearedBy} for every pinned file.
 
     The manifest is COMMITTED (the files are not), so it is the fail-closed
-    authority: a file that is present but hashes differently — a full
-    engineering master under a reused name, a corrupted stage — is treated as
-    missing, never served.
+    authority on both questions: a file that is present but hashes differently
+    — a full engineering master under a reused name, a corrupted stage — is
+    treated as missing, and a file whose pin is not ``cleared`` has not been
+    released by a human and is treated as missing too (see ``_cleared_name``).
     """
     try:
         data = json.loads(_CUSTOMER_STEP_MANIFEST.read_text())
@@ -235,18 +242,17 @@ def _verified(path_str: str, name: str, size: int, mtime_ns: int) -> bool:
     return digest == pin.get("sha256")
 
 
-def customer_step_path(part_id: str, mounting_code: str | None = None) -> Path | None:
-    """The de-featured STEP cleared for customer download, or None.
+def _cleared_name(part_id: str, mounting_code: str | None = None) -> str | None:
+    """The manifest filename RELEASED for this part+mounting, or None.
 
-    None means "not cleared" — never "fall back to the master".  Callers must
-    not substitute ``real_step_path`` here.
-
-    Resolution: the (part, mounting) override first, then the part's base
-    entry; the customer-step home first, then the dev cache.  Whichever file
-    is found must hash to its manifest pin or it is treated as missing.
+    Fail-closed twice over, and the second gate is the point: the allowlist
+    tables must name a file, AND that file's manifest pin must say
+    ``"cleared": true``.  Before 0.19 the manifest's clearance field was prose
+    that nothing read, so a pin reading "PENDING Nick's Autodesk eyeball" still
+    shipped its bytes the moment the file was staged.  Human clearance is now
+    the machine's business: pinning and staging a file makes it *shippable*,
+    flipping ``cleared`` makes it *shipped*.
     """
-    if os.environ.get("DISABLE_REAL_GEOMETRY"):
-        return None
     name = None
     if mounting_code:
         name = CUSTOMER_STEP_FILES_BY_FIT.get((part_id, mounting_code))
@@ -254,7 +260,37 @@ def customer_step_path(part_id: str, mounting_code: str | None = None) -> Path |
         name = CUSTOMER_STEP_FILES.get(part_id)
     if not name:
         return None
-    for root in (customer_step_dir(), step_dir()):
+    pin = _customer_manifest().get(name)
+    if not pin or pin.get("cleared") is not True:
+        return None
+    return name
+
+
+def customer_step_path(part_id: str, mounting_code: str | None = None) -> Path | None:
+    """The de-featured STEP cleared for customer download, or None.
+
+    None means "not cleared" — never "fall back to the master".  Callers must
+    not substitute ``real_step_path`` here.
+
+    Resolution: the (part, mounting) override first, then the part's base
+    entry; the ``CUSTOMER_STEP_DIR`` override first, then the baked-in home,
+    then the dev cache.  Whichever file is found must hash to its manifest pin
+    or it is treated as missing.
+    """
+    if os.environ.get("DISABLE_REAL_GEOMETRY"):
+        return None
+    name = _cleared_name(part_id, mounting_code)
+    if not name:
+        return None
+    # ORDERED FALLBACK, not a swap: an override that holds only part of the
+    # set (a half-finished S3 sync) must not hide the files baked into the
+    # image two directories away.  Duplicates are dropped so the default home
+    # is not hashed twice when CUSTOMER_STEP_DIR is unset.
+    roots: list[Path] = []
+    for root in (customer_step_dir(), _DEFAULT_CUSTOMER_STEP_DIR, step_dir()):
+        if root not in roots:
+            roots.append(root)
+    for root in roots:
         candidate = root / name
         if not candidate.is_file():
             continue
@@ -265,14 +301,19 @@ def customer_step_path(part_id: str, mounting_code: str | None = None) -> Path |
 
 
 def is_customer_cleared(part_id: str, mounting_code: str | None = None) -> bool:
-    """Whether a cleared file is DECLARED for this part (tables only, no disk).
+    """Whether a released file is DECLARED for this part (no CAD read).
 
     True with ``customer_step_path`` returning None is the degraded state the
-    bundle documents: cleared, but the file is not in this deployment.
+    bundle documents: released, but the file is not in this deployment.
+
+    ``DISABLE_REAL_GEOMETRY`` is honoured here as well as in
+    ``customer_step_path``.  The switch exists to make the service behave as
+    if no real CAD existed at all; without this line it still announced the
+    customer's own SKU in a "not available in this build" note.
     """
-    if mounting_code and (part_id, mounting_code) in CUSTOMER_STEP_FILES_BY_FIT:
-        return True
-    return part_id in CUSTOMER_STEP_FILES
+    if os.environ.get("DISABLE_REAL_GEOMETRY"):
+        return False
+    return _cleared_name(part_id, mounting_code) is not None
 
 
 def real_step_path(part_id: str, design_code: str | None = None) -> Path | None:

@@ -238,10 +238,73 @@ def test_customer_manifest_pins_out_the_retired_full_engineering_file():
 
 
 def test_a_hash_mismatched_file_is_treated_as_missing(tmp_path, monkeypatch):
-    """The fail-closed core: presence is not clearance — bytes must match the pin."""
+    """The fail-closed core: presence is not clearance — bytes must match the pin.
+
+    Every search root is pointed away from the real staging directory, because
+    CUSTOMER_STEP_DIR is a PREPEND and not a swap: leaving the baked-in home in
+    the path would let this test pass on the genuine staged file rather than on
+    the bad bytes it wrote.
+    """
     (tmp_path / "GVX-Simple.STEP").write_bytes(b"NOT THE CLEARED FILE")
     monkeypatch.setenv("CUSTOMER_STEP_DIR", str(tmp_path))
     monkeypatch.setenv("REAL_STEP_DIR", str(tmp_path / "nowhere"))
+    monkeypatch.setattr(realgeom, "_DEFAULT_CUSTOMER_STEP_DIR", tmp_path / "nowhere")
+    assert realgeom.customer_step_path("gvx-pendant") is None
+
+
+def test_customer_step_dir_falls_back_to_the_baked_in_home(tmp_path, monkeypatch):
+    """A partial override must not hide files baked into the image.
+
+    CUSTOMER_STEP_DIR is the documented S3 seam. When the sync has landed only
+    part of the set — or none of it yet — the baked-in home is still searched,
+    so pointing the variable at a half-filled mount cannot black out downloads
+    that were working a deploy ago.
+    """
+    empty = tmp_path / "s3-mount"
+    empty.mkdir()
+    monkeypatch.setenv("CUSTOMER_STEP_DIR", str(empty))
+    monkeypatch.setenv("REAL_STEP_DIR", str(tmp_path / "nowhere"))
+    baked = realgeom._DEFAULT_CUSTOMER_STEP_DIR / "GVX-Simple.STEP"
+    if not baked.is_file():
+        pytest.skip("GVX-Simple.STEP not staged on this machine")
+    found = realgeom.customer_step_path("gvx-pendant")
+    assert found is not None, "an empty override blacked out a baked-in file"
+    assert found == baked
+
+
+def test_an_uncleared_pin_is_never_served(monkeypatch):
+    """`cleared` is machine-checked, not prose (Phase 0.19 review).
+
+    A file can be allowlisted, staged and hash-perfect and still not ship: the
+    manifest pin has to say a human opened it. Before this gate existed, the
+    two TEX pins read "PENDING Nick's Autodesk eyeball" and shipped anyway.
+    Both the resolver and the declaration helper must honour it, or the bundle
+    tells the customer their CAD is "missing" when it was never released.
+    """
+    pins = _manifest_files()
+    uncleared = [n for n, pin in pins.items() if pin.get("cleared") is not True]
+    if not uncleared:
+        pytest.skip("every pinned file is cleared — nothing to hold back")
+    for part_id, mounting in (("tex-post-top", None), ("tex-post-top", "3T"),
+                              ("tex-post-top", "SMS"), ("tex-post-top", "SMR")):
+        name = (realgeom.CUSTOMER_STEP_FILES_BY_FIT.get((part_id, mounting))
+                or realgeom.CUSTOMER_STEP_FILES.get(part_id))
+        if name not in uncleared:
+            continue
+        assert realgeom.customer_step_path(part_id, mounting) is None, name
+        assert not realgeom.is_customer_cleared(part_id, mounting), name
+
+
+def test_disable_real_geometry_also_hides_clearance(monkeypatch):
+    """The kill switch must make the service look like it has no real CAD.
+
+    customer_step_path always honoured it; is_customer_cleared did not, so the
+    bundle still emitted a factory-cad/README-MISSING.txt naming the customer's
+    own SKU — an announcement of CAD the switch was set to hide.
+    """
+    assert realgeom.is_customer_cleared("gvx-pendant")
+    monkeypatch.setenv("DISABLE_REAL_GEOMETRY", "1")
+    assert not realgeom.is_customer_cleared("gvx-pendant")
     assert realgeom.customer_step_path("gvx-pendant") is None
 
 
@@ -254,6 +317,8 @@ def test_mounting_code_selects_the_side_mount_file():
     assert realgeom.CUSTOMER_STEP_FILES["tex-post-top"] == "TEX-Post-Top.STEP"
     for code in ("SMS", "SMR"):
         assert realgeom.CUSTOMER_STEP_FILES_BY_FIT[("tex-post-top", code)] == "TEX-AREA.STEP"
+    # Path resolution below additionally requires TEX to be RELEASED; while its
+    # pins say cleared=false the resolver correctly returns None for all four.
     base = realgeom.customer_step_path("tex-post-top")
     if base is not None:
         assert base.name == "TEX-Post-Top.STEP"
@@ -262,10 +327,22 @@ def test_mounting_code_selects_the_side_mount_file():
         assert realgeom.customer_step_path("tex-post-top", "SMR").name == "TEX-AREA.STEP"
 
 
-def test_is_customer_cleared_reads_tables_not_disk(monkeypatch):
+def test_is_customer_cleared_reads_declarations_not_disk(monkeypatch):
+    """Allowlist + manifest clearance, with no CAD read.
+
+    "Declared" is now two things, not one: the part must be allowlisted AND its
+    file's pin must say cleared. TEX is allowlisted for all three of its codes
+    and released for none of them, which is exactly the state this must report.
+    """
     monkeypatch.setenv("CUSTOMER_STEP_DIR", "/nonexistent")
     monkeypatch.setenv("REAL_STEP_DIR", "/nonexistent")
-    assert realgeom.is_customer_cleared("gvx-pendant")
-    assert realgeom.is_customer_cleared("tex-post-top", "SMS")
+    pins = _manifest_files()
+    assert realgeom.is_customer_cleared("gvx-pendant") is (
+        pins["GVX-Simple.STEP"].get("cleared") is True
+    )
+    assert realgeom.is_customer_cleared("tex-post-top", "SMS") is (
+        pins["TEX-AREA.STEP"].get("cleared") is True
+    )
+    # Never allowlisted at all — no pin, no clearance, no download.
     assert not realgeom.is_customer_cleared("drx-post-top")
     assert not realgeom.is_customer_cleared("drx-post-top", "SMS")

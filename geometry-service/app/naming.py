@@ -17,8 +17,16 @@ DISCLAIMER = "Concept starter model - not final engineered or manufacturing-rele
 # 4 = the shell STEP (AP242 tessellated from the same shells) + Configuration
 #     Card retitle + imperial-only documents;
 # 5 = generated pole (exact tube at any length; a TRUE B-rep solid in the
-#     STEP) + the hero concept card rebuilt to the design-library pattern.
-_OUTPUT_VERSION = 5
+#     STEP) + the hero concept card rebuilt to the design-library pattern;
+# 6 = the 0.19 shell pass — every fixture shell re-decimated to the 48k
+#     SERVICE_TRIS ceiling (GVX 54,699 -> 47,714 tris, TEX 97,906 -> 47,964,
+#     DRX 87,421 -> 47,838, MVX 24,265 -> 11,355, DWX 51,636 -> 26,171),
+#     `direct-mount` seated at the tenon BASE ([0,0.08,0] -> [0,0,0]), and
+#     `_pseudo_arm_shell` flipping every tenon-fixture config from the
+#     parametric kit to shell-accurate output.  Without this bump a warm
+#     out/ keeps serving the pre-0.19 >10 MB STEPs the ceiling exists to
+#     eliminate — the config never changed, so config_hash cannot notice.
+_OUTPUT_VERSION = 6
 
 
 def config_hash(cfg: PoleConfig) -> str:
