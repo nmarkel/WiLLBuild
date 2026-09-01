@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from .adapters import REGISTRY
+from .merchandising import SERVABLE_FORMATS
 from .generation import generate_files, validate_request
 from .jobs import get_job, submit_job
 from .models import (
@@ -81,10 +82,18 @@ async def _validation_shape(request, exc):
 
 @app.get("/health")
 def health() -> dict:
-    """Return service status and which format adapters are registered."""
+    """Return service status and which formats are actually servable.
+
+    Phase 0.20 (B): this reports the intersection of "an adapter is registered"
+    and "the product offers it", not the raw registry.  /health is the contract
+    a direct caller reads, so advertising a format that /generate refuses would
+    only move the dishonesty from the artifact to the handshake — and `rfa` in
+    particular used to announce itself here as a Revit family that will not
+    open in Revit.
+    """
     return {
         "status": "ok",
-        "adapters": {fmt: True for fmt in REGISTRY},
+        "adapters": {fmt: True for fmt in REGISTRY if fmt in SERVABLE_FORMATS},
     }
 
 

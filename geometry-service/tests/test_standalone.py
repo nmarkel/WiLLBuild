@@ -159,11 +159,32 @@ def _post(cfg_dict: dict, formats: list[str]) -> object:
 
 
 def _first_standalone_id() -> str:
+    """The first standalone product that is actually downloadable.
+
+    Phase 0.20 (B): a Coming Soon product produces no artifacts server-side,
+    which matches the showroom — ProductViewer passes `formats={soon ? [] :
+    ['pdf']}`, so a held product never offers a card. 14 of the 37 standalone
+    parts are held (legacy WiLLstudio entries on placeholder geometry), and
+    taking the first one regardless made these tests assert 200 on a product
+    the UI would not sell.
+    """
+    from app.merchandising import is_coming_soon
+
     cat = load_catalog()
     for p in cat["parts"]:
-        if p.get("slot") == "standalone":
+        if p.get("slot") == "standalone" and not is_coming_soon(p):
             return p["id"]
-    raise RuntimeError("No standalone parts")
+    raise RuntimeError("No configurable standalone parts")
+
+
+def _first_held_standalone_id() -> str:
+    from app.merchandising import is_coming_soon
+
+    cat = load_catalog()
+    for p in cat["parts"]:
+        if p.get("slot") == "standalone" and is_coming_soon(p):
+            return p["id"]
+    raise RuntimeError("No held standalone parts")
 
 
 class TestStandaloneGenerate:
@@ -250,7 +271,7 @@ class TestStandaloneGenerate:
         text = _extract_text(dl.content)
         assert DISCLAIMER[:40] in text, "DISCLAIMER not found in standalone PDF"
 
-    def test_standalone_step_returns_422(self) -> None:
+    def test_standalone_non_pdf_format_returns_422(self) -> None:
         fixture_id = _first_standalone_id()
         cfg = {
             "configId": f"sa-step-{uuid.uuid4().hex[:8]}",
@@ -259,7 +280,11 @@ class TestStandaloneGenerate:
             "finish": "",
             "rev": 1,
         }
-        resp = _post(cfg, ["step"])
+        # `ifc`, not `step`: step is refused for EVERY config now (Phase 0.20 B
+        # — not a UI-offered format), which would make this pass without the
+        # standalone rule existing at all. An offered-but-wrong format isolates
+        # the rule this test is named for.
+        resp = _post(cfg, ["ifc"])
         assert resp.status_code == 422
         body = resp.json()
         assert "detail" in body
@@ -317,8 +342,12 @@ class TestNormalConfigRegression:
         )
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
-    def test_normal_step_still_works(self, bc_alum20) -> None:
-        """Normal assembly config + step must still return 200."""
+    def test_normal_assembly_still_generates(self, bc_alum20) -> None:
+        """The standalone branch must not have broken normal assembly configs.
+
+        Was `step`; that format stopped being servable in Phase 0.20 (B), and
+        the point of this regression guard is the CONFIG shape, not the format.
+        """
         resp = client.post(
             "/generate",
             json={
@@ -331,7 +360,7 @@ class TestNormalConfigRegression:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["step"],
+                "formats": ["pdf"],
                 "renderPng": None,
             },
         )

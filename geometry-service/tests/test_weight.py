@@ -13,13 +13,32 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.generation import generate_files
+from app.main import OUT_DIR, app
+from app.models import GenerateRequest
 
 from .conftest import first_base_cover_for
 
 client = TestClient(app)
 
 _SIZE_BUDGET = 10 * 1024 * 1024  # 10 MB per file
+
+# The formats this gate weighs. `step` is NOT servable over HTTP as of Phase
+# 0.20 (B) — it has no download card — but its bytes still reach the customer
+# inside the bundle, and the 48k SERVICE_TRIS ceiling was budgeted against the
+# RAW STEP, which is by far the heaviest artifact. Weighing only the zip would
+# measure a compressed copy and quietly loosen the ceiling this gate defends,
+# so these tests call the generator directly instead of going through the
+# route. Subject under test = artifact bytes, not the HTTP contract (which
+# test_merchandising.py owns).
+_WEIGHED_FORMATS = ["step", "ifc", "dxf", "pdf", "bundle"]
+
+
+def _generate_for_weighing(cfg: dict) -> tuple[list[dict], list[str]]:
+    """Run the adapters directly, bypassing the servable-format gate."""
+    req = GenerateRequest(config=cfg, formats=_WEIGHED_FORMATS)
+    _hash, files, warnings = generate_files(req, OUT_DIR)
+    return files, warnings
 
 
 @pytest.fixture(scope="module")
@@ -36,11 +55,9 @@ def gvx_cfg(catalog: dict) -> dict:
 
 
 def test_gvx_every_deliverable_under_10mb(gvx_cfg: dict) -> None:
-    formats = ["step", "ifc", "dxf", "pdf", "bundle"]
-    resp = client.post("/generate", json={"config": gvx_cfg, "formats": formats})
-    assert resp.status_code == 200
-    files = resp.json()["files"]
+    files, _warnings = _generate_for_weighing(gvx_cfg)
     assert files, "no files produced"
+    assert {f["format"] for f in files} >= {"step", "bundle"}, files
     oversize = [(f["format"], f["sizeBytes"]) for f in files if f["sizeBytes"] > _SIZE_BUDGET]
     assert not oversize, f"deliverables over 10MB budget: {oversize}"
 
@@ -87,13 +104,11 @@ def _worst_core_cfg(config_id: str, fixture: str, arm: str) -> dict:
 )
 def test_worst_core_config_every_deliverable_under_10mb(fixture: str, arm: str) -> None:
     cfg = _worst_core_cfg(f"weight-{fixture[:3]}-cl3", fixture, arm)
-    formats = ["step", "ifc", "dxf", "pdf", "bundle"]
-    resp = client.post("/generate", json={"config": cfg, "formats": formats})
-    assert resp.status_code == 200
-    files = resp.json()["files"]
+    files, warnings = _generate_for_weighing(cfg)
     assert files, "no files produced"
+    assert {f["format"] for f in files} >= {"step", "bundle"}, files
     # The shells must actually be in play — a parametric fallback would pass
     # this gate while shipping the wrong geometry entirely.
-    assert not any("concept solids used" in w for w in resp.json()["warnings"])
+    assert not any("concept solids used" in w for w in warnings)
     oversize = [(f["format"], f["sizeBytes"]) for f in files if f["sizeBytes"] > _SIZE_BUDGET]
     assert not oversize, f"deliverables over 10MB budget: {oversize}"

@@ -28,6 +28,7 @@ from typing import Callable
 from .adapters import REGISTRY, DWG_WARNING
 from .adapters.base import GenContext
 from .catalog import is_standalone_config, load_catalog, validate_config
+from .merchandising import check_formats_servable, check_not_held, check_spec_options
 from .kit.assembly import build_assembly
 from .models import GenerateRequest
 from .naming import base_name, config_hash
@@ -84,6 +85,15 @@ def validate_request(req: GenerateRequest) -> None:
 
     # --- Config validity ---
     validate_config(catalog, req.config)  # raises ValueError
+
+    # --- Merchandising, fail-closed (Phase 0.20 B) ---
+    # These run for BOTH entry points because they live here rather than in the
+    # route: /generate and /jobs both call validate_request, so the gate cannot
+    # be one route wide.  Formats first — it is the cheapest check and the one
+    # a probing caller is most likely to trip.
+    check_formats_servable(list(req.formats))
+    check_not_held(catalog, req.config)
+    check_spec_options(catalog, req.config)
 
     # --- Standalone config: only 'pdf' is permitted ---
     if is_standalone_config(req.config):

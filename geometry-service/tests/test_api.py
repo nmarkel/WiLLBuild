@@ -63,7 +63,7 @@ class TestGenerateValidation:
     def _post(self, cfg_dict: dict, formats: list[str] | None = None) -> object:
         payload = {
             "config": cfg_dict,
-            "formats": formats or ["step"],
+            "formats": formats or ["pdf"],
             "renderPng": None,
         }
         return client.post("/generate", json=payload)
@@ -350,7 +350,7 @@ class TestValidateConfig:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["step"],
+                "formats": ["pdf"],
                 "renderPng": None,
             },
         )
@@ -380,7 +380,7 @@ class TestGenerateSummaryParts:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["step"],
+                "formats": ["pdf"],
                 "renderPng": None,
             },
         )
@@ -417,7 +417,7 @@ class TestGenerateRenderPngBase64:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["step"],
+                "formats": ["pdf"],
                 "renderPng": tiny_png_b64,
             },
         )
@@ -440,7 +440,7 @@ class TestGenerateRenderPngBase64:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["step"],
+                "formats": ["pdf"],
                 "renderPng": "not-valid-base64!!!",
             },
         )
@@ -479,9 +479,10 @@ class TestMultiArmGenerate:
 
     def test_twin_generate_returns_200_with_files(self, bc_alum20) -> None:
         from app.adapters import REGISTRY
+        from app.merchandising import SERVABLE_FORMATS
 
         # Guard formats whose engine may be absent in this environment.
-        formats = [f for f in ("step", "ifc", "pdf") if f in REGISTRY]
+        formats = [f for f in ("ifc", "pdf") if f in REGISTRY and f in SERVABLE_FORMATS]
         assert "pdf" in formats  # pdf/ifc are hard deps; must be present
         resp = client.post(
             "/generate",
@@ -557,8 +558,9 @@ class TestBannerGenerate:
 
     def test_banner_generate_returns_200_with_files(self, bc_alum20) -> None:
         from app.adapters import REGISTRY
+        from app.merchandising import SERVABLE_FORMATS
 
-        formats = [f for f in ("step", "ifc", "pdf") if f in REGISTRY]
+        formats = [f for f in ("ifc", "pdf") if f in REGISTRY and f in SERVABLE_FORMATS]
         assert "pdf" in formats
         resp = client.post(
             "/generate",

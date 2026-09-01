@@ -370,15 +370,23 @@ class TestAdapterRegistry:
 # ---------------------------------------------------------------------------
 
 class TestHealthShowsStepAdapter:
-    def test_health_reports_step_adapter(self):
-        """GET /health must include 'step': true in adapters when STEP registered."""
+    def test_step_is_registered_but_not_advertised(self):
+        """The STEP adapter is registered; /health no longer advertises it.
+
+        Phase 0.20 (B): /health reports what is SERVABLE, not what is built.
+        STEP has no download card of its own — the STEP a customer receives
+        rides inside the bundle — so advertising it would promise a format
+        /generate refuses. The adapter itself is untouched and every other test
+        in this file still exercises it.
+        """
         from fastapi.testclient import TestClient
+        from app.adapters import REGISTRY
         from app.main import app
+        assert "step" in REGISTRY
         client = TestClient(app)
         resp = client.get("/health")
         assert resp.status_code == 200
-        body = resp.json()
-        assert body["adapters"].get("step") is True
+        assert "step" not in resp.json()["adapters"]
 
 
 # ---------------------------------------------------------------------------
@@ -386,8 +394,13 @@ class TestHealthShowsStepAdapter:
 # ---------------------------------------------------------------------------
 
 class TestGenerateStepIntegration:
-    def test_generate_step_returns_200_with_file_entry(self, cat):
-        """POST /generate with format=step returns 200 and a file entry."""
+    def test_generate_step_is_refused_and_the_bundle_carries_it_instead(self, cat):
+        """Direct `step` is refused; the merchandised route to a STEP is `bundle`.
+
+        Phase 0.20 (B). Asserting BOTH halves in one place is deliberate: the
+        refusal alone would be satisfied by a service that had simply lost the
+        ability to make a STEP, which is the regression this pairing catches.
+        """
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
@@ -407,8 +420,27 @@ class TestGenerateStepIntegration:
                 "renderPng": None,
             },
         )
-        assert resp.status_code == 200
-        body = resp.json()
-        assert len(body["files"]) == 1
-        assert body["files"][0]["format"] == "step"
-        assert body["files"][0]["filename"].endswith(".step")
+        assert resp.status_code == 422, resp.text
+
+        import zipfile, io
+        resp = client.post(
+            "/generate",
+            json={
+                "config": {
+                    "configId": "integ-test-12345678",
+                    "pole": "alum-pole-20",
+                    "baseCover": first_base_cover_for(cat, "alum-pole-20"),
+                    "arm": "sh1-shepherds-hook",
+                    "fixture": "gvx-pendant",
+                    "finish": "matte-black",
+                    "rev": 1,
+                },
+                "formats": ["bundle"],
+                "renderPng": None,
+            },
+        )
+        assert resp.status_code == 200, resp.text
+        dl = client.get(resp.json()["files"][0]["url"])
+        assert dl.status_code == 200
+        names = zipfile.ZipFile(io.BytesIO(dl.content)).namelist()
+        assert any(n.endswith(".step") for n in names), names
