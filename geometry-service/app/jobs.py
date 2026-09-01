@@ -20,6 +20,7 @@ not violate the "no wall clock in generated artifacts" rule.
 from __future__ import annotations
 
 import hashlib
+import os
 import itertools
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -39,6 +40,35 @@ _COUNTER = itertools.count(1)
 _EXECUTOR = ThreadPoolExecutor(max_workers=1, thread_name_prefix="geom-job")
 
 JOBS: dict[str, "JobRecord"] = {}
+
+# Phase 0.20 (D-2): the registry was unbounded, and each JobRecord pins the
+# whole GenerateRequest — so the leak grew with traffic and returned nothing
+# until the process died.  On a 2 GB instance that is the sharper of the two
+# memory risks (the other being request bodies, capped in main.py).
+_MAX_JOBS = int(os.environ.get("MAX_TRACKED_JOBS", "200"))
+
+
+def evict_if_needed() -> int:
+    """Trim the registry to _MAX_JOBS, oldest FINISHED job first.
+
+    Finished-first matters: a pending record is somebody mid-poll, and evicting
+    it turns a slow download into a 404 they cannot tell apart from a bad job
+    id.  Pending jobs are only dropped if there is nothing finished left to
+    take, which on a single-worker executor cannot happen in practice.
+    """
+    removed = 0
+    with _LOCK:
+        if len(JOBS) <= _MAX_JOBS:
+            return 0
+        # dict preserves insertion order, so this is oldest-first.
+        finished = [k for k, v in JOBS.items() if v.status in ("done", "error")]
+        pending = [k for k, v in JOBS.items() if v.status not in ("done", "error")]
+        for key in finished + pending:
+            if len(JOBS) <= _MAX_JOBS:
+                break
+            del JOBS[key]
+            removed += 1
+    return removed
 
 
 @dataclass
@@ -186,10 +216,12 @@ def submit_job(req: GenerateRequest, out_dir: Path) -> JobRecord:
         rec.cached = True
         with _LOCK:
             JOBS[job_id] = rec
+        evict_if_needed()
         return rec
 
     with _LOCK:
         JOBS[job_id] = rec
+    evict_if_needed()
     _EXECUTOR.submit(_run_job, job_id)
     return rec
 

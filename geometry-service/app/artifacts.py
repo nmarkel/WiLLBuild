@@ -23,7 +23,9 @@ does not, which is a question the read path and the purge can both answer.
 
 from __future__ import annotations
 
+import os
 import re
+import time
 from pathlib import Path
 
 from .naming import _OUTPUT_VERSION
@@ -68,6 +70,46 @@ def purge_stale_artifacts(out_dir: Path) -> int:
         if not is_ours(path.name) or is_current_schema(path.name):
             continue
         try:
+            path.unlink()
+        except OSError:
+            continue
+        removed += 1
+    return removed
+
+
+# ---------------------------------------------------------------------------
+# Age-based expiry (Phase 0.20, D-3)
+# ---------------------------------------------------------------------------
+
+_DEFAULT_TTL_HOURS = int(os.environ.get("ARTIFACT_TTL_HOURS", "24"))
+
+
+def sweep_expired_artifacts(out_dir: Path, max_age_hours: int | None = None) -> int:
+    """Delete our artifacts older than the TTL.  Returns the count removed.
+
+    Separate from `purge_stale_artifacts`, and deliberately so: that one is
+    about CORRECTNESS (a previous schema must never be served) and this one is
+    about SPACE (a current-schema file nobody has asked for in a day).  They
+    answer different questions and a config change should be able to relax one
+    without touching the other.
+
+    Same restraint as the purge: only names beginning WiLL_.  A cache cleaner
+    that deletes by age alone is a data-loss bug waiting for the day somebody
+    points OUT_DIR at a directory with other things in it.
+    """
+    if not out_dir.is_dir():
+        return 0
+    ttl = _DEFAULT_TTL_HOURS if max_age_hours is None else max_age_hours
+    if ttl <= 0:
+        return 0
+    cutoff = time.time() - ttl * 3600
+    removed = 0
+    for path in sorted(out_dir.iterdir()):
+        if not path.is_file() or not is_ours(path.name):
+            continue
+        try:
+            if path.stat().st_mtime >= cutoff:
+                continue
             path.unlink()
         except OSError:
             continue

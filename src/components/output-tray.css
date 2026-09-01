@@ -37,3 +37,17 @@
   color: var(--text-dim, #6b6a66);
   font-variant-numeric: tabular-nums;
 }
+
+/* Phase 0.20 (A): the gate can fail now — no durable store configured, or a
+   write that did not land — and it has to say so rather than close as if it
+   worked. Gunmetal on silver, no red: this is usually "email us instead",
+   which is a redirection and not an error the visitor caused. */
+.gate-error {
+  margin: 0.5rem 0 0;
+  padding: 0.6rem 0.75rem;
+  border-left: 3px solid var(--will-yellow, #FFCF2E);
+  background: var(--will-silver, #E6E7E8);
+  color: var(--will-gunmetal, #42413D);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}

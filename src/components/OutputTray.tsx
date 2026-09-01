@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Catalog, PoleConfig } from '../types'
-import { getContact, saveLead, type Contact } from '../lib/leads'
-import { buildSummaryText } from '../lib/summary'
+import {
+  CONTACT_FALLBACK_EMAIL,
+  getContact,
+  submitLead,
+  type Contact,
+  type LeadContext,
+} from '../lib/leads'
+import { buildPartNumber, buildSummaryText } from '../lib/summary'
+import { shareUrl } from '../lib/url'
+import { SLOT_ORDER } from '../lib/compat'
 import { useConfigurator } from '../store'
 import {
   availableFormats,
@@ -141,16 +149,49 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 
 // ---- ContactGate ----
 
-function ContactGate({ onUnlock, onCancel }: { onUnlock: (c: Contact) => void; onCancel: () => void }) {
+function ContactGate({
+  onUnlock,
+  onCancel,
+}: {
+  onUnlock: (c: Contact & { company?: string }) => Promise<string | null>
+  onCancel: () => void
+}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [company, setCompany] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const valid = name.trim().length > 0 && /^\S+@\S+\.\S+$/.test(email)
+
+  // The submit is a real network call now, so the button has to have a
+  // pending state and the form has to be able to say no. Before Phase 0.20
+  // this closed instantly and always "succeeded", which was easy to build and
+  // untrue.
+  const submit = async () => {
+    setSubmitting(true)
+    setError(null)
+    const failure = await onUnlock({
+      name: name.trim(),
+      email: email.trim(),
+      company: company.trim() || undefined,
+    })
+    if (failure) {
+      setError(failure)
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className="gate-backdrop" onClick={onCancel}>
       <div className="gate" onClick={(e) => e.stopPropagation()}>
-        <h3>Almost there</h3>
-        <p>Leave your contact info to unlock downloads.</p>
+        <h3>Send this to WiLL</h3>
+        {/* Phase 0.20: the wording now matches what actually happens. It used
+            to say "unlock downloads" while the details went no further than
+            this browser — nobody at WiLL ever saw them. */}
+        <p>
+          We&rsquo;ll save your configuration with your details and follow up about it.
+          Your part numbers and render stay downloadable either way.
+        </p>
         <input
           type="text"
           placeholder="Name"
@@ -164,16 +205,23 @@ function ContactGate({ onUnlock, onCancel }: { onUnlock: (c: Contact) => void; o
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <input
+          type="text"
+          placeholder="Company (optional)"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+        {error && (
+          <p className="gate-error" role="alert">
+            {error}
+          </p>
+        )}
         <div className="gate-actions">
-          <button className="btn secondary" onClick={onCancel}>
+          <button className="btn secondary" onClick={onCancel} disabled={submitting}>
             Cancel
           </button>
-          <button
-            className="btn primary"
-            disabled={!valid}
-            onClick={() => onUnlock({ name: name.trim(), email: email.trim() })}
-          >
-            Unlock Download
+          <button className="btn primary" disabled={!valid || submitting} onClick={submit}>
+            {submitting ? 'Sending\u2026' : 'Send & Download'}
           </button>
         </div>
       </div>
@@ -390,13 +438,44 @@ export function OutputTray({ catalog, config, formats: allowedFormats, showPngCa
     [runDelivery, setCardState, cardStates],
   )
 
-  const unlock = (contact: Contact) => {
-    if (!pendingDownload) return
-    saveLead(contact, config.configId, pendingDownload)
+  /**
+   * Submit the lead, then release the download.
+   *
+   * Returns null on success, or a message for the form to show. The download
+   * is NOT released on failure: the gate's whole bargain is details for files,
+   * and handing over the file after failing to record the details is the
+   * dishonesty in the other direction.
+   *
+   * The one exception is deliberate — a 422 (bad email) is the visitor's to
+   * fix, so the form stays open rather than falling back to an address.
+   */
+  const unlock = async (contact: Contact & { company?: string }): Promise<string | null> => {
+    if (!pendingDownload) return null
     const format = pendingDownload as OutputFormat
+    const { scene } = useConfigurator.getState()
+    const ctx: LeadContext = {
+      configId: config.configId,
+      // Only resolvable numbers — a Coming Soon part yields undefined, and a
+      // lead is more useful with three real numbers than four with a blank.
+      partNumbers: SLOT_ORDER.map((slot) => buildPartNumber(catalog, config, slot)).filter(
+        (n): n is string => Boolean(n),
+      ),
+      shareUrl: shareUrl(config, scene),
+      deliverable: format,
+      company: contact.company,
+    }
+
+    const outcome = await submitLead({ name: contact.name, email: contact.email }, ctx)
+    if (!outcome.ok) {
+      return outcome.contactFallback
+        ? `${outcome.message} (${CONTACT_FALLBACK_EMAIL})`
+        : outcome.message
+    }
+
     setPendingDownload(null)
     const def = DELIVERABLE_DEFS.find((d) => d.format === format)
     if (def) void runDelivery(format, def)
+    return null
   }
 
   const copySummary = async () => {

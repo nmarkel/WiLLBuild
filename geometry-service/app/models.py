@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BannerConfig(BaseModel):
@@ -137,3 +137,33 @@ class JobStatusResponse(BaseModel):
     files: list[FileEntry]
     warnings: list[str]
     error: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# Lead capture (Phase 0.20, Workstream A)
+# ---------------------------------------------------------------------------
+
+
+class LeadRequest(BaseModel):
+    """One download-gate submission.
+
+    Field validation is deliberately thin here — pydantic guards SHAPE, and
+    app.leads.build_payload guards MEANING (a valid-shaped email can still be
+    junk). Keeping the semantic rules in one place stops the two from drifting
+    into disagreement about what a usable lead is.
+    """
+
+    name: str
+    email: str
+    company: str | None = None
+    configId: str = ""
+    partNumbers: list[str] = Field(default_factory=list)
+    shareUrl: str | None = None
+    deliverable: str | None = None
+    consent: str | None = None
+
+
+class LeadResponse(BaseModel):
+    stored: bool
+    deduped: bool
+    notified: bool

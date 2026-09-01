@@ -80,6 +80,146 @@ As of Phase 0.19 the two TEX pins are `cleared: false`.
 
 ---
 
+## Operating limits and the statelessness ceiling (Phase 0.20, Workstream D)
+
+### [AUTH] Pin App Runner max instances = 1 — do this before anything else
+
+Console → App Runner → the service → Configuration → Auto scaling → a custom
+configuration with **Max size = 1**.
+
+This is not a cost decision. Jobs live in a **process-local dict** and artifacts
+on a **process-local disk**, so a second instance answers `GET /jobs/{id}` for a
+job it has never heard of and serves `/files/{name}` for a file it does not
+have. The customer sees a download 404 in the middle of a flow that worked a
+minute ago.
+
+**Corollary, and it has bitten: don't demo right after a deploy.** A redeploy
+replaces the instance, and every in-flight job and cached artifact goes with it.
+The first request afterwards regenerates from cold — for a heavy bundle that is
+tens of seconds of apparent hang.
+
+### What is enforced in-process
+
+| Guard | Env | Default | Why |
+|---|---|---|---|
+| Bounded job registry | `MAX_TRACKED_JOBS` | 200 | Each `JobRecord` pins a whole request; unbounded it grew with traffic and freed nothing until the process died. Evicts oldest **finished** first — a pending record is somebody mid-poll. |
+| Request body cap | `MAX_REQUEST_BYTES` | 8 MiB | `renderPng` takes base64: the one field with no natural size, fully caller-controlled. Refused on `Content-Length`, before buffering. |
+| Artifact expiry | `ARTIFACT_TTL_HOURS` | 24 | Age sweep at startup. Distinct from the schema purge — that one is correctness, this one is space. |
+| Rate limit | `RATE_LIMIT_PER_MINUTE` | 120 | Per IP, fixed window. Generation takes seconds, so a human cannot approach it; this bounds a runaway script. |
+| Lead rate limit | `LEAD_RATE_LIMIT_PER_MINUTE` | 20 | Tighter, because it writes to durable storage on request. |
+
+Set any limit to `0` to disable it.
+
+**CORS is not access control.** `ALLOWED_ORIGINS` asks a *browser* to withhold a
+response it has already fetched. It does nothing to curl, and it has never
+protected an endpoint here. The gates are `app/merchandising.py` (Workstream B)
+and `app/ratelimit.py`. That is stated in both modules' docstrings so the next
+person does not mistake the origin list for a security boundary.
+
+### Scoped, NOT built — the real statelessness fix
+
+Everything above makes ONE instance survivable. It does not make the service
+horizontally scalable, and the max-instances pin is the honest admission of
+that. Lifting the pin needs two things, neither in this phase:
+
+1. **Artifacts in S3.** `out/` becomes a bucket — pairs naturally with the lead
+   bucket, same account and same IAM shape. `/files/{name}` becomes a redirect
+   to a presigned URL. Workstream C's schema guard moves to the key prefix, so
+   a stale-schema object becomes unreachable rather than merely unserved.
+   Smaller than it sounds: every write already funnels through `base_name` and
+   `OUT_DIR`.
+2. **A shared job store.** The `JOBS` dict becomes DynamoDB or ElastiCache.
+   This is the bigger one, because the single-worker `ThreadPoolExecutor` is
+   currently what serialises OCCT — which is not concurrency-safe — so shared
+   state alone is not enough; it needs a real queue with one consumer per
+   instance.
+
+Do them in that order. (1) alone fixes the download 404s, which is the
+customer-visible half, and it can ship without touching the job layer.
+
+## Lead capture — the S3 bucket (Phase 0.20, Workstream A)
+
+`POST /leads` is the download gate's real capture. Before 0.20 the gate wrote
+name+email to the visitor's own localStorage while the wording implied a
+submission — nobody at WiLL could retrieve a lead.
+
+**The contract is blunt on purpose: a 200 means the lead is durable.** With no
+bucket configured the endpoint answers **503** and tells the visitor to email
+`quotes@willbrands.com`; the builder shows that message instead of closing the
+form as if it had worked. Nothing is silently dropped, and the download is not
+released — the gate's bargain is details for files, and handing over the file
+after failing to record the details is the same dishonesty in the other
+direction. That is the state the service ships in until the steps below run.
+
+### Environment
+
+| Variable | Required | Default | Notes |
+|---|---|---|---|
+| `LEADS_BUCKET` | **yes** | — | Absent ⇒ capture refuses with 503. |
+| `LEADS_PREFIX` | no | `leads` | Key prefix inside the bucket. |
+| `AWS_REGION` | no | `us-east-1` | Same region as the App Runner service. |
+| `LEAD_NOTIFY_TO` | no | — | Absent ⇒ no email; the response reports `notified: false`. |
+| `LEAD_NOTIFY_FROM` | no | = `LEAD_NOTIFY_TO` | Must be an SES-verified identity. |
+
+Confirmed with Nick 9/1: notifications go to **`quotes@willbrands.com`**.
+
+### [AUTH] Nick/Tyler — one-time setup
+
+```bash
+# 1. Bucket. Private, versioned, encrypted. It holds PII: no public access.
+aws s3api create-bucket --bucket will-build-leads --region us-east-1
+aws s3api put-public-access-block --bucket will-build-leads \
+  --public-access-block-configuration \
+  "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+aws s3api put-bucket-versioning --bucket will-build-leads \
+  --versioning-configuration Status=Enabled
+aws s3api put-bucket-encryption --bucket will-build-leads \
+  --server-side-encryption-configuration \
+  '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+
+# 2. The App Runner INSTANCE role needs s3:PutObject + s3:HeadObject (which is
+#    granted by s3:GetObject) on that prefix, and ses:SendEmail. Instance role,
+#    not the ECR access role — they are different roles and this is the usual
+#    place to lose an hour.
+
+# 3. SES: verify the sender identity, and note the account may be in the SES
+#    SANDBOX, where it can only send to verified addresses. If quotes@ is not
+#    verified, notification silently reports notified:false — the lead is still
+#    stored. Ship storage first; treat notification as the follow-up.
+
+# 4. Set the env vars on the App Runner service and redeploy.
+```
+
+### Verifying after the redeploy
+
+```bash
+curl -s https://<service>/health | jq .leadCapture     # expect "ready"
+# then submit one real lead through the builder and confirm the object:
+aws s3 ls s3://will-build-leads/leads/ --recursive
+```
+
+### Where the data lives, and what is in it
+
+One JSON object per lead at `leads/<configId>/<sha256(email)[:16]>.json`. The
+key hashes the address because keys surface in bucket listings, access logs and
+CloudTrail; the address itself is inside the object. Dedupe falls out of that
+key — one person + one configuration = one object, so a visitor clicking four
+download cards produces one lead.
+
+The object carries the contact, the configuration context (part numbers, config
+id, share URL, which deliverable they wanted), a UTC timestamp, the consent
+wording shown, and a `salesforce` block pre-shaped to the standard Lead object
+(`FirstName`/`LastName`/`Email`/`Company`/`LeadSource`/`Description`).
+
+**Salesforce is the eventual home and the integration is deliberately NOT
+built.** The payload is shaped so that sync is a field mapping rather than a
+re-capture. The raw `name` is kept alongside the split so a future mapper can
+disagree with our first/last split without having lost the original.
+
+**PII:** leads are personal data. The service logs a capture event with the
+config id and a 12-char email fingerprint — never a name or address — because
+logs get shipped, tailed and pasted into tickets.
+
 ## AWS — App Runner from ECR (the taken path)
 
 Prerequisites: AWS CLI v2 (`brew install awscli`), Docker Desktop running, and
@@ -187,7 +327,11 @@ npm run build
 
 # 2. verify health from anywhere:
 curl https://<id>.us-east-1.awsapprunner.com/health
-# Expected: {"status":"ok","adapters":{"step":true,...}} — no "dwg" unless ODA was baked in.
+# Expected: {"status":"ok","adapters":{"pdf":true,"dxf":true,"ifc":true,"herocard":true,
+#            "bundle":true},"leadCapture":"unconfigured"|"ready"}
+# NOTE (Phase 0.20 B): "adapters" reports what is SERVABLE, not what is built.
+# `step` and `rfa` have working adapters and no download card, so they are
+# absent here and refused by /generate. "dwg" appears only if ODA was baked in.
 
 # 3. verify one real download end-to-end (async job flow):
 APP=https://<id>.us-east-1.awsapprunner.com
