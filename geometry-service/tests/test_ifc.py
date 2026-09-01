@@ -4,7 +4,7 @@ TDD order: tests written before implementation. Watch each fail first.
 
 Covered behaviours
 ------------------
-1. Generating a default config produces WiLL_<hash>_<id8>.ifc
+1. Generating a default config produces WiLL_v<outputVersion>_<hash>_<id8>.ifc
 2. The file opens with ifcopenshell.open and reports schema IFC4
 3. Exactly one IfcLightFixture (maps to Revit's Lighting Fixtures category)
 4. Pset_WiLLConcept carries ConfigId, Revision, Disclaimer, OverallHeight_mm, Finish
@@ -99,7 +99,7 @@ def ifc_model(generated_ifc):
 
 class TestIfcFile:
     def test_output_filename(self, generated_ifc, cat, default_cfg):
-        """Filename must be WiLL_<config_hash>_<first-8-of-configId>.ifc"""
+        """Filename must be WiLL_v<outputVersion>_<config_hash>_<id8>.ifc."""
         assert generated_ifc.name == f"{base_name(cat, default_cfg)}.ifc"
 
     def test_output_file_exists(self, generated_ifc):

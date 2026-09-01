@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -11,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from .adapters import REGISTRY
+from .artifacts import is_current_schema, purge_stale_artifacts
 from .merchandising import SERVABLE_FORMATS
 from .generation import generate_files, validate_request
 from .jobs import get_job, submit_job
@@ -26,6 +29,8 @@ from .models import (
 # ---------------------------------------------------------------------------
 OUT_DIR = Path(__file__).parent.parent / "out"
 OUT_DIR.mkdir(exist_ok=True)
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # CORS helpers
@@ -52,7 +57,31 @@ def _allowed_origins(env_value: str | None) -> list[str]:
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
-app = FastAPI(title="WiLL Geometry Service", version="0.3.0")
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    """Sweep artifacts produced by a previous output schema (Phase 0.20 C).
+
+    App Runner's filesystem is ephemeral, so on the deployed instance this is
+    usually a no-op — the point is the case where it is NOT: a dev box, a
+    container reused across a redeploy, or any future move to a persistent
+    volume or S3 artifact store. Running it at startup means the invariant
+    "everything in out/ is current" holds from the first request, rather than
+    depending on somebody remembering to clean up after a version bump.
+
+    Never fatal: a service that refuses to boot because one file was locked is
+    a worse outcome than one that starts alongside stale bytes it will refuse
+    to serve anyway.
+    """
+    try:
+        removed = purge_stale_artifacts(OUT_DIR)
+        if removed:
+            logger.info("purged %d artifact(s) from a previous output schema", removed)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("artifact purge skipped: %s", exc)
+    yield
+
+
+app = FastAPI(title="WiLL Geometry Service", version="0.3.0", lifespan=_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -163,6 +192,19 @@ def serve_file(filename: str) -> FileResponse:
     # Reject path traversal
     if "/" in filename or "\\" in filename or ".." in filename:
         raise HTTPException(status_code=400, detail="Invalid filename")
+
+    # Phase 0.20 (C): refuse any artifact a PREVIOUS output schema produced,
+    # whether or not it is still sitting in out/.  Filenames are the only
+    # credential this route has ever asked for, and everything generated before
+    # 0.20 predates the merchandising gate — held-part downloads and mock rfa
+    # files among them.  410 rather than 404: the file may well be there, it is
+    # simply no longer something this service will serve.
+    if not is_current_schema(filename):
+        raise HTTPException(
+            status_code=410,
+            detail="This artifact was produced by an older output schema; "
+                   "regenerate it from the current configuration.",
+        )
 
     file_path = OUT_DIR / filename
     if not file_path.exists() or not file_path.is_file():

@@ -4,7 +4,8 @@ TDD order: tests written before implementation. Watch each fail first.
 
 Covered behaviours
 ------------------
-1. Generating a default config produces a file named WiLL_<hash>_<id8>.step
+1. Generating a default config produces a file named
+   WiLL_v<outputVersion>_<hash>_<id8>.step
 2. The file starts with ISO-10303-21 (valid STEP)
 3. FILE_DESCRIPTION contains the config ID and DISCLAIMER
 4. Determinism: generate twice into different dirs; strip FILE_NAME line;
@@ -102,7 +103,11 @@ class TestStepFilename:
         assert paths[0].suffix == ".step"
 
     def test_output_filename_matches_naming_convention(self, tmp_path, cat, default_cfg, built_assembly):
-        """Filename must be WiLL_<config_hash>_<first-8-chars-of-configId>.step"""
+        """Filename must be WiLL_v<outputVersion>_<config_hash>_<id8>.step.
+
+        Derived from base_name() rather than spelled out, so the Phase 0.20 (C)
+        version segment did not require touching this assertion.
+        """
         from app.adapters.base import GenContext
         ctx = GenContext(
             catalog=cat,

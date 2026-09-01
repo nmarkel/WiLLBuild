@@ -170,8 +170,15 @@ def config_hash(cfg: PoleConfig) -> str:
 def base_name(catalog: dict, cfg: PoleConfig) -> str:  # noqa: ARG001
     """Return the canonical base filename for a generated artifact.
 
-    Format: WiLL_{config_hash}_{first-8-chars-of-configId}
+    Format: ``WiLL_v{_OUTPUT_VERSION}_{config_hash}_{first-8-chars-of-configId}``
+
+    Phase 0.20 (C) added the ``v{n}`` segment.  The version was already inside
+    ``config_hash``, so a bump has always changed the whole name — but a hash
+    is opaque, and nothing downstream could tell a current artifact from an
+    orphaned one by looking at it.  Naming the schema is what lets
+    ``app.artifacts`` refuse a stale file on the read path and sweep it at
+    startup, instead of leaving pre-gate artifacts served forever by URL.
     """
     h = config_hash(cfg)
     short_id = cfg.configId[:8]
-    return f"WiLL_{h}_{short_id}"
+    return f"WiLL_v{_OUTPUT_VERSION}_{h}_{short_id}"
