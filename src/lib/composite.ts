@@ -1,5 +1,5 @@
-import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, assemblyModeFor, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, isSlot, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
+import type { AssemblyMode, Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
+import { armAzimuths, assemblyModeFor, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, effectivePartSlot, finishFor, isSlot, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -225,18 +225,16 @@ export function isGrounded(catalog: Catalog, config: PoleConfig): boolean {
  *
  * Deliberately NOT a render asset: it is context, not product, and inventing a
  * wall layer would put a non-WiLL surface through the render rig and the
- * coverage gate. It is a shaded rectangle whose FACE passes through the world
- * origin — which is exactly where the bracket's mounting plate sits, because a
- * pole-less layout anchors the bracket at the origin (see the arm-mount branch
- * in `resolveAssemblyLayout`).
+ * coverage gate.
  *
- * Which side the wall body occupies is DERIVED from the art rather than assumed:
- * the bracket reaches away from its plate, so the wall is on the opposite side
- * of the origin from the assembly's own centre of mass. That makes it correct in
- * both canonical views without a special case — at 180° the reach flips and so
- * does the wall.
+ * Both the side and the face come from the BRACKET's own drawn box, not from
+ * the world origin. The origin is the plate's mid-thickness, so a face there
+ * buries half the plate in the wall; the box's wall-side edge is the back of
+ * the plate, which is what actually touches the wall. Reading it off the art
+ * also makes it correct at any view rotation without a special case — at 180°
+ * the reach flips and so does the wall.
  *
- * Returns null when there is nothing to hang (no layers, or the layout is
+ * Returns null when there is no bracket layer to hang (or the layout is
  * degenerate), so the caller draws no wall rather than a zero-width sliver.
  */
 export interface WallPlane {
@@ -249,24 +247,42 @@ export interface WallPlane {
   face: 'left' | 'right'
 }
 
-/** How far past the art the wall reaches, as a fraction of the layout box. */
-const WALL_MARGIN = 0.45
+/**
+ * How far past the art the wall reaches, as a fraction of the layout box —
+ * horizontally (its depth from the face) and vertically (above and below).
+ *
+ * A strip narrower than the bracket's own reach reads as a column rather than
+ * a wall, so the depth is the larger of the two. Both are presentation-only:
+ * the wall is context and nothing measures against it.
+ */
+const WALL_DEPTH = 0.8
+const WALL_OVERHANG = 0.45
 
-export function wallPlane(layout: CompositeLayout): WallPlane | null {
-  if (layout.layers.length === 0 || layout.width <= 0 || layout.height <= 0) return null
-  // Centre of the drawn art, weighted by nothing more than each layer's box —
-  // the reach direction is a gross left/right question, so a plain mean of the
-  // layer centres answers it without needing pixel data.
-  const centre =
-    layout.layers.reduce((acc, l) => acc + l.left + l.asset.width / 2, 0) / layout.layers.length
-  // Reach to the RIGHT of the plate → the wall body lies to the LEFT.
-  const face: 'left' | 'right' = centre >= layout.origin[0] ? 'right' : 'left'
-  const depth = layout.width * WALL_MARGIN
+export function wallPlane(
+  layout: CompositeLayout,
+  /** The wall bracket's part id — the layer whose plate defines the wall. */
+  bracketPartId: string,
+): WallPlane | null {
+  if (layout.width <= 0 || layout.height <= 0) return null
+  const bracket = layout.layers.find(
+    (l) => l.partId === bracketPartId || l.partId.startsWith(`${bracketPartId}#`),
+  )
+  if (!bracket) return null
+  // The bracket reaches AWAY from its plate, so the plate is at whichever end
+  // of its box is further from the reach — i.e. the far side of its box from
+  // its own centre relative to the mount point (the layer's recorded anchor).
+  const mountPx = bracket.left + bracket.asset.anchor[0]
+  const centre = bracket.left + bracket.asset.width / 2
+  // Reach to the RIGHT of the mount → the wall body lies to the LEFT, and its
+  // RIGHT edge is the face.
+  const face: 'left' | 'right' = centre >= mountPx ? 'right' : 'left'
+  const facePx = face === 'right' ? bracket.left : bracket.left + bracket.asset.width
+  const depth = layout.width * WALL_DEPTH
   return {
-    left: face === 'right' ? layout.origin[0] - depth : layout.origin[0],
-    top: -layout.height * WALL_MARGIN,
+    left: face === 'right' ? facePx - depth : facePx,
+    top: -layout.height * WALL_OVERHANG,
     width: depth,
-    height: layout.height * (1 + 2 * WALL_MARGIN),
+    height: layout.height * (1 + 2 * WALL_OVERHANG),
     face,
   }
 }
@@ -659,7 +675,12 @@ export function resolveAssemblyLayout(
     // to, so their layers resolve in the POLE's finish, not the base finish.
     // Phase 0.17: a placement may override that (finishSlot — the CLE
     // extender paints with the base cover it extends).
-    const layerFinishSlot = finishSlot ?? (part.slot === 'accessory' ? 'pole' : part.slot)
+    // Phase 0.21: `effectivePartSlot` — a mode-bearing part (bollard, wall
+    // mount) keeps slot 'standalone' in the catalog but occupies a real
+    // assembly slot in a build, and both its finish and any focus view that
+    // frames it have to resolve against THAT slot.
+    const partSlot = effectivePartSlot(part)
+    const layerFinishSlot = finishSlot ?? (partSlot === 'accessory' ? 'pole' : partSlot)
     const finishId = finishFor(config, layerFinishSlot)
     const asset = resolveRenderAsset(
       manifest,
@@ -686,7 +707,7 @@ export function resolveAssemblyLayout(
       left: p[0] - asset.anchor[0],
       top: p[1] - asset.anchor[1],
       z,
-      slot: part.slot,
+      slot: partSlot,
       ...(tint ? { tint } : {}),
     })
   }
@@ -863,12 +884,39 @@ export const ASSEMBLY_VIEWS: readonly AssemblyView[] = [
 ] as const
 
 /**
+ * Per-mode overrides for the view set — Phase 0.21.
+ *
+ * A wall unit's 180° view looks INTO the wall, so it is dropped rather than
+ * offered as a stop that shows the back of a surface; front + side profile are
+ * the two that carry information (recorded as a taste call for Tyler). And
+ * "Pole Top" is the wrong name for the close-up on a build with no pole — the
+ * region is the same fixture + bracket union, so only the label changes.
+ */
+const MODE_VIEW_OVERRIDES: Partial<
+  Record<AssemblyMode, { drop?: readonly string[]; relabel?: Readonly<Record<string, string>> }>
+> = {
+  wall: { drop: ['back'], relabel: { top: 'Wall Mount' } },
+}
+
+/**
  * The presets offered for a layout: a focus view whose component this config
  * doesn't have is dropped rather than shown as a dead carousel stop (NAFCO has
  * no base covers, so those builds have no Pole Bottom).
+ *
+ * Phase 0.21: the assembly mode can drop or rename a stop too — see
+ * MODE_VIEW_OVERRIDES. `pole` has no entry, so pole builds are untouched.
  */
-export function availableViews(layout: CompositeLayout): AssemblyView[] {
-  return ASSEMBLY_VIEWS.filter((v) => focusBox(layout, v.focus) !== undefined)
+export function availableViews(
+  layout: CompositeLayout,
+  mode: AssemblyMode = 'pole',
+): AssemblyView[] {
+  const override = MODE_VIEW_OVERRIDES[mode]
+  return ASSEMBLY_VIEWS.filter(
+    (v) => focusBox(layout, v.focus) !== undefined && !override?.drop?.includes(v.id),
+  ).map((v) => {
+    const label = override?.relabel?.[v.id]
+    return label ? { ...v, label } : v
+  })
 }
 
 /**

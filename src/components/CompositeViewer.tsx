@@ -360,7 +360,14 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
    * separate `viewIdx` desyncs the moment a callout or the option rail moves the
    * camera. `viewIdx` is -1 when the customer has zoomed/panned off-preset.
    */
-  const views = useMemo(() => (layout ? availableViews(layout) : []), [layout])
+  // Phase 0.21: the mode can drop or rename a carousel stop — a wall unit's
+  // 180° view is a view of a wall. Derived here rather than inside
+  // availableViews so the pure function stays catalog-free.
+  const layoutMode = assemblyModeFor(catalog, config)
+  const views = useMemo(
+    () => (layout ? availableViews(layout, layoutMode) : []),
+    [layout, layoutMode],
+  )
   const viewIdx = currentViewIndex(views, viewYaw, focus)
 
   /**
@@ -632,7 +639,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // representation instead of ground furniture. (`mode` is already taken by
   // this component's day/night prop — hence the longer name.)
   const assemblyMode = assemblyModeFor(catalog, config)
-  const wall = assemblyMode === 'wall' ? wallPlane(layout) : null
+  const wall = assemblyMode === 'wall' ? wallPlane(layout, config.arm) : null
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
   // The yaw the layout actually drew (snapped to the assembly's shared step).
@@ -812,7 +819,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
             <div
               className="composite-wall-contact"
               style={{
-                left: layout.origin[0],
+                left: wall.face === 'right' ? wall.left + wall.width : wall.left,
                 top: layout.origin[1],
                 width: shadowWidthPx * 0.6,
                 height: shadowWidthPx * 0.6,

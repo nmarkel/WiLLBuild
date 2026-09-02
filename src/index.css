@@ -1774,6 +1774,10 @@ body {
   /* Gunmetal silver at low opacity — an approved WiLL neutral, and clearly a
      surface rather than a product. */
   background: linear-gradient(180deg, rgba(230, 231, 232, 0.85) 0%, rgba(88, 89, 91, 0.32) 100%);
+  /* Fade out top and bottom so the strip reads as a wall receding out of
+     frame rather than as a floating panel with four hard edges. */
+  mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
 }
 
 /* The hairline at the FACE the mounting plate bolts to — the one edge that

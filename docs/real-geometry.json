@@ -742,7 +742,7 @@
       "partId": null,
       "designCode": "WM1",
       "fitCode": null,
-      "note": "Wall Mount. On the ordering sheet but has NO catalog part yet (docs/part-numbers.md, 'Open confirmations')."
+      "note": "Wall Mount, PENDANT. On the ordering sheet; a catalog part exists (willstudio-wm1-single-wall-mount-pendant) but the CAD is NOT mapped to it because Cole's 1:1 confirm has been outstanding since 8/11 - so realCad stays false and the part ships Coming Soon (Phase 0.21). MEASURED 2026-09-02 (read-only, no ingest): 1 solid; bbox 203.20 x 279.40 x 366.33 mm = 8.000 x 11.000 x 14.423 in. Native frame is Y-up, +Z out from the wall, origin at the CENTRE of the wall plate (8.000 in square planar face at Z=0, normal +Z). Mounting feature is a DOWNWARD-OPEN bore r=30.16 mm (dia 2.375 in = the fleet's standard 2-3/8 in pendant socket), axis vertical, centred at X=0 / Z=305.3 mm, open face at Y=-11.8 mm, ~58.6 mm deep. Geometry therefore CORROBORATES the name-based 1:1 mapping (a wall plate plus a pendant bore is exactly 'Single Wall Mount Pendant'), but corroboration is not Cole's confirm. The SHIPPED catalog socket is derived from the PLACEHOLDER instead, because the placeholder is the art that ships; mapping this file will move it. Expect rotateY to be unnecessary (it already reaches along +Z with X centred, the fleet's real-arm convention) - MEASURE, do not assume (PM1 precedent)."
     },
     {
       "file": "WM2.STEP",
@@ -753,7 +753,7 @@
       "partId": null,
       "designCode": "WM2",
       "fitCode": null,
-      "note": "See WM1."
+      "note": "Wall Mount, TENON - and this is the finding of Phase 0.21. Same treatment as WM1 (catalog part exists, CAD NOT mapped, Coming Soon). MEASURED 2026-09-02: 1 solid; bbox 203.20 x 461.14 x 384.83 mm = 8.000 x 18.155 x 15.151 in; identical 8.000 in square wall plate at Z=0 and an arm of the same section as WM1. Mounting feature is a 3.000 in OD (r=38.10 mm) vertical TUBE spanning Y=-73.1..+190.5 mm with a 2.688 in ID, plus a finial at Y=-85..-172 mm. There is NO 2.375 in bore anywhere. So the upward 3 in tenon is the mount and WM2 carries a POST TOP (its bore swallows a ~3 in tenon - cf. TEX's measured 77.9 mm fitter bore), NOT the GVX pendant. The 'GVX + WM1/WM2' launch cut is therefore GVX + WM1 in practice; every WM2 mate is held. Seating note for whoever maps it: the tenon stands 143.4 mm proud of the arm's top face (Y=47.1) while TEX's fitter bore is 139.7 mm deep, so the sleeve BOTTOMS OUT inside and the fixture seats at tenonTop - boreDepth = Y=50.8 mm - the shallow-sleeve case CLAUDE.md records as deliberately unasserted since 0.12. Verify against the real fixture before trusting it."
     }
   ],
   "shellSources": [

@@ -106,6 +106,13 @@ def _build_summary_txt(ctx: GenContext) -> str:
             lines.append(f"              Finish:  {part['finish']}")
     lines.append("")
 
+    # Phase 0.21: name the assembly mode when it is not the default, matching
+    # the spec sheet — a summary that just omits the pole reads as an omission.
+    mounting = ctx.summary.get("mounting")
+    if mounting:
+        lines.append(f"Mounting: {mounting}")
+        lines.append("")
+
     # Finish
     finish_name = ctx.summary.get("finish", "")
     finish_ral = ctx.summary.get("finish_ral", "")

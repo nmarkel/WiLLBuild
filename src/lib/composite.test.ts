@@ -20,6 +20,7 @@ import {
   pointInLayout,
   isGrounded,
   snapAssemblyYaw,
+  availableViews,
   wallPlane,
   type RenderManifest,
 } from './composite'
@@ -1040,12 +1041,16 @@ describe('wallPlane (Phase 0.21)', () => {
   }
   const wallConfig: PoleConfig = { ...config, pole: '', baseCover: '' }
 
-  it('puts the wall FACE on the world origin — where the mounting plate is', () => {
+  it("puts the wall FACE on the back of the bracket's own box, not the origin", () => {
+    // The world origin is the plate's MID-thickness, so a face there buries
+    // half the plate in the wall. The box edge is the plate's back.
     const layout = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
-    const wall = wallPlane(layout)
+    const wall = wallPlane(layout, 'arm')
     expect(wall).not.toBeNull()
+    const bracket = layout.layers.find((l) => l.partId === 'arm')!
     const edge = wall!.face === 'right' ? wall!.left + wall!.width : wall!.left
-    expect(edge).toBeCloseTo(layout.origin[0], 6)
+    expect(edge).toBeCloseTo(bracket.left, 6)
+    expect(edge).toBeLessThan(layout.origin[0])
   })
 
   it('puts the wall on the side the bracket reaches AWAY from', () => {
@@ -1054,23 +1059,140 @@ describe('wallPlane (Phase 0.21)', () => {
     // flip, with no special case: the side is read off the drawn art, which is
     // also why the 180 deg view needs no handling of its own.
     const front = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
-    expect(wallPlane(front)!.face).toBe('right')
-    expect(wallPlane(front)!.left).toBeLessThan(front.origin[0])
+    expect(wallPlane(front, 'arm')!.face).toBe('right')
+    expect(wallPlane(front, 'arm')!.left).toBeLessThan(front.origin[0])
 
-    const mirrored: Catalog = {
-      ...wallCatalog,
-      parts: wallCatalog.parts.map((p) =>
-        p.id === 'arm'
-          ? { ...p, sockets: { end: { type: 'pendant', position: [-1, 0.5, 0] as [number, number, number] } } }
-          : p,
-      ),
+    // Mirror the bracket's own ART — its mount anchor moves to the right end of
+    // its box, so it reads as reaching left. This is what the real az180 render
+    // does, and it is why the 180 deg view needs no handling of its own.
+    const mirroredManifest: RenderManifest = {
+      ...manifest,
+      parts: {
+        ...manifest.parts,
+        arm: entry({ black: asset('renders/arm.webp', 120, 80, [110, 78]) }),
+      },
     }
-    const flipped = resolveAssemblyLayout(mirrored, manifest, wallConfig, 0)
-    expect(wallPlane(flipped)!.face).toBe('left')
-    expect(wallPlane(flipped)!.left).toBeCloseTo(flipped.origin[0], 6)
+    const flipped = resolveAssemblyLayout(wallCatalog, mirroredManifest, wallConfig, 0)
+    expect(wallPlane(flipped, 'arm')!.face).toBe('left')
+    const bracket = flipped.layers.find((l) => l.partId === 'arm')!
+    expect(wallPlane(flipped, 'arm')!.left).toBeCloseTo(
+      bracket.left + bracket.asset.width,
+      6,
+    )
   })
 
-  it('draws no wall for an empty layout rather than a zero-width sliver', () => {
-    expect(wallPlane({ layers: [], width: 0, height: 0, origin: [0, 0], missing: [] })).toBeNull()
+  it('draws no wall when the bracket has no layer, rather than a stray plane', () => {
+    expect(
+      wallPlane({ layers: [], width: 0, height: 0, origin: [0, 0], missing: [] }, 'arm'),
+    ).toBeNull()
+    const layout = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
+    expect(wallPlane(layout, 'no-such-part')).toBeNull()
+  })
+})
+
+describe('the view set per assembly mode (Phase 0.21)', () => {
+  const wallCatalog: Catalog = {
+    ...catalog,
+    parts: catalog.parts.map((p) => (p.id === 'arm' ? { ...p, assemblyMode: 'wall' as const } : p)),
+  }
+  const wallConfig: PoleConfig = { ...config, pole: '', baseCover: '' }
+
+  it('a pole build is untouched — three assembly views plus its focuses', () => {
+    const layout = resolveAssemblyLayout(catalog, manifest, config, 0)
+    expect(availableViews(layout).map((v) => v.label)).toEqual(
+      availableViews(layout, 'pole').map((v) => v.label),
+    )
+    expect(availableViews(layout).map((v) => v.id)).toContain('back')
+  })
+
+  it('a wall build drops the 180 deg view and renames the close-up', () => {
+    // A wall unit's back view is a view of a wall, and "Pole Top" names a pole
+    // the build does not have.
+    const layout = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
+    const views = availableViews(layout, 'wall')
+    expect(views.map((v) => v.id)).not.toContain('back')
+    expect(views.map((v) => v.id)).toEqual(['front', 'profile', 'top'])
+    expect(views.find((v) => v.id === 'top')!.label).toBe('Wall Mount')
+    // Pole Bottom is already absent for want of a base cover, not by the mode.
+    expect(views.map((v) => v.id)).not.toContain('bottom')
+  })
+})
+
+describe('effectivePartSlot in the compositor (Phase 0.21)', () => {
+  it('tags a wall bracket layer as the BRACKET, so a focus can frame it', () => {
+    const wallCatalog: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) =>
+        p.id === 'arm' ? { ...p, slot: 'standalone' as const, assemblyMode: 'wall' as const } : p,
+      ),
+    }
+    const layout = resolveAssemblyLayout(wallCatalog, manifest, { ...config, pole: '', baseCover: '' }, 0)
+    expect(layout.layers.find((l) => l.partId === 'arm')!.slot).toBe('arm')
+    // Which is what makes the close-up frame BOTH pieces: focusBox unions the
+    // 'fixture' and 'arm' slots, and a layer tagged 'standalone' is in neither
+    // — the bracket was cropped out of its own view.
+    const box = focusBox(layout, 'poleTop')!
+    const bracket = layout.layers.find((l) => l.partId === 'arm')!
+    const fixture = layout.layers.find((l) => l.partId === 'fix')!
+    expect(box.left).toBeLessThanOrEqual(Math.min(bracket.left, fixture.left))
+    expect(box.left + box.width).toBeGreaterThanOrEqual(
+      Math.max(bracket.left + bracket.asset.width, fixture.left + fixture.asset.width),
+    )
+  })
+
+  it("a mode part's per-slot finish override now reaches its layer", () => {
+    // The ground-mode consequence, stated rather than buried: a bollard's layer
+    // used to be tagged 'standalone', and finishFor returns the BASE finish for
+    // any non-slot, so the Fixture step's own swatch was ignored in the viewer.
+    const groundCatalog: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) =>
+        p.id === 'fix'
+          ? {
+              ...p,
+              slot: 'standalone' as const,
+              assemblyMode: 'ground' as const,
+              mount: null,
+              sockets: {},
+            }
+          : p,
+      ),
+      finishes: [
+        ...catalog.finishes,
+        { ...catalog.finishes[0], id: 'white', name: 'White', code: 'WH' },
+      ],
+    }
+    const twoFinishManifest: RenderManifest = {
+      ...manifest,
+      parts: {
+        ...manifest.parts,
+        fix: entry({
+          black: asset('renders/fix.webp', 90, 70, [45, 5]),
+          white: asset('renders/fix-white.webp', 90, 70, [45, 5]),
+        }),
+      },
+    }
+    const withOverride: PoleConfig = {
+      ...config,
+      pole: '',
+      arm: '',
+      baseCover: '',
+      finishes: { fixture: 'white' },
+    }
+    const layout = resolveAssemblyLayout(groundCatalog, twoFinishManifest, withOverride, 0)
+    expect(layout.layers.find((l) => l.partId === 'fix')!.asset.file).toBe(
+      'renders/fix-white.webp',
+    )
+
+    // Negative control: with the layer tagged 'standalone' the same override is
+    // ignored and the base finish draws — the behaviour this replaces.
+    const asStandalone: Catalog = {
+      ...groundCatalog,
+      parts: groundCatalog.parts.map((p) =>
+        p.id === 'fix' ? { ...p, assemblyMode: undefined } : p,
+      ),
+    }
+    const before = resolveAssemblyLayout(asStandalone, twoFinishManifest, withOverride, 0)
+    expect(before.layers.find((l) => l.partId === 'fix')!.asset.file).toBe('renders/fix.webp')
   })
 })

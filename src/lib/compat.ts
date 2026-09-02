@@ -624,6 +624,27 @@ export function assemblyModeFor(catalog: Catalog, config: PoleConfig): AssemblyM
 }
 
 /**
+ * The slot a part actually OCCUPIES in a build — Phase 0.21.
+ *
+ * A mode-bearing part keeps `slot: 'standalone'` so its standalone product view
+ * survives, but inside a build it IS an assembly part: the bollard is the
+ * fixture, the wall mount is the bracket. Anything that asks "which slot is
+ * this layer/solid?" wants this answer, not the catalog field.
+ *
+ * This is also a bug fix, and worth naming because it changes GROUND mode: the
+ * compositor tagged a bollard's layer 'standalone', and `finishFor` returns the
+ * base finish for any non-slot, so a per-slot finish override on the Fixture
+ * step was silently ignored in the viewer while the rail's swatch showed it
+ * selected. (Not customer-reachable — the bollard is held `comingSoon` — but it
+ * would have been the day it shipped, and the same defect would have arrived
+ * with wall mode.)
+ */
+export function effectivePartSlot(part: CatalogPart): PartSlot {
+  if (part.assemblyMode !== undefined) return MODE_PART_SLOT[part.assemblyMode]
+  return part.slot
+}
+
+/**
  * Which slots a mode leaves configurable. A slot outside its mode's list is
  * "not applicable": `compatibleParts` returns [], repair evicts whatever was
  * there, and the rail grays the section rather than hiding it.

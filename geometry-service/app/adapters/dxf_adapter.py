@@ -207,6 +207,13 @@ def _draw_arm(msp, arm: dict, arm_y_m: float) -> None:
         _add_closed_poly(msp, pts, GUNMETAL)
         return
 
+    if ph["kind"] == "group":
+        # Phase 0.21: a wall bracket is a GROUP (plate + reach + tube + cap),
+        # not a swept tube — and its children sit out at the end of the reach,
+        # so their x positions have to be honoured.
+        _draw_fixture_group(msp, arm, arm_y_m, honor_x=True)
+        return
+
     pts = ph["points"]
     r = ph["radiusM"]
     # NOTE: _arm_tube_silhouette assumes monotonically-advancing X in pts;
@@ -232,8 +239,22 @@ def _draw_fixture_lathe(msp, fixture: dict, fx_world_y_m: float) -> None:
     _add_closed_poly(msp, outline, GUNMETAL)
 
 
-def _draw_fixture_group(msp, fixture: dict, fx_world_y_m: float) -> None:
-    """Draw group fixture as bounding box silhouette."""
+def _draw_fixture_group(
+    msp, fixture: dict, fx_world_y_m: float, honor_x: bool = False
+) -> None:
+    """Draw group fixture as bounding box silhouette.
+
+    ``honor_x`` places each RADIAL child (pole/prism/cone/lathe) at its own
+    x position instead of on the axis.  Off by default because a luminaire's
+    group children sit on the axis and turning it on would change shipped
+    fixture output; a wall bracket's do NOT — its tube and finial are out at
+    the end of the reach — so the wall path passes True.
+
+    (Known pre-existing gap, left alone deliberately: `nafco-chx-cobrahead`
+    is the one FIXTURE with an off-axis child, and it draws on the axis today.
+    Fixing that changes shipped NAFCO output and belongs to whoever owns that
+    line, not to this phase.)
+    """
     ph = fixture["placeholder"]
     children = ph["children"]
     # Collect all bounding points
@@ -243,32 +264,33 @@ def _draw_fixture_group(msp, fixture: dict, fx_world_y_m: float) -> None:
         pos = child["position"]  # viewer [x, y, z]
         child_y = fx_world_y_m + pos[1]
         kind = spec.get("kind")
+        cx = pos[0] if honor_x else 0.0
         if kind in ("baseCover", "pole"):
             rb = spec["radiusBottomM"]
             rt = spec["radiusTopM"]
             h = spec["heightM"]
             all_pts += [
-                (-rb * M, child_y * M),
-                (rb * M, child_y * M),
-                (-rt * M, (child_y + h) * M),
-                (rt * M, (child_y + h) * M),
+                ((cx - rb) * M, child_y * M),
+                ((cx + rb) * M, child_y * M),
+                ((cx - rt) * M, (child_y + h) * M),
+                ((cx + rt) * M, (child_y + h) * M),
             ]
         elif kind == "prism":
             rb = spec["radiusBottomM"]
             h = spec["heightM"]
             all_pts += [
-                (-rb * M, child_y * M),
-                (rb * M, child_y * M),
-                (-rb * M, (child_y + h) * M),
-                (rb * M, (child_y + h) * M),
+                ((cx - rb) * M, child_y * M),
+                ((cx + rb) * M, child_y * M),
+                ((cx - rb) * M, (child_y + h) * M),
+                ((cx + rb) * M, (child_y + h) * M),
             ]
         elif kind == "cone":
             r = spec["radiusM"]
             h = spec["heightM"]
             all_pts += [
-                (-r * M, child_y * M),
-                (r * M, child_y * M),
-                (0, (child_y + h) * M),
+                ((cx - r) * M, child_y * M),
+                ((cx + r) * M, child_y * M),
+                (cx * M, (child_y + h) * M),
             ]
         elif kind == "box":
             w, h, _d = spec["sizeM"]
@@ -283,10 +305,10 @@ def _draw_fixture_group(msp, fixture: dict, fx_world_y_m: float) -> None:
             r = max(pt[0] for pt in spec["profile"])
             ys_l = [pt[1] for pt in spec["profile"]]
             all_pts += [
-                (-r * M, (child_y + min(ys_l)) * M),
-                (r * M, (child_y + min(ys_l)) * M),
-                (-r * M, (child_y + max(ys_l)) * M),
-                (r * M, (child_y + max(ys_l)) * M),
+                ((cx - r) * M, (child_y + min(ys_l)) * M),
+                ((cx + r) * M, (child_y + min(ys_l)) * M),
+                ((cx - r) * M, (child_y + max(ys_l)) * M),
+                ((cx + r) * M, (child_y + max(ys_l)) * M),
             ]
     if not all_pts:
         return
@@ -313,7 +335,9 @@ def _draw_silhouette(msp, ctx: GenContext) -> None:
                 return p
         raise KeyError(f"Unknown part: {part_id!r}")
 
-    pole = _part(cfg.pole)
+    # Phase 0.21: the pole is optional — a wall build has none, and the bracket
+    # sits at the world origin instead of on a pole-top socket.
+    pole = _part(cfg.pole) if cfg.pole else None
     bc = _part(cfg.baseCover) if cfg.baseCover else None  # base cover is optional
     arm = _part(cfg.arm)
     fixture = _part(cfg.fixture)
@@ -323,7 +347,7 @@ def _draw_silhouette(msp, ctx: GenContext) -> None:
     arm_origin_y_m = asm.dims.pole_height / M  # top of pole (mm→m)
     # The arm attaches at the pole top socket — same as arm_origin in assembly
     # For the silhouette we just need the arm's mount Y.  Use pole top socket.
-    pole_sockets = pole.get("sockets", {})
+    pole_sockets = pole.get("sockets", {}) if pole else {}
     # Find the socket that hosts this arm
     arm_mount = arm.get("mount")
     arm_y_m = 0.0
@@ -347,7 +371,8 @@ def _draw_silhouette(msp, ctx: GenContext) -> None:
         fx_world_y_m = arm_y_m
 
     _draw_base_cover(msp, bc)
-    _draw_pole(msp, pole, arm_y_m)
+    if pole is not None:
+        _draw_pole(msp, pole, arm_y_m)
     _draw_arm(msp, arm, arm_y_m)
 
     fx_ph = fixture["placeholder"]
@@ -431,17 +456,21 @@ def _draw_dimensions(msp, ctx: GenContext) -> None:
             angle=90.0,
         )
 
-    # 3. Mounting height (vertical, left of assembly)
-    _add_linear_dim(
-        msp,
-        start=(dim_x_left, 0.0),
-        end=(dim_x_left, dims.mounting_height),
-        dim_x=dim_x_left - 30.0,
-        measurement_value=dims.mounting_height,
-        angle=90.0,
-    )
+    # 3. Mounting height (vertical, left of assembly).  Same rule as the pole
+    # height: a wall build has no ground to measure from, so this is 0 and the
+    # callout is omitted rather than drawn as a zero-length dimension.
+    if dims.mounting_height > 0.0:
+        _add_linear_dim(
+            msp,
+            start=(dim_x_left, 0.0),
+            end=(dim_x_left, dims.mounting_height),
+            dim_x=dim_x_left - 30.0,
+            measurement_value=dims.mounting_height,
+            angle=90.0,
+        )
 
-    # 4. Arm reach (horizontal, at arm level)
+    # 4. Arm reach (horizontal, at arm level).  With no mounting height that is
+    # the plate level, which is exactly where a wall reach is measured from.
     arm_y_dim = dims.mounting_height
     _add_linear_dim(
         msp,
