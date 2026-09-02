@@ -17028,8 +17028,8 @@
         ]
       },
       "realCad": true,
-      "groundMounted": true,
-      "comingSoon": true
+      "comingSoon": true,
+      "assemblyMode": "ground"
     },
     {
       "id": "willstudio-side-shepherds-hook-pole-top-brackets",
@@ -17617,11 +17617,25 @@
       "keywords": [
         "wm1",
         "wall",
+        "wall mount",
+        "wall-mount",
         "mount",
-        "pendant"
+        "pendant",
+        "surface"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-wm1-single-wall-mount-pendant",
-      "finishes": [],
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
       "placeholder": {
         "kind": "group",
         "children": [
@@ -17700,7 +17714,24 @@
           }
         ]
       },
-      "realCad": false
+      "realCad": false,
+      "assemblyMode": "wall",
+      "mount": "wall",
+      "sockets": {
+        "fixture": {
+          "type": "pendant",
+          "position": [
+            0.44,
+            0.092,
+            0
+          ]
+        }
+      },
+      "modelCodes": {
+        "1": "WM1"
+      },
+      "fitCode": "WM",
+      "cordCode": "WHP3NP"
     },
     {
       "id": "willstudio-wm2-single-wall-tenon-mount-w-finial",
@@ -17718,12 +17749,25 @@
       "keywords": [
         "wm2",
         "wall",
+        "wall mount",
+        "wall-mount",
         "tenon",
-        "mount",
-        "finial"
+        "finial",
+        "surface"
       ],
       "productUrl": "https://willbrands.com/products/willstudio-wm2-single-wall-tenon-mount-w-finial",
-      "finishes": [],
+      "finishes": [
+        "matte-black",
+        "statuary-bronze",
+        "gloss-white",
+        "silver",
+        "light-gray",
+        "slate-gray",
+        "forest-green",
+        "dark-platinum",
+        "graphite-metallic",
+        "custom-ral"
+      ],
       "placeholder": {
         "kind": "group",
         "children": [
@@ -17814,7 +17858,24 @@
           }
         ]
       },
-      "realCad": false
+      "realCad": false,
+      "assemblyMode": "wall",
+      "mount": "wall",
+      "sockets": {
+        "fixture": {
+          "type": "tenon-2-3/8",
+          "position": [
+            0.42,
+            0.71,
+            0
+          ]
+        }
+      },
+      "modelCodes": {
+        "1": "WM2"
+      },
+      "fitCode": "WM",
+      "cordCode": "WHP3NP"
     },
     {
       "id": "nafco-direct-mount",

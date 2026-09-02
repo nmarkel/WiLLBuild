@@ -6,9 +6,12 @@ import {
   placementInstances,
   poleMountingCodeFor,
   ACCENT_FINISH_KEY,
+  ASSEMBLY_MODE_LABEL,
   accentFinishFor,
+  assemblyModeFor,
   bannerPanelSize,
   configStatus,
+  slotAppliesInMode,
   finishFor,
   hasAccentFinish,
   isBannerKitLabel,
@@ -125,7 +128,12 @@ export function buildPartNumber(
     // placeholder between design and finish (the matrix structure is
     // Family-Design-Fit-Finish[-Options]) — deliberately attention-catching,
     // resolved at quote. Derivable as 40F from the 4" poles later if wanted.
-    return ['WP', base, '_', ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
+    //
+    // Phase 0.21: unless the bracket's fit is a property of the BRACKET. A wall
+    // mount has no pole top to fit, and the arms sheet gives it a fixed plate
+    // code (`WM`), so the segment is known — see `fitCode` in types.ts.
+    const fit = part.fitCode ?? '_'
+    return ['WP', base, fit, ...(armFinish ? [armFinish] : []), ...addOnCodes(catalog, part, config, slot)].join('-')
   }
   const options = part.options
   if (!options || options.length === 0) return undefined
@@ -245,8 +253,17 @@ export function buildSummaryText(
   const banner = config.banner
   const bannerPart = banner ? partById(catalog, banner.armId) : undefined
 
+  // Phase 0.21: a slot the build's mode does not use is NOT APPLICABLE, which
+  // is a different statement from the "—" an unchosen slot prints. A quote
+  // reading "Pole: —" on a wall mount invites somebody to go find the pole.
+  const mode = assemblyModeFor(catalog, config)
+
   const partLines: string[] = []
   for (const r of SUMMARY_ROWS) {
+    if (!slotAppliesInMode(mode, r.key)) {
+      partLines.push(`${r.label}: Not applicable — ${ASSEMBLY_MODE_LABEL[mode].toLowerCase()}`)
+      continue
+    }
     const part = partById(catalog, config[r.key])
     const finish = catalog.finishes.find((f) => f.id === finishFor(config, r.key))
     // Custom RAL carries the picked color so the quote knows what to match.
@@ -301,6 +318,9 @@ export function buildSummaryText(
   return [
     `Config ID: ${config.configId}`,
     `Status: ${configStatus(catalog, config)}`,
+    // Named only when it is not the default: every pre-0.21 quote is a pole
+    // build, and adding a line to all of them would be noise.
+    ...(mode === 'pole' ? [] : [`Mounting: ${ASSEMBLY_MODE_LABEL[mode]}`]),
     ...partLines,
     ...(armCount > 1 ? [`Arm arrangement: ${armArrangementLabel(armCount)}`] : []),
     ...(config.armOrientation ? [`Arm orientation: ${config.armOrientation}°`] : []),

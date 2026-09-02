@@ -1,5 +1,6 @@
 import type {
   SpecOptionValue,
+  AssemblyMode,
   BannerPanelSize,
   Catalog,
   CatalogPart,
@@ -586,13 +587,81 @@ export function partById(catalog: Catalog, id: string): CatalogPart | undefined 
   return catalog.parts.find((p) => p.id === id)
 }
 
+/**
+ * Which builder step a part offered by `assemblyMode` joins.
+ *
+ * These parts keep `slot: 'standalone'` (so their standalone product view
+ * survives) and are surfaced in one assembly step instead — the bollard IS the
+ * fixture, the wall mount IS the bracket. One map, so the step a mode-bearing
+ * part appears in is stated once rather than re-derived at each call site.
+ */
+const MODE_PART_SLOT: Record<Exclude<AssemblyMode, 'pole'>, Slot> = {
+  ground: 'fixture',
+  wall: 'arm',
+}
+
+/**
+ * The assembly mode the current selections imply — Phase 0.21.
+ *
+ * DERIVED, never stored (see `AssemblyMode` in types.ts). A part carrying an
+ * `assemblyMode` imposes it; nothing else does, so an all-ordinary build is
+ * `pole`. Only a part sitting in the slot its mode is offered in counts: a wall
+ * bracket imposes `wall` from the BRACKET slot, and reading the flag out of any
+ * other slot would let a stale share-URL id in the wrong field change how the
+ * whole build composes.
+ *
+ * Two modes cannot collide in one config: `ground` empties the bracket slot, so
+ * a ground fixture and a wall bracket can never both be selected. Should a
+ * future catalog make that possible anyway, the SLOT_ORDER walk means the
+ * upstream part (the fixture) wins — deterministic, not order-dependent.
+ */
+export function assemblyModeFor(catalog: Catalog, config: PoleConfig): AssemblyMode {
+  for (const slot of SLOT_ORDER) {
+    const mode = partById(catalog, config[slot])?.assemblyMode
+    if (mode && MODE_PART_SLOT[mode] === slot) return mode
+  }
+  return 'pole'
+}
+
+/**
+ * Which slots a mode leaves configurable. A slot outside its mode's list is
+ * "not applicable": `compatibleParts` returns [], repair evicts whatever was
+ * there, and the rail grays the section rather than hiding it.
+ *
+ * The fixture is live in all three modes — every build has a luminaire.
+ */
+const MODE_SLOTS: Record<AssemblyMode, readonly Slot[]> = {
+  pole: ['fixture', 'arm', 'pole', 'baseCover'],
+  ground: ['fixture'],
+  wall: ['fixture', 'arm'],
+}
+
+/** Whether a slot is configurable at all in the given mode. */
+export function slotAppliesInMode(mode: AssemblyMode, slot: Slot): boolean {
+  return MODE_SLOTS[mode].includes(slot)
+}
+
+/**
+ * How a non-default assembly mode is described to a customer — quote text,
+ * summaries, generated documents. One string per mode so the builder rail and
+ * the quote a salesperson reads can never characterise the same build
+ * differently. Mirrors `_MODE_LABEL` in geometry-service/app/generation.py.
+ */
+export const ASSEMBLY_MODE_LABEL: Record<AssemblyMode, string> = {
+  pole: 'Pole-mounted',
+  ground: 'Ground-mounted (complete product — no bracket, pole or base cover)',
+  wall: 'Wall-mounted (no pole or base cover)',
+}
+
 /** Wizard parts for a slot; brand-scoped when a brand is given (each line has its own builder). */
 export function partsForSlot(catalog: Catalog, slot: Slot, brand?: ProductLine): CatalogPart[] {
-  // Phase 0.14: ground-mounted products (RXB/SXB bollard) join the Fixture
-  // step from the standalone slot — see `groundMounted` in types.ts.
+  // Phase 0.14/0.21: parts that impose an assembly mode join one assembly step
+  // from the standalone slot — the bollard the Fixture step, the wall mounts the
+  // Bracket step. See `assemblyMode` in types.ts and MODE_PART_SLOT above.
   return catalog.parts.filter(
     (p) =>
-      (p.slot === slot || (slot === 'fixture' && p.groundMounted === true)) &&
+      (p.slot === slot ||
+        (p.assemblyMode !== undefined && MODE_PART_SLOT[p.assemblyMode] === slot)) &&
       (!brand || p.line === brand),
   )
 }
@@ -610,6 +679,13 @@ export function canHost(host: CatalogPart | undefined, part: CatalogPart | undef
  */
 export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot): CatalogPart[] {
   const options = partsForSlot(catalog, slot, config.brand)
+  // Phase 0.14, generalized in 0.21: a slot the current assembly mode does not
+  // use goes EMPTY — a ground-mounted product is complete on its own (nothing
+  // mounts it, nothing stands under it), and a wall bracket needs no pole or
+  // base cover. The Panel shows those sections grayed as "Not applicable" and
+  // repair evicts prior choices. One check for all three modes, replacing the
+  // three separate `groundMounted` guards this used to carry.
+  if (!slotAppliesInMode(assemblyModeFor(catalog, config), slot)) return []
   switch (slot) {
     case 'fixture':
       return options
@@ -618,19 +694,17 @@ export function compatibleParts(catalog: Catalog, config: PoleConfig, slot: Slot
     // customer's own picks start narrowing it.
     case 'arm': {
       const fixture = partById(catalog, config.fixture)
-      // Phase 0.14: a ground-mounted product is complete — nothing mounts it,
-      // nothing stands under it. All three mounting slots go empty (the Panel
-      // shows them grayed as "not applicable", repair evicts prior choices).
-      if (fixture?.groundMounted) return []
       return fixture ? options.filter((arm) => canHost(arm, fixture)) : options
     }
     case 'pole': {
-      if (partById(catalog, config.fixture)?.groundMounted) return []
       const arm = partById(catalog, config.arm)
+      // A wall bracket's `mount` is 'wall' and no pole exposes a 'wall'
+      // socket, so this filter would empty the slot even without the mode
+      // check above. The mode check is what makes it INTENTIONAL rather than
+      // an accident of socket naming — and what grays the section.
       return arm ? options.filter((pole) => canHost(pole, arm)) : options
     }
     case 'baseCover': {
-      if (partById(catalog, config.fixture)?.groundMounted) return []
       const pole = partById(catalog, config.pole)
       return pole ? options.filter((cover) => canHost(pole, cover)) : options
     }
@@ -734,11 +808,12 @@ export function repairConfig(catalog: Catalog, config: PoleConfig): PoleConfig {
     if (!next[slot]) continue
     if (slot === 'fixture') {
       const fixture = partById(catalog, next.fixture)
-      // Phase 0.14: ground-mounted products (slot 'standalone') are legal
-      // fixture choices — see `groundMounted` in types.ts.
+      // Phase 0.14/0.21: a mode-bearing part (slot 'standalone') is a legal
+      // choice in the step its mode is offered in — the bollard in Fixture.
+      // See `assemblyMode` in types.ts.
       const legal =
         fixture !== undefined &&
-        (fixture.slot === 'fixture' || fixture.groundMounted === true) &&
+        partsForSlot(catalog, 'fixture', next.brand).some((p) => p.id === fixture.id) &&
         fixture.line === next.brand
       if (!legal) {
         next.fixture = ''

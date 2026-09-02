@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import type { Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
-import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, partsForSlot, specCodes, voltageCompatible } from '../lib/compat'
+import type { AssemblyMode, Catalog, CatalogPart, PoleConfig, Slot, SpecOption } from '../types'
+import { ACCENT_FINISH_KEY, accentFinishFor, accessoryHeightRange, accessorySideOptions, allowedArmCounts, armOrientationOptions, assemblyModeFor, cordCodeFor, fixtureBottomFt, isPlaceable, placementInstances, poleAccessoryValue, poleMountingCodeFor, slotAppliesInMode, snapPlacementHeightFt, valueCompatibleWithChosen, valueText, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, exclusiveFamily, finishFor, isBannerKitLabel, optionLabel, partById, partsForSlot, specCodes, voltageCompatible } from '../lib/compat'
 import { formatPanelSize } from '../lib/banner'
 
 /** Side-count labels for accessory placements (banner kits, couplings). */
@@ -69,6 +69,21 @@ const STEPS: { key: Slot; label: string; tagline: string }[] = [
 ]
 
 /**
+ * Why a step is grayed out, per assembly mode (Phase 0.21).
+ *
+ * The reason is mode-specific and worth saying: "ground-mounted and complete on
+ * its own" and "mounts to a wall" send the customer somewhere different. `pole`
+ * has an entry only for exhaustiveness — in pole mode every slot applies, so it
+ * is unreachable; a generic string beats leaving the map partial and needing a
+ * non-null assertion at the call site.
+ */
+const NOT_APPLICABLE_NOTE: Record<AssemblyMode, (stepLabel: string) => string> = {
+  pole: (step) => `No ${step} to configure.`,
+  ground: (step) => `This product is ground-mounted and complete on its own — no ${step} to configure.`,
+  wall: (step) => `This bracket mounts to a wall, so the build has no ${step}.`,
+}
+
+/**
  * Ordering columns whose values are the paint color. The step's finish swatch
  * row IS this choice (it also drives the render), so the raw dropdown is
  * hidden to avoid asking for the same thing twice.
@@ -107,18 +122,19 @@ export function Panel({ catalog, config }: Props) {
   const openStep = useConfigurator((s) => s.openStep)
   const setOpenStep = useConfigurator((s) => s.setOpenStep)
 
-  // Phase 0.14 (Tyler 8/14): a ground-mounted fixture (RXB/SXB bollard) is a
-  // complete product — Bracket / Pole / Base Cover GRAY OUT rather than
-  // vanish, so the customer sees they're deliberately not applicable.
-  const groundMounted = Boolean(partById(catalog, config.fixture)?.groundMounted)
+  // Phase 0.14 (Tyler 8/14), generalized in 0.21: a build whose mode does not
+  // use a slot GRAYS THAT SECTION OUT rather than vanishing it, so the customer
+  // sees it is deliberately not applicable. A ground-mounted fixture (RXB/SXB
+  // bollard) is a complete product; a wall bracket (WM1/WM2) needs no pole or
+  // base cover but keeps its own Bracket step live.
+  const mode = assemblyModeFor(catalog, config)
 
   // Hide steps the brand has no parts for (e.g. NAFCO has no base covers) —
-  // but keep a section the bollard EMPTIED visible in its grayed state.
+  // but keep a section the MODE emptied visible in its grayed state.
   const steps = STEPS.filter(
     (step) =>
       compatibleParts(catalog, config, step.key).length > 0 ||
-      (groundMounted &&
-        step.key !== 'fixture' &&
+      (!slotAppliesInMode(mode, step.key) &&
         partsForSlot(catalog, step.key, config.brand).length > 0),
   )
 
@@ -131,11 +147,10 @@ export function Panel({ catalog, config }: Props) {
         const part = partById(catalog, config[step.key])
         const finish = catalog.finishes.find((f) => f.id === finishFor(config, step.key))
 
-        // Phase 0.14: grayed "not applicable" section — the chosen fixture is
-        // a complete ground-mounted product, so nothing can be picked here.
+        // Phase 0.14/0.21: grayed "not applicable" section — the build's
+        // assembly mode does not use this slot, so nothing can be picked here.
         const notApplicable =
-          groundMounted &&
-          step.key !== 'fixture' &&
+          !slotAppliesInMode(mode, step.key) &&
           compatibleParts(catalog, config, step.key).length === 0
         if (notApplicable) {
           return (
@@ -145,10 +160,7 @@ export function Panel({ catalog, config }: Props) {
                 <span className="step-label">{step.label}</span>
                 <span className="step-selected">Not applicable</span>
               </div>
-              <p className="step-na-note">
-                This product is ground-mounted and complete on its own — no{' '}
-                {step.label.toLowerCase()} to configure.
-              </p>
+              <p className="step-na-note">{NOT_APPLICABLE_NOTE[mode](step.label.toLowerCase())}</p>
             </section>
           )
         }

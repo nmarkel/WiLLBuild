@@ -8,6 +8,28 @@ export type Slot = 'pole' | 'baseCover' | 'arm' | 'fixture'
  */
 export type PartSlot = Slot | 'standalone' | 'banner' | 'accessory'
 
+/**
+ * How a build is assembled — Phase 0.21, generalizing Phase 0.14's
+ * `groundMounted` boolean (CR-GM-01).
+ *
+ * `pole` is the default and the only mode with a shaft: fixture on a bracket on
+ * a pole with a base cover, plus shaft accessories. The other two are complete
+ * without a shaft, and each empties a different set of slots:
+ *
+ *  - `ground` — a self-contained ground-mounted product (RXB/SXB bollard). The
+ *    fixture IS the whole build: Bracket / Pole / Base Cover all go inert.
+ *  - `wall` — a wall bracket (WM1/WM2) carrying a fixture. The BRACKET slot is
+ *    live (it is the wall mount); Pole / Base Cover go inert.
+ *
+ * Two mutually-exclusive booleans are an enum wearing a disguise, which is why
+ * this replaced `groundMounted` rather than gaining a `wallMounted` beside it.
+ * The mode is DERIVED from the selected parts (`assemblyModeFor` in
+ * lib/compat.ts), never stored on the config: it is a consequence of what the
+ * customer picked, so it can never disagree with the picks the way a stored
+ * copy could.
+ */
+export type AssemblyMode = 'pole' | 'ground' | 'wall'
+
 export type ProductLine = 'NAFCO' | 'WiLLsport' | 'WiLLstudio' | 'WiLLev' | 'WiLLcloud' | 'Other'
 export type ProductClass = 'assembly-part' | 'standalone'
 export type AssetTier = 1 | 2 | 3
@@ -69,13 +91,25 @@ export interface CatalogPart {
    */
   comingSoon?: boolean
   /**
-   * Phase 0.14 (Tyler 8/14): a complete, self-contained GROUND-MOUNTED product
-   * (RXB/SXB bollard) offered in the builder's Fixture step although its slot
-   * stays 'standalone' (it keeps its standalone product view). Selecting one
-   * grays out Bracket / Pole / Base Cover — compatibleParts returns [] for
-   * those slots and repair evicts prior choices. Hand-set, like `comingSoon`.
+   * The assembly mode this part IMPOSES on a build that selects it. Absent
+   * means the default `pole` mode, so the overwhelming majority of parts say
+   * nothing here.
+   *
+   * Phase 0.21 generalization of Phase 0.14's `groundMounted: true` (CR-GM-01,
+   * Tyler 8/14) — same mechanic, one more mode:
+   *
+   *  - `'ground'` on a FIXTURE (RXB/SXB bollard): a complete, self-contained
+   *    ground-mounted product offered in the builder's Fixture step although
+   *    its slot stays 'standalone' (it keeps its standalone product view).
+   *    Selecting one grays out Bracket / Pole / Base Cover.
+   *  - `'wall'` on a BRACKET (WM1/WM2): a wall mount, offered in the Bracket
+   *    step from the same 'standalone' slot. Selecting one grays out Pole /
+   *    Base Cover; the fixture it carries is ordinary socket matching.
+   *
+   * In both cases `compatibleParts` returns [] for the emptied slots and
+   * repair evicts prior choices. Hand-set, like `comingSoon`.
    */
-  groundMounted?: boolean
+  assemblyMode?: Exclude<AssemblyMode, 'pole'>
   /**
    * Phase 0.12_TO (Tyler 8/12): curated default codes for this part's
    * ORDERING columns, keyed by column key — seeds `config.specOptions` when
@@ -93,6 +127,19 @@ export interface CatalogPart {
    * REQUIRED with a WiLLstudio bracket and derived, never customer-chosen.
    */
   cordCode?: string
+  /**
+   * Phase 0.21: the Pole/Tenon Fit segment this bracket prints, when the fit is
+   * a property of the BRACKET rather than of the pole it lands on.
+   *
+   * CR-PN-09 has arms print a blank `_` placeholder in the fit position because
+   * the fit is a pole-top choice the configurator has no axis for. A wall mount
+   * has no pole: the arms sheet gives it the fixed `WM` plate code
+   * ("Wall-mount flat plate", `fitCodes.plate` in docs/ordering-matrix.json,
+   * WM1/WM2 only), so the segment is known and printing `_` would be a blank
+   * where a real code exists. Absent → the `_` placeholder, unchanged for every
+   * pole-mounted bracket.
+   */
+  fitCode?: string
   /**
    * CR-OPT-15 (Tyler 8/14): arms only — the pole's fixture-mounting code this
    * bracket implies (PF flush arm fit for nearly all; FR2 → PD). Derived,

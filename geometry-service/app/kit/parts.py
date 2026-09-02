@@ -331,6 +331,32 @@ def build_fixture(p: dict):
     raise ValueError(f"unknown fixture kind: {kind!r}")
 
 
+def build_mode_part(p: dict):
+    """Build a part that keeps slot 'standalone' but participates in a build.
+
+    Phase 0.21.  A part carrying `assemblyMode` (the RXB/SXB bollard, the
+    WM1/WM2 wall mounts) stays slot 'standalone' so its standalone product view
+    survives — but inside a build it IS an assembly part and has to produce a
+    solid.  There is no slot-specific sweep to reach for, so it dispatches on
+    its placeholder KIND, using the same generic builders the fixture path uses.
+
+    The fixture detail pass (kit/detail.py) is deliberately NOT applied: it is
+    scoped to luminaire housings, and a wall bracket's plate and arm are not
+    that.  A bollard reaching this path would want the same answer.
+    """
+    ph = p["placeholder"]
+    kind = ph["kind"]
+    if kind == "group":
+        return build_fixture_group(ph["children"])
+    if kind == "lathe":
+        return build_fixture_lathe(ph["profile"])
+    if kind == "box":
+        return _build_box(ph)
+    if kind == "pole":
+        return _tapered_cylinder(ph["radiusBottomM"], ph["radiusTopM"], ph["heightM"])
+    raise ValueError(f"unsupported placeholder kind for a mode part: {kind!r}")
+
+
 # ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
@@ -384,4 +410,6 @@ def build_part(p: dict, design_code: str | None = None):
         return build_fixture(p)
     if slot == "banner":
         return build_banner(p)
+    if slot == "standalone" and p.get("assemblyMode"):
+        return build_mode_part(p)
     raise ValueError(f"unknown slot: {slot!r}")

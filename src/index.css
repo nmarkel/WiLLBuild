@@ -1762,6 +1762,41 @@ body {
 
 /* Soft ground-shadow ellipse under the assembly, centered on the pole's
    ground line (layout.origin). */
+/* Phase 0.21 — the wall a wall-mounted build (WM1/WM2) hangs on.
+   Context, not product: no render asset is involved, so nothing here goes
+   through the rig or the coverage gate. Negative z-index keeps it behind every
+   product layer; `.composite-stage` has its own z-index, so this paints inside
+   the stage but under its siblings rather than escaping to the backdrop. */
+.composite-wall {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  /* Gunmetal silver at low opacity — an approved WiLL neutral, and clearly a
+     surface rather than a product. */
+  background: linear-gradient(180deg, rgba(230, 231, 232, 0.85) 0%, rgba(88, 89, 91, 0.32) 100%);
+}
+
+/* The hairline at the FACE the mounting plate bolts to — the one edge that
+   carries meaning, so it is the one edge that is drawn. */
+.composite-wall-right {
+  border-right: 2px solid rgba(66, 65, 61, 0.45);
+}
+
+.composite-wall-left {
+  border-left: 2px solid rgba(66, 65, 61, 0.45);
+}
+
+/* Soft contact shadow where the plate meets the wall — the wall analogue of
+   `.composite-ground-shadow`, centred on the world origin (the plate). */
+.composite-wall-contact {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(66, 65, 61, 0.3) 0%, rgba(66, 65, 61, 0) 70%);
+}
+
 .composite-ground-shadow {
   position: absolute;
   z-index: 0;

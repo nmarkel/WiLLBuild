@@ -100,8 +100,15 @@ def _base_radius_m(spec: dict) -> float:
 
 
 def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
-    """Compose a fused assembly solid from a validated PoleConfig."""
-    pole = part(catalog, cfg.pole)
+    """Compose a fused assembly solid from a validated PoleConfig.
+
+    Phase 0.21: the pole is OPTIONAL.  A wall-mounted build (`assemblyMode:
+    'wall'` on the bracket — WM1/WM2) is a bracket plus a fixture and nothing
+    else, so the pole and base cover are absent and the bracket sits at the
+    world origin, which is where its mounting plate meets the wall.  Everything
+    downstream of that is the same socket walk a pole build uses.
+    """
+    pole = part(catalog, cfg.pole) if cfg.pole else None
     base_cover = part(catalog, cfg.baseCover) if cfg.baseCover else None
     arm = part(catalog, cfg.arm)
     fixture = part(catalog, cfg.fixture)
@@ -117,12 +124,13 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
 
     placed: list[tuple[str, Part]] = []
 
-    # --- Pole at origin ---
-    pole_solid = _place(build_part(pole, _design(pole)), (0.0, 0.0, 0.0))
-    placed.append((pole["id"], pole_solid))
+    # --- Pole at origin (absent on a wall build) ---
+    if pole is not None:
+        pole_solid = _place(build_part(pole, _design(pole)), (0.0, 0.0, 0.0))
+        placed.append((pole["id"], pole_solid))
 
     # --- Base cover (optional) at the pole socket matching its mount ---
-    if base_cover is not None:
+    if pole is not None and base_cover is not None:
         bc_hit = _socket_for_mount(pole, base_cover.get("mount"))
         bc_origin = viewer_to_cad(bc_hit[1]["position"]) if bc_hit else (0.0, 0.0, 0.0)
         bc_solid = _place(build_part(base_cover, _design(base_cover)), bc_origin)
@@ -142,7 +150,10 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
     #   cx' = cx·cosθ + cy·sinθ,  cy' = -cx·sinθ + cy·cosθ,
     # which is build123d ``Rotation(0, 0, -θ)`` (right-handed Rz(-θ)).  arm 0
     # (θ=0) is left unrotated, so armCount=1 stays byte-identical to pre-0.8.
-    arm_hit = _socket_for_mount(pole, arm.get("mount"))
+    # No pole (wall build) → no host socket, so the bracket lands at the world
+    # origin. That is the same fallback a socket MISS already took, and it is
+    # what the compositor does for a pole-less layout, so the two agree.
+    arm_hit = _socket_for_mount(pole, arm.get("mount")) if pole is not None else None
     arm_origin = viewer_to_cad(arm_hit[1]["position"]) if arm_hit else (0.0, 0.0, 0.0)
 
     fx_hit = _socket_for_mount(arm, fixture.get("mount"))
@@ -201,7 +212,9 @@ def build_assembly(catalog: dict, cfg: PoleConfig) -> BuiltAssembly:
                 placed.append((f"{banner['id']}#{i}", b_solid))
 
     # --- Fuse ---
-    fused = pole_solid
+    # Seed from the first placed solid rather than naming the pole: on a wall
+    # build the pole is absent and the bracket is placed[0].
+    fused = placed[0][1]
     for _pid, s in placed[1:]:
         fused = fused + s
 
@@ -218,14 +231,20 @@ def _compute_dims(
     arm_solids: list[Part],
     fx_world: tuple[float, float, float],
     fixture: dict,
-    pole: dict,
+    pole: dict | None,
     banner_solids: list[Part] | None = None,
 ) -> AssemblyDims:
     """Derive AssemblyDims (mm) from the built geometry + catalog data."""
     bb = fused.bounding_box()
-    overall_height = bb.max.Z
+    # A pole build stands on Z=0, so its top IS its height. A wall build hangs
+    # from a plate at the origin with the luminaire BELOW it (negative Z), so
+    # its height is the SPAN of the unit — measuring to Z=0 would stop at the
+    # plate and leave the fixture out of the number.
+    overall_height = bb.max.Z if pole else (bb.max.Z - bb.min.Z)
 
-    pole_top = pole["sockets"]["top"]["position"][1] * 1000.0
+    # 0.0 on a wall build: there is no pole, and `_dims_payload` in
+    # generation.py drops the row rather than printing "0'-0"".
+    pole_top = pole["sockets"]["top"]["position"][1] * 1000.0 if pole else 0.0
 
     # arm_reach: max horizontal distance from the pole axis.
     # Single arm (byte-identical to pre-0.8): max |X| of the single arm bbox.
@@ -264,14 +283,25 @@ def _compute_dims(
         mounting_height = fx_world[2] + light[1] * 1000.0
     else:
         mounting_height = fx_world[2]
+    # Phase 0.21: on a wall build there is no ground to measure from — the
+    # number above is relative to the mounting plate and comes out NEGATIVE
+    # (the luminaire hangs below it). 'Mounting Height: -0'-9"' is worse than
+    # no row, so it is zeroed and dropped downstream; the assembly's warning
+    # says the height resolves at order entry.
+    if not pole:
+        mounting_height = 0.0
 
     # Base diameter from the base cover when present, else the pole's own base
     if cfg.baseCover:
         base_cover = part(catalog, cfg.baseCover)
         base_diameter = _base_radius_m(base_cover["placeholder"]) * 2.0 * 1000.0
-    else:
+    elif cfg.pole:
         pole_part_dims = part(catalog, cfg.pole)
         base_diameter = _base_radius_m(pole_part_dims["placeholder"]) * 2.0 * 1000.0
+    else:
+        # A wall build has no base: nothing stands on the ground. 0.0 is the
+        # signal to drop the row, not a measured zero.
+        base_diameter = 0.0
 
     return AssemblyDims(
         overall_height=overall_height,

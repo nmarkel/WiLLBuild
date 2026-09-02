@@ -7,13 +7,15 @@ import {
   availableViews,
   currentViewIndex,
   focusBox,
+  isGrounded,
   resolveAssemblyLayout,
   pointInLayout,
   projectOffset,
   rotateY,
+  wallPlane,
   type FocusTarget,
 } from '../lib/composite'
-import { compatibleParts, finishFor, partById, specCodes } from '../lib/compat'
+import { assemblyModeFor, compatibleParts, finishFor, partById, specCodes } from '../lib/compat'
 import { armArrangementLabel, buildPartNumber } from '../lib/summary'
 import { displayArmName, displayPartName } from '../lib/display'
 import { clampPan, focusFrame, zoomStep, type PanClampOpts } from '../lib/viewerTransform'
@@ -543,10 +545,9 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         // A pole-less partial preview floats — the silhouette has no ground
         // line to stand on, so the snapshot drops it too (matches the viewer).
         // A ground-mounted product (bollard) stands on the ground by itself.
-        showScale:
-          showScale &&
-          (Boolean(config.pole) ||
-            Boolean(partById(catalog, config.fixture)?.groundMounted)),
+        // Same `isGrounded` rule the viewer uses, so the PNG and the screen can
+        // never disagree about whether the build touches the ground.
+        showScale: showScale && isGrounded(catalog, config),
       }),
     )
     return () => registerSnapshot(null)
@@ -626,10 +627,12 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // No pole yet → the layout is a floating component preview: nothing is
   // grounded, so the ground furniture (contact shadow, compass ring, human
   // silhouette; night pool is already absent from the layout) stays hidden.
-  // A ground-mounted product (RXB/SXB bollard) stands on the ground by
-  // itself — its base-origin render sits at y=0, so it IS grounded.
-  const grounded =
-    Boolean(config.pole) || Boolean(partById(catalog, config.fixture)?.groundMounted)
+  const grounded = isGrounded(catalog, config)
+  // Phase 0.21: a wall build hangs off a vertical surface, so it gets a wall
+  // representation instead of ground furniture. (`mode` is already taken by
+  // this component's day/night prop — hence the longer name.)
+  const assemblyMode = assemblyModeFor(catalog, config)
+  const wall = assemblyMode === 'wall' ? wallPlane(layout) : null
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
   // The yaw the layout actually drew (snapped to the assembly's shared step).
@@ -795,6 +798,29 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         aria-label="Assembled pole preview"
         style={{ width: layout.width, height: layout.height, transform: stageTransform }}
       >
+        {/* Phase 0.21: the wall a wall-mounted build hangs on. Context, not
+            product — a shaded plane plus a hairline at the FACE the mounting
+            plate bolts to, and a soft contact shadow where the plate meets it.
+            Drawn at z-index -1 so it sits behind every product layer without
+            competing with their integer stacking (see the note below). */}
+        {wall && (
+          <>
+            <div
+              className={`composite-wall composite-wall-${wall.face}`}
+              style={{ left: wall.left, top: wall.top, width: wall.width, height: wall.height }}
+            />
+            <div
+              className="composite-wall-contact"
+              style={{
+                left: layout.origin[0],
+                top: layout.origin[1],
+                width: shadowWidthPx * 0.6,
+                height: shadowWidthPx * 0.6,
+              }}
+            />
+          </>
+        )}
+
         {grounded && (
           <div
             className="composite-ground-shadow"

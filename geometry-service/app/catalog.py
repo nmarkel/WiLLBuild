@@ -65,6 +65,50 @@ def is_standalone_config(cfg: PoleConfig) -> bool:
     return cfg.pole == "" and cfg.arm == "" and cfg.baseCover == "" and cfg.fixture != ""
 
 
+# Which builder slot a mode-bearing part is offered in.  Mirrors
+# MODE_PART_SLOT in src/lib/compat.ts.
+_MODE_PART_SLOT = {"ground": "fixture", "wall": "arm"}
+
+# Which slots each mode leaves configurable.  Mirrors MODE_SLOTS in
+# src/lib/compat.ts.
+_MODE_SLOTS = {
+    "pole": ("fixture", "arm", "pole", "baseCover"),
+    "ground": ("fixture",),
+    "wall": ("fixture", "arm"),
+}
+
+
+def assembly_mode(catalog: dict, cfg: PoleConfig) -> str:
+    """The assembly mode the config's selections imply — 'pole' | 'ground' | 'wall'.
+
+    Phase 0.21.  The Python mirror of `assemblyModeFor` in src/lib/compat.ts,
+    and it has to stay one: the frontend decides what a customer can select and
+    this decides what the service will build, so a disagreement is a config the
+    UI offers and the service refuses (or worse, the reverse).
+
+    Derived from the parts, never stored on the config — see `AssemblyMode` in
+    src/types.ts.  Only a part sitting in the slot its mode is offered in
+    counts, and the walk is in slot order so an (impossible today) collision
+    resolves upstream-first rather than by dict ordering.
+    """
+    for field in ("fixture", "arm", "pole", "baseCover"):
+        part_id = getattr(cfg, field, "") or ""
+        if not part_id:
+            continue
+        try:
+            mode = part(catalog, part_id).get("assemblyMode")
+        except KeyError:
+            continue
+        if mode and _MODE_PART_SLOT.get(mode) == field:
+            return mode
+    return "pole"
+
+
+def slot_applies_in_mode(mode: str, slot: str) -> bool:
+    """Whether a slot is configurable at all in the given mode."""
+    return slot in _MODE_SLOTS.get(mode, _MODE_SLOTS["pole"])
+
+
 def config_status(catalog: dict, cfg: PoleConfig) -> str:
     """Return 'Standard' if cfg matches a referenceAssemblies entry, else 'Configurable'.
 
@@ -136,6 +180,59 @@ def validate_config(catalog: dict, cfg: PoleConfig) -> None:
                     )
         except KeyError:
             problems.append(f"Unknown banner armId: {cfg.banner.armId!r}")
+
+    mode = assembly_mode(catalog, cfg)
+
+    # --- Wall path (Phase 0.21): fixture + wall bracket, no pole, no base ---
+    #
+    # A wall build is NOT the standalone path above (it has two parts and a real
+    # socket joint) and not the full-assembly path below (it has no pole to
+    # host the bracket or carry a base cover).  It gets its own branch rather
+    # than a pile of `if cfg.pole` guards in the assembly path, because the
+    # RULES genuinely differ: here an empty pole/baseCover is REQUIRED, not
+    # tolerated, and the bracket legitimately carries slot 'standalone'.
+    if mode == "wall":
+        for field in ("pole", "baseCover"):
+            if getattr(cfg, field):
+                problems.append(
+                    f"{field} must be empty for a wall-mounted build "
+                    f"(bracket {cfg.arm!r} mounts to a wall, not a pole)"
+                )
+        wall_arm: dict | None = None
+        wall_fixture: dict | None = None
+        try:
+            wall_arm = part(catalog, cfg.arm)
+        except KeyError:
+            problems.append(f"Unknown arm id: {cfg.arm!r}")
+        try:
+            wall_fixture = part(catalog, cfg.fixture)
+            if wall_fixture.get("slot") != "fixture":
+                problems.append(
+                    f"part {cfg.fixture!r} is a {wall_fixture.get('slot')!r}, not a fixture"
+                )
+                wall_fixture = None
+        except KeyError:
+            problems.append(f"Unknown fixture id: {cfg.fixture!r}")
+        finish_ids = {f["id"] for f in catalog.get("finishes", [])}
+        if cfg.finish not in finish_ids:
+            problems.append(f"Unknown finish id: {cfg.finish!r}")
+        # One bracket on one wall: the radial arrangement is a pole mechanic
+        # (arms repeated AROUND a shaft), and a wall has one face.
+        if cfg.armCount not in (None, 1):
+            problems.append(
+                f"armCount must be 1 for a wall-mounted build, got {cfg.armCount!r}"
+            )
+        if cfg.banner is not None:
+            problems.append("banner arms need a pole shaft; not available on a wall build")
+        if wall_arm is not None and wall_fixture is not None and not _can_host(wall_arm, wall_fixture):
+            problems.append(
+                f"Socket mismatch: wall bracket {cfg.arm!r} cannot host fixture "
+                f"{cfg.fixture!r} (fixture mount={wall_fixture.get('mount')!r}, "
+                f"bracket sockets={list(wall_arm.get('sockets', {}).keys())})"
+            )
+        if problems:
+            raise ValueError("; ".join(problems))
+        return
 
     # --- Full assembly path ---
     # All radial arms carry the SAME arm + fixture part, so the single-arm

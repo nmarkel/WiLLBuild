@@ -1,5 +1,5 @@
 import type { Catalog, CatalogPart, PartSlot, PoleConfig } from '../types'
-import { armAzimuths, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, isSlot, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
+import { armAzimuths, assemblyModeFor, attachSocket, attachSockets, bannerMinFt, coverExtenderFor, finishFor, isSlot, partById, placeableAccessoryCodes, poleAccessoryLabel, poleAccessoryValue } from './compat'
 import { bannerLayerOriginM } from './banner'
 
 /** One rendered layer/product image produced by the render rig. */
@@ -195,6 +195,80 @@ export interface CompositeLayout {
    * not just the first. `lightPx` is `lightPxs[0]` (kept for back-compat).
    */
   lightPxs?: [number, number][]
+}
+
+/**
+ * Whether the build actually touches the ground — Phase 0.21, generalizing the
+ * two hand-written `config.pole || groundMounted` expressions the viewer and the
+ * PNG snapshot each carried (they had to agree, and nothing made them).
+ *
+ * Grounded builds get the ground furniture: contact shadow, compass ring, human
+ * silhouette. The three cases:
+ *
+ *  - `pole` mode with a pole chosen — grounded. Without one the layout is an
+ *    explicitly partial component preview that floats.
+ *  - `ground` mode (RXB/SXB bollard) — grounded by definition; its base-origin
+ *    render sits at y=0.
+ *  - `wall` mode — NOT grounded. The build hangs off a vertical surface at an
+ *    unspecified mounting height; a contact shadow and a scale figure standing
+ *    beside it would both be claims about a ground plane the build never meets.
+ */
+export function isGrounded(catalog: Catalog, config: PoleConfig): boolean {
+  const mode = assemblyModeFor(catalog, config)
+  if (mode === 'ground') return true
+  if (mode === 'wall') return false
+  return Boolean(config.pole)
+}
+
+/**
+ * The wall a wall-mounted build hangs on, in layout pixel space — Phase 0.21.
+ *
+ * Deliberately NOT a render asset: it is context, not product, and inventing a
+ * wall layer would put a non-WiLL surface through the render rig and the
+ * coverage gate. It is a shaded rectangle whose FACE passes through the world
+ * origin — which is exactly where the bracket's mounting plate sits, because a
+ * pole-less layout anchors the bracket at the origin (see the arm-mount branch
+ * in `resolveAssemblyLayout`).
+ *
+ * Which side the wall body occupies is DERIVED from the art rather than assumed:
+ * the bracket reaches away from its plate, so the wall is on the opposite side
+ * of the origin from the assembly's own centre of mass. That makes it correct in
+ * both canonical views without a special case — at 180° the reach flips and so
+ * does the wall.
+ *
+ * Returns null when there is nothing to hang (no layers, or the layout is
+ * degenerate), so the caller draws no wall rather than a zero-width sliver.
+ */
+export interface WallPlane {
+  /** Rectangle in layout pixel space (may extend outside the layout box). */
+  left: number
+  top: number
+  width: number
+  height: number
+  /** Which edge of the rectangle is the wall FACE the bracket bolts to. */
+  face: 'left' | 'right'
+}
+
+/** How far past the art the wall reaches, as a fraction of the layout box. */
+const WALL_MARGIN = 0.45
+
+export function wallPlane(layout: CompositeLayout): WallPlane | null {
+  if (layout.layers.length === 0 || layout.width <= 0 || layout.height <= 0) return null
+  // Centre of the drawn art, weighted by nothing more than each layer's box —
+  // the reach direction is a gross left/right question, so a plain mean of the
+  // layer centres answers it without needing pixel data.
+  const centre =
+    layout.layers.reduce((acc, l) => acc + l.left + l.asset.width / 2, 0) / layout.layers.length
+  // Reach to the RIGHT of the plate → the wall body lies to the LEFT.
+  const face: 'left' | 'right' = centre >= layout.origin[0] ? 'right' : 'left'
+  const depth = layout.width * WALL_MARGIN
+  return {
+    left: face === 'right' ? layout.origin[0] - depth : layout.origin[0],
+    top: -layout.height * WALL_MARGIN,
+    width: depth,
+    height: layout.height * (1 + 2 * WALL_MARGIN),
+    face,
+  }
 }
 
 /** Project a world-space offset (meters, +Y up) to a pixel offset via the rig map. */

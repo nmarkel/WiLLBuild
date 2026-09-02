@@ -18,7 +18,9 @@ import {
   resolveAssemblyLayout,
   rotateY,
   pointInLayout,
+  isGrounded,
   snapAssemblyYaw,
+  wallPlane,
   type RenderManifest,
 } from './composite'
 
@@ -997,5 +999,78 @@ describe('offsetDepthProxy', () => {
         expect(offsetDepthProxy(r, rotateY([1, 0, 0], deg))).toBeCloseTo(armDepthProxy(r, deg), 10)
       }
     }
+  })
+})
+
+// ---- Phase 0.21 (Nick 9/1): wall-mount assembly mode ----
+describe('isGrounded (Phase 0.21)', () => {
+  // The viewer and the PNG snapshot each used to hand-write this expression;
+  // they had to agree and nothing made them. One function now does.
+  it('a pole build with a pole is grounded, without one is not', () => {
+    expect(isGrounded(catalog, config)).toBe(true)
+    expect(isGrounded(catalog, { ...config, pole: '' })).toBe(false)
+  })
+
+  it('a wall build is NOT grounded even though it has two parts', () => {
+    const wallCatalog: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) => (p.id === 'arm' ? { ...p, assemblyMode: 'wall' as const } : p)),
+    }
+    // The build is complete — bracket + fixture — but it hangs off a vertical
+    // surface at an unspecified height, so a contact shadow and a scale figure
+    // would both assert a ground plane the build never meets.
+    expect(isGrounded(wallCatalog, { ...config, pole: '', baseCover: '' })).toBe(false)
+  })
+
+  it('a ground-mounted product is grounded with no pole at all', () => {
+    const groundCatalog: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) =>
+        p.id === 'fix' ? { ...p, assemblyMode: 'ground' as const } : p,
+      ),
+    }
+    expect(isGrounded(groundCatalog, { ...config, pole: '', arm: '', baseCover: '' })).toBe(true)
+  })
+})
+
+describe('wallPlane (Phase 0.21)', () => {
+  const wallCatalog: Catalog = {
+    ...catalog,
+    parts: catalog.parts.map((p) => (p.id === 'arm' ? { ...p, assemblyMode: 'wall' as const } : p)),
+  }
+  const wallConfig: PoleConfig = { ...config, pole: '', baseCover: '' }
+
+  it('puts the wall FACE on the world origin — where the mounting plate is', () => {
+    const layout = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
+    const wall = wallPlane(layout)
+    expect(wall).not.toBeNull()
+    const edge = wall!.face === 'right' ? wall!.left + wall!.width : wall!.left
+    expect(edge).toBeCloseTo(layout.origin[0], 6)
+  })
+
+  it('puts the wall on the side the bracket reaches AWAY from', () => {
+    // Reach +X → the art sits right of the plate → the wall body is to the
+    // LEFT and its right edge is the face. Mirror the bracket's reach and both
+    // flip, with no special case: the side is read off the drawn art, which is
+    // also why the 180 deg view needs no handling of its own.
+    const front = resolveAssemblyLayout(wallCatalog, manifest, wallConfig, 0)
+    expect(wallPlane(front)!.face).toBe('right')
+    expect(wallPlane(front)!.left).toBeLessThan(front.origin[0])
+
+    const mirrored: Catalog = {
+      ...wallCatalog,
+      parts: wallCatalog.parts.map((p) =>
+        p.id === 'arm'
+          ? { ...p, sockets: { end: { type: 'pendant', position: [-1, 0.5, 0] as [number, number, number] } } }
+          : p,
+      ),
+    }
+    const flipped = resolveAssemblyLayout(mirrored, manifest, wallConfig, 0)
+    expect(wallPlane(flipped)!.face).toBe('left')
+    expect(wallPlane(flipped)!.left).toBeCloseTo(flipped.origin[0], 6)
+  })
+
+  it('draws no wall for an empty layout rather than a zero-width sliver', () => {
+    expect(wallPlane({ layers: [], width: 0, height: 0, origin: [0, 0], missing: [] })).toBeNull()
   })
 })

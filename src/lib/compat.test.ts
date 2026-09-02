@@ -2,10 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import type { Catalog, CatalogPart, PoleConfig } from '../types'
 import { accessoryHeightRange, accessorySideOptions, activeDisclaimers, allowedArmCounts, armAzimuths, attachSocket, bannerHeightRange, bannerMinFt, bannerPanelSize, bannerSizesForLabel, codeAllowedOnPart, compatibleParts, defaultConfig, defaultSpecOptions, exclusiveFamily, finishFor, isAssemblyPart, partById, placeableAccessoryCodes, repairConfig, SLOT_ORDER, specCodes, voltageCompatible,
+  assemblyModeFor,
   autofillConfig,
+  canHost,
   cordCodeFor,
   fixtureBottomFt,
+  partsForSlot,
+  slotAppliesInMode,
 } from './compat'
+import { isComingSoon } from './availability'
 import { bannerGeometry } from './banner'
 
 const catalog: Catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
@@ -86,9 +91,102 @@ describe('activeDisclaimers', () => {
       expect(repaired.baseCover).toBe('')
     })
 
-    it('the flag is pinned on exactly the bollard', () => {
-      const flagged = catalog.parts.filter((p) => p.groundMounted).map((p) => p.id)
+    it('ground mode is pinned on exactly the bollard', () => {
+      // Phase 0.21: `groundMounted: true` became `assemblyMode: 'ground'`.
+      // Same part, same behaviour — the assertions above are unchanged.
+      const flagged = catalog.parts
+        .filter((p) => p.assemblyMode === 'ground')
+        .map((p) => p.id)
       expect(flagged).toEqual(['willstudio-rxb-sxb-bollard'])
+    })
+
+    it('resolves to ground mode, and ground mode uses the fixture slot only', () => {
+      expect(assemblyModeFor(catalog, withBollard)).toBe('ground')
+      expect(slotAppliesInMode('ground', 'fixture')).toBe(true)
+      for (const slot of ['arm', 'pole', 'baseCover'] as const) {
+        expect(slotAppliesInMode('ground', slot)).toBe(false)
+      }
+    })
+  })
+
+  // ---- Phase 0.21 (Nick 9/1): wall-mount assembly mode ----
+  describe('wall-mounted build (WM1/WM2 wall brackets)', () => {
+    const WM1 = 'willstudio-wm1-single-wall-mount-pendant'
+    const WM2 = 'willstudio-wm2-single-wall-tenon-mount-w-finial'
+    const wallBuild = config({ fixture: 'gvx-pendant', arm: WM1 })
+
+    it('the wall brackets are exactly WM1 and WM2', () => {
+      const flagged = catalog.parts.filter((p) => p.assemblyMode === 'wall').map((p) => p.id)
+      expect(flagged.sort()).toEqual([WM1, WM2].sort())
+    })
+
+    it('resolves to wall mode from the BRACKET, and only from the bracket slot', () => {
+      expect(assemblyModeFor(catalog, wallBuild)).toBe('wall')
+      // The flag is read out of the slot the mode is offered in and no other:
+      // a wall bracket id sitting in the fixture field (a corrupt share URL)
+      // must not reconfigure the whole build.
+      expect(assemblyModeFor(catalog, config({ fixture: WM1 }))).toBe('pole')
+    })
+
+    it('keeps the bracket step live and empties pole + base cover', () => {
+      expect(slotAppliesInMode('wall', 'fixture')).toBe(true)
+      expect(slotAppliesInMode('wall', 'arm')).toBe(true)
+      expect(slotAppliesInMode('wall', 'pole')).toBe(false)
+      expect(slotAppliesInMode('wall', 'baseCover')).toBe(false)
+      expect(compatibleParts(catalog, wallBuild, 'pole')).toEqual([])
+      expect(compatibleParts(catalog, wallBuild, 'baseCover')).toEqual([])
+      // The bracket list is NOT emptied — it is where the wall mount lives.
+      expect(compatibleParts(catalog, wallBuild, 'arm').length).toBeGreaterThan(0)
+    })
+
+    it('repair evicts a pole and base cover when a wall bracket is chosen', () => {
+      const repaired = repairConfig(catalog, {
+        ...wallBuild,
+        pole: 'alum-pole-20',
+        baseCover: 'bc-cl1-small-clamshell',
+      })
+      expect(repaired.arm).toBe(WM1)
+      expect(repaired.fixture).toBe('gvx-pendant')
+      expect(repaired.pole).toBe('')
+      expect(repaired.baseCover).toBe('')
+    })
+
+    it('joins the Bracket step while keeping its standalone slot (product view survives)', () => {
+      expect(partById(catalog, WM1)?.slot).toBe('standalone')
+      expect(partsForSlot(catalog, 'arm', 'WiLLstudio').map((p) => p.id)).toContain(WM1)
+      // ...and it is NOT offered as a fixture, the other mode's step.
+      expect(partsForSlot(catalog, 'fixture', 'WiLLstudio').map((p) => p.id)).not.toContain(WM1)
+    })
+
+    it('WM1 carries the GVX pendant; WM2 does NOT — its tenon carries post tops', () => {
+      // The measured finding of 0.21, and the reason the launch cut is really
+      // GVX + WM1: WM1.STEP has a downward-open 2.375" bore (the fleet's
+      // standard pendant socket) at the arm tip, while WM2.STEP has a 3.000" OD
+      // upward TENON and no bore at all. A pendant cannot hang from a tenon.
+      const gvx = partById(catalog, 'gvx-pendant')
+      expect(canHost(partById(catalog, WM1), gvx)).toBe(true)
+      expect(canHost(partById(catalog, WM2), gvx)).toBe(false)
+      expect(canHost(partById(catalog, WM2), partById(catalog, 'tex-post-top'))).toBe(true)
+    })
+
+    it('a wall build has no shaft accessories to place', () => {
+      // Shaft accessories hang off the POLE's own options, so a pole-less
+      // build has none by construction rather than by a special case.
+      expect(placeableAccessoryCodes(catalog, wallBuild)).toEqual([])
+    })
+
+    it('both wall brackets are still Coming Soon — enablement is a human step', () => {
+      // Cole's WM1/WM2 catalog-mapping confirm has been pending since 8/11, so
+      // their CAD is NOT mapped and `realCad` is false, which holds them
+      // through the ordinary geometry-gap rule. This pin exists so nobody
+      // ships them selectable by accident: clearing it is deliberate, and it
+      // happens by MAPPING the CAD (realCad flips itself), never by hand.
+      expect(isComingSoon(partById(catalog, WM1))).toBe(true)
+      expect(isComingSoon(partById(catalog, WM2))).toBe(true)
+    })
+
+    it("the fixture picks up the bracket's WHP3NP cord (CR-OPT-06)", () => {
+      expect(cordCodeFor(catalog, wallBuild)).toBe('WHP3NP')
     })
   })
 
@@ -98,6 +196,8 @@ describe('activeDisclaimers', () => {
     // PA1 left the list 8/13 (Tyler): its fitting doesn't work with the GVX,
     // so its carry socket is its own type (pendant-pa1) that no fixture
     // mounts today — socket matching stays the only compatibility mechanism.
+    // Phase 0.21: WM1 joins the list — a wall mount whose bore is the same
+    // standard pendant socket. Nothing about the GVX changed.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'gvx-pendant' }), 'arm'))
     expect(ids).toEqual(
       [
@@ -107,11 +207,14 @@ describe('activeDisclaimers', () => {
         'willstudio-side-shepherds-hook-pole-top-brackets',
         'willstudio-supported-decorative-arms',
         'willstudio-suspension-arm-pole-top-brackets',
+        'willstudio-wm1-single-wall-mount-pendant',
       ].sort(),
     )
   })
 
   it('offers direct mount plus post-top arms for post tops', () => {
+    // Phase 0.21: WM2 joins the list — measured as a 3.000" OD upward TENON
+    // mount, so it carries post tops, not the GVX pendant.
     const ids = sortedIds(compatibleParts(catalog, config({ fixture: 'drx-post-top' }), 'arm'))
     expect(ids).toEqual(
       [
@@ -119,6 +222,7 @@ describe('activeDisclaimers', () => {
         'direct-mount',
         'willstudio-cr2-decorative-crossarm',
         'willstudio-fr2-decorative-crossarm',
+        'willstudio-wm2-single-wall-tenon-mount-w-finial',
       ].sort(),
     )
   })
@@ -152,11 +256,18 @@ describe('activeDisclaimers', () => {
 })
 
 describe('P1 pole-system promotions (Workstream G)', () => {
+  // Phase 0.21: the wall mounts join these lists by plain socket matching —
+  // WM1 exposes a `pendant` socket, WM2 an upward `tenon-2-3/8`, so each shows
+  // up beside the pole brackets that carry the same fixture. That WM2 lands in
+  // the POST-TOP list and not the pendant one is the measured finding of 0.21:
+  // its real CAD carries a 3.000" OD upward tenon and no 2-3/8" bore, so it
+  // mates with TEX/DRX/DWX and NOT with the GVX pendant.
   const POST_TOP_ARMS = [
     'aluminum-decorative-bullhorn-brackets-round-pole-mount',
     'direct-mount',
     'willstudio-cr2-decorative-crossarm',
     'willstudio-fr2-decorative-crossarm',
+    'willstudio-wm2-single-wall-tenon-mount-w-finial',
   ].sort()
 
   const PENDANT_ARMS = [
@@ -166,6 +277,7 @@ describe('P1 pole-system promotions (Workstream G)', () => {
     'willstudio-side-shepherds-hook-pole-top-brackets',
     'willstudio-supported-decorative-arms',
     'willstudio-suspension-arm-pole-top-brackets',
+    'willstudio-wm1-single-wall-mount-pendant',
   ].sort()
 
   // Phase 0.10.5: the builder offers only the core aluminum pole system — the

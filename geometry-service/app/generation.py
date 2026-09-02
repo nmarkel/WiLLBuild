@@ -27,7 +27,7 @@ from typing import Callable
 
 from .adapters import REGISTRY, DWG_WARNING
 from .adapters.base import GenContext
-from .catalog import is_standalone_config, load_catalog, validate_config
+from .catalog import assembly_mode, is_standalone_config, load_catalog, validate_config
 from .merchandising import check_formats_servable, check_not_held, check_spec_options
 from .kit.assembly import build_assembly
 from .models import GenerateRequest
@@ -121,6 +121,14 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
             "arm_reach_mm": assembly.dims.arm_reach,
             "base_diameter_mm": assembly.dims.base_diameter,
         }
+        # Phase 0.21: a wall build has no pole and no base, so those two
+        # dimensions do not exist. Dropping the keys is what makes the sheet
+        # honest — `_draw_dimensions` skips a missing key, and printing
+        # "Pole Height 0'-0"" would read as a measurement rather than as
+        # "not applicable".
+        for key in ("pole_height_mm", "base_diameter_mm", "mounting_height_mm"):
+            if not summary["dims"][key]:
+                del summary["dims"][key]
     # Phase 0.17 (Tyler 8/20, "use the casting information"): when the config
     # has full shell coverage, every printed dimension is MEASURED off the real
     # castings instead of the parametric placeholders — the placeholder base
@@ -138,6 +146,13 @@ def _build_summary(catalog: dict, req: GenerateRequest, assembly) -> dict:
         finish_obj.get("name", req.config.finish) if finish_obj else req.config.finish
     )
     summary["finish_ral"] = finish_obj.get("ral", "") if finish_obj else ""
+
+    # Phase 0.21: name the assembly mode when it is not the default, so the
+    # sheet says WHY there is no pole rather than just not listing one.
+    # Mirrors ASSEMBLY_MODE_LABEL in src/lib/compat.ts.
+    mode = assembly_mode(catalog, req.config)
+    if mode != "pole":
+        summary["mounting"] = _MODE_LABEL[mode]
 
     parts_list = []
     part_map = {p["id"]: p for p in catalog.get("parts", [])}
@@ -318,6 +333,16 @@ def _banner_geometry(
 
 # Arm-arrangement labels — mirror src/lib/summary.ts armArrangementLabel.
 # Phase 0.10.5: arms mount on a 90-degree drilled tenon, so a triple is 3@90.
+# How a non-default assembly mode is described in generated documents.
+# Mirrors ASSEMBLY_MODE_LABEL in src/lib/compat.ts — the quote a salesperson
+# reads and the sheet a specifier files must characterise the build the same
+# way, so the two strings are kept identical.
+_MODE_LABEL: dict[str, str] = {
+    "pole": "Pole-mounted",
+    "ground": "Ground-mounted (complete product - no bracket, pole or base cover)",
+    "wall": "Wall-mounted (no pole or base cover)",
+}
+
 _ARM_ARRANGEMENT_LABELS: dict[int, str] = {
     1: "Single",
     2: "Twin (2 @ 180 deg)",

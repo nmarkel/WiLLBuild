@@ -595,9 +595,30 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
                     label = acc["name"] if len(raw) == 1 else f"{acc['name']} {j + 1}"
                     pieces.append(ShellPiece(label, _rot_y(sv, o) + np.array([0.0, h, 0.0]), st))
 
-    elif fixture and fixture.get("groundMounted"):
+    elif fixture and fixture.get("assemblyMode") == "ground":
         v, t = load_shell(fixture["id"])
         pieces.append(ShellPiece("Fixture", v, t))
+
+    elif arm and arm.get("assemblyMode") == "wall":
+        # Phase 0.21 — wall build: the bracket's mounting plate sits at the
+        # world origin (no pole to hang it from), and the fixture rides its
+        # socket. This is the pole branch's arm+fixture walk with the pole
+        # stripped out; no radial repeat, because a wall has one face.
+        #
+        # The mounting HEIGHT is deliberately not modelled: nothing in the
+        # sheets gives a default, and a number invented here would print as a
+        # dimension. The warning says so, and it rides the PDF/IFC.
+        av, at = load_shell(arm["id"]) if has_shell(arm["id"]) else _pseudo_arm_shell(arm)
+        pieces.append(ShellPiece("Wall Bracket", av, at))
+        warnings.append(
+            "wall mounting height not modelled - the bracket's plate is at the "
+            "model origin; mounting height resolves at order entry"
+        )
+        if fixture:
+            for s_i, fs in enumerate(_sockets_to(arm, fixture)):
+                fv, ft = load_shell(fixture["id"])
+                suffix = "" if s_i == 0 else f" {s_i + 1}"
+                pieces.append(ShellPiece(f"Fixture{suffix}", fv + np.array(fs), ft))
 
     if not pieces:
         return None

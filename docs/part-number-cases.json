@@ -486,6 +486,26 @@
         "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK-PF-BA30-BA18",
         "baseCover": "WP-CL1-4R-BK"
       }
+    },
+    {
+      "name": "wall-mounted build — GVX on the WM1 wall bracket (Phase 0.21)",
+      "why": "The first pole-less assembly to resolve numbers. Two things are pinned: the FIXTURE picks up WHP3NP from the bracket's cordCode (CR-OPT-06: 'PM1 and future WM1/WM2/PC1 -> WHP3NP'), and the BRACKET resolves to null because WM1 is still Coming Soon pending Cole's CAD-mapping confirm. When that confirm lands and WM1 leaves Coming Soon, this case must be REGENERATED and the arm becomes WP-WM1-WM-BK (the fit segment is the arms sheet's fixed wall-plate code, not the '_' every pole bracket prints) - see the un-hold procedure in docs/part-numbers.md.",
+      "config": {
+        "configId": "pn-case-0019",
+        "brand": "WiLLstudio",
+        "fixture": "gvx-pendant",
+        "arm": "willstudio-wm1-single-wall-mount-pendant",
+        "pole": "",
+        "baseCover": "",
+        "finish": "matte-black",
+        "rev": 1
+      },
+      "expected": {
+        "fixture": "WD-GVX-_-_-_-_-BK-WHP3NP",
+        "arm": null,
+        "pole": null,
+        "baseCover": null
+      }
     }
   ]
 }

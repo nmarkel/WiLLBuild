@@ -221,8 +221,13 @@ def build_part_number(catalog: dict, cfg: PoleConfig, slot: str) -> str | None:
         # Tyler 8/12: arms lead with the WP family code.  CR-PN-09 (8/14):
         # the Pole/Tenon Fit slot prints a blank placeholder between design
         # and finish — Family-Design-Fit-Finish[-Options].
+        #
+        # Phase 0.21: unless the bracket's fit is a property of the BRACKET —
+        # a wall mount has no pole top to fit and the arms sheet gives it the
+        # fixed `WM` plate code.  Mirrors `fitCode` in src/types.ts.
+        fit = part.get("fitCode") or UNSPECIFIED
         parts = base.split("-", 1)
-        with_fit = f"{parts[0]}-{UNSPECIFIED}-{parts[1]}" if len(parts) == 2 else f"{base}-{UNSPECIFIED}"
+        with_fit = f"{parts[0]}-{fit}-{parts[1]}" if len(parts) == 2 else f"{base}-{fit}"
         return _with_add_ons(f"WP-{with_fit}", part, cfg, slot)
 
     options = part.get("options")

@@ -396,12 +396,19 @@ def _draw_arm_arrangement(
     top: float,
     width: float,
 ) -> float:
-    """Draw 'Arm arrangement' and/or 'Banner arm' rows when present; else no-op.
+    """Draw 'Mounting', 'Arm arrangement' and/or 'Banner arm' rows when
+    present; else no-op.
 
     Returns the Y after the last line drawn (== ``top`` when nothing is drawn,
     so single-arm, no-banner layouts are byte-identical to pre-0.8 output).
     """
     y = top
+    # Phase 0.21: named only for a non-default mode, so every pole build's
+    # sheet stays byte-identical.  Without it a wall build's sheet is silent
+    # about the absence of a pole, which reads as an omission.
+    mounting = summary.get("mounting")
+    if mounting:
+        y = _draw_labeled_line(pdf, "Mounting:", str(mounting), left, y, width)
     arrangement = summary.get("arm_arrangement")
     if arrangement:
         y = _draw_labeled_line(pdf, "Arm arrangement:", str(arrangement), left, y, width)

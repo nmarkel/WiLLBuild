@@ -418,15 +418,18 @@ def _draw_dimensions(msp, ctx: GenContext) -> None:
         angle=90.0,
     )
 
-    # 2. Pole height (vertical, right — shorter)
-    _add_linear_dim(
-        msp,
-        start=(dim_x_right - 20.0, 0.0),
-        end=(dim_x_right - 20.0, dims.pole_height),
-        dim_x=dim_x_right + 10.0,
-        measurement_value=dims.pole_height,
-        angle=90.0,
-    )
+    # 2. Pole height (vertical, right — shorter).  Phase 0.21: a wall build has
+    # no pole, and a dimension reading 0'-0" is a claim, not a blank — so the
+    # callout is omitted rather than drawn at zero.
+    if dims.pole_height > 0.0:
+        _add_linear_dim(
+            msp,
+            start=(dim_x_right - 20.0, 0.0),
+            end=(dim_x_right - 20.0, dims.pole_height),
+            dim_x=dim_x_right + 10.0,
+            measurement_value=dims.pole_height,
+            angle=90.0,
+        )
 
     # 3. Mounting height (vertical, left of assembly)
     _add_linear_dim(
@@ -449,13 +452,15 @@ def _draw_dimensions(msp, ctx: GenContext) -> None:
         angle=0.0,
     )
 
-    # 5. Base diameter (horizontal, at ground level)
-    half_bd = dims.base_diameter / 2.0
-    _add_linear_dim(
-        msp,
-        start=(-half_bd, -40.0),
-        end=(half_bd, -40.0),
-        dim_x=0.0,
-        measurement_value=dims.base_diameter,
-        angle=0.0,
-    )
+    # 5. Base diameter (horizontal, at ground level) — same rule as the pole
+    # height above: absent on a wall build, so not drawn.
+    if dims.base_diameter > 0.0:
+        half_bd = dims.base_diameter / 2.0
+        _add_linear_dim(
+            msp,
+            start=(-half_bd, -40.0),
+            end=(half_bd, -40.0),
+            dim_x=0.0,
+            measurement_value=dims.base_diameter,
+            angle=0.0,
+        )
