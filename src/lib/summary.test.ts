@@ -319,3 +319,42 @@ describe('armArrangementLabel', () => {
     expect(armArrangementLabel(3)).toBe('Triple (3 @ 90°)')
   })
 })
+
+describe('buildSummaryText — assembly modes (Phase 0.21)', () => {
+  const WALL_CFG = config({
+    pole: '',
+    baseCover: '',
+    arm: 'willstudio-wm1-single-wall-mount-pendant',
+    fixture: 'gvx-pendant',
+  })
+
+  it('names the mounting mode, and only when it is not a pole build', () => {
+    expect(buildSummaryText(catalog, WALL_CFG)).toContain(
+      'Mounting: Wall-mounted (no pole or base cover)',
+    )
+    // Every pre-0.21 quote is a pole build; adding a line to all of them
+    // would be noise.
+    expect(buildSummaryText(catalog, config({}))).not.toContain('Mounting:')
+  })
+
+  it('says "Not applicable" for a slot the mode does not use, not "—"', () => {
+    // "—" is what an UNCHOSEN slot prints. On a wall mount that reads as an
+    // omission and sends a reader looking for the pole. The on-screen
+    // Summary panel uses the same `slotAppliesInMode` test.
+    const text = buildSummaryText(catalog, WALL_CFG)
+    expect(text).toContain('Pole: Not applicable — wall-mounted (no pole or base cover)')
+    expect(text).toContain('Base Cover: Not applicable — wall-mounted (no pole or base cover)')
+    expect(text).not.toContain('Pole: —')
+    // A genuinely unchosen slot still reads as unchosen.
+    expect(buildSummaryText(catalog, config({ baseCover: '' }))).toContain('Base Cover: —')
+  })
+
+  it('carries the wall bracket forward and holds its part number back', () => {
+    const text = buildSummaryText(catalog, WALL_CFG)
+    // The fixture takes the bracket's WHP3NP cord (CR-OPT-06)...
+    expect(text).toContain('WD-GVX-_-_-_-_-BK-WHP3NP')
+    // ...and the bracket itself prints no number while it is Coming Soon.
+    expect(text).toContain('WM1 Single Wall Mount Pendant')
+    expect(text).not.toContain('WP-WM1')
+  })
+})

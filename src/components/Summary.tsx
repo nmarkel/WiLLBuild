@@ -1,5 +1,5 @@
 import type { Catalog, PoleConfig } from '../types'
-import { activeDisclaimers, bannerPanelSize, configStatus, finishFor, partById } from '../lib/compat'
+import { activeDisclaimers, ASSEMBLY_MODE_LABEL, assemblyModeFor, bannerPanelSize, configStatus, finishFor, partById, slotAppliesInMode } from '../lib/compat'
 import { bannerSummaryLine } from '../lib/banner'
 import { armArrangementLabel, buildPartNumber, SUMMARY_ROWS } from '../lib/summary'
 import { displayPartName } from '../lib/display'
@@ -16,6 +16,11 @@ interface Props {
  */
 export function Summary({ catalog, config }: Props) {
   const status = configStatus(catalog, config)
+  // Phase 0.21: a slot the build's mode does not use reads "Not applicable",
+  // not the "—" an UNCHOSEN slot shows. They are different statements, and on
+  // a wall mount the dash sends the reader looking for a pole. Matches the
+  // rail's grayed sections and buildSummaryText's quote line.
+  const mode = assemblyModeFor(catalog, config)
 
   return (
     <div className="summary">
@@ -64,8 +69,12 @@ export function Summary({ catalog, config }: Props) {
                     </span>
                   )}
                 </span>
-              ) : (
+              ) : slotAppliesInMode(mode, r.key) ? (
                 <span>—</span>
+              ) : (
+                <span className="summary-na" title={ASSEMBLY_MODE_LABEL[mode]}>
+                  Not applicable
+                </span>
               )}
             </li>
           )

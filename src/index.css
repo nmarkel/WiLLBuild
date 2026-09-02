@@ -1767,6 +1767,13 @@ body {
    through the rig or the coverage gate. Negative z-index keeps it behind every
    product layer; `.composite-stage` has its own z-index, so this paints inside
    the stage but under its siblings rather than escaping to the backdrop. */
+/* Phase 0.21: "Not applicable" in the configuration readout — muted, so it
+   reads as a deliberate statement rather than a missing value. */
+.summary-na {
+  color: var(--gunmetal-silver-text, #6b6b66);
+  font-style: italic;
+}
+
 .composite-wall {
   position: absolute;
   z-index: -1;
