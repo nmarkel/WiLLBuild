@@ -4,6 +4,12 @@
 turnkey in Phase 0.19). The fly.io sections further down were the Nick-era prep
 and are **NOT TAKEN** — kept for reference, `fly.toml` stays as dormant config.
 
+**The frontend's venue is AWS Amplify at `https://build.willbrands.com`**
+(Phase 0.21 — Tyler named the domain, Nick moved hosting off his personal
+Cloudflare account). See "Frontend hosting — AWS Amplify" below; the Cloudflare
+Workers section is marked superseded and `willbuild.nmarkel.workers.dev`
+survives only as a redirect.
+
 Division of labor: everything in this doc that needs no cloud credentials is
 already done and verified (image builds, `/health` serves, assets baked, tests
 green). The steps marked **[AUTH]** are the only ones left — they need an AWS
@@ -305,7 +311,7 @@ button).
 
 | Variable            | Value                                                        | Notes |
 |---------------------|--------------------------------------------------------------|-------|
-| `ALLOWED_ORIGINS`   | comma-separated frontend origins, e.g. `https://willbuild.nmarkel.workers.dev,https://<tunnel>.trycloudflare.com` | CORS. Localhost dev origins are always merged in by the service. Tunnel hostnames are ephemeral — a tunnel-served frontend should instead proxy `/geometry/*` same-origin (see `docs` on the 0.18 share setup), which needs no CORS entry at all. |
+| `ALLOWED_ORIGINS`   | comma-separated frontend origins. Phase 0.21 value: `https://build.willbrands.com,https://willbuild.nmarkel.workers.dev` — the new Amplify host FIRST, the old Workers host kept valid through the transition (additive, so a rollback needs no backend change). | CORS, and **CORS is not access control** (`app/merchandising.py` + the rate limiter are). Localhost dev origins are always merged in by the service. Tunnel hostnames are ephemeral — a tunnel-served frontend should instead proxy `/geometry/*` same-origin (see `docs` on the 0.18 share setup), which needs no CORS entry at all. |
 | `CUSTOMER_STEP_DIR` | *(unset)* — or a mounted/synced dir when the S3 swap happens | See the simplified-files home section. |
 | `ODA_PATH`          | *(unset)* — path to ODAFileConverter if DWG is enabled       | See ODA section. |
 
@@ -345,6 +351,245 @@ On Cloudflare Pages/Workers, set `VITE_GEOMETRY_URL` as a build env var
 instead of `.env.production` and trigger a redeploy. **Trap (bit twice):** a
 `npm run build` without the var bakes in `http://localhost:8000` and every
 remote user's downloads silently point at their own machine.
+
+> **Superseded (Phase 0.21).** Cloudflare Workers was the Nick-personal-account
+> host. The frontend now deploys from **AWS Amplify** at
+> `https://build.willbrands.com` — see the next section. The Cloudflare text
+> stays because `willbuild.nmarkel.workers.dev` remains live as a **redirect**
+> for the share links and QR cards already in the wild.
+
+---
+
+# Frontend hosting — AWS Amplify at `build.willbrands.com` (Phase 0.21, the taken path)
+
+Decided 9/1: Tyler named the domain, Nick moved hosting off Cloudflare Workers
+(his personal `nmarkel` account) to AWS. The venue is **Amplify Hosting**
+because it is the org precedent — WiLLCloud prod already runs Amplify at
+`cloud.willbrands.com`, so a custom domain + cert on a `willbrands.com`
+subdomain is a solved problem for this team and follows the same IT path.
+S3 + CloudFront was the fallback and was not taken: it would need a hand-built
+CI pipeline, an OAC, and a cache-invalidation step that Amplify does for free.
+
+The frontend is a **static Vite bundle**. There is no SSR, no Lambda@Edge, no
+server runtime — Amplify serves `dist/` and rewrites unknown paths to
+`index.html` for the client router.
+
+## ⚠️ Read this before creating the app: `VITE_GEOMETRY_URL` is baked at BUILD time
+
+Vite inlines `VITE_*` at build time. There is no runtime lookup, so:
+
+* it must be an Amplify **build-time environment variable** (Amplify's env vars
+  are exposed to the build container, which is exactly right — a "runtime" var
+  would do nothing);
+* a build without it bakes `http://localhost:8000`, the health check fails in
+  the visitor's browser, and **every download card silently disables**. No
+  error, no banner — just dead buttons;
+* **this exact failure has shipped twice.** If downloads look dead on
+  `build.willbrands.com`, check this first, before anything else:
+
+  ```bash
+  # against the deployed bundle — the App Runner host must appear in the JS
+  curl -s https://build.willbrands.com/ | grep -o '/assets/index-[^"]*\.js' | head -1
+  curl -s https://build.willbrands.com/assets/index-<hash>.js | grep -c 'awsapprunner.com'
+  # 0 means the var was missing at build time. Rebuild; do not debug CORS.
+  ```
+
+Changing the variable requires a **redeploy**, not a restart.
+
+## Step 1 — [AUTH] Create the Amplify app
+
+Console → Amplify → **Create new app** → **GitHub** → authorize → pick this
+repo → branch `Dev` (or `main` once the release branch is settled).
+
+Build settings — Amplify auto-detects Vite; the generated `amplify.yml` is
+correct as-is and does not need to be committed. Confirm it reads:
+
+```yaml
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+```
+
+Node version: the repo pins **22.12.0** in `.node-version`, which Amplify
+honors. `npm run build` runs `tsc -b` then `vite build`, so a type error fails
+the deploy rather than shipping a broken bundle — that is deliberate.
+
+**Environment variables** (App settings → Environment variables), applied to
+the branch you just connected:
+
+| Variable            | Value                                             |
+|---------------------|---------------------------------------------------|
+| `VITE_GEOMETRY_URL` | `https://<id>.us-east-1.awsapprunner.com`         |
+
+No trailing slash. This is the App Runner service URL from
+"AWS — App Runner from ECR" above.
+
+**Rewrites and redirects** — the app is a client-routed SPA (`src/lib/routes.ts`
+serves `/studio/design` and `/studio/product/:id`), so a deep link must not
+404. Add the SPA catch-all:
+
+| Source                                                          | Target         | Type |
+|-----------------------------------------------------------------|----------------|------|
+| `</^[^.]+$\|\.(?!(css\|gif\|ico\|jpg\|js\|png\|txt\|svg\|woff\|woff2\|ttf\|map\|json\|webp)$)([^.]+$)/>` | `/index.html`  | 200 (rewrite) |
+
+That is Amplify's own default SPA expression with **`webp` added** — the
+render layers are `.webp` and the stock expression does not list them, so
+without the addition every part layer would be rewritten to `index.html` and
+the viewer would fall back to "Preview render coming" for the whole catalog.
+
+## Step 2 — CORS first, additive (do this BEFORE the DNS flip)
+
+The App Runner service must accept the new origin *while the old one still
+works*, so the two hosts can be compared side by side and a rollback needs no
+backend change.
+
+```
+# [AUTH] App Runner → service → Configuration → Environment variables
+ALLOWED_ORIGINS=https://build.willbrands.com,https://willbuild.nmarkel.workers.dev
+```
+
+Then redeploy the service (`aws apprunner start-deployment --service-arn <arn>`).
+Both origins stay valid through the transition; drop the workers.dev entry only
+when the Worker itself is retired, which is a later, deliberate step.
+
+`_allowed_origins` (app/main.py) merges the localhost dev defaults in
+automatically, so nothing local breaks. **And note what this is not:**
+`ALLOWED_ORIGINS` asks a *browser* to withhold a response it has already
+fetched. It is not access control — `app/merchandising.py` and the rate limiter
+are the actual gates (the same note is in the code).
+
+## Step 3 — [AUTH] DNS + certificate
+
+Same path as `cloud.willbrands.com`, so IT has done this before.
+
+1. Amplify → your app → **Hosting → Custom domains → Add domain**.
+2. Enter `willbrands.com`, then map the **subdomain `build`** to the connected
+   branch. Leave the root domain unmapped — this app owns `build` only.
+3. Amplify issues an ACM certificate and shows one **CNAME for DNS validation**
+   plus the **CNAME target** for `build`. Give both to whoever holds
+   `willbrands.com` DNS (the `cloud.` records are the precedent to copy).
+4. Wait for **Available**. Validation typically lands in minutes but the
+   propagation allowance is up to 48 h — do not start the verification below
+   until the domain shows Available, or you will be debugging DNS, not the app.
+
+## Step 4 — Verify on the new host BEFORE anything flips
+
+Nothing about the old host changes until all five checks pass.
+
+```bash
+BUILD=https://build.willbrands.com
+APP=https://<id>.us-east-1.awsapprunner.com
+
+# 1. the page serves, and a deep link does not 404 (SPA rewrite)
+curl -sI $BUILD/ | head -1
+curl -sI $BUILD/studio/design | head -1          # expect 200, not 404
+
+# 2. the bundle really carries the App Runner host (the shipped-twice trap)
+curl -s $BUILD/assets/$(curl -s $BUILD/ | grep -o 'assets/index-[^"]*\.js' | head -1 | cut -d/ -f2) \
+  | grep -c 'awsapprunner.com'                   # expect >= 1
+
+# 3. the service answers the NEW origin (CORS preflight)
+curl -si -X OPTIONS $APP/jobs \
+  -H "Origin: $BUILD" \
+  -H 'Access-Control-Request-Method: POST' \
+  -H 'Access-Control-Request-Headers: content-type' | grep -i 'access-control-allow-origin'
+# expect: access-control-allow-origin: https://build.willbrands.com
+
+# 4. render layers load as images, not as rewritten HTML
+curl -sI $BUILD/renders/gvx-pendant--hero--matte-black.webp | grep -i 'content-type'
+# expect image/webp — text/html means the SPA rewrite ate the .webp (Step 1)
+```
+
+Then in a browser, on `build.willbrands.com` — these four cannot be curled:
+
+5. **One full download end-to-end.** Build GVX + SH1 + a 20 ft pole + CL1,
+   open Downloads, take the bundle. It must download and contain
+   `factory-cad/`. A disabled card means Step 1's variable.
+6. **A share link opens.** Copy the share link and open it in a clean tab; the
+   build must restore. The link is built from `window.location.href`
+   (`src/lib/url.ts`), so it carries the new host automatically — confirm the
+   copied URL actually starts `https://build.willbrands.com`.
+7. **The sign-up gate submits** (Phase 0.20 A). Enter a name + email on a
+   download. Expect the download to release, and the lead object to appear:
+   `aws s3 ls s3://will-build-leads/leads/ --recursive`. A **503** means the
+   bucket env vars are not set on the service (0.20 authenticated step 2), not
+   an Amplify problem.
+8. **The concept card's QR resolves.** Download the `herocard` PDF and scan it.
+   The QR encodes the `shareUrl` the browser sent, so it must read
+   `build.willbrands.com` — this is the check that proves the emitted-URL work,
+   because the QR is where a wrong host escapes to paper.
+
+## Step 5 — [AUTH] Point the old host at the new one
+
+`willbuild.nmarkel.workers.dev` **becomes a redirect** and is not retired:
+share links and QR cards are already in the wild, including Casey's from the
+pilot. A 301 keeps the query string, which IS the configuration — so an old
+share link still restores the build it always did.
+
+In the Cloudflare dashboard for the Worker, replace the static-asset handler
+with a redirect (Rules → Redirect Rules, or a one-line Worker):
+
+```js
+export default {
+  fetch(req) {
+    const u = new URL(req.url)
+    u.protocol = 'https:'
+    u.host = 'build.willbrands.com'
+    // 301 + preserved search: the query string IS the shared configuration.
+    return Response.redirect(u.toString(), 301)
+  },
+}
+```
+
+Verify the query survives:
+
+```bash
+curl -sI 'https://willbuild.nmarkel.workers.dev/?fixture=gvx-pendant&pole=alum-pole-20' | grep -i location
+# expect location: https://build.willbrands.com/?fixture=gvx-pendant&pole=alum-pole-20
+```
+
+## Step 6 — Record the release
+
+Two artifacts move independently, so record them separately (the habit 0.20
+asked for, and the reason "which version is live?" was ever a question):
+
+| What | How to read it |
+|---|---|
+| Frontend commit | Amplify console → the branch's latest deployment → commit SHA |
+| Backend image digest | `aws ecr describe-images --repository-name willbuild-geometry --query 'imageDetails[?imageTags!=`null`].[imageTags,imageDigest]' --output table` |
+
+Write both into the phase doc's execution response for the cutover.
+
+## What the app emits, and why no host is hardcoded
+
+Audited in 0.21 by grepping every place the app produces a URL. There is
+**nothing to flip**, and that is a property worth keeping:
+
+| Emitted URL | Source | Host comes from |
+|---|---|---|
+| Share link (copy button, quote text) | `shareUrl` in `src/lib/url.ts` | `window.location.href` — the host the customer is on |
+| Concept-card QR + "OPEN THIS BUILD" line | `_draw_share_qr` in `app/adapters/_spec_template.py` | the `shareUrl` the frontend posts with the job |
+| PDF "Full Specifications" links | `_spec_template.py` | each part's `productUrl` — `willbrands.com` product pages, not the app host |
+| Quote button | `BottomBar.tsx` | `willbrands.com/pages/request-a-quote` |
+
+The only place `willbuild.nmarkel.workers.dev` appears in the repo is
+**configuration and its tests** — `fly.toml` (dormant), this runbook, and
+`tests/test_cors.py` (which uses it as a sample origin string). No generated
+artifact contains it. So the migration needs no code change to URL generation;
+it needs the CORS entry, the build variable, and DNS.
 
 ---
 
