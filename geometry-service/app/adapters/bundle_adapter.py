@@ -195,8 +195,16 @@ def _factory_cad_entries(ctx: GenContext) -> list[tuple[str, bytes]]:
     * **Deterministic.** The STEP timestamp is normalised, and entries are
       sorted, so the same config always produces byte-identical bytes.
 
-    Absent locally (every deploy — the real CAD is gitignored) → nothing is
-    added and the bundle is unchanged.
+    Three outcomes, and only the first ships bytes:
+
+    * **Released and present** → ``factory-cad/<part number>.step``.
+    * **Released but absent** (or hash-mismatched) in this deployment → a
+      single ``factory-cad/README-MISSING.txt`` naming the affected numbers and
+      pointing at the quote form.  Never a fallback to the full master.
+    * **Not released** — no allowlist entry, or a manifest pin without
+      ``cleared: true``, or ``DISABLE_REAL_GEOMETRY`` — → nothing is added and
+      the bundle is unchanged, with no note.  A customer is told about missing
+      factory CAD only for CAD that was actually released to them.
     """
     try:
         from app.partnumber import NUMBERED_SLOTS, build_part_number, is_complete, spec_codes

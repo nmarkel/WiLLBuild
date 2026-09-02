@@ -397,7 +397,7 @@ class TestCustomerDownloadGate:
     def test_a_complete_number_attaches_the_shell_when_present(self, catalog):
         from app.adapters.bundle_adapter import _factory_cad_entries
         from app.adapters.base import GenContext
-        from app.realgeom import customer_step_path
+        from app.realgeom import customer_step_path, is_customer_cleared
 
         cfg = PoleConfig(
             configId="c", pole="alum-pole-20", baseCover="bc-cl1-small-clamshell",
@@ -411,11 +411,47 @@ class TestCustomerDownloadGate:
                          assembly=None, render_png=None, summary={})
         entries = _factory_cad_entries(ctx)
         if customer_step_path("gvx-pendant") is None:
-            # Cleared but absent on this machine — Phase 0.19: degrade to the
-            # DOCUMENTED note, never silence and never the engineering master.
-            assert [name for name, _ in entries] == ["factory-cad/README-MISSING.txt"]
-            assert f"{number}.step" in entries[0][1].decode("utf-8")
+            # None has two meanings since the 0.19 review, and they produce
+            # DIFFERENT bundles — hence the branch on is_customer_cleared
+            # rather than on the path alone.
+            if is_customer_cleared("gvx-pendant"):
+                # Released but absent on this machine: degrade to the
+                # DOCUMENTED note, never silence and never the master.
+                assert [name for name, _ in entries] == ["factory-cad/README-MISSING.txt"]
+                assert f"{number}.step" in entries[0][1].decode("utf-8")
+            else:
+                # Not released: no CAD and no note either. A customer is told
+                # about missing factory CAD only for CAD released to them.
+                assert entries == []
         else:
             assert [name for name, _ in entries] == [f"factory-cad/{number}.step"]
             # ...and nothing from a non-allowlisted component sneaks in.
             assert len(entries) == 1
+
+    def test_an_uncleared_part_attaches_nothing_and_says_nothing(self, catalog):
+        """Phase 0.19 review: pinned + staged is not released.
+
+        TEX is allowlisted and its bytes are hash-pinned, but its manifest pins
+        say cleared=false pending a human opening them. The bundle must contain
+        no factory CAD for it AND no "not available in this build" note — that
+        note announces a release that has not happened.
+        """
+        from app.adapters.bundle_adapter import _factory_cad_entries
+        from app.adapters.base import GenContext
+        from app.realgeom import CUSTOMER_STEP_FILES, _customer_manifest
+
+        pin = _customer_manifest().get(CUSTOMER_STEP_FILES["tex-post-top"], {})
+        if pin.get("cleared") is True:
+            pytest.skip("TEX has been released — nothing held back to assert")
+        cfg = PoleConfig(
+            configId="c", pole="alum-pole-20", baseCover="bc-cl1-small-clamshell",
+            arm="direct-mount", fixture="tex-post-top", finish="matte-black", rev=1,
+            specOptions={"fixture": {"lumen-output": "80", "color-temp": "30",
+                                     "voltage": "MV", "distribution": "5W",
+                                     "mounting": "3T", "finish-color-accent": "BK"}},
+        )
+        number = build_part_number(catalog, cfg, "fixture")
+        assert is_complete(number), number
+        ctx = GenContext(catalog=catalog, cfg=cfg, out_dir=Path("."), base_name="x",
+                         assembly=None, render_png=None, summary={})
+        assert _factory_cad_entries(ctx) == []

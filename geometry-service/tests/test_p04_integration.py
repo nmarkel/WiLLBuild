@@ -317,7 +317,15 @@ class TestP04BothFormatsViaAPI:
     """Integration: POST /generate with herocard + rfa returns both files + mock warning."""
 
     def test_both_formats_returned(self, cat, monkeypatch):
-        """herocard and rfa both appear in response.files; mock APS warning present."""
+        """Two formats in one request both appear in response.files.
+
+        Was herocard + rfa, asserting the mock-APS warning rode along. Phase
+        0.20 (B) makes `rfa` unservable — a warning attached to a delivered
+        file was never a gate — so this now pairs herocard with pdf and keeps
+        testing what it is actually named for: multi-format fan-out in a single
+        /generate call. The rfa refusal itself is pinned in
+        tests/test_merchandising.py and tests/test_rfa.py.
+        """
         monkeypatch.delenv("APS_CLIENT_ID", raising=False)
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
 
@@ -338,7 +346,7 @@ class TestP04BothFormatsViaAPI:
                     "finish": "matte-black",
                     "rev": 1,
                 },
-                "formats": ["herocard", "rfa"],
+                "formats": ["herocard", "pdf"],
                 "renderPng": None,
             },
         )
@@ -347,11 +355,5 @@ class TestP04BothFormatsViaAPI:
 
         formats_returned = {f["format"] for f in body["files"]}
         assert "herocard" in formats_returned, f"herocard missing from files: {body['files']}"
-        assert "rfa" in formats_returned, f"rfa missing from files: {body['files']}"
+        assert "pdf" in formats_returned, f"pdf missing from files: {body['files']}"
         assert len(body["files"]) == 2, f"Expected exactly 2 files, got {body['files']}"
-
-        # mock APS warning
-        warnings_lower = [w.lower() for w in body.get("warnings", [])]
-        assert any("mock" in w for w in warnings_lower), (
-            f"Expected mock APS warning in warnings, got: {body['warnings']}"
-        )

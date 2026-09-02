@@ -281,3 +281,24 @@ class TestPseudoArmShell:
         fake.pop("pseudoPart", None)
         fake["placeholder"] = {"kind": "pole", "heightM": 0.08, "radiusBottomM": 0.04, "radiusTopM": 0.03}
         assert _pseudo_arm_shell(fake) is None
+
+
+def test_pseudo_parts_are_arm_only():
+    """The pseudo-shell escape hatch is scoped to the arm slot, so the catalog
+    must not grow a pseudo part in another core slot without the code moving
+    with it (Phase 0.19 review).
+
+    `shell_assembly`'s no-hybrid guard lets a `pseudoPart` through on the
+    strength of `_pseudo_arm_shell`, but only the ARM branch pairs `has_shell`
+    with that helper — base cover and fixture call `load_shell` unconditionally.
+    A pseudo base cover or fixture would therefore clear the guard and then
+    raise FileNotFoundError instead of degrading to the parametric kit. If this
+    fails, add the `has_shell(...) else _pseudo_arm_shell(...)` branch at that
+    slot's `load_shell` call before adding the part.
+    """
+    offenders = [
+        (p["id"], p.get("slot"))
+        for p in _CATALOG["parts"]
+        if p.get("pseudoPart") and p.get("slot") != "arm"
+    ]
+    assert not offenders, f"pseudo parts outside the arm slot: {offenders}"

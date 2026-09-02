@@ -51,6 +51,7 @@ def test_gvx_color_aware_with_surface_normals(tmp_path):
     tot_all = 0.0
     inverted_all = 0.0
     strongly_off_all = 0.0
+    agreeing_all = 0.0
     for prim in gltf["meshes"][0]["primitives"]:
         assert "NORMAL" in prim["attributes"]
         nrm = acc(prim["attributes"]["NORMAL"]).astype(np.float64)
@@ -90,12 +91,29 @@ def test_gvx_color_aware_with_surface_normals(tmp_path):
         tot_all += area[ok].sum()
         inverted_all += area[ok & (cos < -0.9)].sum()
         strongly_off_all += area[ok & (cos >= -0.9) & (cos < -0.1)].sum()
+        agreeing_all += area[ok & (cos > 0.1)].sum()
         checked += 1
     assert checked >= 2
     inverted_area = inverted_all / tot_all
     strongly_off_area = strongly_off_all / tot_all
+    agree_area = agreeing_all / tot_all
     assert inverted_area < 0.005, f"sign-flipped normal area {inverted_area:.4f}"
     assert strongly_off_area < 0.05, f"strongly-off normal area {strongly_off_area:.4f}"
+    # The two caps above bound the DEFECT classes; this bounds the POSITIVE
+    # case, and both halves are needed. Caps alone leave the tangential band
+    # (|cos| <= 0.1) unbounded, so a conversion emitting normals in the wrong
+    # BASIS — UV-derived normals rotated 90 deg, say — measures ~0% inverted
+    # and ~0% strongly-off and sails straight through while agreeing with
+    # nothing at all. The 0.19 re-scoping from per-primitive to whole-model
+    # was right; dropping the agreement metric with it was not.
+    #
+    # Whole-model scope, same as the caps. Floor set from measurement, not
+    # taste: this GVX measures agree 0.8616 / tangential 0.1315 at tol 2.0 and
+    # 0.8633 / 0.1306 at tol 1.0, bit-identical across repeat runs. The
+    # tangential 13% is the coarse-tol noise the comment above describes, so
+    # the floor sits below it with ~6 points of headroom while a wrong-basis
+    # regression (agreement near zero) fails by a mile.
+    assert agree_area > 0.80, f"agreeing normal area {agree_area:.4f}"
 
 @pytest.mark.skipif(not STEP.exists(), reason="real GVX STEP not extracted")
 def test_gvx_drop_rules_remove_underjunk_and_stem(tmp_path):

@@ -120,3 +120,20 @@ def default_cfg(catalog: dict) -> PoleConfig:
         finish="matte-black",
         rev=1,
     )
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limiter():
+    """Phase 0.20 (D-4): per-IP counters are process-global.
+
+    Every test hits the API from the same "address", so without this a test
+    that fires a burst leaves the next one throttled — a failure that would
+    look like a bug in whatever ran next and move around as tests are
+    reordered. Resetting is the same hygiene as clearing a cache between tests;
+    the limiter's own behaviour is asserted in test_ops_hardening.py.
+    """
+    from app import ratelimit
+
+    ratelimit.reset()
+    yield
+    ratelimit.reset()

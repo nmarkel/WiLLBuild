@@ -225,7 +225,16 @@ def _pole_shell(catalog: dict, cfg, pole: dict) -> tuple[np.ndarray, np.ndarray]
 
 
 def _frustum_mesh(r_bottom: float, r_top: float, y0: float, y1: float):
-    """A closed solid frustum (side band + both cap fans), outward-wound."""
+    """A closed solid frustum: side band + both cap fans.
+
+    Wound to the repo's convention, which is INWARD by the right-hand rule —
+    signed volume comes out negative, matching ``_pole_tube_mesh`` exactly
+    (measured: -3.097e-4 for r 0.04/0.03 x 0.08 h, against an analytic
+    magnitude of 3.099e-4).  This is deliberate and ``test_shellgeom.py``
+    asserts the two agree.  Do not "fix" the winding here on its own: flipping
+    this mesh alone puts a generated tenon adapter inside-out relative to
+    every other shipped shell.
+    """
     n = _POLE_SEGMENTS
     ang = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
     cos, sin = np.cos(ang), np.sin(ang)
@@ -236,9 +245,9 @@ def _frustum_mesh(r_bottom: float, r_top: float, y0: float, y1: float):
     tris: list[tuple[int, int, int]] = []
     for i in range(n):
         j = (i + 1) % n
-        tris.extend([(i, j, n + j), (i, n + j, n + i)])  # side, outward
-        tris.append((cb, j, i))                           # bottom cap (-y)
-        tris.append((ct, n + i, n + j))                   # top cap (+y)
+        tris.extend([(i, j, n + j), (i, n + j, n + i)])  # side
+        tris.append((cb, j, i))                           # bottom cap, at y0
+        tris.append((ct, n + i, n + j))                   # top cap, at y1
     return verts, np.asarray(tris, dtype=np.int64)
 
 
@@ -461,12 +470,18 @@ def shell_assembly(catalog: dict, cfg) -> ShellAssembly | None:
     if not core:
         return None
     # The pole is generated from catalog dimensions, so it never needs a shell
-    # file; a pseudo-part arm (direct-mount) is generated the same way.  Every
-    # other core part does.
+    # file; a pseudo-part ARM (direct-mount) is generated the same way.  Every
+    # other core part does.  The pseudo escape hatch is scoped to the arm
+    # deliberately: only the arm branch below pairs `has_shell` with
+    # `_pseudo_arm_shell`, so letting a pseudo base cover or fixture past this
+    # guard would clear the no-hybrid check and then raise FileNotFoundError
+    # out of `load_shell` instead of degrading to the parametric kit.
     missing = [
         p["id"]
         for p in core
-        if p is not pole and not has_shell(p["id"]) and _pseudo_arm_shell(p) is None
+        if p is not pole
+        and not has_shell(p["id"])
+        and not (p is arm and _pseudo_arm_shell(p) is not None)
     ]
     if missing:
         return None

@@ -60,7 +60,7 @@ def _clear_cache(cfg: dict) -> None:
     """Delete any on-disk artifacts for this config so the next job is a
     guaranteed cold-cache miss, independent of prior test runs (``out/`` is a
     persistent directory that is not reset between suite invocations)."""
-    bn = base_name({}, GenerateRequest(config=cfg, formats=["step"]).config)
+    bn = base_name({}, GenerateRequest(config=cfg, formats=["pdf"]).config)
     for path in OUT_DIR.glob(f"{bn}*"):
         path.unlink()
 
@@ -83,7 +83,7 @@ class TestJobValidation:
     def test_invalid_config_returns_422_string_detail(self, bc_alum20) -> None:
         resp = client.post(
             "/jobs",
-            json={"config": _cfg(bc_alum20, "bad") | {"fixture": "nope"}, "formats": ["step"]},
+            json={"config": _cfg(bc_alum20, "bad") | {"fixture": "nope"}, "formats": ["pdf"]},
         )
         assert resp.status_code == 422
         assert isinstance(resp.json()["detail"], str)
@@ -98,7 +98,11 @@ class TestJobValidation:
             "finish": "matte-black",
             "rev": 1,
         }
-        resp = client.post("/jobs", json={"config": standalone, "formats": ["step"]})
+        # `ifc`, not `pdf` — this test is named for the standalone rule, and pdf
+        # is the one format that rule permits. (It read `step` until Phase 0.20
+        # made that unservable for every config, which would have passed here
+        # for the wrong reason.)
+        resp = client.post("/jobs", json={"config": standalone, "formats": ["ifc"]})
         assert resp.status_code == 422
 
     def test_unknown_job_id_returns_404(self) -> None:
@@ -110,7 +114,7 @@ class TestJobLifecycle:
     def test_pending_then_done_with_files(self, bc_alum20) -> None:
         cfg = _cfg(bc_alum20, _unique_config_id("jl"))
         _clear_cache(cfg)  # force a genuine pending → done run, not a cache hit
-        resp = client.post("/jobs", json={"config": cfg, "formats": ["step", "dxf"]})
+        resp = client.post("/jobs", json={"config": cfg, "formats": ["pdf", "dxf"]})
         assert resp.status_code == 200
         submit = resp.json()
         assert submit["status"] == "pending"
@@ -123,7 +127,7 @@ class TestJobLifecycle:
         assert done["progress"] == 100
         assert done["stage"] == "done"
         formats = {f["format"] for f in done["files"]}
-        assert {"step", "dxf"} <= formats
+        assert {"pdf", "dxf"} <= formats
         for f in done["files"]:
             assert f["sizeBytes"] > 0
             assert f["url"].startswith("/files/")
@@ -135,7 +139,7 @@ class TestJobCache:
         cfg = _cfg(bc_alum20, _unique_config_id("c"))
         _clear_cache(cfg)
 
-        r1 = client.post("/jobs", json={"config": cfg, "formats": ["step"]})
+        r1 = client.post("/jobs", json={"config": cfg, "formats": ["pdf"]})
         assert r1.status_code == 200
         assert r1.json()["cached"] is False
         done1 = _poll_until_done(r1.json()["jobId"])
@@ -145,7 +149,7 @@ class TestJobCache:
         mtime_before = step_file.stat().st_mtime_ns
 
         # Second identical request → immediate cache hit, adapter NOT re-run.
-        r2 = client.post("/jobs", json={"config": cfg, "formats": ["step"]})
+        r2 = client.post("/jobs", json={"config": cfg, "formats": ["pdf"]})
         assert r2.status_code == 200
         submit2 = r2.json()
         assert submit2["status"] == "done"

@@ -208,16 +208,28 @@ class TestRfaRegistry:
     def test_rfa_adapter_available(self):
         assert RfaAdapter().available() is True
 
-    def test_health_reports_rfa(self):
+    def test_health_does_not_report_rfa(self):
+        """Phase 0.20 (B): the mock RFA is unreachable, so it is unadvertised.
+
+        The adapter stays registered (the tests above still exercise it, and the
+        real APS scaffold in rfa_adapter.py is the eventual replacement) — what
+        changed is that the service no longer offers a caller a Revit family
+        that does not open in Revit.
+        """
         from fastapi.testclient import TestClient
         from app.main import app
         client = TestClient(app)
         resp = client.get("/health")
         assert resp.status_code == 200
-        assert resp.json()["adapters"].get("rfa") is True
+        assert "rfa" not in resp.json()["adapters"]
 
-    def test_generate_rfa_returns_file_with_warning(self, cat, monkeypatch):
-        """POST /generate with formats=['rfa'] returns one .rfa file and mock warning."""
+    def test_generate_rfa_is_refused(self, cat, monkeypatch):
+        """POST /generate with formats=['rfa'] is refused (Phase 0.20 B).
+
+        Was: returns one .rfa file and a "mock" warning. A warning in the
+        response body is not a gate — the file still downloaded, still called
+        itself a Revit family, and still failed to open in Revit.
+        """
         monkeypatch.delenv("APS_CLIENT_ID", raising=False)
         monkeypatch.delenv("APS_CLIENT_SECRET", raising=False)
         from fastapi.testclient import TestClient
@@ -239,10 +251,10 @@ class TestRfaRegistry:
                 "renderPng": None,
             },
         )
-        assert resp.status_code == 200
-        body = resp.json()
-        assert len(body["files"]) == 1
-        assert body["files"][0]["format"] == "rfa"
-        assert body["files"][0]["filename"].endswith(".rfa")
-        # Mock warning should be surfaced
-        assert any("mock" in w.lower() for w in body["warnings"])
+        assert resp.status_code == 422, resp.text
+        assert "rfa" in resp.json()["detail"].lower()
+        # The old assertion here checked that a "mock" WARNING rode along with
+        # the delivered file. That was the whole problem: a warning in a 200
+        # body is advisory, and the .rfa still landed in the customer's
+        # downloads folder claiming to be a Revit family. A refusal is the only
+        # honest form of "this does not work yet".

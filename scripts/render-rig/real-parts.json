@@ -1,66 +1,66 @@
 {
- "alum-pole-8": "real-assets/glb/alum-pole-8.glb",
- "alum-pole-10": "real-assets/glb/alum-pole-10.glb",
- "alum-pole-12": "real-assets/glb/alum-pole-12.glb",
- "alum-pole-14": "real-assets/glb/alum-pole-14.glb",
- "alum-pole-15": "real-assets/glb/alum-pole-15.glb",
- "alum-pole-16": "real-assets/glb/alum-pole-16.glb",
- "alum-pole-18": "real-assets/glb/alum-pole-18.glb",
- "alum-pole-20": "real-assets/glb/alum-pole-20.glb",
- "sh1-shepherds-hook": {
-  "glb": "real-assets/glb/sh1-shepherds-hook.glb",
-  "rotateY": -90
- },
- "willstudio-side-shepherds-hook-pole-top-brackets": "real-assets/glb/willstudio-side-shepherds-hook-pole-top-brackets.glb",
- "willstudio-suspension-arm-pole-top-brackets": "real-assets/glb/willstudio-suspension-arm-pole-top-brackets.glb",
- "willstudio-ba1-banner-arm": {
-  "glb": "real-assets/glb/willstudio-ba1-banner-arm.glb",
-  "rotateY": 90
- },
- "bc-cl1-small-clamshell": "real-assets/glb/bc-cl1-small-clamshell.glb",
- "bc-cl2-medium-clamshell": "real-assets/glb/bc-cl2-medium-clamshell.glb",
- "bc-cl3-large-clamshell": "real-assets/glb/bc-cl3-large-clamshell.glb",
- "bc-sc1-spun-collar": "real-assets/glb/bc-sc1-spun-collar.glb",
- "bc-sc2-spun-collar-split": "real-assets/glb/bc-sc2-spun-collar-split.glb",
- "gvx-pendant": {
-  "glb": "real-assets/glb/gvx-pendant.glb",
-  "shellGlb": "real-assets/glb/gvx-pendant.shell.glb"
- },
- "drx-post-top": "real-assets/glb/drx-post-top.glb",
- "tex-post-top": {
-  "glb": "real-assets/glb/tex-post-top.glb",
-  "shellGlb": "real-assets/glb/tex-post-top.shell.glb"
- },
- "mvx-coach": "real-assets/glb/mvx-coach.glb",
- "willstudio-rxb-sxb-bollard": "real-assets/glb/willstudio-rxb-sxb-bollard.glb",
- "willstudio-dwx-flood-spot": "real-assets/glb/willstudio-dwx-flood-spot.glb",
- "willstudio-fr2-decorative-crossarm": {
-  "glb": "real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
-  "rotateY": -90
- },
- "pa1-pendant-arm": {
-  "glb": "real-assets/glb/pa1-pendant-arm.glb",
-  "rotateY": -90
- },
- "pm1-pendant-arm": {
-  "glb": "real-assets/glb/pm1-pendant-arm.glb",
-  "rotateY": 90
- },
- "willstudio-supported-decorative-arms": {
-  "glb": "real-assets/glb/willstudio-supported-decorative-arms.glb",
-  "rotateY": -90
- },
- "willstudio-hsx-decorative-upsweep-arms": {
-  "glb": "real-assets/glb/willstudio-hsx-decorative-upsweep-arms.glb",
-  "rotateY": -90
- },
- "willstudio-acc-hand-hole": "real-assets/glb/willstudio-acc-hand-hole.glb",
- "willstudio-pole-base-standard": "real-assets/glb/willstudio-pole-base-standard.glb",
- "willstudio-acc-clamshell-extender": "real-assets/glb/willstudio-acc-clamshell-extender.glb",
- "willstudio-acc-flag-holder": {
-  "glb": "real-assets/glb/willstudio-acc-flag-holder.glb",
-  "rotateY": -90
- },
- "willstudio-acc-plant-holder": "real-assets/glb/willstudio-acc-plant-holder.glb",
- "willstudio-acc-coupling": "real-assets/glb/willstudio-acc-coupling.glb"
+  "alum-pole-8": "real-assets/glb/alum-pole-8.glb",
+  "alum-pole-10": "real-assets/glb/alum-pole-10.glb",
+  "alum-pole-12": "real-assets/glb/alum-pole-12.glb",
+  "alum-pole-14": "real-assets/glb/alum-pole-14.glb",
+  "alum-pole-15": "real-assets/glb/alum-pole-15.glb",
+  "alum-pole-16": "real-assets/glb/alum-pole-16.glb",
+  "alum-pole-18": "real-assets/glb/alum-pole-18.glb",
+  "alum-pole-20": "real-assets/glb/alum-pole-20.glb",
+  "sh1-shepherds-hook": {
+    "glb": "real-assets/glb/sh1-shepherds-hook.glb",
+    "rotateY": -90
+  },
+  "willstudio-side-shepherds-hook-pole-top-brackets": "real-assets/glb/willstudio-side-shepherds-hook-pole-top-brackets.glb",
+  "willstudio-suspension-arm-pole-top-brackets": "real-assets/glb/willstudio-suspension-arm-pole-top-brackets.glb",
+  "willstudio-ba1-banner-arm": {
+    "glb": "real-assets/glb/willstudio-ba1-banner-arm.glb",
+    "rotateY": 90
+  },
+  "bc-cl1-small-clamshell": "real-assets/glb/bc-cl1-small-clamshell.glb",
+  "bc-cl2-medium-clamshell": "real-assets/glb/bc-cl2-medium-clamshell.glb",
+  "bc-cl3-large-clamshell": "real-assets/glb/bc-cl3-large-clamshell.glb",
+  "bc-sc1-spun-collar": "real-assets/glb/bc-sc1-spun-collar.glb",
+  "bc-sc2-spun-collar-split": "real-assets/glb/bc-sc2-spun-collar-split.glb",
+  "gvx-pendant": {
+    "glb": "real-assets/glb/gvx-pendant.glb",
+    "shellGlb": "real-assets/glb/gvx-pendant.shell.glb"
+  },
+  "drx-post-top": "real-assets/glb/drx-post-top.glb",
+  "tex-post-top": {
+    "glb": "real-assets/glb/tex-post-top.glb",
+    "shellGlb": "real-assets/glb/tex-post-top.shell.glb"
+  },
+  "mvx-coach": "real-assets/glb/mvx-coach.glb",
+  "willstudio-rxb-sxb-bollard": "real-assets/glb/willstudio-rxb-sxb-bollard.glb",
+  "willstudio-dwx-flood-spot": "real-assets/glb/willstudio-dwx-flood-spot.glb",
+  "willstudio-fr2-decorative-crossarm": {
+    "glb": "real-assets/glb/willstudio-fr2-decorative-crossarm.glb",
+    "rotateY": -90
+  },
+  "pa1-pendant-arm": {
+    "glb": "real-assets/glb/pa1-pendant-arm.glb",
+    "rotateY": -90
+  },
+  "pm1-pendant-arm": {
+    "glb": "real-assets/glb/pm1-pendant-arm.glb",
+    "rotateY": 90
+  },
+  "willstudio-supported-decorative-arms": {
+    "glb": "real-assets/glb/willstudio-supported-decorative-arms.glb",
+    "rotateY": -90
+  },
+  "willstudio-hsx-decorative-upsweep-arms": {
+    "glb": "real-assets/glb/willstudio-hsx-decorative-upsweep-arms.glb",
+    "rotateY": -90
+  },
+  "willstudio-acc-hand-hole": "real-assets/glb/willstudio-acc-hand-hole.glb",
+  "willstudio-pole-base-standard": "real-assets/glb/willstudio-pole-base-standard.glb",
+  "willstudio-acc-clamshell-extender": "real-assets/glb/willstudio-acc-clamshell-extender.glb",
+  "willstudio-acc-flag-holder": {
+    "glb": "real-assets/glb/willstudio-acc-flag-holder.glb",
+    "rotateY": -90
+  },
+  "willstudio-acc-plant-holder": "real-assets/glb/willstudio-acc-plant-holder.glb",
+  "willstudio-acc-coupling": "real-assets/glb/willstudio-acc-coupling.glb"
 }
