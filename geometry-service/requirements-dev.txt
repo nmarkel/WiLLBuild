@@ -1,0 +1,15 @@
+# Test/dev-only dependencies (Phase 0.20 hygiene).
+#
+# Kept OUT of requirements.txt so the production image does not ship a test
+# runner.  Install both for local work:
+#
+#     pip install -r requirements.txt -r requirements-dev.txt
+#
+# This list is SHORT on purpose, and the reason is worth recording: build123d
+# depends on ipython, so the entire REPL stack (jedi, parso, prompt_toolkit,
+# pygments, traitlets, stack-data, pexpect ...) is a genuine transitive runtime
+# dependency and CANNOT be dropped from the image, however dev-ish it looks.
+# Verified by walking the installed dependency graph, not by eyeballing names.
+iniconfig==2.3.0
+pluggy==1.6.0
+pytest==9.1.1

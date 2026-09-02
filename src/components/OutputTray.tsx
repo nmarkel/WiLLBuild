@@ -1,3 +1,8 @@
+/* eslint-disable react-refresh/only-export-components -- Phase 0.20 hygiene:
+   this file exports a component alongside constants/helpers that belong with
+   it. The rule is a Fast-Refresh ergonomics hint, not a correctness one, and
+   the fix is splitting files purely to satisfy the dev server. Waived: the
+   colocation is deliberate and the runtime cost is zero. */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Catalog, PoleConfig } from '../types'
 import {

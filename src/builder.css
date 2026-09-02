@@ -70,6 +70,16 @@
    ResizeObserver always sees a resolved box. */
 .builder-stage {
   display: grid;
+  /* Phase 0.20 (E-2): the column is minmax(0, 1fr), NOT the implicit `auto`.
+     An auto track resolves to max-content, and the bottom bar's max-content is
+     its un-ellipsised summary line plus the fixed 308px button cluster — 987px
+     against an 860px column at a 1280px viewport. The bar overflowed its own
+     grid column and slid under the rail, which is opaque and paints later, so
+     the visible symptom was the rail "clipping" Request a Quote: 107 of its
+     130px were behind the rail and unclickable. Capping the track lets
+     .bottom-bar-summary ellipsise, which is what it was always dressed to do
+     (nowrap + overflow hidden + text-overflow) and never got the chance to. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr auto;
   min-width: 0;
   min-height: 0;
@@ -830,6 +840,17 @@
     z-index: 5;
   }
 
+  /* Phase 0.20 (E-3): clamp the viewport to that row. It was measuring 406px
+     against a 374px row (48vh of 780) and overhanging by 32px — and because
+     the stage is sticky with z-index 5, the overhang painted OVER the top of
+     the rail beneath it, covering the first selection card. The toolbar is
+     positioned against .viewport, so it inherited the error too and landed
+     20px below the visible stage. */
+  .builder-stage .viewport {
+    height: 100%;
+    overflow: hidden;
+  }
+
   .builder-bottom-bar {
     position: fixed;
     left: 0;
@@ -870,10 +891,20 @@
      compact toolbar bottom-center; headline switcher keeps the top-left. */
   .builder-app .viewer-toolbar {
     bottom: 12px;
-    max-width: calc(100% - 24px);
-    flex-wrap: wrap;
-    justify-content: center;
+    max-width: calc(100% - 16px);
+    /* Phase 0.20 (E-3): scroll, do not wrap. Wrapping made this 3 rows and
+       115px tall at 390px, and since it is bottom-anchored it grew UPWARD
+       across the product — the "scene controls over the product" report.
+       One scrollable row keeps every control reachable at 45px tall. */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
     border-radius: 22px;
+  }
+
+  .builder-app .viewer-toolbar::-webkit-scrollbar {
+    display: none;
   }
 
   .builder-app .night-disclaimer {
@@ -918,6 +949,20 @@
   .downloads-sheet {
     max-width: none;
     max-height: 88vh;
+  }
+}
+
+/* ---- Phase 0.20 (E-3): phone widths ---- */
+
+@media (max-width: 430px) {
+  /* The three action buttons need 283px and the bar offered 270, so Request a
+     Quote overflowed its own container and ran 1px past the viewport — the
+     button cannot shrink below its min-content because .btn is nowrap.
+     The status chip is what it was competing with, and the chip is ALSO
+     rendered in the rail's Summary, so dropping the duplicate here costs the
+     visitor nothing and buys the CTAs 96px. */
+  .builder-app .bottom-bar-info {
+    display: none;
   }
 }
 

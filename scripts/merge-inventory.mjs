@@ -120,7 +120,10 @@ function titleToKeywords(title) {
     'on', 'at', 'to', 'set', 'or', 'w/', 'w', 'x', '-', 'single', 'double',
     'triple', 'quad', 'lower', '48', 'only', 'shipping', 'ak', 'hi', 'can']);
 
-  const words = cleaned.split(/[\s,\/\-\(\)\.\"]+/)
+  // Inside a character class /, (, ), . and " are literals — escaping them was
+  // noise (oxlint no-useless-escape). \- stays escaped so it reads as a hyphen
+  // and not a range. Verified split-identical on the catalog's own strings.
+  const words = cleaned.split(/[\s,/\-()."]+/)
     .map(w => w.trim())
     .filter(w => w.length > 1 && !stopWords.has(w));
 

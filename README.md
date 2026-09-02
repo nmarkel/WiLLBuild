@@ -1,12 +1,16 @@
 # WiLL 3D Pole Configurator
 
-A standalone web page where customers assemble a light pole from WiLL's WiLLstudio catalog — fixture + arm + pole + base cover + finish — and view it in a live 3D window. Static site, no backend; the configuration lives in state and the URL.
+A web page where customers assemble a light pole from WiLL's WiLLstudio catalog — fixture + arm + pole + base cover + finish — and see it composited live. The configuration lives in state and the URL (no localStorage for config).
+
+Two pieces: a **static frontend**, and a colocated **`geometry-service/`** (FastAPI) that generates the CAD/BIM deliverables — STEP, DXF, IFC, PDF, the handoff bundle — and captures download leads. The README described this as having "no backend" long after the service existed; it is deployed on AWS App Runner (`docs/DEPLOY.md`).
 
 Baseline spec (stack and architecture still govern): `Phase 0 — Claude Code Brief.md`. Asset pipeline: `ASSETS.md`.
 
 ## Stack
 
-Vite · React · TypeScript · Three.js (React Three Fiber + drei) · zustand
+Vite · React · TypeScript · zustand — plus FastAPI + build123d/OCCT in `geometry-service/`.
+
+**No three.js in the app bundle.** Phase 0.5 retired the runtime R3F viewer: the builder composites pre-rendered transparent WebP layers positioned by projecting catalog socket offsets (`src/lib/composite.ts`), so `grep -rn "three" src/` is empty. `three` and Puppeteer are devDependencies used only by the offline render rig in `scripts/render-rig/`.
 
 ## Commands
 

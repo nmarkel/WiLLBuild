@@ -528,6 +528,17 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
         // not the defaults.
         distribution: distributionCode(config),
         colorTemp: colorTempCode(config),
+        // Phase 0.20 hygiene — WAIVED, not overlooked. `projectGround` is a
+        // plain arrow defined further down this component, so it has a new
+        // identity every render: adding it to the dep array would re-register
+        // the snapshot on every commit. It is also declared BELOW this effect,
+        // so a dep-array reference would evaluate in its temporal dead zone
+        // and throw during render. The closure is already correct — the
+        // function derives from `manifest` alone, and `manifest` IS a dep, so
+        // the effect re-runs with a fresh one whenever it could go stale.
+        // The real fix is hoisting it into a useCallback([manifest]); that is
+        // a refactor of a load-bearing component, not a lint tidy.
+        // (The rule is waived on this effect's dependency array below.)
         projectGround,
         // A pole-less partial preview floats — the silhouette has no ground
         // line to stand on, so the snapshot drops it too (matches the viewer).
@@ -539,6 +550,7 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
       }),
     )
     return () => registerSnapshot(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- see `projectGround` above
   }, [layout, manifest, night, showScale, config, catalog, registerSnapshot, setSnapshotAnchors])
 
   const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
