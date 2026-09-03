@@ -267,6 +267,11 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   }, [config, viewYaw, showLabels])
   const manifest = useRenderManifest()
   const night = mode === 'night'
+  // Phase 0.21: which assembly mode this build is in. Declared HERE, above
+  // `horizonFrac`, because that memo reads it — a `const` used before its
+  // declaration is a temporal-dead-zone throw at render, not a lint nit.
+  // (`mode` is already this component's day/night prop, hence the longer name.)
+  const assemblyMode = assemblyModeFor(catalog, config)
 
   const layout = useMemo(
     () => (manifest ? resolveAssemblyLayout(catalog, manifest, config, viewYaw) : null),
@@ -290,12 +295,26 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // compute where, and pin the product's foot there. Blank/custom scenes keep
   // the classic fraction.
   const horizonFrac = useMemo(() => {
+    // Phase 0.21: a wall build has NO ground line. The fit below pins the
+    // layout origin at the horizon and budgets the sky above it separately
+    // from the ground below it — correct for a pole, whose origin IS where it
+    // meets grade and which has nothing underneath. A wall unit hangs almost
+    // entirely BELOW its origin (the mounting plate), so that split crushed it
+    // into the bottom fifth of the frame at 0.6x while a pole filled it.
+    //
+    // Pinning the origin at the fraction of the box it actually sits at turns
+    // the split budget into a plain box fit — sUp and sDown come out equal —
+    // so the unit fills the frame and sits where its own geometry says. No
+    // special case in the fit itself, and pole/ground builds are untouched.
+    if (assemblyMode === 'wall' && layout && layout.height > 0) {
+      return layout.origin[1] / layout.height
+    }
     if (scene === 'blank' || scene === 'custom' || viewport.w <= 0 || viewport.h <= 0) {
       return HORIZON_FRAC
     }
     const cover = Math.max(viewport.w / SCENE_IMG.w, viewport.h / SCENE_IMG.h)
     return (viewport.h - SCENE_IMG.h * (1 - HORIZON_FRAC) * cover) / viewport.h
-  }, [scene, viewport])
+  }, [scene, viewport, assemblyMode, layout])
   const horizonFracRef = useRef(horizonFrac)
   horizonFracRef.current = horizonFrac
   const [zoom, setZoom] = useState(1)
@@ -635,10 +654,6 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
   // grounded, so the ground furniture (contact shadow, compass ring, human
   // silhouette; night pool is already absent from the layout) stays hidden.
   const grounded = isGrounded(catalog, config)
-  // Phase 0.21: a wall build hangs off a vertical surface, so it gets a wall
-  // representation instead of ground furniture. (`mode` is already taken by
-  // this component's day/night prop — hence the longer name.)
-  const assemblyMode = assemblyModeFor(catalog, config)
   const wall = assemblyMode === 'wall' ? wallPlane(layout, config.arm) : null
 
   const pxPerMeterY = manifest.rig.pxPerMeterY
@@ -821,8 +836,8 @@ export function CompositeViewer({ catalog, config, showScale, showCompass, mode,
               style={{
                 left: wall.face === 'right' ? wall.left + wall.width : wall.left,
                 top: layout.origin[1],
-                width: shadowWidthPx * 0.6,
-                height: shadowWidthPx * 0.6,
+                width: wall.contact,
+                height: wall.contact,
               }}
             />
           </>

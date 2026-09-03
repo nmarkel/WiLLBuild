@@ -245,6 +245,16 @@ export interface WallPlane {
   height: number
   /** Which edge of the rectangle is the wall FACE the bracket bolts to. */
   face: 'left' | 'right'
+  /**
+   * Diameter, in layout pixels, for the contact shadow where the mounting
+   * plate meets the wall.
+   *
+   * Derived from the BRACKET's own drawn height rather than from the pole's
+   * `GROUND_SHADOW_M` constant (2.6 m — sized for a pole standing on grade).
+   * At that size it rendered as a 61-inch smudge behind an 8-inch plate, which
+   * read as a lighting effect rather than as contact.
+   */
+  contact: number
 }
 
 /**
@@ -257,6 +267,9 @@ export interface WallPlane {
  */
 const WALL_DEPTH = 0.8
 const WALL_OVERHANG = 0.45
+
+/** Contact-shadow diameter as a fraction of the bracket's own drawn height. */
+const WALL_CONTACT_FRAC = 0.9
 
 export function wallPlane(
   layout: CompositeLayout,
@@ -284,6 +297,7 @@ export function wallPlane(
     width: depth,
     height: layout.height * (1 + 2 * WALL_OVERHANG),
     face,
+    contact: bracket.asset.height * WALL_CONTACT_FRAC,
   }
 }
 

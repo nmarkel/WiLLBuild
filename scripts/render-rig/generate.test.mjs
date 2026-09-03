@@ -9,6 +9,27 @@ import {
 } from './generate.mjs'
 
 const catalog = JSON.parse(readFileSync('public/catalog.json', 'utf-8'))
+/**
+ * The supersample factor a shipped layer was rendered at: its webp's real
+ * canvas width over the manifest entry's width (which the rig divides back to
+ * rig density). Reads the VP8X canvas fields directly — the rig writes
+ * extended webp, whose 24-bit LE width-1/height-1 sit at a fixed offset — so
+ * the test needs no image library.
+ */
+function webpFactor(manifest, partId) {
+  const entry = manifest.parts[partId]?.angles?.hero?.finishes?.['matte-black']
+  if (!entry) throw new Error(`no hero/matte-black entry for ${partId}`)
+  const buf = readFileSync(`public/${entry.file}`)
+  if (buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') {
+    throw new Error(`${entry.file} is not a RIFF/WEBP file`)
+  }
+  if (buf.toString('ascii', 12, 16) !== 'VP8X') {
+    throw new Error(`${entry.file}: expected an extended (VP8X) webp`)
+  }
+  const width = buf.readUIntLE(24, 3) + 1
+  return Math.round((width / entry.width) * 100) / 100
+}
+
 const realParts = JSON.parse(readFileSync('scripts/render-rig/real-parts.json', 'utf-8'))
 const realGeometry = JSON.parse(readFileSync('docs/real-geometry.json', 'utf-8'))
 
@@ -239,5 +260,52 @@ describe('per-slot supersampling (Phase 0.16 candidate c)', () => {
     expect(
       entryAtRigDensity({ width: 185, height: 188, anchorX: 92.5, anchorY: 7 }, 360),
     ).toEqual({ width: 185, height: 188, anchor: [92.5, 7] })
+  })
+})
+
+// ---- Phase 0.21: mode-bearing parts, slot vs density ----
+describe('a mode-bearing part occupies one slot but renders at another tier', () => {
+  it('answers the two questions separately, and must keep doing so', async () => {
+    const { effectiveSlot, supersampleForPart, supersampleForSlot } = await import('./generate.mjs')
+    const wall = { slot: 'standalone', assemblyMode: 'wall' }
+    const ground = { slot: 'standalone', assemblyMode: 'ground' }
+
+    // "Which slot does it occupy?" — drives the layer's FINISH in the
+    // compositor. A wall bracket paints in the ARM's finish; collapsing this
+    // into the density rule below would paint it in the fixture's colour.
+    expect(effectiveSlot(wall)).toBe('arm')
+    expect(effectiveSlot(ground)).toBe('fixture')
+
+    // "How densely should it render?" — driven by how it is VIEWED. Wall mode
+    // fits the whole unit to the frame (~2.5x, ~903 px/m); the arm tier's 2x
+    // supplies 716 and the bracket came out visibly softer than the GVX
+    // (4x = 1432 px/m) beside it. So a mode part takes the fixture tier.
+    expect(supersampleForPart(wall)).toBe(4)
+    expect(supersampleForPart(ground)).toBe(4)
+    expect(supersampleForPart(wall)).not.toBe(supersampleForSlot(effectiveSlot(wall)))
+  })
+
+  it('leaves every ordinary part on its own slot tier', async () => {
+    const { supersampleForPart } = await import('./generate.mjs')
+    expect(supersampleForPart({ slot: 'fixture' })).toBe(4)
+    expect(supersampleForPart({ slot: 'baseCover' })).toBe(4)
+    expect(supersampleForPart({ slot: 'arm' })).toBe(2)
+    expect(supersampleForPart({ slot: 'pole' })).toBe(2)
+    expect(supersampleForPart({ slot: 'standalone' })).toBe(1)
+  })
+
+  it('gives the shipped wall brackets the same density as the fixture they carry', () => {
+    // Guards the actual ASSETS, not just the rule: read each webp's real
+    // canvas size and compare it with the manifest entry, which is stored
+    // divided back to rig density. The ratio IS the supersample factor the
+    // file was rendered at, so this fails if the parts are ever re-rendered
+    // under the old arm tier — which is what made the bracket look soft
+    // beside the GVX (716 px/m against a ~903 px/m wall-mode view).
+    const manifest = JSON.parse(readFileSync('public/renders/manifest.json', 'utf-8'))
+    const fixtureFactor = webpFactor(manifest, 'gvx-pendant')
+    expect(fixtureFactor).toBe(4)
+    for (const part of catalog.parts.filter((p) => p.assemblyMode !== undefined)) {
+      expect(webpFactor(manifest, part.id), part.id).toBe(fixtureFactor)
+    }
   })
 })

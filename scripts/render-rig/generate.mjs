@@ -106,6 +106,46 @@ export function supersampleForSlot(slot) {
 }
 
 /**
+ * The slot a part actually OCCUPIES in a build — the rig's mirror of
+ * `effectivePartSlot` in src/lib/compat.ts.
+ *
+ * Phase 0.21: a part carrying `assemblyMode` keeps `slot: 'standalone'` so its
+ * standalone product view survives, but in a build it IS an assembly part. The
+ * supersample map is keyed by slot, so without this the WM1/WM2 wall brackets
+ * rendered at 1x — and wall mode views them at ~2.5x, because a wall unit is
+ * small enough that the fit blows it up. That is exactly the upscaled-small-part
+ * case the 0.16 supersampling pass exists for.
+ */
+const MODE_PART_SLOT = { ground: 'fixture', wall: 'arm' }
+
+export function effectiveSlot(part) {
+  return part.assemblyMode ? MODE_PART_SLOT[part.assemblyMode] ?? part.slot : part.slot
+}
+
+/**
+ * Render density for one part — Phase 0.21, and NOT simply the slot's tier.
+ *
+ * The slot tiers assume how a part is VIEWED: a fixture is inspected close up
+ * (4x), while an arm or pole is a component of an assembly the viewer
+ * DOWNSCALES to fit a 20 ft pole in an 800 px window (2x).
+ *
+ * A mode-bearing part breaks that assumption — it is the SUBJECT of its view,
+ * not a component of a tall assembly. Wall mode fits the whole unit to the
+ * frame at ~2.5x, which demands ~903 px/m; the arm tier supplies 716 and the
+ * bracket came out visibly softer than the GVX beside it (which ships 1432 and
+ * is downscaled). So a mode part takes the fixture tier for DENSITY.
+ *
+ * Deliberately separate from `effectiveSlot`: that answers "which slot does
+ * this part occupy", which the compositor uses to resolve the layer's FINISH.
+ * A wall bracket must stay 'arm' there or it would paint in the fixture's
+ * colour. Two different questions, two functions.
+ */
+export function supersampleForPart(part) {
+  if (part.assemblyMode) return SUPERSAMPLE.fixture
+  return supersampleForSlot(effectiveSlot(part))
+}
+
+/**
  * Divide a render result's pixel fields back to rig density. The page reports
  * the density it ACTUALLY used (its cap guard may have halved the request),
  * so the factor comes from the result, never from what was asked for.
@@ -443,7 +483,7 @@ async function main() {
         continue
       }
       const ANGLES = ANGLES_FOR_SLOT(part.slot)
-      const renderPxPerMeter = rig.pxPerMeter * supersampleForSlot(part.slot)
+      const renderPxPerMeter = rig.pxPerMeter * supersampleForPart(part)
 
       const angles = {}
       let totalRenders = 0

@@ -336,6 +336,18 @@ function StepFinish({
  * mounting choice. Untouched, the accent follows the housing finish — the same
  * fallback shape as a slot finish following the base finish, so the part number
  * always carries a real colour rather than a `_`.
+ *
+ * IT DOES NOT REPAINT THE PREVIEW, and the row says so (Tyler, 0.21). The
+ * render manifest is keyed (partId, angle, finish) — ONE colour per part — and
+ * the ingest converts the six fixture masters with `paintAll`, putting every
+ * solid into the single paintable `will-body` material. So there is no second
+ * paintable region for an accent colour to land on, and a swatch row that looks
+ * exactly like the housing row was read (correctly) as broken. What it really
+ * does is change the ORDERING SEGMENT: `WD-TEX-…-BK-WH` instead of `…-BK-BK`,
+ * and the quote's "Spider Mount & Accent Line" line. Making the preview honour
+ * it needs a second paintable material through ingest + rig + a per-region
+ * tint, which is gated on agreeing the paintable-surface convention with Cole
+ * (the "authored-colour convention" open decision).
  */
 function StepAccentFinish({
   config,
@@ -354,9 +366,15 @@ function StepAccentFinish({
   return (
     <div className="accent-finish">
       <p className="step-group-title">{label.replace(/^Finish Color\s*/, '')}</p>
-      {!explicit && (
-        <p className="step-note">Matching the housing finish — pick a colour to differ.</p>
-      )}
+      {/* Say what this control does and does not do. It changes the part
+          number and the quote; it cannot change the preview until the accent
+          has a paintable region of its own. Without this the row is
+          indistinguishable from the housing swatches and reads as broken. */}
+      <p className="step-note">
+        {explicit
+          ? 'Ordering colour for this segment — it changes the part number, not the preview.'
+          : 'Matching the housing finish. Picking a different colour changes the part number, not the preview.'}
+      </p>
       <div className="options finishes">
         {offered.map((f) => (
           <button

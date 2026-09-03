@@ -1196,3 +1196,48 @@ describe('effectivePartSlot in the compositor (Phase 0.21)', () => {
     expect(before.layers.find((l) => l.partId === 'fix')!.asset.file).toBe('renders/fix.webp')
   })
 })
+
+// ---- Phase 0.21 (Tyler): the TEX accent finish and the preview ----
+describe('the accent finish cannot reach the render (Tyler, 0.21)', () => {
+  it('has no second-colour axis to land on, so the layers are identical', () => {
+    // Tyler reported the spider-mount colour selector as broken. It is not
+    // mis-wired — the asset model has ONE colour per part: the manifest is
+    // keyed (partId, angle, finish), and the ingest converts the fixture
+    // masters with `paintAll`, putting every solid into the single paintable
+    // `will-body` material. This test pins that reality so the day a second
+    // paintable region lands, it fails and someone updates the UI copy that
+    // currently tells the customer the preview will not change.
+    const accentCatalog: Catalog = {
+      ...catalog,
+      parts: catalog.parts.map((p) =>
+        p.id === 'fix'
+          ? {
+              ...p,
+              options: [
+                {
+                  key: 'finish-color-accent',
+                  label: 'Finish Color (Spider Mount & Accent Line)',
+                  group: 'ordering' as const,
+                  orderPosition: 9,
+                  values: [
+                    { code: 'BK', label: 'Black', buildable: true, mapsTo: null, note: null },
+                    { code: 'WH', label: 'White', buildable: true, mapsTo: null, note: null },
+                  ],
+                },
+              ],
+            }
+          : p,
+      ),
+    }
+    const plain = resolveAssemblyLayout(accentCatalog, manifest, config, 0)
+    const accented = resolveAssemblyLayout(
+      accentCatalog,
+      manifest,
+      { ...config, accentFinishes: { fixture: 'white' } },
+      0,
+    )
+    const files = (l: typeof plain) => l.layers.map((x) => x.asset.file).join('|')
+    expect(files(accented)).toBe(files(plain))
+    expect(accented.layers.map((l) => l.tint)).toEqual(plain.layers.map((l) => l.tint))
+  })
+})
