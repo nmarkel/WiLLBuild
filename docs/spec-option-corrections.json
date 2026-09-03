@@ -916,6 +916,242 @@
           "append": true
         }
       ]
+    },
+    "willstudio-mvx-coach": {
+      "reason": "Phase 0.21 (Nick, 9/3, with the sheet in hand — Rev. V08182026 p8). The MVX sheet lays its 'Options & Accessories' block out as three visual sub-columns headed Options | Options | Accessories, and several PDF text runs SPAN those columns — so nearest-centroid assignment welded neighbouring cells together and truncated others. Six of 22 option labels were wrong, and the worst was customer-visible: CL-MVX-3T and CL-MVX-PM both read simply 'MVX Clear Lens', two indistinguishable checkboxes for different mounts. Every label below is the sheet's text verbatim.\n\nThe two 'Options' sub-columns are KEPT SEPARATE rather than merged, deliberately: that is how the sheet prints them, it is what the pole sheet's own options/options-2/accessories rules already ship, and the corrections engine has no removal verb anyway (`isApplied([])` is vacuously true, so a rule with no columns is always skipped). Whether the rail should show one 'Options' group instead of two is a UI call across every product that has the shape, not an MVX data fix — left for Tyler.",
+      "replace": [
+        {
+          "rawKey": "options",
+          "why": "Raw `options` lost the '(Requires 3T Mount)' / '(Requires PM Mount)' qualifiers off both CLEAR lens codes — leaving two identical labels — while the FROSTED pair kept theirs, because the qualifier sits in a separate PDF run that the clear rows shared with their neighbour. Mount conditionals encoded via CR-OPT-14 `requires`, so the UI disables a lens the chosen mounting cannot take instead of merely describing the restriction.",
+          "columns": [
+            {
+              "key": "options",
+              "label": "Options",
+              "group": "options-accessories",
+              "orderPosition": 8,
+              "values": [
+                {
+                  "code": "CL-MVX-3T",
+                  "label": "MVX Clear Lens (Requires 3T Mount)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "3T"
+                    ]
+                  }
+                },
+                {
+                  "code": "CL-MVX-PM",
+                  "label": "MVX Clear Lens (Requires PM Mount)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "PM"
+                    ]
+                  }
+                },
+                {
+                  "code": "DL-MVX-3T",
+                  "label": "MVX Frosted Lens (Requires 3T Mount)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "3T"
+                    ]
+                  }
+                },
+                {
+                  "code": "DL-MVX-PM",
+                  "label": "MVX Frosted Lens (Requires PM Mount)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "PM"
+                    ]
+                  }
+                },
+                {
+                  "code": "CF",
+                  "label": "Custom",
+                  "buildable": null,
+                  "mapsTo": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "options-2",
+          "why": "Both short cords had picked up text from BOTH neighbours: WHP3NP read '2’ Cord w/o Plug, Stripped Pigtail (Requires 3T Mount) N5P Receptacle)', splicing the lens column's mount qualifier and the photocell column's tail onto a cord — so the rail offered a cord that claimed to require a mount and a receptacle. Restored verbatim; MPS keeps its PM-mount rule.",
+          "columns": [
+            {
+              "key": "options-2",
+              "label": "Options",
+              "group": "options-accessories",
+              "orderPosition": 9,
+              "values": [
+                {
+                  "code": "WHP3NP",
+                  "label": "2’ Cord w/o Plug, Stripped Pigtail",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "WHP7NP",
+                  "label": "6’ Cord w/o Plug, Stripped Pigtail",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "WHP11NP",
+                  "label": "10’ Cord w/o Plug, Stripped Pigtail",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "SRG27710",
+                  "label": "10kA Surge Suppressor (Field Replaceable), 120-277V",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "SRG48010",
+                  "label": "10kA Surge Suppressor (Field Replaceable), 347-480V",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "BPC1",
+                  "label": "Button Photocontrol, 120-277V",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "BPC3",
+                  "label": "Button Photocontrol, 347V",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "BPC4",
+                  "label": "Button Photocontrol, 480V",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "N5P",
+                  "label": "NEMA 5pin Twist-Lock Receptacle (Not Available With FT Finial Top)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": "Sheet: not available with the FT Decorative Finial Top. NOT encoded as a machine rule — CR-OPT-14 `requires` constrains a single-select COLUMN, and FT is a sibling in another multi-select list, which is a different rule shape. The wording carries the constraint to the customer and the quote."
+                },
+                {
+                  "code": "MPS",
+                  "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Available On PM Mount Only) (Not Available With FB Finial Bottom)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": "The PM-mount half IS encoded (requires.mounting). The 'not with FB' half is not, for the same reason as N5P above.",
+                  "requires": {
+                    "mounting": [
+                      "PM"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "rawKey": "accessories",
+          "why": "TLPC1/TLPC4 were truncated mid-qualifier at '(Requires' — the 'N5P Receptacle)' tail sits in a separate run further right. FT/FB were already correct and are kept verbatim; encoding their mount conditionals is what makes the finial split Cole shipped on 9/3 configurable rather than merely visible: FT is the top finial the MVX lost, and it is 3T-mount only.",
+          "columns": [
+            {
+              "key": "accessories",
+              "label": "Accessories",
+              "group": "options-accessories",
+              "orderPosition": 10,
+              "values": [
+                {
+                  "code": "TLPC1",
+                  "label": "Twist-Lock Photocell, 120-277V (Not Installed) (Requires N5P Receptacle)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "TLPC4",
+                  "label": "Twist-Lock Photocell, 347/480V (Not Installed) (Requires N5P Receptacle)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "BLP-MVX",
+                  "label": "Back Light Lens Panel (Match Fixture Finish)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "GFX",
+                  "label": "Wireless DMX Lighting Control System (Consult Factory)",
+                  "buildable": null,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "GFM",
+                  "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+                  "buildable": null,
+                  "mapsTo": null,
+                  "note": null
+                },
+                {
+                  "code": "FT",
+                  "label": "Decorative Finial Top (Available With 3T Mount Only)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "3T"
+                    ]
+                  }
+                },
+                {
+                  "code": "FB",
+                  "label": "Decorative Finial Bottom (Available On PM Mount Only)",
+                  "buildable": true,
+                  "mapsTo": null,
+                  "note": null,
+                  "requires": {
+                    "mounting": [
+                      "PM"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   }
 }

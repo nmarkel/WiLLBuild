@@ -1945,180 +1945,215 @@
           ]
         },
         {
-          "group": "options-accessories",
           "key": "options",
           "label": "Options",
+          "group": "options-accessories",
           "orderPosition": 8,
           "values": [
             {
-              "buildable": null,
               "code": "CL-MVX-3T",
-              "label": "MVX Clear Lens",
+              "label": "MVX Clear Lens (Requires 3T Mount)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "3T"
+                ]
+              }
             },
             {
-              "buildable": null,
               "code": "CL-MVX-PM",
-              "label": "MVX Clear Lens",
+              "label": "MVX Clear Lens (Requires PM Mount)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "PM"
+                ]
+              }
             },
             {
-              "buildable": null,
               "code": "DL-MVX-3T",
               "label": "MVX Frosted Lens (Requires 3T Mount)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "3T"
+                ]
+              }
             },
             {
-              "buildable": null,
               "code": "DL-MVX-PM",
               "label": "MVX Frosted Lens (Requires PM Mount)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "PM"
+                ]
+              }
             },
             {
-              "buildable": null,
               "code": "CF",
               "label": "Custom",
+              "buildable": null,
               "mapsTo": null,
               "note": null
             }
           ]
         },
         {
-          "group": "options-accessories",
           "key": "options-2",
           "label": "Options",
+          "group": "options-accessories",
           "orderPosition": 9,
           "values": [
             {
-              "buildable": null,
               "code": "WHP3NP",
-              "label": "2’ Cord w/o Plug, Stripped Pigtail (Requires 3T Mount) N5P Receptacle)",
+              "label": "2’ Cord w/o Plug, Stripped Pigtail",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "WHP7NP",
-              "label": "6’ Cord w/o Plug, Stripped Pigtail (Requires PM Mount) N5P Receptacle)",
+              "label": "6’ Cord w/o Plug, Stripped Pigtail",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "WHP11NP",
               "label": "10’ Cord w/o Plug, Stripped Pigtail",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "SRG27710",
               "label": "10kA Surge Suppressor (Field Replaceable), 120-277V",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "SRG48010",
               "label": "10kA Surge Suppressor (Field Replaceable), 347-480V",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "BPC1",
               "label": "Button Photocontrol, 120-277V",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "BPC3",
               "label": "Button Photocontrol, 347V",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "BPC4",
               "label": "Button Photocontrol, 480V",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "N5P",
               "label": "NEMA 5pin Twist-Lock Receptacle (Not Available With FT Finial Top)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": "Sheet: not available with the FT Decorative Finial Top. NOT encoded as a machine rule — CR-OPT-14 `requires` constrains a single-select COLUMN, and FT is a sibling in another multi-select list, which is a different rule shape. The wording carries the constraint to the customer and the quote."
             },
             {
-              "buildable": null,
               "code": "MPS",
               "label": "Programmable Motion Sensor w/ ON/OFF + Dimming + Photocontrol, Bluetooth Settings Adjustable, maximum coverage of 100’ diameter from 40’ mounting height (Available On PM Mount Only) (Not Available With FB Finial Bottom)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": "The PM-mount half IS encoded (requires.mounting). The 'not with FB' half is not, for the same reason as N5P above.",
+              "requires": {
+                "mounting": [
+                  "PM"
+                ]
+              }
             }
           ]
         },
         {
-          "group": "options-accessories",
           "key": "accessories",
           "label": "Accessories",
+          "group": "options-accessories",
           "orderPosition": 10,
           "values": [
             {
-              "buildable": null,
               "code": "TLPC1",
-              "label": "Twist-Lock Photocell, 120-277V (Not Installed) (Requires",
+              "label": "Twist-Lock Photocell, 120-277V (Not Installed) (Requires N5P Receptacle)",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "TLPC4",
-              "label": "Twist-Lock Photocell, 347/480V (Not Installed) (Requires",
+              "label": "Twist-Lock Photocell, 347/480V (Not Installed) (Requires N5P Receptacle)",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "BLP-MVX",
               "label": "Back Light Lens Panel (Match Fixture Finish)",
+              "buildable": true,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "GFX",
               "label": "Wireless DMX Lighting Control System (Consult Factory)",
+              "buildable": null,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "GFM",
               "label": "Wireless Mesh Lighting Control System (Consult Factory)",
+              "buildable": null,
               "mapsTo": null,
               "note": null
             },
             {
-              "buildable": null,
               "code": "FT",
               "label": "Decorative Finial Top (Available With 3T Mount Only)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "3T"
+                ]
+              }
             },
             {
-              "buildable": null,
               "code": "FB",
               "label": "Decorative Finial Bottom (Available On PM Mount Only)",
+              "buildable": true,
               "mapsTo": null,
-              "note": null
+              "note": null,
+              "requires": {
+                "mounting": [
+                  "PM"
+                ]
+              }
             }
           ]
         }
@@ -17809,7 +17844,7 @@
                   -0.15101
                 ],
                 [
-                  0.0,
+                  0,
                   -0.1936
                 ]
               ]

@@ -506,6 +506,108 @@
         "pole": null,
         "baseCover": null
       }
+    },
+    {
+      "name": "MVX — the sheet's own published ordering example (Rev. V08182026 p8)",
+      "why": "The MVX sheet prints Ex: WD-MVX-80-30-MV-5W-3T-BK-SRG27710. Reproducing a sheet's own example byte-exact in BOTH languages is the ingest rule for a newly-corrected matrix — it is the one string the manufacturer has already published.",
+      "config": {
+        "configId": "pn-case-0020",
+        "brand": "WiLLstudio",
+        "fixture": "mvx-coach",
+        "arm": "upsweep",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "fixture": {
+            "design": "MVX",
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "3T",
+            "finish-color": "BK",
+            "options-2": [
+              "SRG27710"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": null,
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
+        "baseCover": "WP-CL1-4R-BK"
+      }
+    },
+    {
+      "name": "MVX with the FT Decorative Finial Top (Phase 0.21)",
+      "why": "Cole's 9/3 re-export REMOVED the finial from the MVX body, and the sheet says why: it is the accessory code FT (Available With 3T Mount Only). This pins that a finialled MVX orders as ...-3T-BK-FT, so the geometry split and the part number tell the same story.",
+      "config": {
+        "configId": "pn-case-0021",
+        "brand": "WiLLstudio",
+        "fixture": "mvx-coach",
+        "arm": "upsweep",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "fixture": {
+            "design": "MVX",
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "3T",
+            "finish-color": "BK",
+            "accessories": [
+              "FT"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": null,
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
+        "baseCover": "WP-CL1-4R-BK"
+      }
+    },
+    {
+      "name": "MVX pendant mount with the FB Decorative Finial Bottom (Phase 0.21)",
+      "why": "The mirror case: on a PM mount the finial hangs BELOW (FB, 'Available On PM Mount Only'). Pinned so the two mount-exclusive finial codes cannot be swapped without a failing test.",
+      "config": {
+        "configId": "pn-case-0022",
+        "brand": "WiLLstudio",
+        "fixture": "mvx-coach",
+        "arm": "upsweep",
+        "pole": "alum-pole-20",
+        "baseCover": "bc-cl1-small-clamshell",
+        "finish": "matte-black",
+        "rev": 1,
+        "specOptions": {
+          "fixture": {
+            "design": "MVX",
+            "lumen-output": "80",
+            "color-temp": "30",
+            "voltage": "MV",
+            "distribution": "5W",
+            "mounting": "PM",
+            "finish-color": "BK",
+            "accessories": [
+              "FB"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "fixture": null,
+        "arm": null,
+        "pole": "WP-RSAA-20-_-_-AB-SB-FP-BK",
+        "baseCover": "WP-CL1-4R-BK"
+      }
     }
   ]
 }
