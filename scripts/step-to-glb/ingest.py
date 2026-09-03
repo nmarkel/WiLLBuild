@@ -190,21 +190,67 @@ INGEST: list[dict] = [
     # only). paintAll preserves the approved look explicitly; moving to true
     # authored colours is Tyler/Nick's design call, recorded in the 0.19 exec
     # response.
-    dict(file="WD-GVX-PM", part="gvx-pendant", design="GVX", fit="PM",
+    # ⚠️ RENAMED ON THE DRIVE (Phase 0.21, audited 9/3): this master is
+    # `GVX-PM.STEP` now, not the extensionless `WD-GVX-PM`. Cole renamed it
+    # 2026-07-22 and it went unnoticed for six weeks, because ingest reads the
+    # HAND-POPULATED local cache rather than the drive — so renders kept
+    # working from the old local copy while the drive had moved on. Verified a
+    # PURE rename by SHA before following it: 49329571… on the drive is
+    # byte-identical to the pin, so nothing about the GVX's art changed.
+    dict(file="GVX-PM.STEP", part="gvx-pendant", design="GVX", fit="PM",
          origin="top", mode="color", tol=1.0, slow=True, paintAll=True,
          drop=[dict(r_below=0.08, top_below=-0.30),
                dict(r_below=0.035, top_above=-0.09)]),
+    # ⚠️ REPLACED IN PLACE by Cole 2026-09-03 (the TEX-AREA precedent): same
+    # name, new bytes — 36,450,834 -> 27,272,321, sha c56d07f5… -> 05d3e1e8….
+    # A simplified re-export, so the part must be re-converted and re-rendered
+    # or its shipped art silently derives from bytes that no longer exist.
     dict(file="DRX-Post-Top.STEP", part="drx-post-top", design="DRX", fit="3T",
          origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
-    dict(file="TEX.STEP", part="tex-post-top", design="TEX", fit="3T",
+    # ⚠️ SOURCE SWITCHED (Nick, 2026-09-03). `TEX.STEP` — the full-engineering
+    # master this rendered from since 0.12 — is GONE from the drive; only our
+    # local cache still had it, so TEX's art was no longer reproducible from
+    # Cole's library. 0.19 deliberately kept the full master as the RENDER
+    # source while the simplified `TEX-Post-Top.STEP` served the shell and the
+    # customer download; with the master retired, all three now come from the
+    # one file Cole actually maintains. This is a LAUNCH-CUT fixture, so the
+    # re-render was eyeballed rather than trusted (see the 0.21 exec response).
+    dict(file="TEX-Post-Top.STEP", part="tex-post-top", design="TEX", fit="3T",
          origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
-    dict(file="MXV.STEP", part="mvx-coach", design="MVX", fit="3T",
+    # ⚠️ RENAMED AND RE-EXPORTED (9/3): `MXV.STEP` (a transposed spelling) is
+    # gone; the file is `MVX-Post-Top.STEP` now, and smaller — 38,651,755 ->
+    # 28,767,228, a different hash. Not a pure rename, so it re-converts and
+    # re-renders like DRX above.
+    #
+    # And it is not merely de-featured: the FINIAL IS GONE. Measured old vs new
+    # — height 0.7523 -> 0.5804 m (-171.9 mm) and a 65.7% silhouette IoU, with
+    # the before/after renders showing the decorative spire removed from the
+    # roof. Cole sent `FNL1.STEP` (a finial) in the SAME batch, so he has split
+    # the finial out of the lantern into its own component. Correct for our
+    # compositor — a fixture layer should be the luminaire, with mounts and
+    # ornaments as their own layers — but it means the MVX now renders WITHOUT
+    # a finial until FNL1 has an option code and the accessory/mounting render
+    # axis exists to draw it. MVX is editorially held, so no customer sees the
+    # gap; confirm with Cole that the split is intentional before un-holding.
+    dict(file="MVX-Post-Top.STEP", part="mvx-coach", design="MVX", fit="3T",
          origin="base", mode="color", tol=1.5, slow=True, paintAll=True),
     # --- standalone products (single hero render, no assembly) ---
     # The bollard + flood masters are modelled Z-UP (verified from their raw bboxes),
     # unlike every other file here, so they are stood up before re-basing.
     dict(file="RXB.STEP", part="willstudio-rxb-sxb-bollard", design="RXB", fit="C",
          origin="base", mode="color", tol=1.5, slow=True, rotateX=90, paintAll=True),
+    # ⚠️ REPLACED IN PLACE by Cole 9/3: 22,524,169 -> 5,740,275 bytes (a 4x
+    # reduction, the largest of this batch), sha 8fb9815a… -> ee9e357f….
+    #
+    # Same story as the MVX above, twice over: measured old vs new, the head
+    # LOST ITS MOUNTING STEM and its louvre/glare grid (height 0.5589 ->
+    # 0.4017 m, Z-width 0.411 -> 0.277 m, 70.6% silhouette IoU). Cole sent
+    # `DWX-23T.STEP` in the same batch, which is very likely that mount as its
+    # own file. Dropping the stem is arguably MORE correct here — it is the
+    # same reasoning as the GVX drop rules above, where the top stem is a
+    # sleeve the arm slides over and should not render on the fixture — but the
+    # louvre was an accessory and is now simply absent. DWX is editorially
+    # held; confirm the split with Cole before un-holding.
     dict(file="DWX.STEP", part="willstudio-dwx-flood-spot", design="DWX", fit="C",
          origin="base", mode="color", tol=1.5, slow=True, rotateX=-90, paintAll=True),
 ]
@@ -224,8 +270,27 @@ CLUSTERS: list[dict] = [
          design="AR3", fit="40F", armCount=3),
     dict(file="AR4-40F.STEP", part="willstudio-suspension-arm-pole-top-brackets",
          design="AR4", fit="40F", armCount=4),
-    dict(file="DRX-Area-4R-Side-Mount.STEP", part="drx-post-top", design="DRX",
+    # ⚠️ RENAMED AND RE-EXPORTED (9/3): `DRX-Area-4R-Side-Mount.STEP` is gone;
+    # `DRX-Side-Mount.STEP` replaces it at 36,800,071 -> 27,357,820 bytes.
+    # Kept on SMR alone, as the old registration was: the sheet also offers SMS
+    # ("Side Mount (Square Pole or Wall)"), and TEX-AREA serves both codes, but
+    # that was decided with evidence for TEX. Nothing here shows this bracket
+    # fits a square pole, so SMS stays unserved rather than assumed.
+    dict(file="DRX-Side-Mount.STEP", part="drx-post-top", design="DRX",
          fit="SMR", note="Area/side-mount variant of the DRX (mounting code SMR)."),
+    # --- Phase 0.21 (Cole, 9/3): the pendant-mount variants. Registered for
+    #     CAD-download wiring ONLY — they get no render layer, and that is a
+    #     hard limit rather than a choice: the compositor keys layers by
+    #     (partId, angle, finish), so a second MOUNTING of one part has nowhere
+    #     to render to (the 0.13 finding, still the "accessory/mounting render
+    #     axis" open decision). Both codes are the sheets' own `PM`. ---
+    dict(file="DRX-Pendant-Mount.STEP", part="drx-post-top", design="DRX",
+         fit="PM", note="Pendant-mount variant of the DRX (mounting code PM, "
+                        "'Pendant Mount' on its own sheet). No render layer: "
+                        "needs the mounting axis."),
+    dict(file="MVX-Pendant-Mount.STEP", part="mvx-coach", design="MVX",
+         fit="PM", note="Pendant-mount variant of the MVX (mounting code PM). "
+                        "No render layer: needs the mounting axis."),
     dict(file="SXB.STEP", part="willstudio-rxb-sxb-bollard", design="SXB", fit="C",
          note="Second bollard variant sharing the RXB/SXB catalog entry."),
     # --- Phase 0.11 (Workstream I) ---
@@ -271,6 +336,31 @@ CLUSTERS: list[dict] = [
 # system made an accessory layer the truth of the configuration, so "adders
 # get no layer" no longer holds for placeable accessories with real CAD.)
 UNMAPPED: list[dict] = [
+    # --- Phase 0.21: Cole's 9/3 batch, the two files with no code to key to. ---
+    dict(file="DWX-23T.STEP", part=None, design="DWX", fit=None,
+         note="A DWX variant named for a '23T' mounting — but the DWX sheet "
+              "carries NO mounting column at all (its ordering path has no "
+              "such axis), so there is no code to map this to. Recorded, not "
+              "guessed. STRONG EVIDENCE for what it is, though: in this same "
+              "batch DWX.STEP itself LOST its mounting stem (measured, 70.6% "
+              "silhouette IoU vs the old export), so this is almost certainly "
+              "that stem split out — a 2-3/8in trunnion, the DWX's answer to "
+              "the DRX's SF. Still inference: the sheet does not say it, and "
+              "an invented order code prints on a customer's part number. "
+              "Needs a line from Cole or Tyler."),
+    dict(file="FNL1.STEP", part=None, design="FNL1", fit=None,
+         note="A finial, 0.84 MB. `FNL1` appears NOWHERE in "
+              "docs/ordering-matrix.json — the only finial the matrix knows is "
+              "inside FR2's own label ('Fixed 2 @ 180 deg, finial'), and WM2's "
+              "name ('w/ Finial'), both of which carry their finial as part of "
+              "the bracket rather than as a separate orderable. MEASURED "
+              "EVIDENCE for what it is: in this same batch the MVX lost its "
+              "finial (height -171.9 mm, 65.7% silhouette IoU), so this is "
+              "that spire split out as its own component — and the MVX now "
+              "renders without one until this has an option code AND the "
+              "accessory/mounting render axis exists to draw it. Not encoded: "
+              "an invented order code prints on a customer's part number, and "
+              "which products offer it is Tyler's call."),
     # --- Phase 0.17: Cole's 8/17 batch, second file. ---
     dict(file="4-RND-STANDARD-CUSTOM-BASE.STEP", part=None, design=None, fit="4R",
          note="Custom-base variant (10.00in square x 3.50in, native Y-up — a "
@@ -373,10 +463,218 @@ UNMAPPED: list[dict] = [
               "yet (docs/part-numbers.md, 'Open confirmations')."),
     dict(file="PC2.STEP", part=None, design="PC2", fit=None, note="See PC1."),
     dict(file="PC3.STEP", part=None, design="PC3", fit=None, note="See PC1."),
+    # --- Phase 0.21: measured in detail (read-only, no ingest) when wall
+    #     mode was built. Kept HERE rather than in the generated JSON,
+    #     because `--manifest` rewrites that file from this table.  ---
     dict(file="WM1.STEP", part=None, design="WM1", fit=None,
-         note="Wall Mount. On the ordering sheet but has NO catalog part yet "
-              "(docs/part-numbers.md, 'Open confirmations')."),
-    dict(file="WM2.STEP", part=None, design="WM2", fit=None, note="See WM1."),
+         note=
+              "Wall Mount, PENDANT. On the ordering sheet; a catalog part exists "
+              "(willstudio-wm1-single-wall-mount-pendant) but the CAD is NOT mapped "
+              "to it because Cole's 1:1 confirm has been outstanding since 8/11 - "
+              "so realCad stays false and the part ships Coming Soon (Phase 0.21). "
+              "MEASURED 2026-09-02 (read-only, no ingest): 1 solid; bbox 203.20 x "
+              "279.40 x 366.33 mm = 8.000 x 11.000 x 14.423 in. Native frame is "
+              "Y-up, +Z out from the wall, origin at the CENTRE of the wall plate "
+              "(8.000 in square planar face at Z=0, normal +Z). Mounting feature is "
+              "a VERTICAL TUBE at the tip pointing DOWN: OD 2.375 in (r=30.2 mm, "
+              "the fleet's standard 2-3/8 in pendant joint), ID 2.063 in, axis at "
+              "X=0 / Z=330.6 mm (13.015 in - exactly the sheet's 13.0 in reach), "
+              "spanning Y=-177.8..+76.2 mm (10.0 in long) with set-screw holes at "
+              "Y=-155..-150 and Y=-105..-98. NOTE (corrected on re-measurement): an "
+              "earlier note here called this a downward-open BORE; the nominal "
+              "2-3/8 in size is right but it is MALE - a tube the fixture's fitter "
+              "slides over - not a socket bored into the arm. Settle the gender of "
+              "every pendant joint in the fleet when this CAD is mapped. Geometry "
+              "therefore CORROBORATES the name-based 1:1 mapping (a wall plate plus "
+              "a pendant bore is exactly 'Single Wall Mount Pendant'), but "
+              "corroboration is not Cole's confirm. The SHIPPED catalog socket is "
+              "derived from the PLACEHOLDER instead, because the placeholder is the "
+              "art that ships; mapping this file will move it. Expect rotateY to be "
+              "unnecessary (it already reaches along +Z with X centred, the fleet's "
+              "real-arm convention) - MEASURE, do not assume (PM1 precedent). Sheet "
+              "cross-check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt "
+              "pattern 6.0 x 6.0 in with 4 x dia 0.41 THRU, overall height 11.0 in, "
+              "reach 13.0 in - the CAD agrees on all four, and the shipped "
+              "placeholder was rebuilt to them in 0.21."),
+    dict(file="WM2.STEP", part=None, design="WM2", fit=None,
+         note=
+              "Wall Mount, TENON - and this is the finding of Phase 0.21. Same "
+              "treatment as WM1 (catalog part exists, CAD NOT mapped, Coming Soon). "
+              "MEASURED 2026-09-02: 1 solid; bbox 203.20 x 461.14 x 384.83 mm = "
+              "8.000 x 18.155 x 15.151 in; identical 8.000 in square wall plate at "
+              "Z=0 and an arm of the same section as WM1. Mounting feature is a "
+              "3.000 in OD (r=38.10 mm) vertical TUBE spanning Y=-73.1..+190.5 mm "
+              "with a 2.688 in ID, plus a finial at Y=-85..-172 mm. There is NO "
+              "2.375 in bore anywhere. So the upward 3 in tenon is the mount and "
+              "WM2 carries a POST TOP (its bore swallows a ~3 in tenon - cf. TEX's "
+              "measured 77.9 mm fitter bore), NOT the GVX pendant. The 'GVX + "
+              "WM1/WM2' launch cut is therefore GVX + WM1 in practice; every WM2 "
+              "mate is held. Seating note for whoever maps it: the tenon stands "
+              "143.4 mm proud of the arm's top face (Y=47.1) while TEX's fitter "
+              "bore is 139.7 mm deep, so the sleeve BOTTOMS OUT inside and the "
+              "fixture seats at tenonTop - boreDepth = Y=50.8 mm - the "
+              "shallow-sleeve case CLAUDE.md records as deliberately unasserted "
+              "since 0.12. Verify against the real fixture before trusting it. "
+              "Sheet cross-check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt "
+              "pattern 6.0 x 6.0 in, overall height 18.0 in, reach 13.0 in; "
+              "placeholder rebuilt to those numbers in 0.21."),
+    # --- Phase 0.17: Cole's 8/17 batch, second file. ---
+    dict(file="4-RND-STANDARD-CUSTOM-BASE.STEP", part=None, design=None, fit="4R",
+         note="Custom-base variant (10.00in square x 3.50in, native Y-up — a "
+              "simpler plate than the standard casting). Recorded, not used: "
+              "Tyler named 4-RND-STANDARD-BASE.STEP as the pole base detail "
+              "(8/19); this likely pairs with a custom-base order path that "
+              "has no catalog code yet."),
+    # --- Phase 0.13: Cole's 8/12 accessory exports. ---
+    dict(file="HSS-GVX.STEP", part=None, design="HSS-GVX", fit=None,
+         note="House Side Shield for the GVX, as its own component (0.29 MB; the "
+              "fitted assembly is GVX-HSS.STEP in CLUSTERS). Measured 405 x 127 x "
+              "220 mm, one solid, and asymmetric in Z (-202.6..+17.0) — it wraps one "
+              "side, which is what a house-side shield is. An `accessories` order "
+              "code on gvx-pendant, not a slot part, so it gets no render layer."),
+    # HH-*R are the hand hole itself, NOT a cover plate: each is a 6in-tall
+    # section of round pole at its named OD (4R = 4.00in, 5R = 4.98in, 6R =
+    # 6.00in, all 152.40 mm tall) — the opening plus its frame.  0.14 mapped
+    # HH-4R (the WiLLstudio fit — `diameterIn: 4` on all 8 poles) as the
+    # ADDITIONAL-hand-hole render layer; 5R/6R wait for a 5/6in pole line.
+    #
+    # ⚠️ Separate, still-open decision: the pole's OWN hand hole is a grafted
+    # placeholder box Tyler thinned twice on 8/11 (20 -> 12 -> 8 mm). Swapping
+    # that graft for HH-4R geometry re-renders all 8 poles, and the graft
+    # doubles as the rig's visible 0-degree homing reference, so a recessed
+    # real hole must be checked to still read at 360 px/m first.
+    dict(file="HH-5R.STEP", part=None, design="HHX", fit="5R",
+         note="Additional Hand Hole, 5in round — no 5in pole in the catalog."),
+    dict(file="HH-6R.STEP", part=None, design="HHX", fit="6R",
+         note="Additional Hand Hole, 6in round — no 6in pole in the catalog."),
+    # --- Phase 0.11 (Workstream I): CONVERTED BUT NOT MAPPED — pending socket
+    #     alignment. These five DO have an unambiguous catalog part (each file's
+    #     code is that part's own `modelCodes` entry) and each converts cleanly
+    #     to a GLB, but they are deliberately NOT wired into the render rig yet,
+    #     because doing so renders them MISALIGNED — visibly worse than the
+    #     placeholder they replace, and invisible to the coverage gate (the
+    #     renders exist; they are merely in the wrong place).
+    #
+    #     Two independent mismatches, measured 2026-08-10:
+    #       1. AXIS. Every one of these reaches along Z (bbox z = 0.45-1.44 m)
+    #          with x pinned at ~0.102 m — that is the 4in pole clamp. Every
+    #          catalog placeholder reaches along +X. So each needs a `rotateY`
+    #          in real-parts.json, the way sh1-shepherds-hook (-90) and
+    #          willstudio-ba1-banner-arm (+90) already do.
+    #       2. SOCKET. Rotation alone is not enough: the real reaches disagree
+    #          with the catalog fixture sockets, which were authored against the
+    #          placeholder solids. PA1 reaches 0.995 m against a socket at
+    #          x=0.68; HS1 reaches 1.437 m against a socket at x=0.50. (FR2 is
+    #          a crossarm and its 1.221 m is symmetric ±0.61 against x=0.62 —
+    #          that one is close.) Each part's fixture socket has to be
+    #          re-derived from the real CAD's own attachment point, which is
+    #          exactly what the 0.10 ingest did when it "corrected two arm
+    #          sockets" from the released files.
+    #
+    #     Verified in the browser before reverting: with these mapped, the PA1
+    #     arm floats clear of both the pole top and its pendant, and the SD1
+    #     arm's fixture hangs far off its tip.
+    #
+    #     The STEP files, the GLBs and this record are all in place, so the next
+    #     pass starts from measurement, not from re-ingest.
+    # (0.14: PA1/PM1/HS1/SD1 moved UP into INGEST — 0.13 cleared their axis +
+    # socket alignment and mapped them in real-parts.json; the block comment
+    # above survives as the record of WHY they were held back through 0.12.)
+    # --- Phase 0.11 (Workstream I): the rest of Cole's 8/6 batch. Each of these
+    #     has real CAD but NO defensible catalog part, so each is recorded with
+    #     the reason rather than mapped. Mapping any of them would put invented
+    #     geometry under a real product name. ---
+    dict(file="CR2-40F.STEP", part=None, design="CR2", fit="40F",
+         note="Renamed at the source: this was 'CR1-40F.STEP', which Nick "
+              "confirmed on 2026-08-10 was mislabelled — the geometry is a CR2. "
+              "Someone applied the correction on Synology, so the file is now "
+              "CR2-40F.STEP and this record follows it (Phase 0.12, A3). Before "
+              "that it was the only Synology file referenced nowhere in the repo, "
+              "because the name recorded here no longer existed. Intended part "
+              "willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}). Still "
+              "blocked on the same axis + socket alignment as the five below."),
+    dict(file="BR12-40F.STEP", part=None, design="BR12", fit="40F",
+         note="Upsweep, no gusset. docs/part-numbers.md maps the curated 'Decorative "
+              "Upsweep' (catalog id `upsweep`) to the BR family with BR12/BR13 as the "
+              "24in/36in reaches, but that mapping is explicitly UNCONFIRMED pending "
+              "Cole, and `upsweep` carries no modelCodes to check it against."),
+    dict(file="BR13-40F.STEP", part=None, design="BR13", fit="40F",
+         note="See BR12-40F — same unconfirmed upsweep family, the other reach."),
+    dict(file="BR22-40F.STEP", part=None, design="BR22", fit="40F",
+         note="See BR12-40F — two-arm sibling of the unconfirmed upsweep family."),
+    dict(file="BR23-40F.STEP", part=None, design="BR23", fit="40F",
+         note="See BR12-40F — two-arm sibling of the unconfirmed upsweep family."),
+    dict(file="CF1.STEP", part=None, design="CF1", fit=None,
+         note="Centre Shepherds Hook Decorative Feature. Phase 0.11 Workstream C makes "
+              "CF1/CF2/CF3 single-select order codes on SH1 — an option adder, not a "
+              "slot part, so no render layer of its own."),
+    dict(file="CF2.STEP", part=None, design="CF2", fit=None,
+         note="Centre Shepherds Hook Brand/Logo/City Round Feature. See CF1."),
+    dict(file="CF3.STEP", part=None, design="CF3", fit=None,
+         note="Centre Shepherds Hook Brand/Logo Feature. See CF1."),
+    dict(file="CPL-P-12.STEP", part=None, design="CPL-P-12", fit=None,
+         note="Coupling, 12in painted. A placeable pole Accessory adder "
+              "(accessoryPlacements), not a slot part."),
+    dict(file="PC1.STEP", part=None, design="PC1", fit=None,
+         note="Pendant Ceiling Mount. On the ordering sheet but has NO catalog part "
+              "yet (docs/part-numbers.md, 'Open confirmations')."),
+    dict(file="PC2.STEP", part=None, design="PC2", fit=None, note="See PC1."),
+    dict(file="PC3.STEP", part=None, design="PC3", fit=None, note="See PC1."),
+    # --- Phase 0.21: measured in detail (read-only, no ingest) when wall
+    #     mode was built. Kept HERE rather than in the generated JSON,
+    #     because `--manifest` rewrites that file from this table.  ---
+    dict(file="WM1.STEP", part=None, design="WM1", fit=None,
+         note=
+              "Wall Mount, PENDANT. On the ordering sheet; a catalog part exists "
+              "(willstudio-wm1-single-wall-mount-pendant) but the CAD is NOT mapped "
+              "to it because Cole's 1:1 confirm has been outstanding since 8/11 - "
+              "so realCad stays false and the part ships Coming Soon (Phase 0.21). "
+              "MEASURED 2026-09-02 (read-only, no ingest): 1 solid; bbox 203.20 x "
+              "279.40 x 366.33 mm = 8.000 x 11.000 x 14.423 in. Native frame is "
+              "Y-up, +Z out from the wall, origin at the CENTRE of the wall plate "
+              "(8.000 in square planar face at Z=0, normal +Z). Mounting feature is "
+              "a VERTICAL TUBE at the tip pointing DOWN: OD 2.375 in (r=30.2 mm, "
+              "the fleet's standard 2-3/8 in pendant joint), ID 2.063 in, axis at "
+              "X=0 / Z=330.6 mm (13.015 in - exactly the sheet's 13.0 in reach), "
+              "spanning Y=-177.8..+76.2 mm (10.0 in long) with set-screw holes at "
+              "Y=-155..-150 and Y=-105..-98. NOTE (corrected on re-measurement): an "
+              "earlier note here called this a downward-open BORE; the nominal "
+              "2-3/8 in size is right but it is MALE - a tube the fixture's fitter "
+              "slides over - not a socket bored into the arm. Settle the gender of "
+              "every pendant joint in the fleet when this CAD is mapped. Geometry "
+              "therefore CORROBORATES the name-based 1:1 mapping (a wall plate plus "
+              "a pendant bore is exactly 'Single Wall Mount Pendant'), but "
+              "corroboration is not Cole's confirm. The SHIPPED catalog socket is "
+              "derived from the PLACEHOLDER instead, because the placeholder is the "
+              "art that ships; mapping this file will move it. Expect rotateY to be "
+              "unnecessary (it already reaches along +Z with X centred, the fleet's "
+              "real-arm convention) - MEASURE, do not assume (PM1 precedent). Sheet "
+              "cross-check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt "
+              "pattern 6.0 x 6.0 in with 4 x dia 0.41 THRU, overall height 11.0 in, "
+              "reach 13.0 in - the CAD agrees on all four, and the shipped "
+              "placeholder was rebuilt to them in 0.21."),
+    dict(file="WM2.STEP", part=None, design="WM2", fit=None,
+         note=
+              "Wall Mount, TENON - and this is the finding of Phase 0.21. Same "
+              "treatment as WM1 (catalog part exists, CAD NOT mapped, Coming Soon). "
+              "MEASURED 2026-09-02: 1 solid; bbox 203.20 x 461.14 x 384.83 mm = "
+              "8.000 x 18.155 x 15.151 in; identical 8.000 in square wall plate at "
+              "Z=0 and an arm of the same section as WM1. Mounting feature is a "
+              "3.000 in OD (r=38.10 mm) vertical TUBE spanning Y=-73.1..+190.5 mm "
+              "with a 2.688 in ID, plus a finial at Y=-85..-172 mm. There is NO "
+              "2.375 in bore anywhere. So the upward 3 in tenon is the mount and "
+              "WM2 carries a POST TOP (its bore swallows a ~3 in tenon - cf. TEX's "
+              "measured 77.9 mm fitter bore), NOT the GVX pendant. The 'GVX + "
+              "WM1/WM2' launch cut is therefore GVX + WM1 in practice; every WM2 "
+              "mate is held. Seating note for whoever maps it: the tenon stands "
+              "143.4 mm proud of the arm's top face (Y=47.1) while TEX's fitter "
+              "bore is 139.7 mm deep, so the sleeve BOTTOMS OUT inside and the "
+              "fixture seats at tenonTop - boreDepth = Y=50.8 mm - the shallow- "
+              "sleeve case CLAUDE.md records as deliberately unasserted since 0.12. "
+              "Verify against the real fixture before trusting it. Sheet cross- "
+              "check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt pattern 6.0 "
+              "x 6.0 in, overall height 18.0 in, reach 13.0 in; placeholder rebuilt "
+              "to those numbers in 0.21."),
 ]
 
 # ---------------------------------------------------------------------------
@@ -394,7 +692,8 @@ UNMAPPED: list[dict] = [
 SHELL_SOURCES: list[dict] = [
     dict(file="GVX-Simple.STEP", part="gvx-pendant", out="gvx-pendant.shell",
          design="GVX", fit="PM", origin="top", mode="mono", tol=1.0,
-         note="Cole's de-featured GVX (27 MB vs the 88 MB WD-GVX-PM master). "
+         note="Cole's de-featured GVX (27 MB vs the 88 MB GVX-PM.STEP master, "
+              "named WD-GVX-PM until Cole's 7/22 rename). "
               "Same normalization frame as the master (origin=top; measured "
               "8/20: identical 0.2397 m bezel radius, stem tip at y=0), so "
               "the shell drops into the same socket walk. 410,672 tris at "
@@ -412,7 +711,14 @@ SHELL_SOURCES: list[dict] = [
          design="TEX", fit="3T", origin="base", mode="mono", tol=1.5,
          note="Cole's de-featured TEX post top (29.8 MB vs the 36 MB TEX.STEP "
               "master). Same normalization frame as the master (origin=base; "
-              "bounding box identical on every axis, measured 8/24)."),
+              "bounding box identical on every axis, measured 8/24). "
+              "⚠️ Phase 0.21: TEX.STEP was RETIRED from the drive, so this file "
+              "is now the RENDER source as well (see INGEST above) — and under "
+              "`paintAll` the render entry's mode='color' collapses to the same "
+              "single will-body material this mono entry produces, at the same "
+              "tolerance, so tex-post-top.glb and tex-post-top.shell.glb come "
+              "out BYTE-IDENTICAL. That is expected, not a bug; the two names "
+              "exist because different pipelines consume them."),
 ]
 
 # Poles derived by axial scaling from the one real pole export (Phase 0.10.5,

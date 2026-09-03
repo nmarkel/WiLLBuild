@@ -24,8 +24,24 @@ Skipping a step has always cost more than doing it. Work on a phase branch off `
   shared Google Drive and is the single source of truth for Nick, Tyler and Claude:
   `/Users/nickmarkel/Library/CloudStorage/GoogleDrive-nmarkel@willbrands.com/Shared drives/21-Engineering/18-coding-projects/WiLLbuild/Design Assistant`
   The old `~/Documents/Design Assistant` is tombstoned — never write there.
+- **Run the drive audit FIRST, every time Cole sends anything:**
+  `python3 scripts/step-to-glb/audit_drive.py`. It reports renamed/retired
+  references, files replaced in place, unreferenced new exports, and a stale local
+  cache — and exits non-zero on drift. This exists because `ingest.py` reads the
+  hand-populated local cache, never the drive, so drift is INVISIBLE: renders keep
+  working from old local copies. Phase 0.21 found `WD-GVX-PM` renamed six weeks
+  earlier and `TEX.STEP` (a launch fixture's render source) retired outright,
+  neither noticed.
 - If a filename changed on Synology, verify by **SHA compare** before assuming a rename
   (CR1→CR2 precedent), then update `scripts/step-to-glb/ingest.py` to follow.
+- A file **replaced in place** (same name, new bytes — the TEX-AREA and 0.21
+  DRX/DWX precedent) must be re-converted AND re-rendered, or the shipped art
+  silently derives from bytes that no longer exist. And compare old vs new before
+  trusting it: measure the GLB bounding box for a moved normalization frame, and
+  the render's alpha silhouette (IoU) for what actually changed. In 0.21 that
+  distinguished "de-featured internals, 99.99% identical" (TEX, DRX) from
+  "the finial/mount was removed" (MVX 65.7%, DWX 70.6%) — two very different
+  situations behind the same "Cole simplified it".
 - The coverage audit lives in the vault ("WiLLstudio STEP → Site Coverage Matrix"); update
   counts there (or note them in the execution response) when they move.
 

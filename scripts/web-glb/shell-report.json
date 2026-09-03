@@ -94,15 +94,15 @@
     },
     "drx-post-top": {
       "sourceGlb": "real-assets/glb/drx-post-top.glb",
-      "sourceSha256": "37d1cb22230121e7ab142d6a4e1a616873563c2f4418af4607a422ef1cb75eab",
-      "masterTris": 582166,
-      "culledTris": 89696,
-      "shippedTris": 47838,
-      "visibleFrac": 0.9727,
-      "visibleAreaFrac": 0.9996,
-      "simplifyRatio": 0.5351,
-      "bytes": 315152,
-      "sha256": "616ebc52138d2006a7f3352302c6c10a52cfc23227525678989f898713677b11",
+      "sourceSha256": "8883fe5fb43e8c3b6a793640d7d85dfe3db0e345db6a379ee8f89cc23339f0ae",
+      "masterTris": 353308,
+      "culledTris": 74194,
+      "shippedTris": 47830,
+      "visibleFrac": 0.9687,
+      "visibleAreaFrac": 0.9997,
+      "simplifyRatio": 0.647,
+      "bytes": 297700,
+      "sha256": "b06798697e35e435e28ff4ad6f7cb30b8621967cc9447695b69fefa7d24784d3",
       "materials": [
         "will-body"
       ]
@@ -124,15 +124,15 @@
     },
     "mvx-coach": {
       "sourceGlb": "real-assets/glb/mvx-coach.glb",
-      "sourceSha256": "290fdabe5b943985617c38ae0b947316ed584186eb2f7f64bf6b8b0f259a7c26",
-      "masterTris": 593916,
-      "culledTris": 11355,
-      "shippedTris": 11355,
-      "visibleFrac": 0.9895,
-      "visibleAreaFrac": 0.9988,
+      "sourceSha256": "4b0081082f5f183add9fade92f85156bd8fe0b43c82a76237eeb2c5c4a53443a",
+      "masterTris": 349298,
+      "culledTris": 3579,
+      "shippedTris": 3579,
+      "visibleFrac": 0.9877,
+      "visibleAreaFrac": 0.995,
       "simplifyRatio": 1,
-      "bytes": 68236,
-      "sha256": "2ff6c7f85d5ff52b22b31a0535647a61a08671082e7724629eb1a02de0ca9991",
+      "bytes": 25280,
+      "sha256": "ec53e9dc708d35f97ad70312ebe1052603caf2e64ce35b1befe81384e9bc6585",
       "materials": [
         "will-body"
       ]
@@ -274,15 +274,15 @@
     },
     "willstudio-dwx-flood-spot": {
       "sourceGlb": "real-assets/glb/willstudio-dwx-flood-spot.glb",
-      "sourceSha256": "357206b0562e825e1288bce0d739cf174a2e25640223ee5705f27fd7ea6c636f",
-      "masterTris": 614784,
-      "culledTris": 26171,
-      "shippedTris": 26171,
-      "visibleFrac": 0.9673,
-      "visibleAreaFrac": 0.9981,
+      "sourceSha256": "40303b862a123c8a5ba802b5fe3a87de4d238fb07ebc7619c9cd484c40682d19",
+      "masterTris": 428556,
+      "culledTris": 6361,
+      "shippedTris": 6361,
+      "visibleFrac": 0.9565,
+      "visibleAreaFrac": 0.9995,
       "simplifyRatio": 1,
-      "bytes": 156752,
-      "sha256": "fae19cb0fbf5918f3c6223b43d98c22dd6a1fd02d6aeb539cf7c0bce264dec0b",
+      "bytes": 38276,
+      "sha256": "e05122e37829525a1850a6261a55608c40c6f9ffe815f752bccae9231412d134",
       "materials": [
         "will-body"
       ]

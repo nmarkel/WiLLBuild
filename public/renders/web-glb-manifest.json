@@ -34,8 +34,8 @@
     },
     "drx-post-top": {
       "file": "renders/web-glb/drx-post-top.glb",
-      "bytes": 315152,
-      "sha256": "616ebc52138d2006a7f3352302c6c10a52cfc23227525678989f898713677b11"
+      "bytes": 297700,
+      "sha256": "b06798697e35e435e28ff4ad6f7cb30b8621967cc9447695b69fefa7d24784d3"
     },
     "gvx-pendant": {
       "file": "renders/web-glb/gvx-pendant.glb",
@@ -44,8 +44,8 @@
     },
     "mvx-coach": {
       "file": "renders/web-glb/mvx-coach.glb",
-      "bytes": 68236,
-      "sha256": "2ff6c7f85d5ff52b22b31a0535647a61a08671082e7724629eb1a02de0ca9991"
+      "bytes": 25280,
+      "sha256": "ec53e9dc708d35f97ad70312ebe1052603caf2e64ce35b1befe81384e9bc6585"
     },
     "pa1-pendant-arm": {
       "file": "renders/web-glb/pa1-pendant-arm.glb",
@@ -98,8 +98,8 @@
     },
     "willstudio-dwx-flood-spot": {
       "file": "renders/web-glb/willstudio-dwx-flood-spot.glb",
-      "bytes": 156752,
-      "sha256": "fae19cb0fbf5918f3c6223b43d98c22dd6a1fd02d6aeb539cf7c0bce264dec0b"
+      "bytes": 38276,
+      "sha256": "e05122e37829525a1850a6261a55608c40c6f9ffe815f752bccae9231412d134"
     },
     "willstudio-fr2-decorative-crossarm": {
       "file": "renders/web-glb/willstudio-fr2-decorative-crossarm.glb",

@@ -330,7 +330,7 @@
       "glbBytes": 2949836
     },
     {
-      "file": "WD-GVX-PM",
+      "file": "GVX-PM.STEP",
       "kind": "component",
       "present": true,
       "bytes": 87657114,
@@ -348,8 +348,8 @@
       "file": "DRX-Post-Top.STEP",
       "kind": "component",
       "present": true,
-      "bytes": 36450834,
-      "sha256": "c56d07f5d2ae3bb452e9c2a1edd6150acbd1c4919891ed9ee92241e3f64e7827",
+      "bytes": 27272321,
+      "sha256": "05d3e1e8f565b35c81f2fb4350d8de92b53e5de2ad4edceaef32cc61d6e8d729",
       "partId": "drx-post-top",
       "designCode": "DRX",
       "fitCode": "3T",
@@ -357,14 +357,14 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/drx-post-top.glb",
-      "glbBytes": 20781080
+      "glbBytes": 12072944
     },
     {
-      "file": "TEX.STEP",
+      "file": "TEX-Post-Top.STEP",
       "kind": "component",
       "present": true,
-      "bytes": 36014184,
-      "sha256": "9f82714af04ff8aafec23a28c5970550e74deb90e3377c57d1723e34943bd5ae",
+      "bytes": 29823529,
+      "sha256": "35416f4d37b2f9540dbb6ea6d7f05d9d32df94f1e5b27d0184411560b6c8b4cb",
       "partId": "tex-post-top",
       "designCode": "TEX",
       "fitCode": "3T",
@@ -372,14 +372,14 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/tex-post-top.glb",
-      "glbBytes": 19476992
+      "glbBytes": 12903032
     },
     {
-      "file": "MXV.STEP",
+      "file": "MVX-Post-Top.STEP",
       "kind": "component",
       "present": true,
-      "bytes": 38651755,
-      "sha256": "0c16967a246bdb2d06f60c5af418318fc4c425bd945290f03be70836d9cac8e1",
+      "bytes": 28767228,
+      "sha256": "b328e22a50bad47a3fe8e799866844cd66f9f04e3ab3965e1ebe4df86fc49fc5",
       "partId": "mvx-coach",
       "designCode": "MVX",
       "fitCode": "3T",
@@ -387,7 +387,7 @@
       "converter": "color",
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/mvx-coach.glb",
-      "glbBytes": 21260724
+      "glbBytes": 11997080
     },
     {
       "file": "RXB.STEP",
@@ -409,8 +409,8 @@
       "file": "DWX.STEP",
       "kind": "component",
       "present": true,
-      "bytes": 22524169,
-      "sha256": "8fb9815a37125b245bbb1cadbcc4c67be87aba6bb11c93a750b3689d34bc2de3",
+      "bytes": 5740275,
+      "sha256": "ee9e357fcdd24adf8fb51a84a69d63adbd088769b7a0e4aa002d9398191adb99",
       "partId": "willstudio-dwx-flood-spot",
       "designCode": "DWX",
       "fitCode": "C",
@@ -419,7 +419,7 @@
       "tolMm": 1.5,
       "rotateXDeg": -90,
       "glb": "render-rig/real-assets/glb/willstudio-dwx-flood-spot.glb",
-      "glbBytes": 21786488
+      "glbBytes": 14811484
     }
   ],
   "clusters": [
@@ -490,15 +490,37 @@
       "armCount": 4
     },
     {
-      "file": "DRX-Area-4R-Side-Mount.STEP",
+      "file": "DRX-Side-Mount.STEP",
       "kind": "cluster",
       "present": true,
-      "bytes": 36800071,
-      "sha256": "d086cd76c88804bd2b8195c58517d4c701e24e0cfc711090763fb35505e66674",
+      "bytes": 27357820,
+      "sha256": "5e931595b2c3c679894dbe2e9ebf876a4e4fbeaebbb0f98f18512dc110408360",
       "partId": "drx-post-top",
       "designCode": "DRX",
       "fitCode": "SMR",
       "note": "Area/side-mount variant of the DRX (mounting code SMR)."
+    },
+    {
+      "file": "DRX-Pendant-Mount.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 27824099,
+      "sha256": "a2af9c5850fb59b8cf41ebaf8ab6c5bac06ac28eaa4da4783137cfa2b8d99154",
+      "partId": "drx-post-top",
+      "designCode": "DRX",
+      "fitCode": "PM",
+      "note": "Pendant-mount variant of the DRX (mounting code PM, 'Pendant Mount' on its own sheet). No render layer: needs the mounting axis."
+    },
+    {
+      "file": "MVX-Pendant-Mount.STEP",
+      "kind": "cluster",
+      "present": true,
+      "bytes": 28827308,
+      "sha256": "0d1b6f3965c687dcd0789fe81981cde2d70c08d38847eb2f9926a33affb8016a",
+      "partId": "mvx-coach",
+      "designCode": "MVX",
+      "fitCode": "PM",
+      "note": "Pendant-mount variant of the MVX (mounting code PM). No render layer: needs the mounting axis."
     },
     {
       "file": "SXB.STEP",
@@ -557,6 +579,28 @@
     }
   ],
   "unmapped": [
+    {
+      "file": "DWX-23T.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 12411832,
+      "sha256": "b229c4a3d2bf393810acff3cfe83a2d5014108967b87cf238562e110e52b6a98",
+      "partId": null,
+      "designCode": "DWX",
+      "fitCode": null,
+      "note": "A DWX variant named for a '23T' mounting \u2014 but the DWX sheet carries NO mounting column at all (its ordering path has no such axis), so there is no code to map this to. Recorded, not guessed. STRONG EVIDENCE for what it is, though: in this same batch DWX.STEP itself LOST its mounting stem (measured, 70.6% silhouette IoU vs the old export), so this is almost certainly that stem split out \u2014 a 2-3/8in trunnion, the DWX's answer to the DRX's SF. Still inference: the sheet does not say it, and an invented order code prints on a customer's part number. Needs a line from Cole or Tyler."
+    },
+    {
+      "file": "FNL1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 839843,
+      "sha256": "83d9be8e85d246dfdd1eb97d4e6f7a1edcbe2fdb05aca231357b093ecfa4e740",
+      "partId": null,
+      "designCode": "FNL1",
+      "fitCode": null,
+      "note": "A finial, 0.84 MB. `FNL1` appears NOWHERE in docs/ordering-matrix.json \u2014 the only finial the matrix knows is inside FR2's own label ('Fixed 2 @ 180 deg, finial'), and WM2's name ('w/ Finial'), both of which carry their finial as part of the bracket rather than as a separate orderable. MEASURED EVIDENCE for what it is: in this same batch the MVX lost its finial (height -171.9 mm, 65.7% silhouette IoU), so this is that spire split out as its own component \u2014 and the MVX now renders without one until this has an option code AND the accessory/mounting render axis exists to draw it. Not encoded: an invented order code prints on a customer's part number, and which products offer it is Tyler's call."
+    },
     {
       "file": "4-RND-STANDARD-CUSTOM-BASE.STEP",
       "kind": "unmapped",
@@ -754,6 +798,204 @@
       "designCode": "WM2",
       "fitCode": null,
       "note": "Wall Mount, TENON - and this is the finding of Phase 0.21. Same treatment as WM1 (catalog part exists, CAD NOT mapped, Coming Soon). MEASURED 2026-09-02: 1 solid; bbox 203.20 x 461.14 x 384.83 mm = 8.000 x 18.155 x 15.151 in; identical 8.000 in square wall plate at Z=0 and an arm of the same section as WM1. Mounting feature is a 3.000 in OD (r=38.10 mm) vertical TUBE spanning Y=-73.1..+190.5 mm with a 2.688 in ID, plus a finial at Y=-85..-172 mm. There is NO 2.375 in bore anywhere. So the upward 3 in tenon is the mount and WM2 carries a POST TOP (its bore swallows a ~3 in tenon - cf. TEX's measured 77.9 mm fitter bore), NOT the GVX pendant. The 'GVX + WM1/WM2' launch cut is therefore GVX + WM1 in practice; every WM2 mate is held. Seating note for whoever maps it: the tenon stands 143.4 mm proud of the arm's top face (Y=47.1) while TEX's fitter bore is 139.7 mm deep, so the sleeve BOTTOMS OUT inside and the fixture seats at tenonTop - boreDepth = Y=50.8 mm - the shallow-sleeve case CLAUDE.md records as deliberately unasserted since 0.12. Verify against the real fixture before trusting it. Sheet cross-check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt pattern 6.0 x 6.0 in, overall height 18.0 in, reach 13.0 in; placeholder rebuilt to those numbers in 0.21."
+    },
+    {
+      "file": "4-RND-STANDARD-CUSTOM-BASE.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 98483,
+      "sha256": "31929024d1a0ab293623aa1e859b723be7acdec714c6c44a9394c22806124b89",
+      "partId": null,
+      "designCode": null,
+      "fitCode": "4R",
+      "note": "Custom-base variant (10.00in square x 3.50in, native Y-up \u2014 a simpler plate than the standard casting). Recorded, not used: Tyler named 4-RND-STANDARD-BASE.STEP as the pole base detail (8/19); this likely pairs with a custom-base order path that has no catalog code yet."
+    },
+    {
+      "file": "HSS-GVX.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 292925,
+      "sha256": "202cbcb385d38acb9b846822bf364a922be14e95c62b5b6c08dfb4dd9ab70a79",
+      "partId": null,
+      "designCode": "HSS-GVX",
+      "fitCode": null,
+      "note": "House Side Shield for the GVX, as its own component (0.29 MB; the fitted assembly is GVX-HSS.STEP in CLUSTERS). Measured 405 x 127 x 220 mm, one solid, and asymmetric in Z (-202.6..+17.0) \u2014 it wraps one side, which is what a house-side shield is. An `accessories` order code on gvx-pendant, not a slot part, so it gets no render layer."
+    },
+    {
+      "file": "HH-5R.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 94759,
+      "sha256": "b19731681b7e3066e40ddfebfde6c481263aa1bdc96f6c344899522b41b5d297",
+      "partId": null,
+      "designCode": "HHX",
+      "fitCode": "5R",
+      "note": "Additional Hand Hole, 5in round \u2014 no 5in pole in the catalog."
+    },
+    {
+      "file": "HH-6R.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 93983,
+      "sha256": "d0d518558f674640ba917882737d5dd1fcaa96cc6b02c06bbf12bef1a964162e",
+      "partId": null,
+      "designCode": "HHX",
+      "fitCode": "6R",
+      "note": "Additional Hand Hole, 6in round \u2014 no 6in pole in the catalog."
+    },
+    {
+      "file": "CR2-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 4917290,
+      "sha256": "0da63e3415c816bf17b79748c8a487f72b6e792468a1bc757f07b396a5f5c1c6",
+      "partId": null,
+      "designCode": "CR2",
+      "fitCode": "40F",
+      "note": "Renamed at the source: this was 'CR1-40F.STEP', which Nick confirmed on 2026-08-10 was mislabelled \u2014 the geometry is a CR2. Someone applied the correction on Synology, so the file is now CR2-40F.STEP and this record follows it (Phase 0.12, A3). Before that it was the only Synology file referenced nowhere in the repo, because the name recorded here no longer existed. Intended part willstudio-cr2-decorative-crossarm (modelCodes {1: CR2}). Still blocked on the same axis + socket alignment as the five below."
+    },
+    {
+      "file": "BR12-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 684423,
+      "sha256": "7cc4aa27bac8c90b12c132578dbda8aae4e5ad471fe0627d7d83517ed36844ad",
+      "partId": null,
+      "designCode": "BR12",
+      "fitCode": "40F",
+      "note": "Upsweep, no gusset. docs/part-numbers.md maps the curated 'Decorative Upsweep' (catalog id `upsweep`) to the BR family with BR12/BR13 as the 24in/36in reaches, but that mapping is explicitly UNCONFIRMED pending Cole, and `upsweep` carries no modelCodes to check it against."
+    },
+    {
+      "file": "BR13-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 2959722,
+      "sha256": "4965fdd6e48c5ed99f9195dc8b8bf111a3afea314f993b37fdda7df21222a11b",
+      "partId": null,
+      "designCode": "BR13",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 same unconfirmed upsweep family, the other reach."
+    },
+    {
+      "file": "BR22-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 735231,
+      "sha256": "e13b4de0c5a4502df9039e1af68f4658609cad91c14e585b1c7ad73df262c0f4",
+      "partId": null,
+      "designCode": "BR22",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 two-arm sibling of the unconfirmed upsweep family."
+    },
+    {
+      "file": "BR23-40F.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 5712450,
+      "sha256": "d26b8b4db42601ecde1905ca870a6116957a1f6c120ebc479be32d993fa35330",
+      "partId": null,
+      "designCode": "BR23",
+      "fitCode": "40F",
+      "note": "See BR12-40F \u2014 two-arm sibling of the unconfirmed upsweep family."
+    },
+    {
+      "file": "CF1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 176047,
+      "sha256": "e9c5842abc8160e5c7dc394cc3c8ee41776a40fdf7942ae03528f2365cde9635",
+      "partId": null,
+      "designCode": "CF1",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Decorative Feature. Phase 0.11 Workstream C makes CF1/CF2/CF3 single-select order codes on SH1 \u2014 an option adder, not a slot part, so no render layer of its own."
+    },
+    {
+      "file": "CF2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 446747,
+      "sha256": "51b5f7ec851d9e9f1dde7052fcc2266764f91e11b73324a185b2fc813900f1ed",
+      "partId": null,
+      "designCode": "CF2",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Brand/Logo/City Round Feature. See CF1."
+    },
+    {
+      "file": "CF3.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 466487,
+      "sha256": "c907c7a1e2ebcddc49a799aef40c2d69fec824b12a91dd5cfc21b3b4bb5fbe39",
+      "partId": null,
+      "designCode": "CF3",
+      "fitCode": null,
+      "note": "Centre Shepherds Hook Brand/Logo Feature. See CF1."
+    },
+    {
+      "file": "CPL-P-12.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 1829079,
+      "sha256": "9f8d4ef8fb032cd16e03e3ce8a2bea7392bd1996015cd5ad2295d5d8028248e8",
+      "partId": null,
+      "designCode": "CPL-P-12",
+      "fitCode": null,
+      "note": "Coupling, 12in painted. A placeable pole Accessory adder (accessoryPlacements), not a slot part."
+    },
+    {
+      "file": "PC1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 229836,
+      "sha256": "4e75a02759d1f664caa4d29f77f8a6d887d743b265ddf5b2fb20fd6750dab092",
+      "partId": null,
+      "designCode": "PC1",
+      "fitCode": null,
+      "note": "Pendant Ceiling Mount. On the ordering sheet but has NO catalog part yet (docs/part-numbers.md, 'Open confirmations')."
+    },
+    {
+      "file": "PC2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 238661,
+      "sha256": "94d71ecd6c4d63bfa42721429378cff41eb579e7d1339bacd7687867db30807a",
+      "partId": null,
+      "designCode": "PC2",
+      "fitCode": null,
+      "note": "See PC1."
+    },
+    {
+      "file": "PC3.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 238439,
+      "sha256": "44fc08fc408d54b6bde97dd165045c3bbac8437ccad4d6fbaa1de100cf88c983",
+      "partId": null,
+      "designCode": "PC3",
+      "fitCode": null,
+      "note": "See PC1."
+    },
+    {
+      "file": "WM1.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 2410724,
+      "sha256": "2300dafe06caa46d25059296c66c17aeb19714ba5d30a4f2f36c2c1a020ed146",
+      "partId": null,
+      "designCode": "WM1",
+      "fitCode": null,
+      "note": "Wall Mount, PENDANT. On the ordering sheet; a catalog part exists (willstudio-wm1-single-wall-mount-pendant) but the CAD is NOT mapped to it because Cole's 1:1 confirm has been outstanding since 8/11 - so realCad stays false and the part ships Coming Soon (Phase 0.21). MEASURED 2026-09-02 (read-only, no ingest): 1 solid; bbox 203.20 x 279.40 x 366.33 mm = 8.000 x 11.000 x 14.423 in. Native frame is Y-up, +Z out from the wall, origin at the CENTRE of the wall plate (8.000 in square planar face at Z=0, normal +Z). Mounting feature is a VERTICAL TUBE at the tip pointing DOWN: OD 2.375 in (r=30.2 mm, the fleet's standard 2-3/8 in pendant joint), ID 2.063 in, axis at X=0 / Z=330.6 mm (13.015 in - exactly the sheet's 13.0 in reach), spanning Y=-177.8..+76.2 mm (10.0 in long) with set-screw holes at Y=-155..-150 and Y=-105..-98. NOTE (corrected on re-measurement): an earlier note here called this a downward-open BORE; the nominal 2-3/8 in size is right but it is MALE - a tube the fixture's fitter slides over - not a socket bored into the arm. Settle the gender of every pendant joint in the fleet when this CAD is mapped. Geometry therefore CORROBORATES the name-based 1:1 mapping (a wall plate plus a pendant bore is exactly 'Single Wall Mount Pendant'), but corroboration is not Cole's confirm. The SHIPPED catalog socket is derived from the PLACEHOLDER instead, because the placeholder is the art that ships; mapping this file will move it. Expect rotateY to be unnecessary (it already reaches along +Z with X centred, the fleet's real-arm convention) - MEASURE, do not assume (PM1 precedent). Sheet cross-check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt pattern 6.0 x 6.0 in with 4 x dia 0.41 THRU, overall height 11.0 in, reach 13.0 in - the CAD agrees on all four, and the shipped placeholder was rebuilt to them in 0.21."
+    },
+    {
+      "file": "WM2.STEP",
+      "kind": "unmapped",
+      "present": true,
+      "bytes": 3193016,
+      "sha256": "c6d5e4a7a3c9647bdd9512b8939cc288654e37f73c23faeabe7d6fe85add188e",
+      "partId": null,
+      "designCode": "WM2",
+      "fitCode": null,
+      "note": "Wall Mount, TENON - and this is the finding of Phase 0.21. Same treatment as WM1 (catalog part exists, CAD NOT mapped, Coming Soon). MEASURED 2026-09-02: 1 solid; bbox 203.20 x 461.14 x 384.83 mm = 8.000 x 18.155 x 15.151 in; identical 8.000 in square wall plate at Z=0 and an arm of the same section as WM1. Mounting feature is a 3.000 in OD (r=38.10 mm) vertical TUBE spanning Y=-73.1..+190.5 mm with a 2.688 in ID, plus a finial at Y=-85..-172 mm. There is NO 2.375 in bore anywhere. So the upward 3 in tenon is the mount and WM2 carries a POST TOP (its bore swallows a ~3 in tenon - cf. TEX's measured 77.9 mm fitter bore), NOT the GVX pendant. The 'GVX + WM1/WM2' launch cut is therefore GVX + WM1 in practice; every WM2 mate is held. Seating note for whoever maps it: the tenon stands 143.4 mm proud of the arm's top face (Y=47.1) while TEX's fitter bore is 139.7 mm deep, so the sleeve BOTTOMS OUT inside and the fixture seats at tenonTop - boreDepth = Y=50.8 mm - the shallow- sleeve case CLAUDE.md records as deliberately unasserted since 0.12. Verify against the real fixture before trusting it. Sheet cross- check (arms Rev. V08182026 p9): plate 8.0 x 8.0 in, bolt pattern 6.0 x 6.0 in, overall height 18.0 in, reach 13.0 in; placeholder rebuilt to those numbers in 0.21."
     }
   ],
   "shellSources": [
@@ -771,7 +1013,7 @@
       "tolMm": 1.0,
       "glb": "render-rig/real-assets/glb/gvx-pendant.shell.glb",
       "glbBytes": 13738448,
-      "note": "Cole's de-featured GVX (27 MB vs the 88 MB WD-GVX-PM master). Same normalization frame as the master (origin=top; measured 8/20: identical 0.2397 m bezel radius, stem tip at y=0), so the shell drops into the same socket walk. 410,672 tris at tol 1.0 before the web pipeline's cull/decimate."
+      "note": "Cole's de-featured GVX (27 MB vs the 88 MB GVX-PM.STEP master, named WD-GVX-PM until Cole's 7/22 rename). Same normalization frame as the master (origin=top; measured 8/20: identical 0.2397 m bezel radius, stem tip at y=0), so the shell drops into the same socket walk. 410,672 tris at tol 1.0 before the web pipeline's cull/decimate."
     },
     {
       "file": "TEX-Post-Top.STEP",
@@ -787,7 +1029,7 @@
       "tolMm": 1.5,
       "glb": "render-rig/real-assets/glb/tex-post-top.shell.glb",
       "glbBytes": 12903032,
-      "note": "Cole's de-featured TEX post top (29.8 MB vs the 36 MB TEX.STEP master). Same normalization frame as the master (origin=base; bounding box identical on every axis, measured 8/24)."
+      "note": "Cole's de-featured TEX post top (29.8 MB vs the 36 MB TEX.STEP master). Same normalization frame as the master (origin=base; bounding box identical on every axis, measured 8/24). \u26a0\ufe0f Phase 0.21: TEX.STEP was RETIRED from the drive, so this file is now the RENDER source as well (see INGEST above) \u2014 and under `paintAll` the render entry's mode='color' collapses to the same single will-body material this mono entry produces, at the same tolerance, so tex-post-top.glb and tex-post-top.shell.glb come out BYTE-IDENTICAL. That is expected, not a bug; the two names exist because different pipelines consume them."
     }
   ],
   "derived": [
